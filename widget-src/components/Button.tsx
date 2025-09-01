@@ -14,6 +14,9 @@ export function Button({
   const impression = designTokens.sd.system.color.impression
   const label = designTokens.sd.system.typography.label.large_expanded
   const spacing = designTokens.sd.system.dimension.spacing
+  const radius = designTokens.sd.system.dimension.radius
+  const scale = designTokens.sd.reference.dimension.scale
+
   return (
     <AutoLayout
       onClick={onClick}
@@ -24,8 +27,8 @@ export function Button({
         bottom: parseInt(spacing.twoExtraSmall),
         left: parseInt(spacing.small),
       }}
-      cornerRadius={1000}
-      height={32}
+      cornerRadius={parseInt(radius.full)}
+      height={parseInt(scale[10])}
       horizontalAlignItems='center'
       verticalAlignItems='center'
     >
@@ -33,7 +36,7 @@ export function Button({
         fill={impression.onPrimary}
         fontFamily={fontFamily}
         fontSize={parseInt(label.fontSize)}
-        fontWeight={label.fontWeight as 400 | 700}
+        fontWeight={label.fontWeight as WidgetJSX.FontWeight}
       >
         {children}
       </Text>
