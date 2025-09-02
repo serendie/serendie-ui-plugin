@@ -49,6 +49,8 @@
     }
   },
   "dependencies": {
-    "@serendie/design-token": "^1.2.0"
+    "@serendie/design-token": "^1.2.0",
+    "openai": "^5.16.0",
+    "zod": "^3.25.76"
   }
 }
