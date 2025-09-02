@@ -6,3 +6,6 @@ node_modules
 out/
 dist/
 code.js
+
+# These pages are fetched from the @serendie/serendie-web repository
+serendie-web/
