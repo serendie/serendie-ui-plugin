@@ -1,6 +1,7 @@
 import designToken from '@serendie/design-token'
 
-import { Button } from './components/Button'
+import Button from './components/Button'
+import Typography from './components/Typography'
 
 const { widget } = figma
 const { AutoLayout } = widget
@@ -10,6 +11,7 @@ type SceneNodeStructure = {
   name: string
   type: SceneNode['type']
   visible: boolean
+  fills?: readonly Paint[] | typeof figma.mixed
   children: SceneNodeStructure[]
 }
 
@@ -19,6 +21,7 @@ function getStructure(node: SceneNode, depth = 0): SceneNodeStructure {
     name: node.name,
     type: node.type,
     visible: node.visible,
+    fills: 'fills' in node ? node.fills : undefined,
     children:
       'children' in node
         ? node.children
@@ -30,6 +33,7 @@ function getStructure(node: SceneNode, depth = 0): SceneNodeStructure {
 
 function Widget() {
   const system = designToken.sd.system
+  const reference = designToken.sd.reference
   const handleGetSelection = async () => {
     const selections = figma.currentPage.selection.filter(
       node => node.type === 'FRAME'
@@ -37,34 +41,67 @@ function Widget() {
 
     if (selections.length > 0) {
       const frame = selections[0] as FrameNode
-
-      console.log('Frame name:', frame.name)
-      console.log('Frame size:', frame.width, 'x', frame.height)
-      console.log('Children count:', frame.children.length)
-      console.log('Fill:', frame.fills)
-
       const imageData = await frame.exportAsync({
         format: 'PNG',
         constraint: { type: 'SCALE', value: 2 },
       })
       const base64 = figma.base64Encode(imageData)
       const dataUrl = `data:image/png;base64,${base64}`
-      console.log('Data URL created:', dataUrl)
-
       const structure = getStructure(frame)
+      console.log('Data URL created:', dataUrl)
       console.log('Frame structure:', JSON.stringify(structure, null, 2))
     }
   }
 
   return (
     <AutoLayout
+      width={parseInt(reference.dimension.breakpoint.small)}
       fill={system.color.component.surface}
-      padding={parseInt(system.dimension.spacing.extraLarge)}
       cornerRadius={parseInt(system.dimension.radius.extraLarge)}
+      direction='vertical'
       verticalAlignItems='center'
-      horizontalAlignItems='center'
+      horizontalAlignItems='start'
+      effect={{
+        type: 'drop-shadow',
+        color: system.elevation.shadow.level5.color,
+        offset: { x: 0, y: 2 },
+        blur: parseInt(system.elevation.shadow.level5.blur),
+        blendMode: 'pass-through',
+        spread: parseInt(system.elevation.shadow.level5.spread),
+        visible: true,
+        showShadowBehindNode: true,
+      }}
     >
-      <Button onClick={handleGetSelection}>Get Selected Frame</Button>
+      <AutoLayout
+        width='fill-parent'
+        direction='vertical'
+        spacing={parseInt(system.dimension.spacing.extraSmall)}
+        padding={parseInt(system.dimension.spacing.fourExtraLarge)}
+        fill={system.color.impression.tertiaryContainer}
+      >
+        <Typography
+          textStyle={system.typography.body.small_compact}
+          fill={system.color.component.onSurfaceVariant}
+        >
+          Serendie Design System
+        </Typography>
+        <Typography
+          textStyle={system.typography.headline.medium_compact}
+          fill={system.color.impression.onTertiaryContainer}
+        >
+          AI Linter
+        </Typography>
+      </AutoLayout>
+      <AutoLayout
+        width='fill-parent'
+        direction='vertical'
+        spacing={parseInt(system.dimension.spacing.extraSmall)}
+        padding={parseInt(system.dimension.spacing.fourExtraLarge)}
+      >
+        <Button width='fill-parent' onClick={handleGetSelection}>
+          Run
+        </Button>
+      </AutoLayout>
     </AutoLayout>
   )
 }

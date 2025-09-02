@@ -4,39 +4,42 @@ import { fontFamily } from '../styles'
 const { widget } = figma
 const { AutoLayout, Text } = widget
 
-export function Button({
+export default function Button({
   children,
   onClick,
+  width = 'hug-contents',
 }: {
   children: string
   onClick: () => void
+  width?: WidgetJSX.AutolayoutSize
 }) {
-  const impression = designTokens.sd.system.color.impression
-  const label = designTokens.sd.system.typography.label.large_expanded
-  const spacing = designTokens.sd.system.dimension.spacing
-  const radius = designTokens.sd.system.dimension.radius
-  const scale = designTokens.sd.reference.dimension.scale
+  const system = designTokens.sd.system
+  const reference = designTokens.sd.reference
 
   return (
     <AutoLayout
+      width={width}
       onClick={onClick}
-      fill={impression.primaryContainer}
+      fill={system.color.impression.primaryContainer}
       padding={{
-        top: parseInt(spacing.twoExtraSmall),
-        right: parseInt(spacing.small),
-        bottom: parseInt(spacing.twoExtraSmall),
-        left: parseInt(spacing.small),
+        top: parseInt(system.dimension.spacing.small),
+        right: parseInt(system.dimension.spacing.extraLarge),
+        bottom: parseInt(system.dimension.spacing.small),
+        left: parseInt(system.dimension.spacing.extraLarge),
       }}
-      cornerRadius={parseInt(radius.full)}
-      height={parseInt(scale[10])}
+      cornerRadius={parseInt(system.dimension.radius.full)}
+      height={parseInt(reference.dimension.scale[13])}
       horizontalAlignItems='center'
       verticalAlignItems='center'
     >
       <Text
-        fill={impression.onPrimary}
+        fill={system.color.impression.onPrimary}
         fontFamily={fontFamily}
-        fontSize={parseInt(label.fontSize)}
-        fontWeight={label.fontWeight as WidgetJSX.FontWeight}
+        fontSize={parseInt(system.typography.label.large_compact.fontSize)}
+        fontWeight={
+          system.typography.label.large_compact
+            .fontWeight as WidgetJSX.FontWeight
+        }
       >
         {children}
       </Text>
