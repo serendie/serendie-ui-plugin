@@ -1,3 +1,3 @@
 export default function notify(message: string) {
-  console.log(message)
+  figma.notify(message, { timeout: 3000 })
 }

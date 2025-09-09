@@ -2,56 +2,63 @@ import designToken from '@serendie/design-token'
 
 import Button from './components/Button'
 import Typography from './components/Typography'
+import notify from './utils/notify'
+import generateObject from './utils/generateObject'
 
 const { widget } = figma
 const { AutoLayout } = widget
+const libraryName = '🛠️ Serendie UI Kit'
 
-type SceneNodeStructure = {
-  id: string
-  name: string
-  type: SceneNode['type']
-  visible: boolean
-  fills?: readonly Paint[] | typeof figma.mixed
-  children: SceneNodeStructure[]
-}
-
-function getStructure(node: SceneNode, depth = 0): SceneNodeStructure {
-  return {
-    id: node.id,
-    name: node.name,
-    type: node.type,
-    visible: node.visible,
-    fills: 'fills' in node ? node.fills : undefined,
-    children:
-      'children' in node
-        ? node.children
-            .map(child => getStructure(child, depth + 1))
-            .filter(child => child.visible)
-        : [],
+async function handleClick() {
+  const selections = figma.currentPage.selection.filter(
+    node => node.type === 'FRAME'
+  )
+  if (selections.length == 0) {
+    notify('フレームを選択してください')
+    return
   }
+
+  const selection = selections[0] as FrameNode
+  let libraryCollections: LibraryVariableCollection[] = []
+  try {
+    libraryCollections =
+      await figma.teamLibrary.getAvailableLibraryVariableCollectionsAsync()
+  } catch (err) {
+    notify('ライブラリのバリアブルコレクションを取得できませんでした')
+    console.log('Failed to get library collections')
+    return
+  }
+
+  const variables: {
+    ref: { color: LibraryVariable[] }
+    system: { color: LibraryVariable[] }
+  } = { ref: { color: [] }, system: { color: [] } }
+  const colorRefCollection = libraryCollections.find(
+    ({ name, libraryName }) =>
+      name === 'color-reference' && libraryName === libraryName
+  )
+  const colorSystemCollection = libraryCollections.find(
+    ({ name, libraryName }) =>
+      name === 'color-system' && libraryName === libraryName
+  )
+  if (!colorRefCollection || !colorSystemCollection) {
+    notify(`次のライブラリを有効にしてください: ${libraryName}`)
+    return
+  }
+
+  variables.ref.color =
+    await figma.teamLibrary.getVariablesInLibraryCollectionAsync(
+      colorRefCollection.key
+    )
+  variables.system.color =
+    await figma.teamLibrary.getVariablesInLibraryCollectionAsync(
+      colorSystemCollection.key
+    )
 }
 
 function Widget() {
   const system = designToken.sd.system
   const reference = designToken.sd.reference
-  const handleGetSelection = async () => {
-    const selections = figma.currentPage.selection.filter(
-      node => node.type === 'FRAME'
-    )
-
-    if (selections.length > 0) {
-      const frame = selections[0] as FrameNode
-      const imageData = await frame.exportAsync({
-        format: 'PNG',
-        constraint: { type: 'SCALE', value: 2 },
-      })
-      const base64 = figma.base64Encode(imageData)
-      const dataUrl = `data:image/png;base64,${base64}`
-      const structure = getStructure(frame)
-      console.log('Data URL created:', dataUrl)
-      console.log('Frame structure:', JSON.stringify(structure, null, 2))
-    }
-  }
 
   return (
     <AutoLayout
@@ -98,7 +105,7 @@ function Widget() {
         spacing={parseInt(system.dimension.spacing.extraSmall)}
         padding={parseInt(system.dimension.spacing.fourExtraLarge)}
       >
-        <Button width='fill-parent' onClick={handleGetSelection}>
+        <Button width='fill-parent' onClick={handleClick}>
           Run
         </Button>
       </AutoLayout>
