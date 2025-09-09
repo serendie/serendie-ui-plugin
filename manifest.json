@@ -11,6 +11,6 @@
   "containsWidget": true,
   "widgetApi": "1.0.0",
   "networkAccess": {
-    "allowedDomains": ["none"]
+    "allowedDomains": ["https://api.openai.com"]
   }
 }

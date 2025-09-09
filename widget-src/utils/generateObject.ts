@@ -73,11 +73,31 @@ export default async function generateObject<T>(
       response_format: zodResponseFormat(schema, schemaName),
     }),
   })
+
+  if (!response.ok) {
+    const errorData = await response.json()
+    console.error('OpenAI API error:', errorData)
+    throw new Error(
+      `OpenAI API error: ${errorData.error?.message || response.statusText}`
+    )
+  }
+
   try {
     const data = (await response.json()) as Response
+
+    if (!data.choices || data.choices.length === 0) {
+      console.error('No choices in response:', data)
+      throw new Error('No response from OpenAI')
+    }
+
+    if (!data.choices[0].message || !data.choices[0].message.content) {
+      console.error('No content in response:', data)
+      throw new Error('Empty response from OpenAI')
+    }
+
     return JSON.parse(data.choices[0].message.content)
   } catch (error) {
-    console.error('Failed to generate object', error)
-    throw new Error('Failed to generate object')
+    console.error('Failed to parse OpenAI response', error)
+    throw new Error(`Failed to parse OpenAI response: ${error}`)
   }
 }
