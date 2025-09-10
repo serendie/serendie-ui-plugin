@@ -22,7 +22,10 @@ figma.ui.onmessage = async msg => {
     }
   } else if (msg.type === 'run-linter') {
     const selections = figma.currentPage.selection.filter(
-      node => node.type === 'FRAME'
+      node =>
+        node.type === 'FRAME' ||
+        node.type === 'COMPONENT' ||
+        node.type === 'INSTANCE'
     )
 
     if (selections.length === 0) {
@@ -53,6 +56,7 @@ figma.ui.onmessage = async msg => {
         type: 'lint-result',
         result,
         totalNodes: nodes.length,
+        frameName: selection.name,
       })
     } catch (error) {
       console.error('Linting failed:', error)

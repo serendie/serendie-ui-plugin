@@ -9,7 +9,7 @@ const { sd } = tokens
 
 // Plugin message types
 type PluginMessage =
-  | { type: 'lint-result'; result: Result; totalNodes: number }
+  | { type: 'lint-result'; result: Result; totalNodes: number; frameName: string }
   | { type: 'error'; message: string }
 
 export default function App() {
@@ -17,6 +17,7 @@ export default function App() {
   const [lintResult, setLintResult] = useState<Result | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [totalNodes, setTotalNodes] = useState(0)
+  const [frameName, setFrameName] = useState<string>('')
 
   useEffect(() => {
     window.onmessage = (
@@ -28,6 +29,7 @@ export default function App() {
         setIsLoading(false)
         setLintResult(message.result)
         setTotalNodes(message.totalNodes)
+        setFrameName(message.frameName)
         setError(null)
       } else if (message.type === 'error') {
         setIsLoading(false)
@@ -73,7 +75,7 @@ export default function App() {
 
       {lintResult && (
         <div>
-          <IssuesList issues={lintResult.issues} totalNodes={totalNodes} />
+          <IssuesList issues={lintResult.issues} totalNodes={totalNodes} frameName={frameName} />
           {lintResult.issues.length === 0 && (
             <Notification
               summary={'すべてのルールを満たしています。'}
