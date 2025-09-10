@@ -5,6 +5,7 @@
 interface ColorInfo {
   nodeId: string
   nodeName: string
+  nodeType: string
   textColor: string
   backgroundColor: string
 }
@@ -78,6 +79,7 @@ export async function extractNodeColors(node: SceneNode): Promise<ColorInfo[]> {
     results.push({
       nodeId: node.id,
       nodeName: node.name,
+      nodeType: node.type,
       textColor: textColor || 'Unknown',
       backgroundColor: backgroundColor || 'Unknown',
     })

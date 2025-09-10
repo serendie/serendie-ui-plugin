@@ -11,6 +11,7 @@ export interface ColorIssue {
 export interface ColorValidationIssue extends ColorIssue {
   nodeId: string
   nodeName: string
+  nodeType: string
   textColor: string
   backgroundColor: string
 }

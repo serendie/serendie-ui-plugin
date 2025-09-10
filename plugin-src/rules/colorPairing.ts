@@ -57,13 +57,11 @@ const COLOR_RULES: Record<string, string> = {
 interface ColorPair {
   nodeId: string
   nodeName: string
+  nodeType: string
   textColor: string
   backgroundColor: string
 }
 
-/**
- * Extract color role from variable name
- */
 function extractColorRole(variableName: string): string | null {
   const parts = variableName.split('/')
   const lastPart = parts[parts.length - 1]
@@ -83,22 +81,40 @@ function extractColorRole(variableName: string): string | null {
   return null
 }
 
-/**
- * Validate color relationship based on design system rules
- */
-export function validateColorContrast(
+function getColorName(colorPath: string): string {
+  if (colorPath === 'Unknown') {
+    return '不明'
+  }
+  const parts = colorPath.split('/')
+  return parts[parts.length - 1] || colorPath
+}
+
+export function validate(
   textColorVariable: string,
   backgroundColorVariable: string
 ): ColorIssue | null {
+  // Handle Unknown colors
+  if (
+    textColorVariable === 'Unknown' ||
+    backgroundColorVariable === 'Unknown'
+  ) {
+    return {
+      severity: 'warning',
+      message: 'カラー変数が未設定です',
+      suggestion: 'カラー変数が設定されていないため、検証できません',
+    }
+  }
+
   const textRole = extractColorRole(textColorVariable)
   const bgRole = extractColorRole(backgroundColorVariable)
+  const textName = getColorName(textColorVariable)
+  const bgName = getColorName(backgroundColorVariable)
 
-  // If we can't identify the roles, we can't validate
   if (!textRole || !bgRole) {
     return {
       severity: 'warning',
-      message: 'Unable to validate color relationship',
-      suggestion: 'Ensure both colors are from the design system variables',
+      message: 'カラーロールを識別できません',
+      suggestion: `「${textName}」と「${bgName}」の組み合わせは検証できません`,
     }
   }
 
@@ -111,28 +127,24 @@ export function validateColorContrast(
   if (!isValidRelationship) {
     return {
       severity: 'error',
-      message: `Invalid color pairing: ${textRole} on ${bgRole}`,
-      suggestion: `Use "${textRole}" with "${expectedBg}" background, or "${expectedText}" text on "${bgRole}" background`,
+      message: 'テキスト色と背景色の組み合わせ',
+      suggestion: `テキスト色を${expectedText}にするか、背景色を${expectedBg}に変更してください`,
     }
   }
 
-  return null // Valid relationship
+  return null
 }
 
-/**
- * Validate all color pairs and return issues
- */
-export function validateColorPairs(
-  colorPairs: ColorPair[]
-): ColorValidationResult {
+export function validateAll(colorPairs: ColorPair[]): ColorValidationResult {
   const issues: ColorValidationIssue[] = []
 
   for (const pair of colorPairs) {
-    const issue = validateColorContrast(pair.textColor, pair.backgroundColor)
+    const issue = validate(pair.textColor, pair.backgroundColor)
     if (issue) {
       issues.push({
         nodeId: pair.nodeId,
         nodeName: pair.nodeName,
+        nodeType: pair.nodeType,
         textColor: pair.textColor,
         backgroundColor: pair.backgroundColor,
         ...issue,

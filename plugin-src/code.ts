@@ -1,5 +1,5 @@
 import { extractNodeColors } from './extractColors'
-import { validateColorPairs } from './rules/colorPairing'
+import { validateAll as validateColorPairs } from './rules/colorPairing'
 import { ColorValidationResult } from '../shared-src/models/ColorValidation'
 
 // Show UI on plugin run
@@ -28,13 +28,8 @@ figma.ui.onmessage = async msg => {
     const selection = selections[0] as FrameNode
 
     try {
-      // Extract colors from the frame
       const colorPairs = await extractNodeColors(selection)
-
-      // Validate using rule-based system
       const result: ColorValidationResult = validateColorPairs(colorPairs)
-
-      // Send results to UI
       figma.ui.postMessage({
         type: 'lint-result',
         result,
