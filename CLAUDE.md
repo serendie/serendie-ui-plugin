@@ -4,36 +4,37 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## プロジェクト概要
 
-Spread System Widgetは、Figma上でデザインシステムの管理とコンポーネント生成を行うためのWidget/Pluginツールです。
+Spread System Color Linterは、Figmaデザイン内でSerendie Design Systemのカラーロール規約に準拠しているかを検証するFigma Pluginです。
 
-### アーキテクチャ
+### 主要機能
 
-このプロジェクトは以下のワークフローで動作します：
+1. **カラー関係性の検証**
+   - テキストと背景色の組み合わせが適切かチェック
+   - Serendie Design Systemのカラーロール（primary/onPrimary等）に基づく検証
+   - Material Design 3準拠のカラーペアリング規則
 
-1. **外部リソースの取得**
-   - GitHub上のSerendie Webからドキュメント（MDX）を取得
-   - デザイントークンシステム（@serendie/design-token）の利用
+2. **Figma Plugin アーキテクチャ**
+   - `plugin-src/`: バックエンド処理（Figma API操作）
+   - `ui-src/`: フロントエンドUI（React）
+   - `shared-src/`: 共有モデルとタイプ定義
 
-2. **Figmaとの連携**
-   - Frameから選択された要素（画像、全ノード構造）を取得
-   - Pluginで分析とキー管理を実行
-   - Widgetでカラー検証とアノテーション追加を提供
-
-3. **コンポーネント生成**
-   - 取得したノード構造を解析
-   - 該当するSerendieコンポーネント（種類、XY座標、色、バリアブルID）を特定
-   - WidgetでのUIレンダリング
+3. **デザイントークンの活用**
+   - @serendie/design-tokenを直接使用してスタイリング
+   - スプレッド演算子でタイポグラフィトークンを適用
+   - システムカラー、スペーシング、タイポグラフィロールの活用
 
 ## 開発コマンド
 
 ### 必須コマンド（タスク完了時に実行）
+
 ```bash
 npm run tsc      # TypeScript型チェック
-npm run lint     # ESLintチェック  
+npm run lint     # ESLintチェック
 npm run format   # コード整形（ESLint + Prettier）
 ```
 
 ### ビルド関連
+
 ```bash
 npm run build    # ドキュメント取得とバンドルを実行
 npm run watch    # 開発時の自動ビルド
@@ -49,28 +50,58 @@ npm run watch    # 開発時の自動ビルド
 ## ディレクトリ構造と責務
 
 ```
-widget-src/
-├── code.tsx          # メインエントリー、Figma APIとの接続
-├── components/       # 再利用可能なUIコンポーネント
-├── models/          # データモデルとストレージ管理
-├── utils/           # ユーティリティ関数
-└── assets/          # 取得したSerendieドキュメント
+plugin-src/
+├── code.ts           # Pluginメインエントリー、Figma API操作
+├── extractColors.ts  # ノードからカラー情報を抽出
+└── rules/
+    └── colorPairing.ts  # カラーペアリング検証ルール
+
+ui-src/
+├── index.tsx        # UIエントリーポイント
+├── App.tsx          # メインUIコンポーネント
+└── build-html.mjs   # HTMLバンドル生成
+└── template.html    # HTMLテンプレート
+
+shared-src/
+└── models/
+    └── ColorValidation.ts  # 共有型定義
+
+assets/
+└── serendie-web/    # Serendieドキュメント（MDX）
 ```
 
 ## 重要な実装パターン
 
-### Figma Widget API
-- JSXファクトリ: `figma.widget.h`
-- フラグメント: `figma.widget.Fragment`
-- コンポーネントは関数型で定義
+### Figma Plugin API
 
-### 状態管理
-- `useSyncedState`: Widget間で同期される状態
-- `usePropertyMenu`: プロパティメニューの定義
-- ClientStorage: ローカルストレージの管理
+- Plugin側: `figma.showUI()` でUIを表示
+- UI側: `parent.postMessage()` でPlugin側と通信
+- 型安全な通信: `PluginMessage` 型で定義
 
-### 外部リソースの統合
-- `scripts/fetch-documents.js`: ビルド時にSerendieドキュメントを取得
+### デザイントークンの使用
+
+```typescript
+import tokens from '@serendie/design-token'
+const { sd } = tokens
+
+// スプレッド演算子でタイポグラフィトークンを適用
+style={{
+  ...sd.system.typography.headline.small_expanded,
+  color: sd.system.color.component.onSurface,
+}}
+```
+
+### カラー検証ルール
+
+- COLOR_RULES定義に基づくペアリング検証
+- 前景色には「on」プレフィックス
+- 大面積背景色には「Container」サフィックス
+
+### ESLint設定
+
+- package.json内の`eslintConfig`で一元管理
+- `ignorePatterns`で除外ファイルを指定
+- TypeScript strictモードとFigma plugins推奨設定
 
 ## セキュリティ考慮事項
 
