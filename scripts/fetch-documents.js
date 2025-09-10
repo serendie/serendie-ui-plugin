@@ -7,6 +7,7 @@ const path = require('path')
 const pages = [
   '/foundations/02_00_color_palette.mdx',
   '/foundations/02_01_color_role.mdx',
+  '/foundations/05_typography.mdx',
 ]
 
 async function fetch(url, destPath) {
@@ -33,7 +34,7 @@ async function fetch(url, destPath) {
 async function main() {
   const files = pages.map(page => ({
     url: `https://raw.githubusercontent.com/serendie/serendie-web/dev/src/content/pages${page}`,
-    dest: `./widget-src/assets/serendie-web${page}`,
+    dest: `./assets/serendie-web${page}`,
   }))
   for (const file of files) {
     try {

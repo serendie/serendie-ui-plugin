@@ -1,12 +1,15 @@
 # プロジェクト概要
 
 ## プロジェクト名
+
 spread-system-widget
 
 ## 目的
+
 Figma Widget/Plugin ツール - デザインシステムとコンポーネントの管理を行うFigmaウィジェット
 
 ## 主要技術スタック
+
 - **言語**: TypeScript
 - **フレームワーク**: Figma Widget API 1.0.0
 - **ビルドツール**: esbuild
@@ -17,12 +20,14 @@ Figma Widget/Plugin ツール - デザインシステムとコンポーネント
   - zod: スキーマ検証
 
 ## プロジェクト構成
+
 - GitHubからSerendie WebとDesign Tokensのリソースを取得
 - MCPサーバー経由でSerendie UIコンポーネント情報にアクセス
 - FigmaのFrameから選択された要素を分析
 - Pluginでコンポーネントを生成し、Widgetで表示
 
 ## ディレクトリ構造
+
 ```
 /
 ├── widget-src/           # ウィジェットのソースコード

@@ -2,8 +2,7 @@ import designToken from '@serendie/design-token'
 
 import Button from './components/Button'
 import Typography from './components/Typography'
-import notify from './utils/notify'
-import { runColorLinter } from './utils/colorLinter'
+import notify from '../shared-src/utils/notify'
 
 const { widget } = figma
 const { AutoLayout } = widget
@@ -18,7 +17,6 @@ async function handleClick() {
     return
   }
 
-  const selection = selections[0] as FrameNode
   let libraryCollections: LibraryVariableCollection[] = []
   try {
     libraryCollections =
@@ -54,25 +52,6 @@ async function handleClick() {
     await figma.teamLibrary.getVariablesInLibraryCollectionAsync(
       colorSystemCollection.key
     )
-
-  // Use rule-based validation (deterministic, no hallucination)
-  const result = await runColorLinter(selection, false)
-  
-  // Display the lint results
-  if (result) {
-    if (result.isValid) {
-      notify('✅ All color relationships are valid!')
-    } else {
-      notify(`⚠️ Found ${result.totalIssues} color issues. Check console for details.`)
-      console.log('Lint Results:', result)
-      
-      // Log each issue for debugging
-      result.issues.forEach((issue) => {
-        console.log(`[${issue.severity}] ${issue.nodeName}: ${issue.message}`)
-        console.log(`  Suggestion: ${issue.suggestion}`)
-      })
-    }
-  }
 }
 
 function Widget() {
