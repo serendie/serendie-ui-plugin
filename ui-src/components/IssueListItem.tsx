@@ -1,10 +1,11 @@
 import tokens from '@serendie/design-token'
-import { ColorValidationIssue } from '../../shared-src/models/ColorValidation'
+import { Issue } from '../../shared-src/models/Rules'
 
 const { sd } = tokens
 
 interface IssueListItemProps {
-  issue: ColorValidationIssue
+  issue: Issue
+  withBorder?: boolean
 }
 
 const getSeverityStyles = (severity: string) => {
@@ -30,14 +31,14 @@ const getSeverityStyles = (severity: string) => {
   }
 }
 
-export default function IssueListItem({ issue }: IssueListItemProps) {
+export default function IssueListItem({ issue, withBorder = true }: IssueListItemProps) {
   const severityStyles = getSeverityStyles(issue.severity)
 
   return (
     <div
       style={{
         padding: sd.system.dimension.spacing.small,
-        borderBottom: `1px solid ${sd.system.color.component.outline}`,
+        ...(withBorder && { borderBottom: `1px solid ${sd.system.color.component.outline}` }),
         backgroundColor: sd.system.color.component.surface,
       }}
     >

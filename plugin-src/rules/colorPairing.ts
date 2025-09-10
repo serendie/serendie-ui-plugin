@@ -1,8 +1,4 @@
-import {
-  ColorIssue,
-  ColorValidationIssue,
-  ColorValidationResult,
-} from '../../shared-src/models/ColorValidation'
+import { IssueDetail, Issue, Result } from '../../shared-src/models/Rules'
 
 /**
  * Color contrast validation rules based on Serendie Design System
@@ -54,14 +50,6 @@ const COLOR_RULES: Record<string, string> = {
   onNoticeContainer: 'noticeContainer',
 }
 
-interface ColorPair {
-  nodeId: string
-  nodeName: string
-  nodeType: string
-  textColor: string
-  backgroundColor: string
-}
-
 function extractColorRole(variableName: string): string | null {
   const parts = variableName.split('/')
   const lastPart = parts[parts.length - 1]
@@ -90,25 +78,17 @@ function getColorName(colorPath: string): string {
 }
 
 export function validate(
-  textColorVariable: string,
-  backgroundColorVariable: string
-): ColorIssue | null {
-  // Handle Unknown colors
-  if (
-    textColorVariable === 'Unknown' ||
-    backgroundColorVariable === 'Unknown'
-  ) {
-    return {
-      severity: 'warning',
-      message: 'カラー変数が未設定です',
-      suggestion: 'カラー変数が設定されていないため、検証できません',
-    }
+  textColor: string,
+  backgroundColor: string
+): IssueDetail | null {
+  if (textColor === 'Unknown' || backgroundColor === 'Unknown') {
+    return null
   }
 
-  const textRole = extractColorRole(textColorVariable)
-  const bgRole = extractColorRole(backgroundColorVariable)
-  const textName = getColorName(textColorVariable)
-  const bgName = getColorName(backgroundColorVariable)
+  const textRole = extractColorRole(textColor)
+  const bgRole = extractColorRole(backgroundColor)
+  const textName = getColorName(textColor)
+  const bgName = getColorName(backgroundColor)
 
   if (!textRole || !bgRole) {
     return {
@@ -128,38 +108,38 @@ export function validate(
     return {
       severity: 'error',
       message: 'テキスト色と背景色の組み合わせ',
-      suggestion: `テキスト色を${expectedText}にするか、背景色を${expectedBg}に変更してください`,
+      suggestion: `テキスト色を${expectedText}にするか、背景色を${expectedBg}に変更してください（現在: テキスト=${textName}、背景=${bgName}）`,
     }
   }
 
   return null
 }
 
-export function validateAll(colorPairs: ColorPair[]): ColorValidationResult {
-  const issues: ColorValidationIssue[] = []
+export function validateAll(
+  colorPairs: Array<{
+    nodeId: string
+    nodeName: string
+    nodeType: string
+    textColor: string
+    backgroundColor: string
+  }>
+): Result {
+  const issues: Issue[] = []
 
   for (const pair of colorPairs) {
-    const issue = validate(pair.textColor, pair.backgroundColor)
-    if (issue) {
+    const issueDetail = validate(pair.textColor, pair.backgroundColor)
+    if (issueDetail) {
       issues.push({
         nodeId: pair.nodeId,
         nodeName: pair.nodeName,
         nodeType: pair.nodeType,
-        textColor: pair.textColor,
-        backgroundColor: pair.backgroundColor,
-        ...issue,
+        ...issueDetail,
       })
     }
   }
 
-  const isValid = issues.length === 0
-
   return {
-    isValid,
     totalIssues: issues.length,
     issues,
-    summary: isValid
-      ? `✅ All ${colorPairs.length} text nodes have valid color relationships`
-      : `⚠️ Found ${issues.length} color relationship issues out of ${colorPairs.length} text nodes`,
   }
 }

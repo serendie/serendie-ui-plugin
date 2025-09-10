@@ -1,17 +1,15 @@
 import tokens from '@serendie/design-token'
-import { ColorValidationIssue } from '../../shared-src/models/ColorValidation'
+import { Issue } from '../../shared-src/models/Rules'
 import IssueListItem from './IssueListItem'
 
 const { sd } = tokens
 
 interface IssuesListProps {
-  issues: ColorValidationIssue[]
+  issues: Issue[]
   totalNodes: number
 }
 
 export default function IssuesList({ issues, totalNodes }: IssuesListProps) {
-  if (issues.length === 0) return null
-
   return (
     <div style={{ marginTop: sd.system.dimension.spacing.large }}>
       {/* Header */}
@@ -43,18 +41,24 @@ export default function IssuesList({ issues, totalNodes }: IssuesListProps) {
       </div>
 
       {/* Issues list */}
-      <div
-        style={{
-          border: `1px solid ${sd.system.color.component.outline}`,
-          borderRadius: sd.system.dimension.radius.medium,
-          overflow: 'hidden',
-          backgroundColor: sd.system.color.component.surface,
-        }}
-      >
-        {issues.map((issue, index) => (
-          <IssueListItem key={index} issue={issue} />
-        ))}
-      </div>
+      {issues.length > 0 && (
+        <div
+          style={{
+            border: `1px solid ${sd.system.color.component.outline}`,
+            borderRadius: sd.system.dimension.radius.medium,
+            overflow: 'hidden',
+            backgroundColor: sd.system.color.component.surface,
+          }}
+        >
+          {issues.map((issue, index) => (
+            <IssueListItem 
+              key={index} 
+              issue={issue} 
+              withBorder={index !== issues.length - 1}
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }

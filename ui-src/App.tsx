@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Button, Banner } from '@serendie/ui'
 import tokens from '@serendie/design-token'
-import { ColorValidationResult } from '../shared-src/models/ColorValidation'
+import { Result } from '../shared-src/models/Rules'
 import IssuesList from './components/IssuesList'
 import SuccessBanner from './components/SuccessBanner'
 
@@ -9,14 +9,12 @@ const { sd } = tokens
 
 // Plugin message types
 type PluginMessage =
-  | { type: 'lint-result'; result: ColorValidationResult; totalNodes: number }
+  | { type: 'lint-result'; result: Result; totalNodes: number }
   | { type: 'error'; message: string }
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(false)
-  const [lintResult, setLintResult] = useState<ColorValidationResult | null>(
-    null
-  )
+  const [lintResult, setLintResult] = useState<Result | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [totalNodes, setTotalNodes] = useState(0)
 
@@ -82,7 +80,11 @@ export default function App() {
       {lintResult && (
         <div>
           <IssuesList issues={lintResult.issues} totalNodes={totalNodes} />
-          {lintResult.isValid && <SuccessBanner summary={lintResult.summary} />}
+          {lintResult.totalIssues === 0 && (
+            <SuccessBanner
+              summary={`✅ All ${totalNodes} text nodes have valid color relationships`}
+            />
+          )}
         </div>
       )}
     </div>
