@@ -6,7 +6,7 @@ import { Result, Issue } from '../shared-src/models/Rules'
 
 figma.showUI(__html__, {
   width: 400,
-  height: 565,
+  height: 640,
   title: 'Spread System Color Linter',
 })
 

@@ -70,11 +70,14 @@ export default function IssuesList({
           }}
         >
           <SerendieSymbol
-            name='check-circle'
+            name={issues.length > 0 ? 'alert-circle' : 'check-circle'}
             variant='filled'
-            size={16}
+            size={18}
             style={{
-              color: sd.system.color.impression.positive,
+              color:
+                issues.length > 0
+                  ? sd.system.color.impression.negative
+                  : sd.system.color.impression.positive,
             }}
           />
           <p

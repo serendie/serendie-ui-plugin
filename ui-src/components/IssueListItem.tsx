@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import tokens from '@serendie/design-token'
 import { Issue } from '../../shared-src/models/Rules'
+import { SerendieSymbol, SymbolName } from '@serendie/symbols'
 
 const { sd } = tokens
 
@@ -13,21 +14,18 @@ const getSeverityStyles = (severity: string) => {
   switch (severity) {
     case 'error':
       return {
-        backgroundColor: sd.system.color.impression.negativeContainer,
-        color: sd.system.color.impression.onNegativeContainer,
-        label: 'エラー',
+        color: sd.system.color.impression.negative,
+        name: 'alert-circle' as SymbolName,
       }
     case 'warning':
       return {
-        backgroundColor: sd.system.color.impression.noticeContainer,
-        color: sd.system.color.impression.onNoticeContainer,
-        label: '警告',
+        color: sd.system.color.impression.notice,
+        name: 'alert-triangle' as SymbolName,
       }
     default:
       return {
-        backgroundColor: sd.system.color.component.surface,
-        color: sd.system.color.component.onSurfaceVariant,
-        label: '情報',
+        color: sd.system.color.impression.positive,
+        name: 'check-circle' as SymbolName,
       }
   }
 }
@@ -80,30 +78,13 @@ export default function IssueListItem({
           marginBottom: sd.system.dimension.spacing.extraSmall,
         }}
       >
-        <div
+        <SerendieSymbol
+          name={severityStyles.name}
           style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            minWidth: '60px',
-            ...sd.system.typography.label.small_expanded,
-            padding: `${sd.system.dimension.spacing.extraSmall} 0`,
-            borderRadius: sd.system.dimension.radius.full,
-            background: isHovered
-              ? 'mix(0.5, ' +
-                severityStyles.backgroundColor +
-                ', ' +
-                sd.system.color.interaction.hovered +
-                ')'
-              : severityStyles.backgroundColor,
-            textAlign: 'center',
-            fontWeight: 600,
             color: severityStyles.color,
-            flexShrink: 0,
+            fontSize: '24px',
           }}
-        >
-          {severityStyles.label}
-        </div>
+        />
         <p style={{ color: sd.system.color.component.onSurfaceVariant }}>
           "{issue.nodeName}"
         </p>
