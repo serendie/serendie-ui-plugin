@@ -4,14 +4,12 @@ import { validateAll as validateAssignTextVariable } from './rules/assignTextVar
 import { validateAll as validateAssignFrameVariable } from './rules/assignFrameVariable'
 import { Result, Issue } from '../shared-src/models/Rules'
 
-// Show UI on plugin run
 figma.showUI(__html__, {
   width: 500,
   height: 600,
   title: 'Spread System Color Linter',
 })
 
-// Listen for messages from UI
 figma.ui.onmessage = async msg => {
   if (msg.type === 'run-linter') {
     const selections = figma.currentPage.selection.filter(

@@ -36,7 +36,7 @@ export default function IssuesList({ issues, totalNodes }: IssuesListProps) {
             color: sd.system.color.component.onSurfaceVariant,
           }}
         >
-          {issues.length}件の問題 / {totalNodes}個のテキストノード
+          {issues.length}件 / {totalNodes}件
         </div>
       </div>
 
@@ -51,9 +51,9 @@ export default function IssuesList({ issues, totalNodes }: IssuesListProps) {
           }}
         >
           {issues.map((issue, index) => (
-            <IssueListItem 
-              key={index} 
-              issue={issue} 
+            <IssueListItem
+              key={index}
+              issue={issue}
               withBorder={index !== issues.length - 1}
             />
           ))}
