@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import tokens from '@serendie/design-token'
 import { Issue } from '../../shared-src/models/Rules'
 
@@ -31,7 +32,11 @@ const getSeverityStyles = (severity: string) => {
   }
 }
 
-export default function IssueListItem({ issue, withBorder = true }: IssueListItemProps) {
+export default function IssueListItem({
+  issue,
+  withBorder = true,
+}: IssueListItemProps) {
+  const [isHovered, setIsHovered] = useState(false)
   const severityStyles = getSeverityStyles(issue.severity)
 
   const handleClick = () => {
@@ -52,17 +57,17 @@ export default function IssueListItem({ issue, withBorder = true }: IssueListIte
       onClick={handleClick}
       style={{
         padding: sd.system.dimension.spacing.small,
-        ...(withBorder && { borderBottom: `1px solid ${sd.system.color.component.outline}` }),
-        backgroundColor: sd.system.color.component.surface,
+        ...(withBorder && {
+          borderBottom: `1px solid ${sd.system.color.component.outline}`,
+        }),
+        backgroundColor: isHovered
+          ? sd.system.color.interaction.hovered
+          : sd.system.color.component.surface,
         cursor: 'pointer',
         transition: 'background-color 0.2s',
       }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.backgroundColor = sd.system.color.component.surfaceVariant
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.backgroundColor = sd.system.color.component.surface
-      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <div
         style={{
@@ -99,7 +104,6 @@ export default function IssueListItem({ issue, withBorder = true }: IssueListIte
           style={{
             ...sd.system.typography.body.small_expanded,
             color: sd.system.color.component.onSurface,
-            fontWeight: sd.reference.typography.fontWeight.bold,
             marginBottom: sd.system.dimension.spacing.twoExtraSmall,
           }}
         >
