@@ -54,12 +54,10 @@ function extractColorRole(variableName: string): string | null {
   const parts = variableName.split('/')
   const lastPart = parts[parts.length - 1]
 
-  // Check if this is a known color role
   if (lastPart in COLOR_RULES) {
     return lastPart
   }
 
-  // Try to find color role in the full path
   for (const part of parts) {
     if (part in COLOR_RULES) {
       return part
@@ -91,11 +89,7 @@ export function validate(
   const bgName = getColorName(backgroundColor)
 
   if (!textRole || !bgRole) {
-    return {
-      severity: 'warning',
-      message: 'カラーロールを識別できません',
-      suggestion: `「${textName}」と「${bgName}」の組み合わせは検証できません`,
-    }
+    return null
   }
 
   // Check if the relationship is valid
@@ -107,7 +101,7 @@ export function validate(
   if (!isValidRelationship) {
     return {
       severity: 'error',
-      message: 'テキスト色と背景色の組み合わせ',
+      message: 'テキスト色と背景色の組み合わせが不一致',
       suggestion: `テキスト色を${expectedText}にするか、背景色を${expectedBg}に変更してください（現在: テキスト=${textName}、背景=${bgName}）`,
     }
   }
@@ -139,7 +133,6 @@ export function validateAll(
   }
 
   return {
-    totalIssues: issues.length,
     issues,
   }
 }

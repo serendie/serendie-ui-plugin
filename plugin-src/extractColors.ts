@@ -46,11 +46,12 @@ async function getBackgroundColor(node: SceneNode): Promise<string | null> {
 }
 
 /**
- * Extract colors from text nodes in the selection
+ * Extract colors from all nodes in the selection
  */
 export async function extractNodeColors(node: SceneNode): Promise<ColorInfo[]> {
   const results: ColorInfo[] = []
 
+  // Handle TEXT nodes
   if (node.type === 'TEXT') {
     const textNode = node as TextNode
     let textColor: string | null = null
@@ -83,6 +84,46 @@ export async function extractNodeColors(node: SceneNode): Promise<ColorInfo[]> {
       textColor: textColor || 'Unknown',
       backgroundColor: backgroundColor || 'Unknown',
     })
+  }
+
+  // Handle FRAME, RECTANGLE, COMPONENT, INSTANCE nodes
+  const frameTypes = ['FRAME', 'RECTANGLE', 'COMPONENT', 'INSTANCE']
+  if (frameTypes.includes(node.type)) {
+    let backgroundColor: string | null = null
+    let hasColor = false
+
+    // Check if node has a fill color
+    if ('fills' in node && Array.isArray(node.fills) && node.fills.length > 0) {
+      const fill = node.fills[0]
+      if (fill.type === 'SOLID' && fill.visible !== false) {
+        hasColor = true
+        if ('boundVariables' in fill && fill.boundVariables?.color) {
+          const variableId = fill.boundVariables.color.id
+          const variable = await figma.variables.getVariableByIdAsync(variableId)
+          backgroundColor = getVariableName(variable)
+        }
+      }
+    }
+
+    // Only add to results if the frame has a color
+    if (hasColor) {
+      results.push({
+        nodeId: node.id,
+        nodeName: node.name,
+        nodeType: node.type,
+        textColor: 'None', // Frames don't have text color
+        backgroundColor: backgroundColor || 'Unknown',
+      })
+    } else {
+      // Add with 'None' to indicate no color
+      results.push({
+        nodeId: node.id,
+        nodeName: node.name,
+        nodeType: node.type,
+        textColor: 'None',
+        backgroundColor: 'None',
+      })
+    }
   }
 
   // Recursively check children

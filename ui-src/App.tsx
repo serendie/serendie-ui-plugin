@@ -80,7 +80,7 @@ export default function App() {
       {lintResult && (
         <div>
           <IssuesList issues={lintResult.issues} totalNodes={totalNodes} />
-          {lintResult.totalIssues === 0 && (
+          {lintResult.issues.length === 0 && (
             <SuccessBanner
               summary={`✅ All ${totalNodes} text nodes have valid color relationships`}
             />

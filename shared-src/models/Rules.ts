@@ -15,6 +15,5 @@ export type Issue = {
 } & IssueDetail
 
 export type Result = {
-  totalIssues: number
   issues: Issue[]
 }
