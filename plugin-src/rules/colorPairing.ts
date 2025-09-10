@@ -4,48 +4,47 @@ import { IssueDetail, Issue, Result } from '../../shared-src/models/Rules'
  * Color contrast validation rules based on Serendie Design System
  */
 
-// Mapping of text colors to their valid background colors
-const COLOR_RULES: Record<string, string> = {
-  // Primary colors
+const COLOR_RULES: Record<string, string | string[]> = {
   primary: 'onPrimary',
   onPrimary: 'primary',
   primaryContainer: 'onPrimaryContainer',
   onPrimaryContainer: 'primaryContainer',
-
-  // Secondary colors
   secondary: 'onSecondary',
   onSecondary: 'secondary',
   secondaryContainer: 'onSecondaryContainer',
   onSecondaryContainer: 'secondaryContainer',
-
-  // Tertiary colors
   tertiary: 'onTertiary',
   onTertiary: 'tertiary',
   tertiaryContainer: 'onTertiaryContainer',
   onTertiaryContainer: 'tertiaryContainer',
-
-  // Surface colors
-  surface: 'onSurface',
-  onSurface: 'surface',
-  surfaceVariant: 'onSurfaceVariant',
-  onSurfaceVariant: 'surfaceVariant',
-  surfaceContainerLowest: 'onSurface',
-  surfaceContainerLow: 'onSurface',
-  surfaceContainer: 'onSurface',
-  surfaceContainerHigh: 'onSurface',
-  surfaceContainerHighest: 'onSurface',
-
-  // Error colors
+  surface: ['onSurface', 'onSurfaceVariant'],
+  onSurface: [
+    'surface',
+    'surfaceContainerLowest',
+    'surfaceContainerLow',
+    'surfaceContainer',
+    'surfaceContainerHigh',
+    'surfaceContainerHighest',
+  ],
+  onSurfaceVariant: [
+    'surface',
+    'surfaceContainerLowest',
+    'surfaceContainerLow',
+    'surfaceContainer',
+    'surfaceContainerHigh',
+    'surfaceContainerHighest',
+  ],
+  surfaceContainerLowest: ['onSurface', 'onSurfaceVariant'],
+  surfaceContainerLow: ['onSurface', 'onSurfaceVariant'],
+  surfaceContainer: ['onSurface', 'onSurfaceVariant'],
+  surfaceContainerHigh: ['onSurface', 'onSurfaceVariant'],
+  surfaceContainerHighest: ['onSurface', 'onSurfaceVariant'],
   error: 'onError',
   onError: 'error',
   errorContainer: 'onErrorContainer',
   onErrorContainer: 'errorContainer',
-
-  // Neutral colors
   outline: 'surface',
   outlineVariant: 'surface',
-
-  // Special mappings
   noticeContainer: 'onNoticeContainer',
   onNoticeContainer: 'noticeContainer',
 }
@@ -82,17 +81,39 @@ export function validate(
     return null
   }
 
-  // Check if the relationship is valid
   const expectedBg = COLOR_RULES[textRole]
   const expectedText = COLOR_RULES[bgRole]
+  const isValidPairing = (
+    expected: string | string[] | undefined,
+    actual: string
+  ): boolean => {
+    if (!expected) return false
+    if (typeof expected === 'string') {
+      return actual === expected
+    }
+    return expected.includes(actual)
+  }
 
-  const isValidRelationship = bgRole === expectedBg || textRole === expectedText
-
+  const isValidRelationship =
+    isValidPairing(expectedBg, bgRole) || isValidPairing(expectedText, textRole)
   if (!isValidRelationship) {
+    const formatExpected = (
+      expected: string | string[] | undefined
+    ): string => {
+      if (!expected) return 'Unknown'
+      if (typeof expected === 'string') return expected
+      if (expected.length === 1) return expected[0]
+      if (expected.length === 2) return `${expected[0]}または${expected[1]}`
+      return (
+        expected.slice(0, -1).join('、') +
+        `または${expected[expected.length - 1]}`
+      )
+    }
+
     return {
       severity: 'error',
       message: 'テキスト色または背景色が不適切',
-      suggestion: `テキスト色を${expectedText}にするか、背景色を${expectedBg}に変更してください。`,
+      suggestion: `テキスト色を${formatExpected(expectedText)}にするか、背景色を${formatExpected(expectedBg)}に変更してください。`,
     }
   }
 
@@ -109,7 +130,6 @@ export function validateAll(
   }>
 ): Result {
   const issues: Issue[] = []
-
   for (const pair of colorPairs) {
     const issueDetail = validate(pair.textColor, pair.backgroundColor)
     if (issueDetail) {
