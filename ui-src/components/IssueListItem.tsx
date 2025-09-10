@@ -34,12 +34,34 @@ const getSeverityStyles = (severity: string) => {
 export default function IssueListItem({ issue, withBorder = true }: IssueListItemProps) {
   const severityStyles = getSeverityStyles(issue.severity)
 
+  const handleClick = () => {
+    // Send message to plugin to select and scroll to node
+    parent.postMessage(
+      {
+        pluginMessage: {
+          type: 'select-node',
+          nodeId: issue.nodeId,
+        },
+      },
+      '*'
+    )
+  }
+
   return (
     <div
+      onClick={handleClick}
       style={{
         padding: sd.system.dimension.spacing.small,
         ...(withBorder && { borderBottom: `1px solid ${sd.system.color.component.outline}` }),
         backgroundColor: sd.system.color.component.surface,
+        cursor: 'pointer',
+        transition: 'background-color 0.2s',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.backgroundColor = sd.system.color.component.surfaceVariant
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.backgroundColor = sd.system.color.component.surface
       }}
     >
       <div

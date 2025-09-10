@@ -11,7 +11,16 @@ figma.showUI(__html__, {
 })
 
 figma.ui.onmessage = async msg => {
-  if (msg.type === 'run-linter') {
+  if (msg.type === 'select-node') {
+    // Find and select the node
+    const node = await figma.getNodeByIdAsync(msg.nodeId)
+    if (node && 'type' in node) {
+      // Select the node
+      figma.currentPage.selection = [node as SceneNode]
+      // Scroll to the node
+      figma.viewport.scrollAndZoomIntoView([node as SceneNode])
+    }
+  } else if (msg.type === 'run-linter') {
     const selections = figma.currentPage.selection.filter(
       node => node.type === 'FRAME'
     )
