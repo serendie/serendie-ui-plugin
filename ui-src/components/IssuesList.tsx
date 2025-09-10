@@ -1,6 +1,7 @@
 import tokens from '@serendie/design-token'
 import { Issue } from '../../shared-src/models/Rules'
 import IssueListItem from './IssueListItem'
+import { SerendieSymbol } from '@serendie/symbols'
 
 const { sd } = tokens
 
@@ -17,7 +18,7 @@ export default function IssuesList({ issues, totalNodes }: IssuesListProps) {
         style={{
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between',
+          gap: sd.system.dimension.spacing.medium,
           marginBottom: sd.system.dimension.spacing.medium,
         }}
       >
@@ -32,11 +33,27 @@ export default function IssuesList({ issues, totalNodes }: IssuesListProps) {
         </h3>
         <div
           style={{
-            ...sd.system.typography.body.small_expanded,
-            color: sd.system.color.component.onSurfaceVariant,
+            display: 'flex',
+            alignItems: 'center',
+            gap: sd.system.dimension.spacing.twoExtraSmall,
           }}
         >
-          {issues.length}件 / {totalNodes}件
+          <SerendieSymbol
+            name='check-circle'
+            variant='filled'
+            size={16}
+            style={{
+              color: sd.system.color.impression.positive,
+            }}
+          />
+          <p
+            style={{
+              ...sd.system.typography.body.small_expanded,
+              color: sd.system.color.component.onSurfaceVariant,
+            }}
+          >
+            {totalNodes - issues.length}/{totalNodes}
+          </p>
         </div>
       </div>
 

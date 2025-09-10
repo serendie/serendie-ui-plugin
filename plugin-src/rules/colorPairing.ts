@@ -67,14 +67,6 @@ function extractColorRole(variableName: string): string | null {
   return null
 }
 
-function getColorName(colorPath: string): string {
-  if (colorPath === 'Unknown') {
-    return '不明'
-  }
-  const parts = colorPath.split('/')
-  return parts[parts.length - 1] || colorPath
-}
-
 export function validate(
   textColor: string,
   backgroundColor: string
@@ -85,8 +77,6 @@ export function validate(
 
   const textRole = extractColorRole(textColor)
   const bgRole = extractColorRole(backgroundColor)
-  const textName = getColorName(textColor)
-  const bgName = getColorName(backgroundColor)
 
   if (!textRole || !bgRole) {
     return null
@@ -101,8 +91,8 @@ export function validate(
   if (!isValidRelationship) {
     return {
       severity: 'error',
-      message: 'テキスト色と背景色の組み合わせが不一致',
-      suggestion: `テキスト色を${expectedText}にするか、背景色を${expectedBg}に変更してください（現在: テキスト=${textName}、背景=${bgName}）`,
+      message: 'テキスト色または背景色が不適切',
+      suggestion: `テキスト色を${expectedText}にするか、背景色を${expectedBg}に変更してください。`,
     }
   }
 

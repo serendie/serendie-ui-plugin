@@ -56,7 +56,7 @@ export default function IssueListItem({
     <div
       onClick={handleClick}
       style={{
-        padding: sd.system.dimension.spacing.small,
+        padding: sd.system.dimension.spacing.medium,
         ...(withBorder && {
           borderBottom: `1px solid ${sd.system.color.component.outline}`,
         }),
@@ -74,6 +74,7 @@ export default function IssueListItem({
           ...sd.system.typography.label.small_expanded,
           display: 'flex',
           flexDirection: 'row',
+          alignItems: 'center',
           justifyContent: 'space-between',
           gap: sd.system.dimension.spacing.twoExtraSmall,
           marginBottom: sd.system.dimension.spacing.extraSmall,
@@ -86,9 +87,17 @@ export default function IssueListItem({
             justifyContent: 'center',
             minWidth: '60px',
             ...sd.system.typography.label.small_expanded,
-            padding: `${sd.system.dimension.spacing.twoExtraSmall} 0`,
+            padding: `${sd.system.dimension.spacing.extraSmall} 0`,
             borderRadius: sd.system.dimension.radius.full,
-            backgroundColor: severityStyles.backgroundColor,
+            background: isHovered
+              ? 'mix(0.5, ' +
+                severityStyles.backgroundColor +
+                ', ' +
+                sd.system.color.interaction.hovered +
+                ')'
+              : severityStyles.backgroundColor,
+            textAlign: 'center',
+            fontWeight: 600,
             color: severityStyles.color,
             flexShrink: 0,
           }}
@@ -96,27 +105,28 @@ export default function IssueListItem({
           {severityStyles.label}
         </div>
         <p style={{ color: sd.system.color.component.onSurfaceVariant }}>
-          {issue.nodeType}: "{issue.nodeName}"
+          "{issue.nodeName}"
         </p>
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div
+        <p
           style={{
-            ...sd.system.typography.body.small_expanded,
+            ...sd.system.typography.body.medium_expanded,
             color: sd.system.color.component.onSurface,
             marginBottom: sd.system.dimension.spacing.twoExtraSmall,
           }}
         >
           {issue.message}
-        </div>
-        <div
+        </p>
+        <p
           style={{
             ...sd.system.typography.label.small_expanded,
             color: sd.system.color.component.onSurfaceVariant,
+            marginBottom: sd.system.dimension.spacing.twoExtraSmall,
           }}
         >
           {issue.suggestion}
-        </div>
+        </p>
       </div>
     </div>
   )

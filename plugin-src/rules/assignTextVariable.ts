@@ -8,8 +8,8 @@ export function validate(textColor: string): IssueDetail | null {
   if (textColor === 'Unknown') {
     return {
       severity: 'warning',
-      message: 'テキストのカラー変数が未設定',
-      suggestion: 'テキストにデザインシステムのカラー変数を設定してください',
+      message: 'テキスト色がバリアブル以外',
+      suggestion: '塗りにデザインシステムのバリアブルを設定してください。',
     }
   }
 

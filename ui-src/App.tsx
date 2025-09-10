@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
-import { Button, Banner } from '@serendie/ui'
+import { Button } from '@serendie/ui'
 import tokens from '@serendie/design-token'
 import { Result } from '../shared-src/models/Rules'
 import IssuesList from './components/IssuesList'
-import SuccessBanner from './components/SuccessBanner'
+import Notification from './components/Notification'
 
 const { sd } = tokens
 
@@ -66,23 +66,18 @@ export default function App() {
         }}
         size='medium'
       >
-        {lintResult ? 'やり直す' : '実行'}
+        実行
       </Button>
 
-      {error && (
-        <Banner
-          title='Error'
-          description={error}
-          style={{ marginBottom: sd.system.dimension.spacing.extraLarge }}
-        />
-      )}
+      {error && <Notification summary={error} variant='error' />}
 
       {lintResult && (
         <div>
           <IssuesList issues={lintResult.issues} totalNodes={totalNodes} />
           {lintResult.issues.length === 0 && (
-            <SuccessBanner
-              summary={`✅ All ${totalNodes} text nodes have valid color relationships`}
+            <Notification
+              summary={'すべてのルールを満たしています。'}
+              variant='success'
             />
           )}
         </div>

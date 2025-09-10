@@ -5,8 +5,8 @@ import { validateAll as validateAssignFrameVariable } from './rules/assignFrameV
 import { Result, Issue } from '../shared-src/models/Rules'
 
 figma.showUI(__html__, {
-  width: 500,
-  height: 600,
+  width: 400,
+  height: 565,
   title: 'Spread System Color Linter',
 })
 
@@ -28,7 +28,7 @@ figma.ui.onmessage = async msg => {
     if (selections.length === 0) {
       figma.ui.postMessage({
         type: 'error',
-        message: 'Please select at least one frame',
+        message: 'フレームを選択してください。',
       })
       return
     }

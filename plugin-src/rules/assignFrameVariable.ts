@@ -8,8 +8,8 @@ export function validate(backgroundColor: string): IssueDetail | null {
   if (backgroundColor === 'Unknown') {
     return {
       severity: 'warning',
-      message: '背景のカラー変数が未設定',
-      suggestion: '背景にデザインシステムのカラー変数を設定してください',
+      message: '背景色がバリアブル以外',
+      suggestion: '塗りにデザインシステムのバリアブルを設定してください。',
     }
   }
 
