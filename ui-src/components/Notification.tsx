@@ -5,12 +5,12 @@ const { sd } = tokens
 
 interface NotificationProps {
   summary: string
-  variant?: 'success' | 'info' | 'warning' | 'error'
+  variant?: 'success' | 'info' | 'warning' | 'error' | 'default'
 }
 
 export default function Notification({
   summary,
-  variant = 'info',
+  variant = 'default',
 }: NotificationProps) {
   let color = sd.system.color.component.onSurfaceVariant
   if (variant === 'success') {
@@ -21,9 +21,11 @@ export default function Notification({
     color = sd.system.color.impression.negative
   }
 
-  let iconName: SymbolName = 'information'
+  let iconName: SymbolName | null = null
   if (variant === 'success') {
     iconName = 'check-circle'
+  } else if (variant === 'info') {
+    iconName = 'information'
   } else if (variant === 'warning') {
     iconName = 'alert-triangle'
   } else if (variant === 'error') {
@@ -42,13 +44,15 @@ export default function Notification({
         gap: sd.system.dimension.spacing.medium,
       }}
     >
-      <SerendieSymbol
-        name={iconName}
-        style={{
-          color,
-          fontSize: '24px',
-        }}
-      />
+      {iconName && (
+        <SerendieSymbol
+          name={iconName}
+          style={{
+            color,
+            fontSize: '24px',
+          }}
+        />
+      )}
       <div>
         <p
           style={{

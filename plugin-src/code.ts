@@ -10,8 +10,38 @@ figma.showUI(__html__, {
   title: 'Serendie Design System Linter',
 })
 
+// 選択状態の変更を監視
+figma.on('selectionchange', () => {
+  const selections = figma.currentPage.selection.filter(
+    node =>
+      node.type === 'FRAME' ||
+      node.type === 'COMPONENT' ||
+      node.type === 'INSTANCE'
+  )
+
+  const frameNames = selections.map(node => (node as FrameNode).name)
+
+  figma.ui.postMessage({
+    type: 'selection-changed',
+    frameNames,
+  })
+})
+
 figma.ui.onmessage = async msg => {
-  if (msg.type === 'select-node') {
+  if (msg.type === 'request-selection') {
+    // 初期選択状態のリクエストに応答
+    const selections = figma.currentPage.selection.filter(
+      node =>
+        node.type === 'FRAME' ||
+        node.type === 'COMPONENT' ||
+        node.type === 'INSTANCE'
+    )
+    const frameNames = selections.map(node => (node as FrameNode).name)
+    figma.ui.postMessage({
+      type: 'selection-changed',
+      frameNames,
+    })
+  } else if (msg.type === 'select-node') {
     const node = await figma.getNodeByIdAsync(msg.nodeId)
     if (node && 'type' in node) {
       figma.currentPage.selection = [node as SceneNode]

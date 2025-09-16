@@ -16,6 +16,10 @@ type PluginMessage =
       frameName: string
     }
   | { type: 'error'; message: string }
+  | {
+      type: 'selection-changed'
+      frameNames: string[]
+    }
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(false)
@@ -23,6 +27,7 @@ export default function App() {
   const [error, setError] = useState<string | null>(null)
   const [totalNodes, setTotalNodes] = useState(0)
   const [frameName, setFrameName] = useState<string>('')
+  const [selectedFrameNames, setSelectedFrameNames] = useState<string[]>([])
 
   useEffect(() => {
     window.onmessage = (
@@ -40,8 +45,20 @@ export default function App() {
         setIsLoading(false)
         setError(message.message)
         setLintResult(null)
+      } else if (message.type === 'selection-changed') {
+        setSelectedFrameNames(message.frameNames)
       }
     }
+
+    // UIが準備できたら、初期の選択状態をリクエスト
+    parent.postMessage(
+      {
+        pluginMessage: {
+          type: 'request-selection',
+        },
+      },
+      '*'
+    )
   }, [])
 
   const handleRunLinter = () => {
@@ -62,15 +79,19 @@ export default function App() {
       style={{
         padding: sd.system.dimension.spacing.threeExtraLarge,
         fontFamily: sd.reference.typography.fontFamily.primary,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: sd.system.dimension.spacing.large,
       }}
     >
-      <Notification summary='hoge' variant='info' />
+      <Notification
+        summary={`${selectedFrameNames.length}個のフレームを選択中`}
+      />
       <Button
         onClick={handleRunLinter}
-        disabled={isLoading}
+        disabled={isLoading || selectedFrameNames.length === 0}
         style={{
           width: '100%',
-          marginBottom: sd.system.dimension.spacing.twoExtraLarge,
         }}
         size='medium'
       >

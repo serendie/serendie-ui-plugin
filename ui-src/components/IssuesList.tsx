@@ -17,7 +17,7 @@ export default function IssuesList({
   frameName,
 }: IssuesListProps) {
   return (
-    <div style={{ marginTop: sd.system.dimension.spacing.large }}>
+    <div>
       {frameName && (
         <div
           style={{
