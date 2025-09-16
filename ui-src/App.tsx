@@ -7,13 +7,17 @@ import Notification from './components/Notification'
 
 const { sd } = tokens
 
-// Plugin message types
+type FrameResult = {
+  frameName: string
+  frameId: string
+  result: Result
+  totalNodes: number
+}
+
 type PluginMessage =
   | {
       type: 'lint-result'
-      result: Result
-      totalNodes: number
-      frameName: string
+      frameResults: FrameResult[]
     }
   | { type: 'error'; message: string }
   | {
@@ -23,10 +27,8 @@ type PluginMessage =
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(false)
-  const [lintResult, setLintResult] = useState<Result | null>(null)
+  const [frameResults, setFrameResults] = useState<FrameResult[]>([])
   const [error, setError] = useState<string | null>(null)
-  const [totalNodes, setTotalNodes] = useState(0)
-  const [frameName, setFrameName] = useState<string>('')
   const [selectedFrameNames, setSelectedFrameNames] = useState<string[]>([])
 
   useEffect(() => {
@@ -37,14 +39,12 @@ export default function App() {
 
       if (message.type === 'lint-result') {
         setIsLoading(false)
-        setLintResult(message.result)
-        setTotalNodes(message.totalNodes)
-        setFrameName(message.frameName)
+        setFrameResults(message.frameResults)
         setError(null)
       } else if (message.type === 'error') {
         setIsLoading(false)
         setError(message.message)
-        setLintResult(null)
+        setFrameResults([])
       } else if (message.type === 'selection-changed') {
         setSelectedFrameNames(message.frameNames)
       }
@@ -100,19 +100,28 @@ export default function App() {
 
       {error && <Notification summary={error} variant='error' />}
 
-      {lintResult && (
+      {frameResults.length > 0 && (
         <div>
-          <IssuesList
-            issues={lintResult.issues}
-            totalNodes={totalNodes}
-            frameName={frameName}
-          />
-          {lintResult.issues.length === 0 && (
-            <Notification
-              summary='すべてのルールを満たしています。'
-              variant='success'
-            />
-          )}
+          {frameResults.map(frameResult => (
+            <div
+              key={frameResult.frameId}
+              style={{
+                marginBottom: sd.system.dimension.spacing.twoExtraLarge,
+              }}
+            >
+              <IssuesList
+                issues={frameResult.result.issues}
+                totalNodes={frameResult.totalNodes}
+                frameName={frameResult.frameName}
+              />
+              {frameResult.result.issues.length === 0 && (
+                <Notification
+                  summary={`${frameResult.frameName}: すべてのルールを満たしています。`}
+                  variant='success'
+                />
+              )}
+            </div>
+          ))}
         </div>
       )}
     </div>

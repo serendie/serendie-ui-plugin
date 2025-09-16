@@ -63,27 +63,42 @@ figma.ui.onmessage = async msg => {
       return
     }
 
-    const selection = selections[0] as FrameNode
-
     try {
-      const nodes = await extractNodeColors(selection)
-      const pairingResult = validateColorPairing(nodes)
-      const textColorResult = validateAssignTextVariable(nodes)
-      const frameColorResult = validateAssignFrameVariable(nodes)
-      const allIssues: Issue[] = [
-        ...pairingResult.issues,
-        ...textColorResult.issues,
-        ...frameColorResult.issues,
-      ]
-      const result: Result = {
-        issues: allIssues,
+      // 各フレームの検証結果を格納する配列
+      const frameResults: Array<{
+        frameName: string
+        frameId: string
+        result: Result
+        totalNodes: number
+      }> = []
+
+      // すべての選択フレームを検証
+      for (const selection of selections) {
+        const frame = selection as FrameNode
+        const nodes = await extractNodeColors(frame)
+        const pairingResult = validateColorPairing(nodes)
+        const textColorResult = validateAssignTextVariable(nodes)
+        const frameColorResult = validateAssignFrameVariable(nodes)
+        const allIssues: Issue[] = [
+          ...pairingResult.issues,
+          ...textColorResult.issues,
+          ...frameColorResult.issues,
+        ]
+        const result: Result = {
+          issues: allIssues,
+        }
+
+        frameResults.push({
+          frameName: frame.name,
+          frameId: frame.id,
+          result,
+          totalNodes: nodes.length,
+        })
       }
 
       figma.ui.postMessage({
         type: 'lint-result',
-        result,
-        totalNodes: nodes.length,
-        frameName: selection.name,
+        frameResults,
       })
     } catch (error) {
       console.error('Linting failed:', error)
