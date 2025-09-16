@@ -12,7 +12,7 @@ export default function Notification({
   summary,
   variant = 'info',
 }: NotificationProps) {
-  let color = sd.system.color.impression.tertiary
+  let color = sd.system.color.component.onSurfaceVariant
   if (variant === 'success') {
     color = sd.system.color.impression.positive
   } else if (variant === 'warning') {
@@ -36,7 +36,6 @@ export default function Notification({
         padding: sd.system.dimension.spacing.large,
         borderRadius: sd.system.dimension.radius.medium,
         border: `1px solid ${color}`,
-        // backgroundColor: color,
         marginTop: sd.system.dimension.spacing.medium,
         display: 'flex',
         alignItems: 'center',

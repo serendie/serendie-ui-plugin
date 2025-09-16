@@ -9,7 +9,12 @@ const { sd } = tokens
 
 // Plugin message types
 type PluginMessage =
-  | { type: 'lint-result'; result: Result; totalNodes: number; frameName: string }
+  | {
+      type: 'lint-result'
+      result: Result
+      totalNodes: number
+      frameName: string
+    }
   | { type: 'error'; message: string }
 
 export default function App() {
@@ -59,6 +64,7 @@ export default function App() {
         fontFamily: sd.reference.typography.fontFamily.primary,
       }}
     >
+      <Notification summary='hoge' variant='info' />
       <Button
         onClick={handleRunLinter}
         disabled={isLoading}
@@ -75,10 +81,14 @@ export default function App() {
 
       {lintResult && (
         <div>
-          <IssuesList issues={lintResult.issues} totalNodes={totalNodes} frameName={frameName} />
+          <IssuesList
+            issues={lintResult.issues}
+            totalNodes={totalNodes}
+            frameName={frameName}
+          />
           {lintResult.issues.length === 0 && (
             <Notification
-              summary={'すべてのルールを満たしています。'}
+              summary='すべてのルールを満たしています。'
               variant='success'
             />
           )}
