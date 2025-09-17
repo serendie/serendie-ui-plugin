@@ -1,5 +1,5 @@
 import { IssueDetail, Issue } from '../../shared-src/models/Rules'
-import { MANUAL_VALUE, UNKNOWN_COLOR } from '../utils/extractColors'
+import { MANUAL_VALUE } from '../utils/extractColors'
 
 const COLOR_RULES: Record<string, string | string[]> = {
   primary: 'onPrimary',
