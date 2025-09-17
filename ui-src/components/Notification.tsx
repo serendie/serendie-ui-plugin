@@ -42,6 +42,7 @@ export default function Notification({
         display: 'flex',
         alignItems: 'center',
         gap: sd.system.dimension.spacing.medium,
+        backgroundColor: sd.system.color.component.surface,
       }}
     >
       {iconName && (

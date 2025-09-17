@@ -77,53 +77,75 @@ export default function App() {
   return (
     <div
       style={{
-        padding: sd.system.dimension.spacing.threeExtraLarge,
-        fontFamily: sd.reference.typography.fontFamily.primary,
+        height: '100vh',
         display: 'flex',
         flexDirection: 'column',
-        gap: sd.system.dimension.spacing.large,
+        fontFamily: sd.reference.typography.fontFamily.primary,
       }}
     >
-      <Notification
-        summary={`${selectedFrameNames.length}個のフレームを選択中`}
-      />
-      <Button
-        onClick={handleRunLinter}
-        disabled={isLoading || selectedFrameNames.length === 0}
+      <div
         style={{
-          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: sd.system.dimension.spacing.large,
+          padding: sd.system.dimension.spacing.threeExtraLarge,
+          flexShrink: 0,
         }}
-        size='medium'
       >
-        実行
-      </Button>
+        <Button
+          onClick={handleRunLinter}
+          disabled={
+            isLoading ||
+            selectedFrameNames.length === 0 ||
+            JSON.stringify(selectedFrameNames) ===
+              JSON.stringify(frameResults.map(({ frameName }) => frameName))
+          }
+          style={{
+            width: '100%',
+          }}
+          size='medium'
+        >
+          {selectedFrameNames.length == 0
+            ? '要素を選択してください'
+            : '検証する'}
+        </Button>
+        {error && <Notification summary={error} variant='error' />}
+      </div>
 
-      {error && <Notification summary={error} variant='error' />}
-
-      {frameResults.length > 0 && (
-        <div>
-          {frameResults.map(frameResult => (
-            <div
-              key={frameResult.frameId}
-              style={{
-                marginBottom: sd.system.dimension.spacing.twoExtraLarge,
-              }}
-            >
-              <IssuesList
-                issues={frameResult.result.issues}
-                totalNodes={frameResult.totalNodes}
-                frameName={frameResult.frameName}
-              />
-              {frameResult.result.issues.length === 0 && (
-                <Notification
-                  summary={`${frameResult.frameName}: すべてのルールを満たしています。`}
-                  variant='success'
+      <div
+        style={{
+          flex: 1,
+          overflow: 'auto',
+          padding: sd.system.dimension.spacing.threeExtraLarge,
+          paddingBottom: sd.system.dimension.spacing.threeExtraLarge,
+          backgroundColor: sd.system.color.impression.tertiary,
+        }}
+      >
+        {frameResults.length > 0 && (
+          <div>
+            {frameResults.map(frameResult => (
+              <div
+                key={frameResult.frameId}
+                style={{
+                  marginBottom: sd.system.dimension.spacing.twoExtraLarge,
+                }}
+              >
+                <IssuesList
+                  issues={frameResult.result.issues}
+                  totalNodes={frameResult.totalNodes}
+                  frameName={frameResult.frameName}
                 />
-              )}
-            </div>
-          ))}
-        </div>
-      )}
+                {frameResult.result.issues.length === 0 && (
+                  <Notification
+                    summary={'すべてのルールを満たしています'}
+                    variant='success'
+                  />
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }
