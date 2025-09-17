@@ -1,3 +1,6 @@
+export const LIBRARY_NAME = '🛠️ Serendie UI Kit'
+export const MANUAL_VALUE = 'Manual Value'
+
 export type IssueDetail = {
   severity: 'error' | 'warning' | 'info'
   message: string

@@ -3,13 +3,15 @@ import extractVariableKey from './extractVariableKey'
 describe('extractVariableKey', () => {
   describe('プレフィックス付きの入力', () => {
     it('VariableID:プレフィックス付きでスラッシュ区切りがある場合', () => {
-      const input = 'VariableID:4939614180d38f907204f1cd47dbcf7cec6f8b80/17973:518'
+      const input =
+        'VariableID:4939614180d38f907204f1cd47dbcf7cec6f8b80/17973:518'
       const result = extractVariableKey(input)
       expect(result).toBe('4939614180d38f907204f1cd47dbcf7cec6f8b80')
     })
 
     it('CollectionID:プレフィックス付きでスラッシュ区切りがある場合', () => {
-      const input = 'CollectionID:4939614180d38f907204f1cd47dbcf7cec6f8b80/17973:518'
+      const input =
+        'CollectionID:4939614180d38f907204f1cd47dbcf7cec6f8b80/17973:518'
       const result = extractVariableKey(input)
       expect(result).toBe('4939614180d38f907204f1cd47dbcf7cec6f8b80')
     })
@@ -94,9 +96,12 @@ describe('extractVariableKey', () => {
     })
 
     it('長いキー（64文字）', () => {
-      const input = '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef/path'
+      const input =
+        '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef/path'
       const result = extractVariableKey(input)
-      expect(result).toBe('0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef')
+      expect(result).toBe(
+        '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
+      )
     })
   })
 })

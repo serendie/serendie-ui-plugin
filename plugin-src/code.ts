@@ -1,8 +1,8 @@
-import { extractNodeColors } from './utils/extractColors'
-import { validateAll as validateColorPairing } from './rules/colorPairing'
-import { validateAll as validateAssignTextVariable } from './rules/assignTextVariable'
-import { validateAll as validateAssignFrameVariable } from './rules/assignFrameVariable'
+import extractColorInfo from './utils/extractColorInfo'
 import { Issue } from '../shared-src/models/Rules'
+import validateColorPairing from './validations/validateColorPairing'
+import validateAssignFrameVariable from './validations/validateAssignFrameVariable'
+import validateAssignTextVariable from './validations/validateAssignTextVariable'
 
 figma.showUI(__html__, {
   width: 400,
@@ -10,7 +10,6 @@ figma.showUI(__html__, {
   title: 'Serendie Design System Linter',
 })
 
-// 選択状態の変更を監視
 figma.on('selectionchange', () => {
   const selections = figma.currentPage.selection.filter(
     node =>
@@ -71,10 +70,10 @@ figma.ui.onmessage = async msg => {
         totalNodes: number
       }> = []
       for (const selection of selections) {
-        const nodes = await extractNodeColors(selection)
-        const pairingResult = validateColorPairing(nodes)
-        const textColorResult = validateAssignTextVariable(nodes)
-        const frameColorResult = validateAssignFrameVariable(nodes)
+        const colorInfoList = await extractColorInfo(selection)
+        const pairingResult = validateColorPairing(colorInfoList)
+        const textColorResult = validateAssignTextVariable(colorInfoList)
+        const frameColorResult = validateAssignFrameVariable(colorInfoList)
         const issues: Issue[] = [
           ...pairingResult.issues,
           ...textColorResult.issues,
@@ -85,7 +84,7 @@ figma.ui.onmessage = async msg => {
           name: selection.name,
           id: selection.id,
           issues,
-          totalNodes: nodes.length,
+          totalNodes: colorInfoList.length,
         })
       }
 

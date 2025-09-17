@@ -1,5 +1,4 @@
-import { IssueDetail, Issue } from '../../shared-src/models/Rules'
-import { MANUAL_VALUE } from '../utils/extractColors'
+import { IssueDetail, MANUAL_VALUE } from '../../shared-src/models/Rules'
 
 const COLOR_RULES: Record<string, string | string[]> = {
   primary: 'onPrimary',
@@ -63,7 +62,7 @@ function extractColorRole(variableName: string): string | null {
   return null
 }
 
-export function validate(
+export default function validate(
   textColor: string | null,
   backgroundColor: string | null
 ): IssueDetail | null {
@@ -120,31 +119,4 @@ export function validate(
   }
 
   return null
-}
-
-export function validateAll(
-  colorPairs: Array<{
-    nodeId: string
-    nodeName: string
-    nodeType: string
-    textColor: string
-    backgroundColor: string
-  }>
-): { issues: Issue[] } {
-  const issues: Issue[] = []
-  for (const pair of colorPairs) {
-    const issueDetail = validate(pair.textColor, pair.backgroundColor)
-    if (issueDetail) {
-      issues.push({
-        nodeId: pair.nodeId,
-        nodeName: pair.nodeName,
-        nodeType: pair.nodeType,
-        ...issueDetail,
-      })
-    }
-  }
-
-  return {
-    issues,
-  }
 }

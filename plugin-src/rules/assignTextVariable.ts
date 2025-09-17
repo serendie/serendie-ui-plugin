@@ -1,7 +1,6 @@
-import { IssueDetail, Issue } from '../../shared-src/models/Rules'
-import { MANUAL_VALUE } from '../utils/extractColors'
+import { IssueDetail, MANUAL_VALUE } from '../../shared-src/models/Rules'
 
-export function validate(textColor: string | null): IssueDetail | null {
+export default function validate(textColor: string | null): IssueDetail | null {
   if (textColor === MANUAL_VALUE) {
     return {
       severity: 'warning',
@@ -11,34 +10,4 @@ export function validate(textColor: string | null): IssueDetail | null {
   }
 
   return null
-}
-
-export function validateAll(
-  nodes: Array<{
-    nodeId: string
-    nodeName: string
-    nodeType: string
-    textColor: string
-    backgroundColor: string
-  }>
-): { issues: Issue[] } {
-  const issues: Issue[] = []
-
-  for (const node of nodes) {
-    if (node.nodeType !== 'TEXT') continue
-
-    const issueDetail = validate(node.textColor)
-    if (issueDetail) {
-      issues.push({
-        nodeId: node.nodeId,
-        nodeName: node.nodeName,
-        nodeType: node.nodeType,
-        ...issueDetail,
-      })
-    }
-  }
-
-  return {
-    issues,
-  }
 }
