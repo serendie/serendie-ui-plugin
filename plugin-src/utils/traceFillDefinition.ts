@@ -1,5 +1,6 @@
 import extractVariableKey from './extractVariableKey'
 import { VariableMap } from './getVariableMap'
+import { UNEXPECTED } from '../../shared-src/models/Rules'
 
 export default function traceFillDefinition(
   node: SceneNode,
@@ -11,9 +12,13 @@ export default function traceFillDefinition(
       if ('boundVariables' in fill && fill.boundVariables?.color) {
         const variableId = extractVariableKey(fill.boundVariables.color.id)
         if (variableId) {
-          return variableMap.get(variableId) || null
+          return variableMap.get(variableId) || UNEXPECTED
         }
+      } else {
+        return UNEXPECTED
       }
+    } else if (fill.type !== 'SOLID' && fill.visible !== false) {
+      return UNEXPECTED
     }
   }
   if (
