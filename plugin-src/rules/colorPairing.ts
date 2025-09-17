@@ -1,4 +1,4 @@
-import { IssueDetail, MANUAL_VALUE } from '../../shared-src/models/Rules'
+import { IssueDetail, UNEXPECTED } from '../../shared-src/models/Rules'
 
 const COLOR_RULES: Record<string, string | string[]> = {
   primary: 'onPrimary',
@@ -69,8 +69,8 @@ export default function validate(
   if (
     !textColor ||
     !backgroundColor ||
-    textColor === MANUAL_VALUE ||
-    backgroundColor === MANUAL_VALUE
+    textColor === UNEXPECTED ||
+    backgroundColor === UNEXPECTED
   ) {
     return null
   }

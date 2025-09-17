@@ -1,7 +1,7 @@
 import extractVariableKey from './extractVariableKey'
 import { VariableMap } from './getVariableMap'
 
-export default function traceBackgroundColor(
+export default function traceFillDefinition(
   node: SceneNode,
   variableMap: VariableMap
 ): string | null {
@@ -21,7 +21,7 @@ export default function traceBackgroundColor(
     node.parent.type !== 'PAGE' &&
     node.parent.type !== 'DOCUMENT'
   ) {
-    return traceBackgroundColor(node.parent as SceneNode, variableMap)
+    return traceFillDefinition(node.parent as SceneNode, variableMap)
   }
 
   return null

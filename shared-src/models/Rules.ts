@@ -1,5 +1,5 @@
 export const LIBRARY_NAME = '🛠️ Serendie UI Kit'
-export const MANUAL_VALUE = 'Manual Value'
+export const UNEXPECTED = 'Unexpected'
 
 export type IssueDetail = {
   severity: 'error' | 'warning' | 'info'

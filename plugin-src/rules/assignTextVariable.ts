@@ -1,7 +1,7 @@
-import { IssueDetail, MANUAL_VALUE } from '../../shared-src/models/Rules'
+import { IssueDetail, UNEXPECTED } from '../../shared-src/models/Rules'
 
 export default function validate(textColor: string | null): IssueDetail | null {
-  if (textColor === MANUAL_VALUE) {
+  if (textColor === UNEXPECTED) {
     return {
       severity: 'warning',
       message: 'テキスト色がバリアブル以外',

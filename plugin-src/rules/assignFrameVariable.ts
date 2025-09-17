@@ -1,9 +1,9 @@
-import { IssueDetail, MANUAL_VALUE } from '../../shared-src/models/Rules'
+import { IssueDetail, UNEXPECTED } from '../../shared-src/models/Rules'
 
 export default function validate(
   backgroundColor: string | null
 ): IssueDetail | null {
-  if (backgroundColor === MANUAL_VALUE) {
+  if (backgroundColor === UNEXPECTED) {
     return {
       severity: 'warning',
       message: '背景色がバリアブル以外',

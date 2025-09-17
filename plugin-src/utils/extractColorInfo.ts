@@ -1,7 +1,7 @@
-import { MANUAL_VALUE } from '../../shared-src/models/Rules'
+import { UNEXPECTED } from '../../shared-src/models/Rules'
 import extractVariableKey from './extractVariableKey'
 import getVariableMap from './getVariableMap'
-import traceBackgroundColor from './traceBackgroundColor'
+import traceBackgroundColor from './traceFillDefinition'
 
 export type ColorInfo = {
   nodeId: string
@@ -48,8 +48,8 @@ export default async function extractColorInfo(
       nodeId: node.id,
       nodeName: node.name,
       nodeType: node.type,
-      textColor: textColor || MANUAL_VALUE,
-      backgroundColor: backgroundColor || MANUAL_VALUE,
+      textColor: textColor || UNEXPECTED,
+      backgroundColor: backgroundColor || UNEXPECTED,
     })
   } else if (
     ['FRAME', 'RECTANGLE', 'COMPONENT', 'INSTANCE'].includes(node.type)
@@ -74,7 +74,7 @@ export default async function extractColorInfo(
         nodeName: node.name,
         nodeType: node.type,
         textColor: null,
-        backgroundColor: backgroundColor || MANUAL_VALUE,
+        backgroundColor: backgroundColor || UNEXPECTED,
       })
     } else {
       results.push({
