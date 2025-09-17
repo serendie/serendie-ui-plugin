@@ -1,4 +1,4 @@
-import { IssueDetail, Issue, Result } from '../../shared-src/models/Rules'
+import { IssueDetail, Issue } from '../../shared-src/models/Rules'
 
 /**
  * Color contrast validation rules based on Serendie Design System
@@ -128,7 +128,7 @@ export function validateAll(
     textColor: string
     backgroundColor: string
   }>
-): Result {
+): { issues: Issue[] } {
   const issues: Issue[] = []
   for (const pair of colorPairs) {
     const issueDetail = validate(pair.textColor, pair.backgroundColor)

@@ -1,4 +1,4 @@
-import { IssueDetail, Issue, Result } from '../../shared-src/models/Rules'
+import { IssueDetail, Issue } from '../../shared-src/models/Rules'
 
 /**
  * テキストノードのカラー変数使用を検証
@@ -24,7 +24,7 @@ export function validateAll(
     textColor: string
     backgroundColor: string
   }>
-): Result {
+): { issues: Issue[] } {
   const issues: Issue[] = []
 
   for (const node of nodes) {

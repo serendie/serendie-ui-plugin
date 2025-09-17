@@ -1,4 +1,4 @@
-import { IssueDetail, Issue, Result } from '../../shared-src/models/Rules'
+import { IssueDetail, Issue } from '../../shared-src/models/Rules'
 
 /**
  * フレームノードのカラー変数使用を検証
@@ -24,7 +24,7 @@ export function validateAll(
     textColor: string
     backgroundColor: string
   }>
-): Result {
+): { issues: Issue[] } {
   const issues: Issue[] = []
 
   const frameTypes = ['FRAME', 'RECTANGLE', 'COMPONENT', 'INSTANCE']

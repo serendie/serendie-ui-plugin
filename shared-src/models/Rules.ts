@@ -1,7 +1,3 @@
-/**
- * Color validation models
- */
-
 export type IssueDetail = {
   severity: 'error' | 'warning' | 'info'
   message: string
