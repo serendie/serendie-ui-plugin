@@ -1,4 +1,4 @@
-import { extractNodeColors } from './extractColors'
+import { extractNodeColors } from './utils/extractColors'
 import { validateAll as validateColorPairing } from './rules/colorPairing'
 import { validateAll as validateAssignTextVariable } from './rules/assignTextVariable'
 import { validateAll as validateAssignFrameVariable } from './rules/assignFrameVariable'

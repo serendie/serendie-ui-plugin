@@ -1,11 +1,8 @@
 import { IssueDetail, Issue } from '../../shared-src/models/Rules'
+import { MANUAL_VALUE } from '../utils/extractColors'
 
-/**
- * テキストノードのカラー変数使用を検証
- */
-
-export function validate(textColor: string): IssueDetail | null {
-  if (textColor === 'Unknown') {
+export function validate(textColor: string | null): IssueDetail | null {
+  if (textColor === MANUAL_VALUE) {
     return {
       severity: 'warning',
       message: 'テキスト色がバリアブル以外',
@@ -28,7 +25,6 @@ export function validateAll(
   const issues: Issue[] = []
 
   for (const node of nodes) {
-    // テキストノードのみチェック
     if (node.nodeType !== 'TEXT') continue
 
     const issueDetail = validate(node.textColor)

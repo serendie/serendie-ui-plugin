@@ -1,11 +1,8 @@
 import { IssueDetail, Issue } from '../../shared-src/models/Rules'
+import { MANUAL_VALUE } from '../utils/extractColors'
 
-/**
- * フレームノードのカラー変数使用を検証
- */
-
-export function validate(backgroundColor: string): IssueDetail | null {
-  if (backgroundColor === 'Unknown') {
+export function validate(backgroundColor: string | null): IssueDetail | null {
+  if (backgroundColor === MANUAL_VALUE) {
     return {
       severity: 'warning',
       message: '背景色がバリアブル以外',

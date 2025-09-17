@@ -1,8 +1,5 @@
 import { IssueDetail, Issue } from '../../shared-src/models/Rules'
-
-/**
- * Color contrast validation rules based on Serendie Design System
- */
+import { MANUAL_VALUE, UNKNOWN_COLOR } from '../utils/extractColors'
 
 const COLOR_RULES: Record<string, string | string[]> = {
   primary: 'onPrimary',
@@ -67,10 +64,15 @@ function extractColorRole(variableName: string): string | null {
 }
 
 export function validate(
-  textColor: string,
-  backgroundColor: string
+  textColor: string | null,
+  backgroundColor: string | null
 ): IssueDetail | null {
-  if (textColor === 'Unknown' || backgroundColor === 'Unknown') {
+  if (
+    !textColor ||
+    !backgroundColor ||
+    textColor === MANUAL_VALUE ||
+    backgroundColor === MANUAL_VALUE
+  ) {
     return null
   }
 
