@@ -2,7 +2,7 @@ import { extractNodeColors } from './extractColors'
 import { validateAll as validateColorPairing } from './rules/colorPairing'
 import { validateAll as validateAssignTextVariable } from './rules/assignTextVariable'
 import { validateAll as validateAssignFrameVariable } from './rules/assignFrameVariable'
-import { Result, Issue } from '../shared-src/models/Rules'
+import { Issue } from '../shared-src/models/Rules'
 
 figma.showUI(__html__, {
   width: 400,
@@ -19,11 +19,11 @@ figma.on('selectionchange', () => {
       node.type === 'INSTANCE'
   )
 
-  const frameNames = selections.map(node => (node as FrameNode).name)
+  const selectionNames = selections.map(node => (node as FrameNode).name)
 
   figma.ui.postMessage({
     type: 'selection-changed',
-    frameNames,
+    selectionNames,
   })
 })
 
@@ -36,10 +36,10 @@ figma.ui.onmessage = async msg => {
         node.type === 'COMPONENT' ||
         node.type === 'INSTANCE'
     )
-    const frameNames = selections.map(node => (node as FrameNode).name)
+    const selectionNames = selections.map(node => (node as FrameNode).name)
     figma.ui.postMessage({
       type: 'selection-changed',
-      frameNames,
+      selectionNames,
     })
   } else if (msg.type === 'select-node') {
     const node = await figma.getNodeByIdAsync(msg.nodeId)
@@ -64,41 +64,34 @@ figma.ui.onmessage = async msg => {
     }
 
     try {
-      // 各フレームの検証結果を格納する配列
-      const frameResults: Array<{
-        frameName: string
-        frameId: string
-        result: Result
+      const results: Array<{
+        name: string
+        id: string
+        issues: Issue[]
         totalNodes: number
       }> = []
-
-      // すべての選択フレームを検証
       for (const selection of selections) {
-        const frame = selection as FrameNode
-        const nodes = await extractNodeColors(frame)
+        const nodes = await extractNodeColors(selection)
         const pairingResult = validateColorPairing(nodes)
         const textColorResult = validateAssignTextVariable(nodes)
         const frameColorResult = validateAssignFrameVariable(nodes)
-        const allIssues: Issue[] = [
+        const issues: Issue[] = [
           ...pairingResult.issues,
           ...textColorResult.issues,
           ...frameColorResult.issues,
         ]
-        const result: Result = {
-          issues: allIssues,
-        }
 
-        frameResults.push({
-          frameName: frame.name,
-          frameId: frame.id,
-          result,
+        results.push({
+          name: selection.name,
+          id: selection.id,
+          issues,
           totalNodes: nodes.length,
         })
       }
 
       figma.ui.postMessage({
         type: 'lint-result',
-        frameResults,
+        results,
       })
     } catch (error) {
       console.error('Linting failed:', error)

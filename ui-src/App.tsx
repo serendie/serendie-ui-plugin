@@ -1,35 +1,35 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@serendie/ui'
 import tokens from '@serendie/design-token'
-import { Result } from '../shared-src/models/Rules'
 import IssuesList from './components/IssuesList'
 import Notification from './components/Notification'
+import { Issue } from '../shared-src/models/Rules'
 
 const { sd } = tokens
 
-type FrameResult = {
-  frameName: string
-  frameId: string
-  result: Result
+type Result = {
+  name: string
+  id: string
+  issues: Issue[]
   totalNodes: number
 }
 
 type PluginMessage =
   | {
       type: 'lint-result'
-      frameResults: FrameResult[]
+      results: Result[]
     }
   | { type: 'error'; message: string }
   | {
       type: 'selection-changed'
-      frameNames: string[]
+      selectionNames: string[]
     }
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(false)
-  const [frameResults, setFrameResults] = useState<FrameResult[]>([])
+  const [results, setResults] = useState<Result[]>([])
   const [error, setError] = useState<string | null>(null)
-  const [selectedFrameNames, setSelectedFrameNames] = useState<string[]>([])
+  const [selections, setSelections] = useState<string[]>([])
 
   useEffect(() => {
     window.onmessage = (
@@ -39,14 +39,14 @@ export default function App() {
 
       if (message.type === 'lint-result') {
         setIsLoading(false)
-        setFrameResults(message.frameResults)
+        setResults(message.results)
         setError(null)
       } else if (message.type === 'error') {
         setIsLoading(false)
         setError(message.message)
-        setFrameResults([])
+        setResults([])
       } else if (message.type === 'selection-changed') {
-        setSelectedFrameNames(message.frameNames)
+        setSelections(message.selectionNames)
       }
     }
 
@@ -96,18 +96,16 @@ export default function App() {
           onClick={handleRunLinter}
           disabled={
             isLoading ||
-            selectedFrameNames.length === 0 ||
-            JSON.stringify(selectedFrameNames) ===
-              JSON.stringify(frameResults.map(({ frameName }) => frameName))
+            selections.length === 0 ||
+            JSON.stringify(selections) ===
+              JSON.stringify(results.map(({ name }) => name))
           }
           style={{
             width: '100%',
           }}
           size='medium'
         >
-          {selectedFrameNames.length == 0
-            ? '要素を選択してください'
-            : '検証する'}
+          {selections.length == 0 ? '要素を選択してください' : '検証する'}
         </Button>
         {error && <Notification summary={error} variant='error' />}
       </div>
@@ -121,21 +119,21 @@ export default function App() {
           backgroundColor: sd.system.color.impression.tertiary,
         }}
       >
-        {frameResults.length > 0 && (
+        {results.length > 0 && (
           <div>
-            {frameResults.map(frameResult => (
+            {results.map(result => (
               <div
-                key={frameResult.frameId}
+                key={result.id}
                 style={{
                   marginBottom: sd.system.dimension.spacing.twoExtraLarge,
                 }}
               >
                 <IssuesList
-                  issues={frameResult.result.issues}
-                  totalNodes={frameResult.totalNodes}
-                  frameName={frameResult.frameName}
+                  issues={result.issues}
+                  totalNodes={result.totalNodes}
+                  frameName={result.name}
                 />
-                {frameResult.result.issues.length === 0 && (
+                {result.issues.length === 0 && (
                   <Notification
                     summary={'すべてのルールを満たしています'}
                     variant='success'

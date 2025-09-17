@@ -13,7 +13,3 @@ export type Issue = {
   nodeName: string
   nodeType: string
 } & IssueDetail
-
-export type Result = {
-  issues: Issue[]
-}
