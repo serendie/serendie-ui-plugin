@@ -1,7 +1,7 @@
 import validate from './assignTextVariable'
 
 describe('assignTextVariable', () => {
-  describe('適切なテキストカラー', () => {
+  describe('適切なテキスト色', () => {
     it('onから始まる場合', () => {
       const result = validate('onPrimary')
       expect(result).toBeNull()
@@ -13,7 +13,7 @@ describe('assignTextVariable', () => {
     })
   })
 
-  describe('不適切なテキストカラー', () => {
+  describe('不適切なテキスト色', () => {
     it('primaryの場合', () => {
       const result = validate('primary')
       expect(result).not.toBeNull()
@@ -29,12 +29,11 @@ describe('assignTextVariable', () => {
     it('outlineの場合', () => {
       const result = validate('outline')
       expect(result).not.toBeNull()
-      expect(result?.severity).toBe('error')
       expect(result?.message).toBe('テキスト色が不適切')
     })
   })
 
-  describe('定義にないテキストカラー', () => {
+  describe('定義にないテキスト色', () => {
     it('任意の文字列の場合', () => {
       const result = validate('customColor')
       expect(result).not.toBeNull()

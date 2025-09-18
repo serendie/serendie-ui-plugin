@@ -15,12 +15,12 @@ export default function validate(textColor: string | null): IssueDetail | null {
     }
   }
 
-  if (!textRole.match(/^on/)?.[0] && !textRole.match(/^\w+On[A-Z]/)) {
+  if (!textRole.match(/^on/) && !textRole.match(/^\w+On[A-Z]/)) {
     return {
       severity: 'error',
       message: 'テキスト色が不適切',
       suggestion:
-        '塗りにはonから始まるデザインシステムのバリアブルを設定してください。',
+        '塗りには"on"という名前が含まれるデザインシステムのバリアブルを設定してください。',
     }
   }
 
