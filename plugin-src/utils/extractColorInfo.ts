@@ -16,7 +16,7 @@ export default async function extractColorInfo(
   node: SceneNode
 ): Promise<ColorInfo[]> {
   const variableMap = await getVariableMap()
-  if (variableMap.size === 0 && !traceVisibility(node)) {
+  if (variableMap.size === 0 || !traceVisibility(node)) {
     return []
   }
 
