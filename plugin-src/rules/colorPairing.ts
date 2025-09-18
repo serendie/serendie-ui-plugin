@@ -1,6 +1,6 @@
 import { IssueDetail, UNEXPECTED } from '../../shared-src/models/Rules'
 
-const COLOR_RULES: Record<string, string | string[]> = {
+const COLOR_PAIRS: Record<string, string | string[]> = {
   primary: 'onPrimary',
   onPrimary: 'primary',
   primaryContainer: 'onPrimaryContainer',
@@ -39,8 +39,6 @@ const COLOR_RULES: Record<string, string | string[]> = {
   onError: 'error',
   errorContainer: 'onErrorContainer',
   onErrorContainer: 'errorContainer',
-  outline: 'surface',
-  outlineVariant: 'surface',
   noticeContainer: 'onNoticeContainer',
   onNoticeContainer: 'noticeContainer',
 }
@@ -48,18 +46,19 @@ const COLOR_RULES: Record<string, string | string[]> = {
 function extractColorRole(variableName: string): string | null {
   const parts = variableName.split('/')
   const lastPart = parts[parts.length - 1]
-
-  if (lastPart in COLOR_RULES) {
+  if (lastPart in COLOR_PAIRS) {
     return lastPart
   }
 
-  for (const part of parts) {
-    if (part in COLOR_RULES) {
-      return part
-    }
-  }
-
   return null
+}
+
+function formatRoles(roles: string | string[] | undefined): string {
+  if (!roles) return UNEXPECTED
+  if (typeof roles === 'string') return roles
+  if (roles.length === 1) return roles[0]
+  if (roles.length === 2) return `${roles[0]}または${roles[1]}`
+  return roles.slice(0, -1).join('、') + `または${roles[roles.length - 1]}`
 }
 
 export default function validate(
@@ -82,8 +81,6 @@ export default function validate(
     return null
   }
 
-  const expectedBg = COLOR_RULES[textRole]
-  const expectedText = COLOR_RULES[bgRole]
   const isValidPairing = (
     expected: string | string[] | undefined,
     actual: string
@@ -96,25 +93,13 @@ export default function validate(
   }
 
   const isValidRelationship =
-    isValidPairing(expectedBg, bgRole) || isValidPairing(expectedText, textRole)
+    isValidPairing(COLOR_PAIRS[textRole], bgRole) ||
+    isValidPairing(COLOR_PAIRS[bgRole], textRole)
   if (!isValidRelationship) {
-    const formatExpected = (
-      expected: string | string[] | undefined
-    ): string => {
-      if (!expected) return 'Unknown'
-      if (typeof expected === 'string') return expected
-      if (expected.length === 1) return expected[0]
-      if (expected.length === 2) return `${expected[0]}または${expected[1]}`
-      return (
-        expected.slice(0, -1).join('、') +
-        `または${expected[expected.length - 1]}`
-      )
-    }
-
     return {
       severity: 'error',
       message: 'テキスト色または背景色が不適切',
-      suggestion: `テキスト色を${formatExpected(expectedText)}にするか、背景色を${formatExpected(expectedBg)}に変更してください。`,
+      suggestion: `テキスト色を${formatRoles(COLOR_PAIRS[bgRole])}に変更、または背景色を${formatRoles(COLOR_PAIRS[textRole])}に変更してください。`,
     }
   }
 
