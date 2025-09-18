@@ -29,7 +29,12 @@ export default function validate(
   const textRole = extractColorRole(textColor)
   const bgRole = extractColorRole(backgroundColor)
 
-  if (!textRole || !bgRole) {
+  if (
+    !textRole ||
+    !bgRole ||
+    !(textRole in COLOR_PAIRS) ||
+    !(bgRole in COLOR_PAIRS)
+  ) {
     return null
   }
 
