@@ -1,4 +1,4 @@
-import extractVariableKey from '../core/extractVariableKey'
+import extractVariableKey from './extractVariableKey'
 import { VariableMap } from './getVariableMap'
 import { UNEXPECTED } from '../../shared-src/models/Rules'
 

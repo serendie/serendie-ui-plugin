@@ -1,9 +1,9 @@
 import traceFillDefinition from './traceFillDefinition'
 import { VariableMap } from './getVariableMap'
-import extractVariableKey from '../core/extractVariableKey'
+import extractVariableKey from './extractVariableKey'
 import { UNEXPECTED } from '../../shared-src/models/Rules'
 
-jest.mock('../core/extractVariableKey')
+jest.mock('./extractVariableKey')
 const mockExtractVariableKey = extractVariableKey as jest.MockedFunction<
   typeof extractVariableKey
 >
