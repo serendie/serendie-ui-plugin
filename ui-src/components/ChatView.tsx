@@ -81,7 +81,6 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
       <div
         style={{
           padding: sd.system.dimension.spacing.large,
-          borderTop: `1px solid ${sd.system.color.component.outline}`,
           display: 'flex',
           gap: sd.system.dimension.spacing.medium,
           alignItems: 'center',

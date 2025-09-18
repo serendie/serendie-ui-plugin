@@ -117,7 +117,7 @@ export default function App() {
             display: 'flex',
             flexDirection: 'column',
             gap: sd.system.dimension.spacing.large,
-            padding: sd.system.dimension.spacing.threeExtraLarge,
+            padding: sd.system.dimension.spacing.extraLarge,
             flexShrink: 0,
           }}
         >

@@ -11,12 +11,7 @@ figma.showUI(__html__, {
 })
 
 figma.on('selectionchange', () => {
-  const selections = figma.currentPage.selection.filter(
-    node =>
-      node.type === 'FRAME' ||
-      node.type === 'COMPONENT' ||
-      node.type === 'INSTANCE'
-  )
+  const selections = figma.currentPage.selection
   figma.ui.postMessage({
     type: 'selection-changed',
     selectionIds: selections.map(node => (node as FrameNode).id),
@@ -25,13 +20,7 @@ figma.on('selectionchange', () => {
 
 figma.ui.onmessage = async msg => {
   if (msg.type === 'request-selection') {
-    // 初期選択状態のリクエストに応答
-    const selections = figma.currentPage.selection.filter(
-      node =>
-        node.type === 'FRAME' ||
-        node.type === 'COMPONENT' ||
-        node.type === 'INSTANCE'
-    )
+    const selections = figma.currentPage.selection
     figma.ui.postMessage({
       type: 'selection-changed',
       selectionIds: selections.map(node => (node as FrameNode).id),
@@ -43,13 +32,7 @@ figma.ui.onmessage = async msg => {
       figma.viewport.scrollAndZoomIntoView([node as SceneNode])
     }
   } else if (msg.type === 'run-linter') {
-    const selections = figma.currentPage.selection.filter(
-      node =>
-        node.type === 'FRAME' ||
-        node.type === 'COMPONENT' ||
-        node.type === 'INSTANCE'
-    )
-
+    const selections = figma.currentPage.selection
     if (selections.length === 0) {
       figma.ui.postMessage({
         type: 'error',
