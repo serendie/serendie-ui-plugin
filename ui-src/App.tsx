@@ -33,6 +33,7 @@ export default function App() {
   const [results, setResults] = useState<Result[]>([])
   const [error, setError] = useState<string | null>(null)
   const [selections, setSelections] = useState<string[]>([])
+  const [selectionChanged, setSelectionChanged] = useState(true)
   const [currentView, setCurrentView] = useState<'main' | 'chat'>('main')
   const [selectedResult, setSelectedResult] = useState<Result | null>(null)
 
@@ -52,6 +53,7 @@ export default function App() {
         setResults([])
       } else if (message.type === 'selection-changed') {
         setSelections(message.selectionIds)
+        setSelectionChanged(true)
       }
     }
     parent.postMessage(
@@ -67,6 +69,7 @@ export default function App() {
   const handleRunLinter = () => {
     setIsLoading(true)
     setError(null)
+    setSelectionChanged(false)
     parent.postMessage(
       {
         pluginMessage: {
@@ -120,12 +123,7 @@ export default function App() {
         >
           <Button
             onClick={handleRunLinter}
-            disabled={
-              isLoading ||
-              selections.length === 0 ||
-              JSON.stringify(selections) ===
-                JSON.stringify(results.map(({ id }) => id))
-            }
+            disabled={isLoading || selections.length === 0 || !selectionChanged}
             style={{
               width: '100%',
             }}
