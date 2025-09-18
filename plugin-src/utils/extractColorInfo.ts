@@ -2,6 +2,7 @@ import { UNEXPECTED } from '../../shared-src/models/Rules'
 import extractVariableKey from '../core/extractVariableKey'
 import getVariableMap from './getVariableMap'
 import traceBackgroundColor from './traceFillDefinition'
+import traceVisibility from './traceVisibility'
 
 export type ColorInfo = {
   nodeId: string
@@ -15,7 +16,7 @@ export default async function extractColorInfo(
   node: SceneNode
 ): Promise<ColorInfo[]> {
   const variableMap = await getVariableMap()
-  if (variableMap.size === 0) {
+  if (variableMap.size === 0 && !traceVisibility(node)) {
     return []
   }
 
