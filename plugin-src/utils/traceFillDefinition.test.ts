@@ -21,7 +21,7 @@ describe('traceFillDefinition', () => {
     ])
   })
 
-  describe('ノード自身の背景色を取得', () => {
+  describe('自身から取得', () => {
     it('塗りつぶしの変数がマッピングされている場合', () => {
       const node: Partial<FrameNode> = {
         type: 'FRAME',
@@ -135,7 +135,7 @@ describe('traceFillDefinition', () => {
     })
   })
 
-  describe('親ノードから背景色を継承', () => {
+  describe('親から継承', () => {
     it('親ノードに背景色がある場合', () => {
       const parentNode: Partial<FrameNode> = {
         type: 'FRAME',
@@ -161,7 +161,7 @@ describe('traceFillDefinition', () => {
       expect(result).toBe('surface')
     })
 
-    it('複数階層の親を辿って背景色を取得', () => {
+    it('親の親に背景色がある場合', () => {
       const grandparentNode: Partial<FrameNode> = {
         type: 'FRAME',
         fills: [
@@ -191,7 +191,9 @@ describe('traceFillDefinition', () => {
       const result = traceFillDefinition(node as FrameNode, variableMap)
       expect(result).toBe('secondary')
     })
+  })
 
+  describe('探索の終了', () => {
     it('親ノードがPAGEの場合は探索を停止', () => {
       const node: Partial<FrameNode> = {
         type: 'FRAME',
@@ -228,7 +230,7 @@ describe('traceFillDefinition', () => {
     })
   })
 
-  describe('優先順位のテスト', () => {
+  describe('深い階層側を優先', () => {
     it('ノード自身に背景色がある場合は親よりも優先される', () => {
       const parentNode: Partial<FrameNode> = {
         type: 'FRAME',
@@ -294,21 +296,21 @@ describe('traceFillDefinition', () => {
         fills: [
           {
             type: 'SOLID',
-            visible: false, // 最初の要素が非表示
+            visible: false,
             boundVariables: {
               color: { id: 'variable123' },
             },
           } as SolidPaint,
           {
             type: 'SOLID',
-            visible: true, // 2番目の要素が表示
+            visible: true,
             boundVariables: {
               color: { id: 'variable456' },
             },
           } as SolidPaint,
           {
             type: 'SOLID',
-            visible: false, // 3番目の要素も非表示
+            visible: false,
             boundVariables: {
               color: { id: 'variable789' },
             },
@@ -316,10 +318,8 @@ describe('traceFillDefinition', () => {
         ],
         parent: null,
       }
-
-      // 最初の要素が非表示なので、nullが返されるはず（現在の実装では最初の要素のみチェック）
       const result = traceFillDefinition(node as FrameNode, variableMap)
-      expect(result).toBeNull()
+      expect(result).toBe('secondary')
     })
 
     it('複数の塗りつぶしがあり全て非表示の場合', () => {
