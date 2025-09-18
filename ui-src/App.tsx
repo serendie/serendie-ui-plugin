@@ -25,7 +25,7 @@ type PluginMessage =
   | { type: 'error'; message: string }
   | {
       type: 'selection-changed'
-      selectionNames: string[]
+      selectionIds: string[]
     }
 
 export default function App() {
@@ -51,7 +51,7 @@ export default function App() {
         setError(message.message)
         setResults([])
       } else if (message.type === 'selection-changed') {
-        setSelections(message.selectionNames)
+        setSelections(message.selectionIds)
       }
     }
     parent.postMessage(
@@ -124,7 +124,7 @@ export default function App() {
               isLoading ||
               selections.length === 0 ||
               JSON.stringify(selections) ===
-                JSON.stringify(results.map(({ name }) => name))
+                JSON.stringify(results.map(({ id }) => id))
             }
             style={{
               width: '100%',

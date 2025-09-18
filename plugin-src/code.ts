@@ -17,12 +17,9 @@ figma.on('selectionchange', () => {
       node.type === 'COMPONENT' ||
       node.type === 'INSTANCE'
   )
-
-  const selectionNames = selections.map(node => (node as FrameNode).name)
-
   figma.ui.postMessage({
     type: 'selection-changed',
-    selectionNames,
+    selectionIds: selections.map(node => (node as FrameNode).id),
   })
 })
 
@@ -35,10 +32,9 @@ figma.ui.onmessage = async msg => {
         node.type === 'COMPONENT' ||
         node.type === 'INSTANCE'
     )
-    const selectionNames = selections.map(node => (node as FrameNode).name)
     figma.ui.postMessage({
       type: 'selection-changed',
-      selectionNames,
+      selectionIds: selections.map(node => (node as FrameNode).id),
     })
   } else if (msg.type === 'select-node') {
     const node = await figma.getNodeByIdAsync(msg.nodeId)
@@ -93,11 +89,12 @@ figma.ui.onmessage = async msg => {
         results,
       })
     } catch (error) {
-      console.error('Linting failed:', error)
       figma.ui.postMessage({
         type: 'error',
         message:
-          error instanceof Error ? error.message : 'Unknown error occurred',
+          error instanceof Error
+            ? error.message
+            : '未知のエラーが発生しました。',
       })
     }
   } else if (msg.type === 'close') {
