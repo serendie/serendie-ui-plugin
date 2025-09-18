@@ -32,7 +32,7 @@ describe('assignFrameVariable', () => {
     })
   })
 
-  describe('定義にない背景色', () => {
+  describe('カラーロールがない背景色', () => {
     it('リファレンストークンの場合', () => {
       const result = validate('sd/reference/color/scale/gray/500')
       expect(result).toBeNull()
