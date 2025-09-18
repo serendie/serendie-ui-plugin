@@ -49,6 +49,7 @@ export const COLOR_PAIRS: Record<string, string | string[]> = {
     'surfaceContainerHighest',
   ],
   inverseSurface: 'inverseOnSurface',
+  inverseOnSurface: 'inverseSurface',
   surfaceContainerLowest: ['onSurface', 'onSurfaceVariant'],
   surfaceContainerLow: ['onSurface', 'onSurfaceVariant'],
   surfaceContainer: ['onSurface', 'onSurfaceVariant'],
