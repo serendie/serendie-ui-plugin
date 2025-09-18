@@ -7,7 +7,7 @@ import validateAssignTextVariable from './utils/validateAssignTextVariable'
 figma.showUI(__html__, {
   width: 400,
   height: 640,
-  title: 'Serendie Design System Linter',
+  title: 'Serendie Design Linter',
 })
 
 figma.on('selectionchange', () => {

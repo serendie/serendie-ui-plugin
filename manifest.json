@@ -1,5 +1,5 @@
 {
-  "name": "spread-system-linter",
+  "name": "serendie-design-linter",
   "id": "1543215491573707626",
   "api": "1.0.0",
   "main": "dist/plugin.js",

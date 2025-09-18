@@ -1,7 +1,7 @@
 {
-  "name": "spread-system-widget",
+  "name": "serendie-design-linter",
   "version": "1.0.0",
-  "description": "Your Figma widget",
+  "description": "A Figma plugin to lint Serendie Design System",
   "scripts": {
     "build:fetch": "node scripts/fetch-documents.js",
     "build:plugin": "esbuild plugin-src/code.ts --bundle --outfile=dist/plugin.js --target=es2017 --format=iife --external:figma",
