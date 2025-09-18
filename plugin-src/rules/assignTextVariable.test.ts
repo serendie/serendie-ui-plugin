@@ -34,6 +34,11 @@ describe('assignTextVariable', () => {
   })
 
   describe('定義にないテキスト色', () => {
+    it('リファレンストークンの場合', () => {
+      const result = validate('sd/reference/color/scale/gray/500')
+      expect(result).toBeNull()
+    })
+
     it('任意の文字列の場合', () => {
       const result = validate('customColor')
       expect(result).not.toBeNull()

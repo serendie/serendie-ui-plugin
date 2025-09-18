@@ -4,7 +4,7 @@ import extractColorRole from '../core/extractColorRole'
 export default function validate(
   backgroundColor: string | null
 ): IssueDetail | null {
-  if (!backgroundColor) {
+  if (!backgroundColor || backgroundColor.match(/^sd\/reference/)) {
     return null
   }
 

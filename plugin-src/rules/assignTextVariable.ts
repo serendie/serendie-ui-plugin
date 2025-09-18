@@ -2,7 +2,7 @@ import { IssueDetail } from '../../shared-src/models/Rules'
 import extractColorRole from '../core/extractColorRole'
 
 export default function validate(textColor: string | null): IssueDetail | null {
-  if (!textColor) {
+  if (!textColor || textColor.match(/^sd\/reference/)) {
     return null
   }
 
