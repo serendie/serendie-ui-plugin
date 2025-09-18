@@ -1,57 +1,9 @@
-import { IssueDetail, UNEXPECTED } from '../../shared-src/models/Rules'
-
-const COLOR_PAIRS: Record<string, string | string[]> = {
-  primary: 'onPrimary',
-  onPrimary: 'primary',
-  primaryContainer: 'onPrimaryContainer',
-  onPrimaryContainer: 'primaryContainer',
-  secondary: 'onSecondary',
-  onSecondary: 'secondary',
-  secondaryContainer: 'onSecondaryContainer',
-  onSecondaryContainer: 'secondaryContainer',
-  tertiary: 'onTertiary',
-  onTertiary: 'tertiary',
-  tertiaryContainer: 'onTertiaryContainer',
-  onTertiaryContainer: 'tertiaryContainer',
-  surface: ['onSurface', 'onSurfaceVariant'],
-  onSurface: [
-    'surface',
-    'surfaceContainerLowest',
-    'surfaceContainerLow',
-    'surfaceContainer',
-    'surfaceContainerHigh',
-    'surfaceContainerHighest',
-  ],
-  onSurfaceVariant: [
-    'surface',
-    'surfaceContainerLowest',
-    'surfaceContainerLow',
-    'surfaceContainer',
-    'surfaceContainerHigh',
-    'surfaceContainerHighest',
-  ],
-  surfaceContainerLowest: ['onSurface', 'onSurfaceVariant'],
-  surfaceContainerLow: ['onSurface', 'onSurfaceVariant'],
-  surfaceContainer: ['onSurface', 'onSurfaceVariant'],
-  surfaceContainerHigh: ['onSurface', 'onSurfaceVariant'],
-  surfaceContainerHighest: ['onSurface', 'onSurfaceVariant'],
-  error: 'onError',
-  onError: 'error',
-  errorContainer: 'onErrorContainer',
-  onErrorContainer: 'errorContainer',
-  noticeContainer: 'onNoticeContainer',
-  onNoticeContainer: 'noticeContainer',
-}
-
-function extractColorRole(variableName: string): string | null {
-  const parts = variableName.split('/')
-  const lastPart = parts[parts.length - 1]
-  if (lastPart in COLOR_PAIRS) {
-    return lastPart
-  }
-
-  return null
-}
+import {
+  COLOR_PAIRS,
+  IssueDetail,
+  UNEXPECTED,
+} from '../../shared-src/models/Rules'
+import extractColorRole from '../utils/extractColorRole'
 
 function formatRoles(roles: string | string[] | undefined): string {
   if (!roles) return UNEXPECTED

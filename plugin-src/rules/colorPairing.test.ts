@@ -67,13 +67,6 @@ describe('colorPairing', () => {
     })
   })
 
-  describe('パス形式の変数名からのロール抽出', () => {
-    it('パス形式の最後の部分がロール名の場合', () => {
-      const result = validate('design/color/onPrimary', 'design/color/primary')
-      expect(result).toBeNull()
-    })
-  })
-
   describe('無効な入力の処理', () => {
     it('textColorがnullの場合', () => {
       const result = validate(null, 'primary')
