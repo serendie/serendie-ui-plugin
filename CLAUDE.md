@@ -120,22 +120,24 @@ const { sd } = tokens
 
 // Panda CSSは開発環境でのみ使用、実際のスタイリングはインラインで実装
 const styles = {
-  padding: sd.system.dimension.spacing.medium,        // 16px
-  borderRadius: sd.system.dimension.radius.medium,    // 8px
+  padding: sd.system.dimension.spacing.medium, // 16px
+  borderRadius: sd.system.dimension.radius.medium, // 8px
   backgroundColor: sd.system.color.component.surface, // 背景色
-  color: sd.system.color.component.onSurface,        // テキスト色
-  gap: sd.system.dimension.spacing.extraSmall,       // 8px
+  color: sd.system.color.component.onSurface, // テキスト色
+  gap: sd.system.dimension.spacing.extraSmall, // 8px
 }
 ```
 
 ### 検証ルール
 
 #### 変数適用ルール
+
 - テキストノード: カラー変数の適用必須（LIBRARY_NAMEから）
 - フレームノード: 塗りつぶしカラー変数の適用必須
 - Manual Valueは警告対象
 
 #### カラーペアリングルール
+
 - COLOR_RULES定義に基づくペアリング検証
 - 前景色には「on」プレフィックス
 - 大面積背景色には「Container」サフィックス

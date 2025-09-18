@@ -1,6 +1,6 @@
 import { LIBRARY_NAME } from '../../shared-src/models/Rules'
 import notify from '../../shared-src/utils/notify'
-import extractVariableKey from './extractVariableKey'
+import extractVariableKey from '../core/extractVariableKey'
 
 export type VariableMap = Map<string, string>
 

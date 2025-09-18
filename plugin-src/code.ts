@@ -1,8 +1,8 @@
 import extractColorInfo from './utils/extractColorInfo'
 import { Issue } from '../shared-src/models/Rules'
-import validateColorPairing from './validations/validateColorPairing'
-import validateAssignFrameVariable from './validations/validateAssignFrameVariable'
-import validateAssignTextVariable from './validations/validateAssignTextVariable'
+import validateColorPairing from './utils/validateColorPairing'
+import validateAssignFrameVariable from './utils/validateAssignFrameVariable'
+import validateAssignTextVariable from './utils/validateAssignTextVariable'
 
 figma.showUI(__html__, {
   width: 400,

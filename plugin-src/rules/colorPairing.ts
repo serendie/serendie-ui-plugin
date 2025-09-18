@@ -3,7 +3,7 @@ import {
   IssueDetail,
   UNEXPECTED,
 } from '../../shared-src/models/Rules'
-import extractColorRole from '../utils/extractColorRole'
+import extractColorRole from '../core/extractColorRole'
 
 function formatRoles(roles: string | string[] | undefined): string {
   if (!roles) return UNEXPECTED

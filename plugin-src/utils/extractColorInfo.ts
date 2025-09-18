@@ -1,5 +1,5 @@
 import { UNEXPECTED } from '../../shared-src/models/Rules'
-import extractVariableKey from './extractVariableKey'
+import extractVariableKey from '../core/extractVariableKey'
 import getVariableMap from './getVariableMap'
 import traceBackgroundColor from './traceFillDefinition'
 

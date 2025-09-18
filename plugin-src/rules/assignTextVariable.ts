@@ -1,5 +1,5 @@
 import { IssueDetail } from '../../shared-src/models/Rules'
-import extractColorRole from '../utils/extractColorRole'
+import extractColorRole from '../core/extractColorRole'
 
 export default function validate(textColor: string | null): IssueDetail | null {
   if (!textColor) {
