@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Button } from '@serendie/ui'
+import { Button, IconButton } from '@serendie/ui'
 import tokens from '@serendie/design-token'
 import { SerendieSymbol } from '@serendie/symbols'
 
@@ -116,11 +116,27 @@ export default function App() {
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: sd.system.dimension.spacing.large,
+            gap: sd.system.dimension.spacing.medium,
             padding: sd.system.dimension.spacing.extraLarge,
+            paddingTop: sd.system.dimension.spacing.medium,
             flexShrink: 0,
           }}
         >
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+            }}
+          >
+            <Button
+              onClick={() => {}}
+              leftIcon={<SerendieSymbol name='gear' />}
+              size='small'
+              styleType='ghost'
+            >
+              設定
+            </Button>
+          </div>
           <Button
             onClick={handleRunLinter}
             disabled={isLoading || selections.length === 0 || !selectionChanged}
@@ -133,7 +149,6 @@ export default function App() {
           </Button>
           {error && <Notification summary={error} variant='error' />}
         </div>
-
         <div
           style={{
             flex: 1,
