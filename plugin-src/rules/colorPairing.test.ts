@@ -38,6 +38,33 @@ describe('colorPairing', () => {
     })
   })
 
+  describe('impressionの基本色の例外的な組み合わせ', () => {
+    it('テキスト色がimpressionの基本色, 背景色がsurface系統', () => {
+      const result1_1 = validate('primary', 'surfaceContainerLowest')
+      const result1_2 = validate('surfaceContainerLowest', 'primary')
+      expect(result1_1).toBeNull()
+      expect(result1_2).toBeNull()
+      const result2_1 = validate('secondary', 'surface')
+      expect(result2_1).toBeNull()
+      const result3_1 = validate('tertiary', 'surfaceContainerHigh')
+      const result3_2 = validate('surfaceContainerHigh', 'tertiary')
+      expect(result3_1).toBeNull()
+      expect(result3_2).toBeNull()
+      const result4_1 = validate('notice', 'surfaceContainer')
+      const result4_2 = validate('surfaceContainer', 'notice')
+      expect(result4_1).toBeNull()
+      expect(result4_2).toBeNull()
+      const result5_1 = validate('negative', 'surfaceContainerHighest')
+      const result5_2 = validate('surfaceContainerHighest', 'negative')
+      expect(result5_1).toBeNull()
+      expect(result5_2).toBeNull()
+      const result6_1 = validate('positive', 'surfaceContainerLow')
+      const result6_2 = validate('surfaceContainerLow', 'positive')
+      expect(result6_1).toBeNull()
+      expect(result6_2).toBeNull()
+    })
+  })
+
   describe('無効な入力の処理', () => {
     it('テキスト色がない場合', () => {
       const result = validate(null, 'primary')

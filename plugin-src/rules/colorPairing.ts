@@ -1,5 +1,6 @@
 import {
-  COLOR_PAIRS,
+  TEXT_COLOR_PAIRS,
+  BACKGROUND_COLOR_PAIRS,
   IssueDetail,
   UNEXPECTED,
 } from '../../shared-src/models/Rules'
@@ -43,20 +44,20 @@ export default function validate(
   if (
     !textRole ||
     !bgRole ||
-    !(textRole in COLOR_PAIRS) ||
-    !(bgRole in COLOR_PAIRS)
+    !(textRole in TEXT_COLOR_PAIRS) ||
+    !(bgRole in BACKGROUND_COLOR_PAIRS)
   ) {
     return null
   }
 
   if (
-    !isValid(COLOR_PAIRS[textRole], bgRole) ||
-    !isValid(COLOR_PAIRS[bgRole], textRole)
+    !isValid(TEXT_COLOR_PAIRS[textRole], bgRole) ||
+    !isValid(BACKGROUND_COLOR_PAIRS[bgRole], textRole)
   ) {
     return {
       severity: 'error',
       message: 'テキスト色または背景色が不適切',
-      suggestion: `テキスト色を${formatRoles(COLOR_PAIRS[bgRole])}に変更、または背景色を${formatRoles(COLOR_PAIRS[textRole])}に変更してください。`,
+      suggestion: `テキスト色を${formatRoles(BACKGROUND_COLOR_PAIRS[bgRole])}に変更、または背景色を${formatRoles(TEXT_COLOR_PAIRS[textRole])}に変更してください。`,
     }
   }
 
