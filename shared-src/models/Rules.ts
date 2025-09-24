@@ -39,7 +39,6 @@ export const TEXT_COLOR_PAIRS: Record<string, string | string[]> = {
   onPositiveContainer: 'positiveContainer',
   onPositiveContainerVariant: 'positiveContainerVariant',
   onSurface: surfaceSeries,
-  onSurfaceVariant: surfaceSeries,
   inverseOnSurface: 'inverseSurface',
   onChartSurface: 'chartSurface',
   onMarkLabel: ['01', '02', '03', '04', '05', '06', '07', '08', '09'],
