@@ -13,13 +13,34 @@ describe('assignTextVariable', () => {
     })
   })
 
-  describe('不適切なテキスト色', () => {
+  describe('テキストに使えるimpressionの基本色', () => {
     it('primaryの場合', () => {
       const result = validate('primary')
-      expect(result).not.toBeNull()
-      expect(result?.message).toBe('テキスト色が不適切')
+      expect(result).toBeNull()
     })
+    it('secondaryの場合', () => {
+      const result = validate('secondary')
+      expect(result).toBeNull()
+    })
+    it('tertiaryの場合', () => {
+      const result = validate('tertiary')
+      expect(result).toBeNull()
+    })
+    it('noticeの場合', () => {
+      const result = validate('notice')
+      expect(result).toBeNull()
+    })
+    it('negativeの場合', () => {
+      const result = validate('negative')
+      expect(result).toBeNull()
+    })
+    it('positiveの場合', () => {
+      const result = validate('positive')
+      expect(result).toBeNull()
+    })
+  })
 
+  describe('不適切なテキスト色', () => {
     it('primaryContainerの場合', () => {
       const result = validate('primaryContainer')
       expect(result).not.toBeNull()

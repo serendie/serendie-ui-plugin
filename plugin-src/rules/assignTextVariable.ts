@@ -15,6 +15,19 @@ export default function validate(textColor: string | null): IssueDetail | null {
     }
   }
 
+  if (
+    [
+      'primary',
+      'secondary',
+      'tertiary',
+      'notice',
+      'negative',
+      'positive',
+    ].includes(textRole)
+  ) {
+    return null
+  }
+
   if (!textRole.match(/^on/) && !textRole.match(/^\w+On[A-Z]/)) {
     return {
       severity: 'error',
