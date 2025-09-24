@@ -80,6 +80,19 @@ figma.ui.onmessage = async msg => {
             : '未知のエラーが発生しました。',
       })
     }
+  } else if (msg.type === 'get-storage') {
+    const value = await figma.clientStorage.getAsync(msg.key)
+    figma.ui.postMessage({
+      type: 'storage-value',
+      key: msg.key,
+      value,
+    })
+  } else if (msg.type === 'set-storage') {
+    await figma.clientStorage.setAsync(msg.key, msg.value)
+    figma.ui.postMessage({
+      type: 'storage-saved',
+      key: msg.key,
+    })
   } else if (msg.type === 'close') {
     figma.closePlugin()
   }

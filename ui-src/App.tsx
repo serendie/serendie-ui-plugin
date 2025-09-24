@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
-import { Button, IconButton } from '@serendie/ui'
+import { Button } from '@serendie/ui'
 import tokens from '@serendie/design-token'
 import { SerendieSymbol } from '@serendie/symbols'
 
 import IssuesList from './components/IssuesList'
 import Notification from './components/Notification'
 import ChatView from './components/ChatView'
+import SettingsDialog from './components/SettingsDialog'
 import { Issue } from '../shared-src/models/Rules'
 
 const { sd } = tokens
@@ -36,6 +37,7 @@ export default function App() {
   const [selectionChanged, setSelectionChanged] = useState(true)
   const [currentView, setCurrentView] = useState<'main' | 'chat'>('main')
   const [selectedResult, setSelectedResult] = useState<Result | null>(null)
+  const [settingsOpen, setSettingsOpen] = useState(false)
 
   useEffect(() => {
     window.onmessage = (
@@ -129,7 +131,7 @@ export default function App() {
             }}
           >
             <Button
-              onClick={() => {}}
+              onClick={() => setSettingsOpen(true)}
               leftIcon={<SerendieSymbol name='gear' />}
               size='small'
               styleType='ghost'
@@ -212,6 +214,10 @@ export default function App() {
       >
         <ChatView result={selectedResult} onBack={handleBackToMain} />
       </div>
+      <SettingsDialog
+        open={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+      />
     </div>
   )
 }
