@@ -1,6 +1,6 @@
 {
   "name": "serendie-design-linter",
-  "id": "1543215491573707626",
+  "id": "1552496414081647274",
   "api": "1.0.0",
   "main": "dist/plugin.js",
   "ui": "dist/ui.html",
@@ -10,9 +10,6 @@
   "documentAccess": "dynamic-page",
   "editorType": ["figma"],
   "networkAccess": {
-    "allowedDomains": [
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
-    ]
+    "allowedDomains": ["none"]
   }
 }
