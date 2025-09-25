@@ -100,6 +100,7 @@ export const COLOR_ROLES: string[] = Array.from(
   new Set([
     ...Object.keys(TEXT_COLOR_PAIRS),
     ...Object.keys(BACKGROUND_COLOR_PAIRS),
+    'onSurfaceVariant',
     'inversePrimary',
     'outline',
     'outlineVariant',

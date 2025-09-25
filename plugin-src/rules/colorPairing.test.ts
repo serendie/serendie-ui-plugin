@@ -65,6 +65,25 @@ describe('colorPairing', () => {
     })
   })
 
+  describe('onSurfaceVariantの特例', () => {
+    it('テキスト色がonSurfaceVariantのとき、背景色は任意', () => {
+      const result = validate('onSurfaceVariant', 'randomColor')
+      expect(result).toBeNull()
+    })
+    it('背景色がsurface系列のとき、テキスト色の候補としてonSurfaceVariantを提案', () => {
+      const result1 = validate('onNotice', 'surfaceContainerLowest')
+      const result2 = validate('onNotice', 'surfaceContainerLow')
+      const result3 = validate('onNotice', 'surfaceContainer')
+      const result4 = validate('onNotice', 'surfaceContainerHigh')
+      const result5 = validate('onNotice', 'surfaceContainerHighest')
+      expect(result1?.suggestion).toContain('onSurfaceVariant')
+      expect(result2?.suggestion).toContain('onSurfaceVariant')
+      expect(result3?.suggestion).toContain('onSurfaceVariant')
+      expect(result4?.suggestion).toContain('onSurfaceVariant')
+      expect(result5?.suggestion).toContain('onSurfaceVariant')
+    })
+  })
+
   describe('無効な入力の処理', () => {
     it('テキスト色がない場合', () => {
       const result = validate(null, 'primary')
