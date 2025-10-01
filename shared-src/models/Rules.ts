@@ -118,7 +118,7 @@ export const COLOR_ROLES: string[] = Array.from(
 )
 
 export type IssueDetail = {
-  severity: 'error' | 'warning' | 'info'
+  severity: 'error' | 'warning'
   message: string
   suggestion: string
 }

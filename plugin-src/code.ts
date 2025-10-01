@@ -5,8 +5,8 @@ import validateAssignFrameVariable from './utils/validateAssignFrameVariable'
 import validateAssignTextVariable from './utils/validateAssignTextVariable'
 
 figma.showUI(__html__, {
-  width: 400,
-  height: 640,
+  width: 360,
+  height: 720,
   title: 'Serendie Design Linter',
 })
 

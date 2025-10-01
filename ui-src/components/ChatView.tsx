@@ -195,6 +195,7 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
         />
         <Button
           style={{ flexShrink: 0 }}
+          disabled={message.trim() === ''}
           onClick={() => {
             if (message.trim() != '') request()
           }}

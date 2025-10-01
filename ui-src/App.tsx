@@ -173,24 +173,28 @@ export default function App() {
           style={{
             flex: 1,
             overflow: 'auto',
-            padding: sd.system.dimension.spacing.threeExtraLarge,
+            padding: sd.system.dimension.spacing.extraLarge,
             paddingBottom: sd.system.dimension.spacing.threeExtraLarge,
             backgroundColor: sd.system.color.impression.tertiaryContainer,
           }}
         >
           {results.length > 0 && (
             <div>
-              {results.map(result => (
+              {results.map((result, i) => (
                 <div
                   key={result.id}
                   style={{
-                    marginBottom: sd.system.dimension.spacing.twoExtraLarge,
+                    marginBottom:
+                      i == results.length - 1
+                        ? 0
+                        : sd.system.dimension.spacing.twoExtraLarge,
                   }}
                 >
                   <IssuesList
                     issues={result.issues}
                     totalNodes={result.totalNodes}
                     targetName={result.name}
+                    onOpenChat={() => handleOpenChat(result)}
                   />
                   {result.issues.length === 0 && (
                     <Notification
@@ -198,21 +202,6 @@ export default function App() {
                       variant='success'
                     />
                   )}
-                  <div
-                    style={{
-                      textAlign: 'right',
-                      marginTop: sd.system.dimension.spacing.extraSmall,
-                    }}
-                  >
-                    <Button
-                      rightIcon={<SerendieSymbol name='chevron-right' />}
-                      styleType='ghost'
-                      size='small'
-                      onClick={() => handleOpenChat(result)}
-                    >
-                      AIに相談する
-                    </Button>
-                  </div>
                 </div>
               ))}
             </div>
