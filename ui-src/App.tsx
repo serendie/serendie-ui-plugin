@@ -1,3 +1,4 @@
+import { Client } from '@modelcontextprotocol/sdk/client'
 import { useState, useEffect } from 'react'
 import { Button } from '@serendie/ui'
 import tokens from '@serendie/design-token'
@@ -30,9 +31,10 @@ type PluginMessage =
       selectionIds: string[]
     }
 
-async function initMCP() {
+async function initMcpClient() {
   const mcpClient = await getMcpClient()
   console.log('MCP Tools', await mcpClient.listTools?.())
+  return mcpClient
 }
 
 export default function App() {
@@ -74,7 +76,13 @@ export default function App() {
       },
       '*'
     )
-    initMCP()
+
+    let mcpClient: Client | null = null
+    initMcpClient().then(client => {
+      mcpClient = client
+    })
+
+    return () => mcpClient?.close()
   }, [])
 
   const handleRunLinter = () => {
