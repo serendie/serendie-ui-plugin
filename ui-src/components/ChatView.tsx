@@ -6,7 +6,7 @@ import { SerendieSymbol } from '@serendie/symbols'
 import { z } from 'zod'
 
 import { Result } from '../App'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import ClientStorage from '../../shared-src/models/ClientStorage'
 
 const { sd } = tokens
@@ -16,24 +16,35 @@ interface ChatViewProps {
   onBack: () => void
 }
 
-async function handleClick({ apiKey }: { apiKey: string }) {
-  const openai = createOpenAI({ apiKey })
-  const result = streamObject({
-    model: openai('gpt-4.1'),
-    schema: z.object({
-      title: z.string(),
-      items: z.array(z.string()),
-    }),
-    prompt: 'サンプルデータを返して',
-  })
-
-  for await (const part of result.partialObjectStream) {
-    console.log(part)
-  }
-}
-
 export default function ChatView({ result, onBack }: ChatViewProps) {
   const [apiKey, setApiKey] = useState('')
+  const [message, setMessage] = useState('')
+  const request = useCallback(async () => {
+    try {
+      setMessage('')
+      const openai = createOpenAI({ apiKey })
+      const result = streamObject({
+        model: openai('gpt-4.1'),
+        schema: z.object({
+          chat: z.string().describe('返答'),
+        }),
+        messages: [
+          {
+            role: 'system' as const,
+            content: 'あなたはフレンドリーなアシスタントです。',
+          },
+          { role: 'user' as const, content: message },
+        ],
+      })
+      for await (const part of result.partialObjectStream) {
+        console.log(part)
+      }
+      const obj = await result.object
+      console.log(obj)
+    } catch (error) {
+      console.error(error)
+    }
+  }, [apiKey, message])
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -129,11 +140,22 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
           alignItems: 'center',
         }}
       >
-        <TextField placeholder='メッセージを入力' style={{ flex: 1 }} />
-        <Button
-          style={{ flexShrink: 0 }}
-          onClick={() => handleClick({ apiKey })}
-        >
+        <TextField
+          placeholder='メッセージを入力'
+          style={{ flex: 1 }}
+          value={message}
+          onChange={e => {
+            if (e.target instanceof HTMLInputElement) {
+              setMessage(e.target.value)
+            }
+          }}
+          onKeyDown={e => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              request()
+            }
+          }}
+        />
+        <Button style={{ flexShrink: 0 }} onClick={request}>
           送信
         </Button>
       </div>
