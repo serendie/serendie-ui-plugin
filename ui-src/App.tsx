@@ -106,7 +106,6 @@ export default function App() {
   }
   const handleBackToMain = () => {
     setCurrentView('main')
-    setSelectedResult(null)
   }
 
   return (

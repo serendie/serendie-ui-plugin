@@ -1,5 +1,5 @@
 import { createOpenAI } from '@ai-sdk/openai'
-import { streamObject } from 'ai'
+import { ModelMessage, streamObject } from 'ai'
 import { Button, TextField } from '@serendie/ui'
 import tokens from '@serendie/design-token'
 import { SerendieSymbol } from '@serendie/symbols'
@@ -19,9 +19,11 @@ interface ChatViewProps {
 export default function ChatView({ result, onBack }: ChatViewProps) {
   const [apiKey, setApiKey] = useState('')
   const [message, setMessage] = useState('')
+  const [chatHistory, setChatHistory] = useState<ModelMessage[]>([])
   const request = useCallback(async () => {
     try {
       setMessage('')
+      setChatHistory(prev => [...prev, { role: 'user', content: message }])
       const openai = createOpenAI({ apiKey })
       const result = streamObject({
         model: openai('gpt-4.1'),
@@ -33,14 +35,24 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
             role: 'system' as const,
             content: 'あなたはフレンドリーなアシスタントです。',
           },
+          ...chatHistory,
           { role: 'user' as const, content: message },
         ],
       })
       for await (const part of result.partialObjectStream) {
-        console.log(part)
+        setChatHistory(prev => {
+          if (part.chat === undefined) return prev
+
+          const newHistory = [...prev]
+          const lastMessage = newHistory[newHistory.length - 1]
+          if (lastMessage.role === 'assistant') {
+            lastMessage.content = part.chat
+          } else {
+            newHistory.push({ role: 'assistant', content: part.chat })
+          }
+          return newHistory
+        })
       }
-      const obj = await result.object
-      console.log(obj)
     } catch (error) {
       console.error(error)
     }
@@ -65,6 +77,11 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
     )
     return () => window.removeEventListener('message', handleMessage)
   }, [])
+
+  useEffect(() => {
+    setMessage('')
+    setChatHistory([])
+  }, [result])
 
   return (
     <div
@@ -108,29 +125,45 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
         style={{
           flex: 1,
           overflow: 'auto',
-          padding: sd.system.dimension.spacing.threeExtraLarge,
+          padding: sd.system.dimension.spacing.large,
         }}
       >
-        <div
-          style={{
-            ...sd.system.typography.body.large_expanded,
-            color: sd.system.color.component.onSurfaceVariant,
-            textAlign: 'center',
-            marginTop: sd.system.dimension.spacing.fourExtraLarge,
-          }}
-        >
-          チャット機能は準備中です
-        </div>
-        <div
-          style={{
-            ...sd.system.typography.body.medium_expanded,
-            color: sd.system.color.component.onSurfaceVariant,
-            textAlign: 'center',
-            marginTop: sd.system.dimension.spacing.large,
-          }}
-        >
-          検証結果: {result?.issues.length ?? 0}件のissue
-        </div>
+        {chatHistory
+          .filter(({ content }) => typeof content === 'string')
+          .map(({ role, content }, index) => (
+            <div
+              key={index}
+              style={{
+                marginBottom: sd.system.dimension.spacing.medium,
+                marginRight: role === 'user' ? 0 : 'auto',
+                marginLeft: role === 'user' ? 'auto' : 0,
+                width: 'fit-content',
+                maxWidth: '80%',
+                padding: `${sd.system.dimension.spacing.extraSmall} ${sd.system.dimension.spacing.small}`,
+                borderRadius: sd.system.dimension.radius.medium,
+                borderTopLeftRadius:
+                  role === 'assistant' ? 0 : sd.system.dimension.radius.medium,
+                borderTopRightRadius:
+                  role === 'user' ? 0 : sd.system.dimension.radius.medium,
+                backgroundColor:
+                  role === 'user'
+                    ? sd.system.color.impression.primary
+                    : sd.system.color.component.surface,
+              }}
+            >
+              <div
+                style={{
+                  ...sd.system.typography.body.medium_expanded,
+                  color:
+                    role === 'user'
+                      ? sd.system.color.impression.onPrimary
+                      : sd.system.color.component.onSurface,
+                }}
+              >
+                {content as string}
+              </div>
+            </div>
+          ))}
       </div>
       <div
         style={{
@@ -150,12 +183,22 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
             }
           }}
           onKeyDown={e => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-              request()
+            if (
+              e.key === 'Enter' &&
+              !e.shiftKey &&
+              !e.nativeEvent.isComposing
+            ) {
+              e.preventDefault()
+              if (message.trim() != '') request()
             }
           }}
         />
-        <Button style={{ flexShrink: 0 }} onClick={request}>
+        <Button
+          style={{ flexShrink: 0 }}
+          onClick={() => {
+            if (message.trim() != '') request()
+          }}
+        >
           送信
         </Button>
       </div>
