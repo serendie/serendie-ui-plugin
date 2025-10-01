@@ -35,13 +35,28 @@ export default function IssuesList({
             overflowY: 'scroll',
           }}
         >
-          {issues.map((issue, index) => (
-            <IssueListItem
-              key={index}
-              issue={issue}
-              withBorder={index !== issues.length - 1}
-            />
-          ))}
+          {issues
+            .filter(({ severity }) => severity === 'error')
+            .map((issue, index) => (
+              <IssueListItem
+                key={`error-${index}`}
+                issue={issue}
+                withBorder={index !== issues.length - 1}
+              />
+            ))}
+          {issues
+            .filter(({ severity }) => severity === 'warning')
+            .map((issue, index) => (
+              <IssueListItem
+                key={`warning-${index}`}
+                issue={issue}
+                withBorder={
+                  index !==
+                  issues.filter(issue => issue.severity === 'warning').length -
+                    1
+                }
+              />
+            ))}
         </div>
       )}
     </div>

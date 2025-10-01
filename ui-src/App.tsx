@@ -135,37 +135,34 @@ export default function App() {
         <div
           style={{
             display: 'flex',
-            flexDirection: 'column',
+            flexDirection: 'row',
             gap: sd.system.dimension.spacing.medium,
             padding: sd.system.dimension.spacing.extraLarge,
-            paddingTop: sd.system.dimension.spacing.medium,
             flexShrink: 0,
           }}
         >
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-            }}
-          >
-            <Button
-              onClick={() => setSettingsOpen(true)}
-              leftIcon={<SerendieSymbol name='gear' />}
-              size='small'
-              styleType='ghost'
-            >
-              設定
-            </Button>
-          </div>
           <Button
             onClick={handleRunLinter}
             disabled={isLoading || selections.length === 0 || !selectionChanged}
             style={{
               width: '100%',
+              flex: 2,
             }}
             size='medium'
           >
-            {selections.length == 0 ? '要素を選択してください' : '検証する'}
+            {selections.length == 0 ? '要素を選んでください' : '検証する'}
+          </Button>
+          <Button
+            onClick={() => setSettingsOpen(true)}
+            leftIcon={<SerendieSymbol name='gear' />}
+            styleType='outlined'
+            style={{
+              width: '100%',
+              flex: 1,
+            }}
+            size='medium'
+          >
+            設定
           </Button>
           {error && <Notification summary={error} variant='error' />}
         </div>

@@ -28,7 +28,7 @@ export default function IssueHeader({
             alignItems: 'center',
             gap: sd.system.dimension.spacing.small,
             marginBottom: sd.system.dimension.spacing.medium,
-            marginLeft: sd.system.dimension.spacing.extraSmall,
+            marginLeft: sd.system.dimension.radius.medium,
           }}
         >
           <h3
@@ -74,20 +74,20 @@ export default function IssueHeader({
           targetNodes={totalNodes - issues.length}
           totalNodes={totalNodes}
         />
-        {issues.filter(issue => issue.severity === 'warning').length > 0 && (
-          <StatLabel
-            symbolName='alert-triangle'
-            targetNodes={
-              issues.filter(issue => issue.severity === 'warning').length
-            }
-            totalNodes={totalNodes}
-          />
-        )}
         {issues.filter(issue => issue.severity === 'error').length > 0 && (
           <StatLabel
             symbolName='alert-circle'
             targetNodes={
               issues.filter(issue => issue.severity === 'error').length
+            }
+            totalNodes={totalNodes}
+          />
+        )}
+        {issues.filter(issue => issue.severity === 'warning').length > 0 && (
+          <StatLabel
+            symbolName='alert-triangle'
+            targetNodes={
+              issues.filter(issue => issue.severity === 'warning').length
             }
             totalNodes={totalNodes}
           />
