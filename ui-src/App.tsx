@@ -1,4 +1,3 @@
-import { Client } from '@modelcontextprotocol/sdk/client'
 import { useState, useEffect } from 'react'
 import { Button } from '@serendie/ui'
 import tokens from '@serendie/design-token'
@@ -9,7 +8,6 @@ import Notification from './components/Notification'
 import ChatView from './components/ChatView'
 import SettingsDialog from './components/SettingsDialog'
 import { Issue } from '../shared-src/models/Rules'
-import getMcpClient from './utils/getMcpClient'
 
 const { sd } = tokens
 
@@ -30,12 +28,6 @@ type PluginMessage =
       type: 'selection-changed'
       selectionIds: string[]
     }
-
-async function initMcpClient() {
-  const mcpClient = await getMcpClient()
-  console.log('MCP Tools', await mcpClient.listTools?.())
-  return mcpClient
-}
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(false)
@@ -76,15 +68,6 @@ export default function App() {
       },
       '*'
     )
-
-    let mcpClient: Client | null = null
-    initMcpClient().then(client => {
-      mcpClient = client
-    })
-
-    return () => {
-      mcpClient?.close()
-    }
   }, [])
 
   const handleRunLinter = () => {

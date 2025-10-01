@@ -1,10 +1,16 @@
 import { createOpenAI } from '@ai-sdk/openai'
-import { ModelMessage, streamObject } from 'ai'
+import {
+  ModelMessage,
+  streamText,
+  experimental_createMCPClient as createMCPClient,
+  stepCountIs,
+  Tool,
+} from 'ai'
+import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js'
 import { useCallback, useEffect, useState } from 'react'
 import { Button, TextField } from '@serendie/ui'
 import tokens from '@serendie/design-token'
 import { SerendieSymbol } from '@serendie/symbols'
-import { z } from 'zod'
 
 import { Result } from '../App'
 import ChatMessage from './ChatMessage'
@@ -21,16 +27,18 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
   const { apiKey } = useApiKey()
   const [message, setMessage] = useState('')
   const [chatHistory, setChatHistory] = useState<ModelMessage[]>([])
+  const [tools, setTools] = useState<Record<string, Tool> | undefined>(
+    undefined
+  )
   const request = useCallback(async () => {
     try {
       setMessage('')
       setChatHistory(prev => [...prev, { role: 'user', content: message }])
       const openai = createOpenAI({ apiKey })
-      const result = streamObject({
+      const result = streamText({
         model: openai('gpt-4.1'),
-        schema: z.object({
-          chat: z.string().describe('返答'),
-        }),
+        tools,
+        stopWhen: stepCountIs(10),
         messages: [
           {
             role: 'system' as const,
@@ -40,29 +48,52 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
           { role: 'user' as const, content: message },
         ],
       })
-      for await (const part of result.partialObjectStream) {
-        setChatHistory(prev => {
-          if (part.chat === undefined) return prev
-
-          const newHistory = [...prev]
-          const lastMessage = newHistory[newHistory.length - 1]
-          if (lastMessage.role === 'assistant') {
-            lastMessage.content = part.chat
-          } else {
-            newHistory.push({ role: 'assistant', content: part.chat })
-          }
-          return newHistory
-        })
+      let assistantMessage = ''
+      for await (const part of result.fullStream) {
+        if (part.type === 'text-delta') {
+          assistantMessage += part.text
+          setChatHistory(prev => {
+            const newHistory = [...prev]
+            const lastMessage = newHistory[newHistory.length - 1]
+            if (lastMessage && lastMessage.role === 'assistant') {
+              lastMessage.content = assistantMessage
+            } else {
+              newHistory.push({ role: 'assistant', content: assistantMessage })
+            }
+            return newHistory
+          })
+        } else if (part.type === 'tool-call') {
+          console.log(part.toolName, part.input)
+        } else if (part.type === 'tool-result') {
+          console.log(part.toolName, part.output)
+        }
       }
     } catch (error) {
-      console.error(error)
+      console.error('リクエストエラー:', error)
     }
-  }, [apiKey, message])
+  }, [apiKey, message, chatHistory, tools])
 
   useEffect(() => {
     setMessage('')
     setChatHistory([])
   }, [result])
+
+  useEffect(() => {
+    const init = async () => {
+      try {
+        const mcp = await createMCPClient({
+          transport: new StreamableHTTPClientTransport(
+            new URL('https://serendie.design/mcp')
+          ),
+        })
+        const tools = await mcp.tools()
+        setTools(tools)
+      } catch (error) {
+        console.error('MCP初期化エラー:', error)
+      }
+    }
+    init()
+  }, [])
 
   return (
     <div
