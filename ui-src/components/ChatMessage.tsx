@@ -36,6 +36,9 @@ export default function ChatMessage({
             role === 'user'
               ? sd.system.color.impression.onPrimary
               : sd.system.color.component.onSurface,
+          wordBreak: 'break-word',
+          overflowWrap: 'break-word',
+          whiteSpace: 'pre-wrap',
         }}
       >
         {content}
