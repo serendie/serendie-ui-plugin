@@ -10,7 +10,7 @@
   "documentAccess": "dynamic-page",
   "editorType": ["figma"],
   "networkAccess": {
-    "allowedDomains": ["https://serendie.design/mcp"],
-    "reasoning": "デザインガイドラインの情報を取得するため、Serendie MCPと接続します"
+    "allowedDomains": ["https://serendie.design/mcp", "https://api.openai.com"],
+    "reasoning": "デザインガイドラインに基づくアドバイスを提供するため、Serendie MCPやOpenAI APIと通信します。"
   }
 }

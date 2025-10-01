@@ -1,8 +1,13 @@
+import { createOpenAI } from '@ai-sdk/openai'
+import { streamObject } from 'ai'
 import { Button, TextField } from '@serendie/ui'
 import tokens from '@serendie/design-token'
 import { SerendieSymbol } from '@serendie/symbols'
+import { z } from 'zod'
 
 import { Result } from '../App'
+import { useEffect, useState } from 'react'
+import ClientStorage from '../../shared-src/models/ClientStorage'
 
 const { sd } = tokens
 
@@ -11,7 +16,45 @@ interface ChatViewProps {
   onBack: () => void
 }
 
+async function handleClick({ apiKey }: { apiKey: string }) {
+  const openai = createOpenAI({ apiKey })
+  const result = streamObject({
+    model: openai('gpt-4.1'),
+    schema: z.object({
+      title: z.string(),
+      items: z.array(z.string()),
+    }),
+    prompt: 'サンプルデータを返して',
+  })
+
+  for await (const part of result.partialObjectStream) {
+    console.log(part)
+  }
+}
+
 export default function ChatView({ result, onBack }: ChatViewProps) {
+  const [apiKey, setApiKey] = useState('')
+
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      const { type, value } = event.data.pluginMessage || {}
+      if (type === 'storage-value') {
+        setApiKey(value || '')
+      }
+    }
+    window.addEventListener('message', handleMessage)
+    parent.postMessage(
+      {
+        pluginMessage: {
+          type: 'get-storage',
+          key: ClientStorage.OPENAI_API_KEY,
+        },
+      },
+      '*'
+    )
+    return () => window.removeEventListener('message', handleMessage)
+  }, [])
+
   return (
     <div
       style={{
@@ -87,7 +130,12 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
         }}
       >
         <TextField placeholder='メッセージを入力' style={{ flex: 1 }} />
-        <Button style={{ flexShrink: 0 }}>送信</Button>
+        <Button
+          style={{ flexShrink: 0 }}
+          onClick={() => handleClick({ apiKey })}
+        >
+          送信
+        </Button>
       </div>
     </div>
   )

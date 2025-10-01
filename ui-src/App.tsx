@@ -82,7 +82,9 @@ export default function App() {
       mcpClient = client
     })
 
-    return () => mcpClient?.close()
+    return () => {
+      mcpClient?.close()
+    }
   }, [])
 
   const handleRunLinter = () => {
