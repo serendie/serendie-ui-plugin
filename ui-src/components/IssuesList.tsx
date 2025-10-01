@@ -1,6 +1,4 @@
 import tokens from '@serendie/design-token'
-import { Button } from '@serendie/ui'
-import { SerendieSymbol } from '@serendie/symbols'
 
 import { Issue } from '../../shared-src/models/Rules'
 import IssueListItem from './IssueListItem'

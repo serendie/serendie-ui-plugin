@@ -3,7 +3,6 @@ import { SerendieSymbol } from '@serendie/symbols'
 
 import { Issue } from '../../shared-src/models/Rules'
 import { Button } from '@serendie/ui'
-import IssueStat from './StatLabel'
 import StatLabel from './StatLabel'
 
 const { sd } = tokens
