@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import tokens from '@serendie/design-token'
 import { Button, TextField } from '@serendie/ui'
-import ClientStorage from '../../shared-src/models/ClientStorage'
+
+import { useApiKey } from '../hooks/useApiKey'
 
 const { sd } = tokens
 
@@ -11,47 +12,17 @@ interface SettingsDialogProps {
 }
 
 const SettingsDialog: React.FC<SettingsDialogProps> = ({ open, onClose }) => {
+  const { apiKey: initialApiKey, saveApiKey } = useApiKey()
   const [apiKey, setApiKey] = useState('')
-  const [initialApiKey, setInitialApiKey] = useState('')
 
   useEffect(() => {
     if (open) {
-      parent.postMessage(
-        {
-          pluginMessage: {
-            type: 'get-storage',
-            key: ClientStorage.OPENAI_API_KEY,
-          },
-        },
-        '*'
-      )
+      setApiKey(initialApiKey)
     }
-  }, [open])
-
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      const { type, value } = event.data.pluginMessage || {}
-      if (type === 'storage-value') {
-        setApiKey(value || '')
-        setInitialApiKey(value || '')
-      }
-    }
-
-    window.addEventListener('message', handleMessage)
-    return () => window.removeEventListener('message', handleMessage)
-  }, [])
+  }, [open, initialApiKey])
 
   const handleSave = async () => {
-    parent.postMessage(
-      {
-        pluginMessage: {
-          type: 'set-storage',
-          key: ClientStorage.OPENAI_API_KEY,
-          value: apiKey,
-        },
-      },
-      '*'
-    )
+    saveApiKey(apiKey)
     onClose()
   }
 

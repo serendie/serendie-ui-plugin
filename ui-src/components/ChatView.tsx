@@ -8,6 +8,7 @@ import { z } from 'zod'
 import { Result } from '../App'
 import { useCallback, useEffect, useState } from 'react'
 import ClientStorage from '../../shared-src/models/ClientStorage'
+import { useApiKey } from '../hooks/useApiKey'
 
 const { sd } = tokens
 
@@ -17,7 +18,7 @@ interface ChatViewProps {
 }
 
 export default function ChatView({ result, onBack }: ChatViewProps) {
-  const [apiKey, setApiKey] = useState('')
+  const { apiKey } = useApiKey()
   const [message, setMessage] = useState('')
   const [chatHistory, setChatHistory] = useState<ModelMessage[]>([])
   const request = useCallback(async () => {
@@ -57,26 +58,6 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
       console.error(error)
     }
   }, [apiKey, message])
-
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      const { type, value } = event.data.pluginMessage || {}
-      if (type === 'storage-value') {
-        setApiKey(value || '')
-      }
-    }
-    window.addEventListener('message', handleMessage)
-    parent.postMessage(
-      {
-        pluginMessage: {
-          type: 'get-storage',
-          key: ClientStorage.OPENAI_API_KEY,
-        },
-      },
-      '*'
-    )
-    return () => window.removeEventListener('message', handleMessage)
-  }, [])
 
   useEffect(() => {
     setMessage('')
