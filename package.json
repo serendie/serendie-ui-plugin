@@ -73,6 +73,7 @@
     }
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.18.2",
     "@serendie/design-token": "^1.2.0",
     "@serendie/ui": "^2.1.3",
     "openai": "^5.16.0",

@@ -8,6 +8,7 @@ import Notification from './components/Notification'
 import ChatView from './components/ChatView'
 import SettingsDialog from './components/SettingsDialog'
 import { Issue } from '../shared-src/models/Rules'
+import getMcpClient from './utils/getMcpClient'
 
 const { sd } = tokens
 
@@ -29,6 +30,11 @@ type PluginMessage =
       selectionIds: string[]
     }
 
+async function initMCP() {
+  const mcpClient = await getMcpClient()
+  console.log('MCP Tools', await mcpClient.listTools?.())
+}
+
 export default function App() {
   const [isLoading, setIsLoading] = useState(false)
   const [results, setResults] = useState<Result[]>([])
@@ -49,11 +55,13 @@ export default function App() {
         setIsLoading(false)
         setResults(message.results)
         setError(null)
-      } else if (message.type === 'error') {
+      }
+      if (message.type === 'error') {
         setIsLoading(false)
         setError(message.message)
         setResults([])
-      } else if (message.type === 'selection-changed') {
+      }
+      if (message.type === 'selection-changed') {
         setSelections(message.selectionIds)
         setSelectionChanged(true)
       }
@@ -66,6 +74,7 @@ export default function App() {
       },
       '*'
     )
+    initMCP()
   }, [])
 
   const handleRunLinter = () => {
