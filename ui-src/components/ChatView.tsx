@@ -1,13 +1,13 @@
 import { createOpenAI } from '@ai-sdk/openai'
 import { ModelMessage, streamObject } from 'ai'
+import { useCallback, useEffect, useState } from 'react'
 import { Button, TextField } from '@serendie/ui'
 import tokens from '@serendie/design-token'
 import { SerendieSymbol } from '@serendie/symbols'
 import { z } from 'zod'
 
 import { Result } from '../App'
-import { useCallback, useEffect, useState } from 'react'
-import ClientStorage from '../../shared-src/models/ClientStorage'
+import ChatMessage from './ChatMessage'
 import { useApiKey } from '../hooks/useApiKey'
 
 const { sd } = tokens
@@ -110,40 +110,17 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
         }}
       >
         {chatHistory
-          .filter(({ content }) => typeof content === 'string')
+          .filter(
+            ({ role, content }) =>
+              typeof content === 'string' &&
+              (role === 'user' || role === 'assistant')
+          )
           .map(({ role, content }, index) => (
-            <div
+            <ChatMessage
               key={index}
-              style={{
-                marginBottom: sd.system.dimension.spacing.medium,
-                marginRight: role === 'user' ? 0 : 'auto',
-                marginLeft: role === 'user' ? 'auto' : 0,
-                width: 'fit-content',
-                maxWidth: '80%',
-                padding: `${sd.system.dimension.spacing.extraSmall} ${sd.system.dimension.spacing.small}`,
-                borderRadius: sd.system.dimension.radius.medium,
-                borderTopLeftRadius:
-                  role === 'assistant' ? 0 : sd.system.dimension.radius.medium,
-                borderTopRightRadius:
-                  role === 'user' ? 0 : sd.system.dimension.radius.medium,
-                backgroundColor:
-                  role === 'user'
-                    ? sd.system.color.impression.primary
-                    : sd.system.color.component.surface,
-              }}
-            >
-              <div
-                style={{
-                  ...sd.system.typography.body.medium_expanded,
-                  color:
-                    role === 'user'
-                      ? sd.system.color.impression.onPrimary
-                      : sd.system.color.component.onSurface,
-                }}
-              >
-                {content as string}
-              </div>
-            </div>
+              role={role as 'user' | 'assistant'}
+              content={content as string}
+            />
           ))}
       </div>
       <div
