@@ -176,12 +176,6 @@ export default function App() {
                     targetName={result.name}
                     onOpenChat={() => handleOpenChat(result)}
                   />
-                  {result.issues.length === 0 && (
-                    <Notification
-                      summary={'すべてのルールを満たしています'}
-                      variant='success'
-                    />
-                  )}
                 </div>
               ))}
             </div>

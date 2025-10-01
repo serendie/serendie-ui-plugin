@@ -5,6 +5,8 @@ import {
   experimental_createMCPClient as createMCPClient,
   stepCountIs,
   Tool,
+  ToolResultPart,
+  ToolContent,
 } from 'ai'
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js'
 import { useCallback, useEffect, useState } from 'react'
@@ -15,6 +17,7 @@ import { SerendieSymbol } from '@serendie/symbols'
 import { Result } from '../App'
 import ChatMessage from './ChatMessage'
 import { useApiKey } from '../hooks/useApiKey'
+import getToolDescription from '../utils/getToolDescription'
 
 const { sd } = tokens
 
@@ -44,7 +47,7 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
             role: 'system' as const,
             content: 'あなたはフレンドリーなアシスタントです。',
           },
-          ...chatHistory,
+          ...chatHistory.filter(({ role }) => role !== 'tool'),
           { role: 'user' as const, content: message },
         ],
       })
@@ -66,6 +69,20 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
           console.log(part.toolName, part.input)
         } else if (part.type === 'tool-result') {
           console.log(part.toolName, part.output)
+          setChatHistory(prev => [
+            ...prev,
+            {
+              role: 'tool' as const,
+              content: [
+                {
+                  type: 'tool-result' as const,
+                  toolCallId: part.toolCallId,
+                  toolName: part.toolName,
+                  output: part.output,
+                },
+              ],
+            },
+          ])
         }
       }
     } catch (error) {
@@ -142,17 +159,37 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
       >
         {chatHistory
           .filter(
-            ({ role, content }) =>
-              typeof content === 'string' &&
-              (role === 'user' || role === 'assistant')
+            ({ role }) =>
+              role === 'user' || role === 'assistant' || role === 'tool'
           )
-          .map(({ role, content }, index) => (
-            <ChatMessage
-              key={index}
-              role={role as 'user' | 'assistant'}
-              content={content as string}
-            />
-          ))}
+          .map(({ role, content }, index) => {
+            if (role === 'tool') {
+              const toolContent = content as ToolContent
+              if (toolContent?.[0].toolName) {
+                return (
+                  <p
+                    key={index}
+                    style={{
+                      ...sd.system.typography.label.small_expanded,
+                      color: sd.system.color.component.onSurfaceVariant,
+                      marginBottom: sd.system.dimension.spacing.twoExtraSmall,
+                      padding: `${sd.system.dimension.spacing.small} 0`,
+                    }}
+                  >
+                    {getToolDescription(toolContent[0].toolName)}
+                  </p>
+                )
+              }
+            }
+
+            return (
+              <ChatMessage
+                key={index}
+                role={role as 'user' | 'assistant'}
+                content={content as string}
+              />
+            )
+          })}
       </div>
       <div
         style={{
