@@ -30,9 +30,10 @@ export default function ChatMessage({
           src={image}
           alt='添付画像'
           style={{
-            maxWidth: '200px',
-            borderRadius: sd.system.dimension.radius.medium,
-            border: `1px solid ${sd.system.color.component.outlineVariant}`,
+            maxWidth: '100%',
+            backgroundColor: sd.system.color.component.surface,
+            padding: sd.system.dimension.spacing.small,
+            borderRadius: sd.system.dimension.radius.small,
           }}
         />
       )}
