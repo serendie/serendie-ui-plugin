@@ -35,8 +35,9 @@ export default function IssueHeader({
             style={{
               ...sd.system.typography.title.small_expanded,
               color: sd.system.color.component.onSurface,
-              wordBreak: 'keep-all',
-              overflowWrap: 'break-word',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+              overflow: 'hidden',
             }}
           >
             {targetName}
