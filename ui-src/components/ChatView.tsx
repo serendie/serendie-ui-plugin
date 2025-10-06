@@ -10,6 +10,7 @@ import { useApiKey } from '../hooks/useApiKey'
 import { useMCPTools } from '../hooks/useMCPTools'
 import { useSelectionImage } from '../hooks/useSelectionImage'
 import { useChat } from '../hooks/useChat'
+import { useAutoScroll } from '../hooks/useAutoScroll'
 import getToolDescription from '../utils/getToolDescription'
 
 const { sd } = tokens
@@ -35,6 +36,7 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
     }
   )
   const selectionImage = useSelectionImage(result)
+  const scrollContainerRef = useAutoScroll(chatHistory)
 
   useEffect(() => {
     if (selectionImage) {
@@ -96,6 +98,7 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
         <div style={{ width: 60 }} />
       </div>
       <div
+        ref={scrollContainerRef}
         style={{
           flex: 1,
           overflow: 'auto',
