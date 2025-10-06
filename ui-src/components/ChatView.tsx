@@ -1,28 +1,20 @@
-import { ToolContent } from 'ai'
-import { Button, TextField } from '@serendie/ui'
 import tokens from '@serendie/design-token'
-import { SerendieSymbol } from '@serendie/symbols'
 import { useEffect } from 'react'
 
 import { Result } from '../App'
-import ChatMessage from './ChatMessage'
 import { useApiKey } from '../hooks/useApiKey'
 import { useMCPTools } from '../hooks/useMCPTools'
 import { useSelectionImage } from '../hooks/useSelectionImage'
 import { useChat } from '../hooks/useChat'
-import { useAutoScroll } from '../hooks/useAutoScroll'
-import getToolDescription from '../utils/getToolDescription'
+import ChatHeader from './ChatHeader'
+import ChatMessageList from './ChatMessageList'
+import ChatInputArea from './ChatInputArea'
 
 const { sd } = tokens
 
 interface ChatViewProps {
   result: Result | null
   onBack: () => void
-}
-
-const QUESTION_TEMPLATES = {
-  FOR_ISSUE: ['改善の大きな方針を教えて', 'デザインシステムに準拠するには？'],
-  FOR_IMPROVEMENT: ['今のデザインを評価して', '改善案を3つ教えて'],
 }
 
 export default function ChatView({ result, onBack }: ChatViewProps) {
@@ -36,7 +28,6 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
     }
   )
   const selectionImage = useSelectionImage(result)
-  const scrollContainerRef = useAutoScroll(chatHistory)
 
   useEffect(() => {
     if (selectionImage) {
@@ -49,12 +40,6 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
     }
   }, [selectionImage])
 
-  const showTemplates =
-    chatHistory.length === 1 &&
-    chatHistory[0].role === 'user' &&
-    Array.isArray(chatHistory[0].content) &&
-    chatHistory[0].content.some(part => part.type === 'image')
-
   return (
     <div
       style={{
@@ -65,156 +50,17 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
         backgroundColor: sd.system.color.impression.tertiary,
       }}
     >
-      <div
-        style={{
-          padding: sd.system.dimension.spacing.extraSmall,
-        }}
-      >
-        <Button
-          leftIcon={<SerendieSymbol name='chevron-left' />}
-          size='small'
-          styleType='ghost'
-          onClick={onBack}
-        >
-          戻る
-        </Button>
-        <p
-          style={{
-            textAlign: 'center',
-            ...sd.system.typography.label.medium_expanded,
-            color: sd.system.color.component.onSurfaceVariant,
-            position: 'absolute',
-            top: 24,
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            maxWidth: '14em',
-          }}
-        >
-          {result?.name}
-        </p>
-        <div style={{ width: 60 }} />
-      </div>
-      <div
-        ref={scrollContainerRef}
-        style={{
-          flex: 1,
-          overflow: 'auto',
-          padding: sd.system.dimension.spacing.large,
-        }}
-      >
-        {chatHistory
-          .filter(
-            ({ role }) =>
-              role === 'user' || role === 'assistant' || role === 'tool'
-          )
-          .map(({ role, content }, index) => {
-            if (role === 'tool') {
-              const toolContent = content as ToolContent
-              if (toolContent?.[0].toolName) {
-                return (
-                  <p
-                    key={index}
-                    style={{
-                      ...sd.system.typography.label.small_expanded,
-                      color: sd.system.color.component.onSurfaceVariant,
-                      marginBottom: sd.system.dimension.spacing.twoExtraSmall,
-                      padding: `${sd.system.dimension.spacing.small} 0`,
-                    }}
-                  >
-                    {getToolDescription(toolContent[0].toolName)}
-                  </p>
-                )
-              }
-            }
-
-            const textContent = Array.isArray(content)
-              ? content.find(part => part.type === 'text')?.text || ''
-              : (content as string)
-
-            const imagePart = Array.isArray(content)
-              ? content.find(part => part.type === 'image')
-              : undefined
-
-            const imageContent =
-              imagePart && typeof imagePart.image === 'string'
-                ? imagePart.image
-                : undefined
-
-            return (
-              <ChatMessage
-                key={index}
-                role={role as 'user' | 'assistant'}
-                content={textContent}
-                image={imageContent}
-              />
-            )
-          })}
-        {showTemplates && (
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'flex-end',
-              gap: sd.system.dimension.spacing.extraSmall,
-              marginTop: sd.system.dimension.spacing.medium,
-            }}
-          >
-            {(result == null || result.issues.length == 0
-              ? QUESTION_TEMPLATES.FOR_IMPROVEMENT
-              : QUESTION_TEMPLATES.FOR_ISSUE
-            ).map((template, index) => (
-              <Button
-                key={index}
-                styleType='outlined'
-                size='small'
-                onClick={() => request(template)}
-                style={{ width: 'fit-content' }}
-              >
-                {template}
-              </Button>
-            ))}
-          </div>
-        )}
-      </div>
-      <div
-        style={{
-          padding: sd.system.dimension.spacing.large,
-          display: 'flex',
-          gap: sd.system.dimension.spacing.medium,
-          alignItems: 'center',
-        }}
-      >
-        <TextField
-          placeholder='メッセージを入力'
-          style={{ flex: 1 }}
-          value={message}
-          onChange={e => {
-            setMessage(e.target.value)
-          }}
-          onKeyDown={e => {
-            if (
-              e.key === 'Enter' &&
-              !e.shiftKey &&
-              !e.nativeEvent.isComposing
-            ) {
-              e.preventDefault()
-              if (message.trim() != '') request()
-            }
-          }}
-        />
-        <Button
-          style={{ flexShrink: 0 }}
-          disabled={message.trim() === ''}
-          onClick={() => {
-            if (message.trim() != '') request()
-          }}
-        >
-          送信
-        </Button>
-      </div>
+      <ChatHeader result={result} onBack={onBack} />
+      <ChatMessageList
+        chatHistory={chatHistory}
+        result={result}
+        onTemplateClick={template => request(template)}
+      />
+      <ChatInputArea
+        message={message}
+        onMessageChange={setMessage}
+        onSend={() => request()}
+      />
     </div>
   )
 }
