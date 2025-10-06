@@ -3,6 +3,7 @@ import { Issue } from '../shared-src/models/Rules'
 import validateColorPairing from './utils/validateColorPairing'
 import validateAssignFrameVariable from './utils/validateAssignFrameVariable'
 import validateAssignTextVariable from './utils/validateAssignTextVariable'
+import getImage from '../shared-src/utils/getImage'
 
 figma.showUI(__html__, {
   width: 360,
@@ -97,6 +98,30 @@ figma.ui.onmessage = async msg => {
       type: 'storage-saved',
       key: msg.key,
     })
+  }
+  if (msg.type === 'get-selection-image') {
+    const selections = figma.currentPage.selection
+    if (selections.length === 0) {
+      figma.ui.postMessage({
+        type: 'selection-image',
+        image: null,
+      })
+      return
+    }
+
+    try {
+      const firstSelection = selections[0] as FrameNode
+      const imageData = await getImage(firstSelection)
+      figma.ui.postMessage({
+        type: 'selection-image',
+        image: imageData,
+      })
+    } catch (error) {
+      figma.ui.postMessage({
+        type: 'selection-image',
+        image: null,
+      })
+    }
   }
   if (msg.type === 'close') {
     figma.closePlugin()

@@ -5,7 +5,6 @@ import {
   experimental_createMCPClient as createMCPClient,
   stepCountIs,
   Tool,
-  ToolResultPart,
   ToolContent,
 } from 'ai'
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js'
@@ -33,10 +32,17 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
   const [tools, setTools] = useState<Record<string, Tool> | undefined>(
     undefined
   )
+  const [selectionImage, setSelectionImage] = useState<string | null>(null)
   const request = useCallback(async () => {
     try {
       setMessage('')
-      setChatHistory(prev => [...prev, { role: 'user', content: message }])
+      const userContent = selectionImage
+        ? [
+            { type: 'image' as const, image: selectionImage },
+            { type: 'text' as const, text: message },
+          ]
+        : message
+      setChatHistory(prev => [...prev, { role: 'user', content: userContent }])
       const openai = createOpenAI({ apiKey })
       const result = streamText({
         model: openai('gpt-4.1'),
@@ -48,7 +54,7 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
             content: 'あなたはフレンドリーなアシスタントです。',
           },
           ...chatHistory.filter(({ role }) => role !== 'tool'),
-          { role: 'user' as const, content: message },
+          { role: 'user' as const, content: userContent },
         ],
       })
       let assistantMessage = ''
@@ -87,12 +93,16 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
       }
     } catch (error) {
       console.error('リクエストエラー:', error)
+    } finally {
+      setSelectionImage(null)
     }
-  }, [apiKey, message, chatHistory, tools])
+  }, [apiKey, message, chatHistory, tools, selectionImage])
 
   useEffect(() => {
     setMessage('')
     setChatHistory([])
+    setSelectionImage(null)
+    parent.postMessage({ pluginMessage: { type: 'get-selection-image' } }, '*')
   }, [result])
 
   useEffect(() => {
@@ -110,6 +120,17 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
       }
     }
     init()
+  }, [])
+
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      const msg = event.data.pluginMessage
+      if (msg?.type === 'selection-image') {
+        setSelectionImage(msg.image)
+      }
+    }
+    window.addEventListener('message', handleMessage)
+    return () => window.removeEventListener('message', handleMessage)
   }, [])
 
   return (
@@ -186,11 +207,25 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
               }
             }
 
+            const textContent = Array.isArray(content)
+              ? content.find(part => part.type === 'text')?.text || ''
+              : (content as string)
+
+            const imagePart = Array.isArray(content)
+              ? content.find(part => part.type === 'image')
+              : undefined
+
+            const imageContent =
+              imagePart && typeof imagePart.image === 'string'
+                ? imagePart.image
+                : undefined
+
             return (
               <ChatMessage
                 key={index}
                 role={role as 'user' | 'assistant'}
-                content={content as string}
+                content={textContent}
+                image={imageContent}
               />
             )
           })}
@@ -199,39 +234,86 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
         style={{
           padding: sd.system.dimension.spacing.large,
           display: 'flex',
+          flexDirection: 'column',
           gap: sd.system.dimension.spacing.medium,
-          alignItems: 'center',
         }}
       >
-        <TextField
-          placeholder='メッセージを入力'
-          style={{ flex: 1 }}
-          value={message}
-          onChange={e => {
-            if (e.target instanceof HTMLInputElement) {
-              setMessage(e.target.value)
-            }
-          }}
-          onKeyDown={e => {
-            if (
-              e.key === 'Enter' &&
-              !e.shiftKey &&
-              !e.nativeEvent.isComposing
-            ) {
-              e.preventDefault()
-              if (message.trim() != '') request()
-            }
-          }}
-        />
-        <Button
-          style={{ flexShrink: 0 }}
-          disabled={message.trim() === ''}
-          onClick={() => {
-            if (message.trim() != '') request()
+        {selectionImage && (
+          <div
+            style={{
+              position: 'relative',
+              display: 'inline-block',
+              alignSelf: 'flex-start',
+              maxWidth: '200px',
+            }}
+          >
+            <img
+              src={selectionImage}
+              alt='選択中のフレーム'
+              style={{
+                maxWidth: '100%',
+                borderRadius: sd.system.dimension.radius.medium,
+                border: `1px solid ${sd.system.color.component.outlineVariant}`,
+              }}
+            />
+            <button
+              onClick={() => setSelectionImage(null)}
+              style={{
+                position: 'absolute',
+                top: sd.system.dimension.spacing.twoExtraSmall,
+                right: sd.system.dimension.spacing.twoExtraSmall,
+                width: '24px',
+                height: '24px',
+                borderRadius: '50%',
+                border: 'none',
+                backgroundColor: sd.system.color.component.surface,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              ✕
+            </button>
+          </div>
+        )}
+        <div
+          style={{
+            display: 'flex',
+            gap: sd.system.dimension.spacing.medium,
+            alignItems: 'center',
           }}
         >
-          送信
-        </Button>
+          <TextField
+            placeholder='メッセージを入力'
+            style={{ flex: 1 }}
+            value={message}
+            onChange={e => {
+              if (e.target instanceof HTMLInputElement) {
+                setMessage(e.target.value)
+              }
+            }}
+            onKeyDown={e => {
+              if (
+                e.key === 'Enter' &&
+                !e.shiftKey &&
+                !e.nativeEvent.isComposing
+              ) {
+                e.preventDefault()
+                if (message.trim() != '') request()
+              }
+            }}
+          />
+          <Button
+            style={{ flexShrink: 0 }}
+            disabled={message.trim() === ''}
+            onClick={() => {
+              if (message.trim() != '') request()
+            }}
+          >
+            送信
+          </Button>
+        </div>
       </div>
     </div>
   )
