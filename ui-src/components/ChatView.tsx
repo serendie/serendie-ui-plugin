@@ -40,7 +40,7 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
         },
       ])
     }
-  }, [selectionImage, setChatHistory])
+  }, [selectionImage])
 
   return (
     <div
@@ -147,26 +147,26 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
           alignItems: 'center',
         }}
       >
-          <TextField
-            placeholder='メッセージを入力'
-            style={{ flex: 1 }}
-            value={message}
-            onChange={e => {
-              if (e.target instanceof HTMLInputElement) {
-                setMessage(e.target.value)
-              }
-            }}
-            onKeyDown={e => {
-              if (
-                e.key === 'Enter' &&
-                !e.shiftKey &&
-                !e.nativeEvent.isComposing
-              ) {
-                e.preventDefault()
-                if (message.trim() != '') request()
-              }
-            }}
-          />
+        <TextField
+          placeholder='メッセージを入力'
+          style={{ flex: 1 }}
+          value={message}
+          onChange={e => {
+            if (e.target instanceof HTMLInputElement) {
+              setMessage(e.target.value)
+            }
+          }}
+          onKeyDown={e => {
+            if (
+              e.key === 'Enter' &&
+              !e.shiftKey &&
+              !e.nativeEvent.isComposing
+            ) {
+              e.preventDefault()
+              if (message.trim() != '') request()
+            }
+          }}
+        />
         <Button
           style={{ flexShrink: 0 }}
           disabled={message.trim() === ''}
