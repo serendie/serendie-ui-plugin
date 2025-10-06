@@ -144,6 +144,10 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
             top: 24,
             left: '50%',
             transform: 'translate(-50%, -50%)',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            maxWidth: '14em',
           }}
         >
           {result?.name}
