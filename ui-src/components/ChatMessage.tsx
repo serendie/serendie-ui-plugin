@@ -30,7 +30,7 @@ export default function ChatMessage({
           src={image}
           alt='添付画像'
           style={{
-            maxWidth: '100%',
+            maxHeight: '40vh',
             backgroundColor: sd.system.color.component.surface,
             padding: sd.system.dimension.spacing.small,
             borderRadius: sd.system.dimension.radius.small,
