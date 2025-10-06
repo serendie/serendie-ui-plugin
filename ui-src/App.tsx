@@ -48,6 +48,7 @@ export default function App() {
       if (message.type === 'lint-result') {
         setIsLoading(false)
         setResults(message.results)
+        setSelectedResult(null)
         setError(null)
       }
       if (message.type === 'error') {
