@@ -1,14 +1,4 @@
-import { createOpenAI } from '@ai-sdk/openai'
-import {
-  ModelMessage,
-  streamText,
-  experimental_createMCPClient as createMCPClient,
-  stepCountIs,
-  Tool,
-  ToolContent,
-} from 'ai'
-import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js'
-import { useCallback, useEffect, useState } from 'react'
+import { ToolContent } from 'ai'
 import { Button, TextField } from '@serendie/ui'
 import tokens from '@serendie/design-token'
 import { SerendieSymbol } from '@serendie/symbols'
@@ -16,6 +6,9 @@ import { SerendieSymbol } from '@serendie/symbols'
 import { Result } from '../App'
 import ChatMessage from './ChatMessage'
 import { useApiKey } from '../hooks/useApiKey'
+import { useMCPTools } from '../hooks/useMCPTools'
+import { useSelectionImage } from '../hooks/useSelectionImage'
+import { useChat } from '../hooks/useChat'
 import getToolDescription from '../utils/getToolDescription'
 
 const { sd } = tokens
@@ -27,111 +20,15 @@ interface ChatViewProps {
 
 export default function ChatView({ result, onBack }: ChatViewProps) {
   const { apiKey } = useApiKey()
-  const [message, setMessage] = useState('')
-  const [chatHistory, setChatHistory] = useState<ModelMessage[]>([])
-  const [tools, setTools] = useState<Record<string, Tool> | undefined>(
-    undefined
-  )
-  const [selectionImage, setSelectionImage] = useState<string | null>(null)
-  const request = useCallback(async () => {
-    try {
-      setMessage('')
-      const userContent = selectionImage
-        ? [
-            { type: 'image' as const, image: selectionImage },
-            { type: 'text' as const, text: message },
-          ]
-        : message
-      setChatHistory(prev => [...prev, { role: 'user', content: userContent }])
-      const openai = createOpenAI({ apiKey })
-      const result = streamText({
-        model: openai('gpt-4.1'),
-        tools,
-        stopWhen: stepCountIs(10),
-        messages: [
-          {
-            role: 'system' as const,
-            content: 'あなたはフレンドリーなアシスタントです。',
-          },
-          ...chatHistory.filter(({ role }) => role !== 'tool'),
-          { role: 'user' as const, content: userContent },
-        ],
-      })
-      let assistantMessage = ''
-      for await (const part of result.fullStream) {
-        if (part.type === 'text-delta') {
-          assistantMessage += part.text
-          setChatHistory(prev => {
-            const newHistory = [...prev]
-            const lastMessage = newHistory[newHistory.length - 1]
-            if (lastMessage && lastMessage.role === 'assistant') {
-              lastMessage.content = assistantMessage
-            } else {
-              newHistory.push({ role: 'assistant', content: assistantMessage })
-            }
-            return newHistory
-          })
-        } else if (part.type === 'tool-call') {
-          console.log(part.toolName, part.input)
-        } else if (part.type === 'tool-result') {
-          console.log(part.toolName, part.output)
-          setChatHistory(prev => [
-            ...prev,
-            {
-              role: 'tool' as const,
-              content: [
-                {
-                  type: 'tool-result' as const,
-                  toolCallId: part.toolCallId,
-                  toolName: part.toolName,
-                  output: part.output,
-                },
-              ],
-            },
-          ])
-        }
-      }
-    } catch (error) {
-      console.error('リクエストエラー:', error)
-    } finally {
-      setSelectionImage(null)
-    }
-  }, [apiKey, message, chatHistory, tools, selectionImage])
-
-  useEffect(() => {
-    setMessage('')
-    setChatHistory([])
-    setSelectionImage(null)
-    parent.postMessage({ pluginMessage: { type: 'get-selection-image' } }, '*')
-  }, [result])
-
-  useEffect(() => {
-    const init = async () => {
-      try {
-        const mcp = await createMCPClient({
-          transport: new StreamableHTTPClientTransport(
-            new URL('https://serendie.design/mcp')
-          ),
-        })
-        const tools = await mcp.tools()
-        setTools(tools)
-      } catch (error) {
-        console.error('MCP初期化エラー:', error)
-      }
-    }
-    init()
-  }, [])
-
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      const msg = event.data.pluginMessage
-      if (msg?.type === 'selection-image') {
-        setSelectionImage(msg.image)
-      }
-    }
-    window.addEventListener('message', handleMessage)
-    return () => window.removeEventListener('message', handleMessage)
-  }, [])
+  const tools = useMCPTools()
+  const [selectionImage, setSelectionImage] = useSelectionImage(result)
+  const { message, setMessage, chatHistory, request } = useChat({
+    apiKey,
+    tools,
+    result,
+    selectionImage,
+    setSelectionImage,
+  })
 
   return (
     <div
