@@ -36,37 +36,39 @@ export default function ChatMessage({
           }}
         />
       )}
-      <div
-        style={{
-          padding:
-            role === 'user'
-              ? `${sd.system.dimension.spacing.extraSmall} ${sd.system.dimension.spacing.medium}`
-              : 0,
-          borderRadius: sd.system.dimension.radius.extraLarge,
-          borderTopRightRadius:
-            role === 'user' ? 0 : sd.system.dimension.radius.extraLarge,
-          backgroundColor:
-            role === 'user'
-              ? sd.system.color.impression.primary
-              : 'transparent',
-        }}
-      >
-        <p
+      {content && (
+        <div
           style={{
-            ...sd.system.typography.body.medium_expanded,
-            lineHeight: sd.reference.typography.lineHeight.tight,
-            color:
+            padding:
               role === 'user'
-                ? sd.system.color.impression.onPrimary
-                : sd.system.color.component.onSurface,
-            wordBreak: 'break-word',
-            overflowWrap: 'break-word',
-            whiteSpace: 'pre-wrap',
+                ? `${sd.system.dimension.spacing.extraSmall} ${sd.system.dimension.spacing.medium}`
+                : 0,
+            borderRadius: sd.system.dimension.radius.extraLarge,
+            borderTopRightRadius:
+              role === 'user' ? 0 : sd.system.dimension.radius.extraLarge,
+            backgroundColor:
+              role === 'user'
+                ? sd.system.color.impression.primary
+                : 'transparent',
           }}
         >
-          {content}
-        </p>
-      </div>
+          <p
+            style={{
+              ...sd.system.typography.body.medium_expanded,
+              lineHeight: sd.reference.typography.lineHeight.tight,
+              color:
+                role === 'user'
+                  ? sd.system.color.impression.onPrimary
+                  : sd.system.color.component.onSurface,
+              wordBreak: 'break-word',
+              overflowWrap: 'break-word',
+              whiteSpace: 'pre-wrap',
+            }}
+          >
+            {content}
+          </p>
+        </div>
+      )}
     </div>
   )
 }

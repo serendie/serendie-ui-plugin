@@ -2,6 +2,7 @@ import { ToolContent } from 'ai'
 import { Button, TextField } from '@serendie/ui'
 import tokens from '@serendie/design-token'
 import { SerendieSymbol } from '@serendie/symbols'
+import { useEffect } from 'react'
 
 import { Result } from '../App'
 import ChatMessage from './ChatMessage'
@@ -21,14 +22,25 @@ interface ChatViewProps {
 export default function ChatView({ result, onBack }: ChatViewProps) {
   const { apiKey } = useApiKey()
   const tools = useMCPTools()
-  const [selectionImage, setSelectionImage] = useSelectionImage(result)
-  const { message, setMessage, chatHistory, request } = useChat({
-    apiKey,
-    tools,
-    result,
-    selectionImage,
-    setSelectionImage,
-  })
+  const { message, setMessage, chatHistory, setChatHistory, request } = useChat(
+    {
+      apiKey,
+      tools,
+      result,
+    }
+  )
+  const selectionImage = useSelectionImage(result)
+
+  useEffect(() => {
+    if (selectionImage) {
+      setChatHistory([
+        {
+          role: 'user',
+          content: [{ type: 'image', image: selectionImage }],
+        },
+      ])
+    }
+  }, [selectionImage, setChatHistory])
 
   return (
     <div
@@ -131,56 +143,10 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
         style={{
           padding: sd.system.dimension.spacing.large,
           display: 'flex',
-          flexDirection: 'column',
           gap: sd.system.dimension.spacing.medium,
+          alignItems: 'center',
         }}
       >
-        {selectionImage && (
-          <div
-            style={{
-              position: 'relative',
-              display: 'inline-block',
-              alignSelf: 'flex-start',
-              maxWidth: '200px',
-            }}
-          >
-            <img
-              src={selectionImage}
-              alt='選択中のフレーム'
-              style={{
-                maxWidth: '100%',
-                borderRadius: sd.system.dimension.radius.medium,
-                border: `1px solid ${sd.system.color.component.outlineVariant}`,
-              }}
-            />
-            <button
-              onClick={() => setSelectionImage(null)}
-              style={{
-                position: 'absolute',
-                top: sd.system.dimension.spacing.twoExtraSmall,
-                right: sd.system.dimension.spacing.twoExtraSmall,
-                width: '24px',
-                height: '24px',
-                borderRadius: '50%',
-                border: 'none',
-                backgroundColor: sd.system.color.component.surface,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              ✕
-            </button>
-          </div>
-        )}
-        <div
-          style={{
-            display: 'flex',
-            gap: sd.system.dimension.spacing.medium,
-            alignItems: 'center',
-          }}
-        >
           <TextField
             placeholder='メッセージを入力'
             style={{ flex: 1 }}
@@ -201,16 +167,15 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
               }
             }}
           />
-          <Button
-            style={{ flexShrink: 0 }}
-            disabled={message.trim() === ''}
-            onClick={() => {
-              if (message.trim() != '') request()
-            }}
-          >
-            送信
-          </Button>
-        </div>
+        <Button
+          style={{ flexShrink: 0 }}
+          disabled={message.trim() === ''}
+          onClick={() => {
+            if (message.trim() != '') request()
+          }}
+        >
+          送信
+        </Button>
       </div>
     </div>
   )

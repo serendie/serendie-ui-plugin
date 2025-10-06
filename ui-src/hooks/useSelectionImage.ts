@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react'
 import { Result } from '../App'
 
 export function useSelectionImage(result: Result | null) {
-  const [selectionImage, setSelectionImage] = useState<string | null>(null)
+  const [image, setImage] = useState<string | null>(null)
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       const msg = event.data.pluginMessage
       if (msg?.type === 'selection-image') {
-        setSelectionImage(msg.image)
+        setImage(msg.image)
       }
     }
     window.addEventListener('message', handleMessage)
@@ -16,10 +16,10 @@ export function useSelectionImage(result: Result | null) {
   }, [])
 
   useEffect(() => {
-    setSelectionImage(null)
+    setImage(null)
     // ChatView表示時に画像を自動取得
     parent.postMessage({ pluginMessage: { type: 'get-selection-image' } }, '*')
   }, [result])
 
-  return [selectionImage, setSelectionImage] as const
+  return image
 }

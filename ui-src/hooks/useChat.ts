@@ -7,30 +7,16 @@ interface UseChatProps {
   apiKey: string
   tools: Record<string, Tool> | undefined
   result: Result | null
-  selectionImage: string | null
-  setSelectionImage: (image: string | null) => void
 }
 
-export function useChat({
-  apiKey,
-  tools,
-  result,
-  selectionImage,
-  setSelectionImage,
-}: UseChatProps) {
+export function useChat({ apiKey, tools, result }: UseChatProps) {
   const [message, setMessage] = useState('')
   const [chatHistory, setChatHistory] = useState<ModelMessage[]>([])
 
   const request = useCallback(async () => {
     try {
       setMessage('')
-      const userContent = selectionImage
-        ? [
-            { type: 'image' as const, image: selectionImage },
-            { type: 'text' as const, text: message },
-          ]
-        : message
-      setChatHistory(prev => [...prev, { role: 'user', content: userContent }])
+      setChatHistory(prev => [...prev, { role: 'user', content: message }])
       const openai = createOpenAI({ apiKey })
       const result = streamText({
         model: openai('gpt-4.1'),
@@ -42,7 +28,7 @@ export function useChat({
             content: 'あなたはフレンドリーなアシスタントです。',
           },
           ...chatHistory.filter(({ role }) => role !== 'tool'),
-          { role: 'user' as const, content: userContent },
+          { role: 'user' as const, content: message },
         ],
       })
       let assistantMessage = ''
@@ -81,15 +67,13 @@ export function useChat({
       }
     } catch (error) {
       console.error('リクエストエラー:', error)
-    } finally {
-      setSelectionImage(null)
     }
-  }, [apiKey, message, chatHistory, tools, selectionImage, setSelectionImage])
+  }, [apiKey, message, chatHistory, tools])
 
   useEffect(() => {
     setMessage('')
     setChatHistory([])
   }, [result])
 
-  return { message, setMessage, chatHistory, request }
+  return { message, setMessage, chatHistory, setChatHistory, request }
 }
