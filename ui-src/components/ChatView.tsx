@@ -19,6 +19,12 @@ interface ChatViewProps {
   onBack: () => void
 }
 
+const QUESTION_TEMPLATES = [
+  'このデザインの問題点を教えて',
+  '修正方法を提案して',
+  'なぜこのエラーが出ているの？',
+]
+
 export default function ChatView({ result, onBack }: ChatViewProps) {
   const { apiKey } = useApiKey()
   const tools = useMCPTools()
@@ -41,6 +47,12 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
       ])
     }
   }, [selectionImage])
+
+  const showTemplates =
+    chatHistory.length === 1 &&
+    chatHistory[0].role === 'user' &&
+    Array.isArray(chatHistory[0].content) &&
+    chatHistory[0].content.some(part => part.type === 'image')
 
   return (
     <div
@@ -138,6 +150,29 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
               />
             )
           })}
+        {showTemplates && (
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-end',
+              gap: sd.system.dimension.spacing.extraSmall,
+              marginTop: sd.system.dimension.spacing.medium,
+            }}
+          >
+            {QUESTION_TEMPLATES.map((template, index) => (
+              <Button
+                key={index}
+                styleType='outlined'
+                size='small'
+                onClick={() => setMessage(template)}
+                style={{ width: 'fit-content' }}
+              >
+                {template}
+              </Button>
+            ))}
+          </div>
+        )}
       </div>
       <div
         style={{
