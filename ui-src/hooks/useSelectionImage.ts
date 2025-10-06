@@ -17,8 +17,12 @@ export function useSelectionImage(result: Result | null) {
 
   useEffect(() => {
     setImage(null)
-    // ChatView表示時に画像を自動取得
-    parent.postMessage({ pluginMessage: { type: 'get-selection-image' } }, '*')
+    if (result?.id) {
+      parent.postMessage(
+        { pluginMessage: { type: 'get-selection-image', nodeId: result.id } },
+        '*'
+      )
+    }
   }, [result])
 
   return image

@@ -3,7 +3,7 @@ import { Issue } from '../shared-src/models/Rules'
 import validateColorPairing from './utils/validateColorPairing'
 import validateAssignFrameVariable from './utils/validateAssignFrameVariable'
 import validateAssignTextVariable from './utils/validateAssignTextVariable'
-import getImage from '../shared-src/utils/getImage'
+import getImage, { canGetImage } from '../shared-src/utils/getImage'
 
 figma.showUI(__html__, {
   width: 360,
@@ -100,8 +100,8 @@ figma.ui.onmessage = async msg => {
     })
   }
   if (msg.type === 'get-selection-image') {
-    const selections = figma.currentPage.selection
-    if (selections.length === 0) {
+    const nodeId = msg.nodeId
+    if (!nodeId) {
       figma.ui.postMessage({
         type: 'selection-image',
         image: null,
@@ -110,12 +110,19 @@ figma.ui.onmessage = async msg => {
     }
 
     try {
-      const firstSelection = selections[0] as FrameNode
-      const imageData = await getImage(firstSelection)
-      figma.ui.postMessage({
-        type: 'selection-image',
-        image: imageData,
-      })
+      const node = await figma.getNodeByIdAsync(nodeId)
+      if (node && canGetImage(node)) {
+        const imageData = await getImage(node as FrameNode)
+        figma.ui.postMessage({
+          type: 'selection-image',
+          image: imageData,
+        })
+      } else {
+        figma.ui.postMessage({
+          type: 'selection-image',
+          image: null,
+        })
+      }
     } catch (error) {
       figma.ui.postMessage({
         type: 'selection-image',
