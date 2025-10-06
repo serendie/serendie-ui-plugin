@@ -13,10 +13,11 @@ export function useChat({ apiKey, tools, result }: UseChatProps) {
   const [message, setMessage] = useState('')
   const [chatHistory, setChatHistory] = useState<ModelMessage[]>([])
 
-  const request = useCallback(async () => {
+  const request = useCallback(async (customMessage?: string) => {
     try {
+      const messageToSend = customMessage ?? message
       setMessage('')
-      setChatHistory(prev => [...prev, { role: 'user', content: message }])
+      setChatHistory(prev => [...prev, { role: 'user', content: messageToSend }])
       const openai = createOpenAI({ apiKey })
       const result = streamText({
         model: openai('gpt-4.1'),
@@ -28,7 +29,7 @@ export function useChat({ apiKey, tools, result }: UseChatProps) {
             content: 'あなたはフレンドリーなアシスタントです。',
           },
           ...chatHistory.filter(({ role }) => role !== 'tool'),
-          { role: 'user' as const, content: message },
+          { role: 'user' as const, content: messageToSend },
         ],
       })
       let assistantMessage = ''

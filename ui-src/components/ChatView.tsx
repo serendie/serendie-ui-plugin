@@ -19,11 +19,10 @@ interface ChatViewProps {
   onBack: () => void
 }
 
-const QUESTION_TEMPLATES = [
-  'このデザインの問題点を教えて',
-  '修正方法を提案して',
-  'なぜこのエラーが出ているの？',
-]
+const QUESTION_TEMPLATES = {
+  FOR_ISSUE: ['改善の大きな方針を教えて', 'デザインシステムに準拠するには？'],
+  FOR_IMPROVEMENT: ['今のデザインを評価して', '改善案を3つ教えて'],
+}
 
 export default function ChatView({ result, onBack }: ChatViewProps) {
   const { apiKey } = useApiKey()
@@ -160,12 +159,15 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
               marginTop: sd.system.dimension.spacing.medium,
             }}
           >
-            {QUESTION_TEMPLATES.map((template, index) => (
+            {(result == null || result.issues.length == 0
+              ? QUESTION_TEMPLATES.FOR_IMPROVEMENT
+              : QUESTION_TEMPLATES.FOR_ISSUE
+            ).map((template, index) => (
               <Button
                 key={index}
                 styleType='outlined'
                 size='small'
-                onClick={() => setMessage(template)}
+                onClick={() => request(template)}
                 style={{ width: 'fit-content' }}
               >
                 {template}
