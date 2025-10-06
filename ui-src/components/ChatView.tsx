@@ -187,9 +187,7 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
           style={{ flex: 1 }}
           value={message}
           onChange={e => {
-            if (e.target instanceof HTMLInputElement) {
-              setMessage(e.target.value)
-            }
+            setMessage(e.target.value)
           }}
           onKeyDown={e => {
             if (
