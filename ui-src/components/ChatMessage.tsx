@@ -1,4 +1,5 @@
 import tokens from '@serendie/design-token'
+import MarkdownRenderer from './MarkdownRenderer'
 
 const { sd } = tokens
 
@@ -49,23 +50,24 @@ export default function ChatMessage({
               role === 'user'
                 ? sd.system.color.impression.primary
                 : 'transparent',
+            overflowWrap: 'break-word',
           }}
         >
-          <p
-            style={{
-              ...sd.system.typography.body.medium_expanded,
-              lineHeight: sd.reference.typography.lineHeight.tight,
-              color:
-                role === 'user'
-                  ? sd.system.color.impression.onPrimary
-                  : sd.system.color.component.onSurface,
-              wordBreak: 'break-word',
-              overflowWrap: 'break-word',
-              whiteSpace: 'pre-wrap',
-            }}
-          >
-            {content}
-          </p>
+          {role === 'user' ? (
+            <div
+              style={{
+                ...sd.system.typography.body.medium_expanded,
+                color: sd.system.color.impression.onPrimary,
+                wordBreak: 'break-word',
+              }}
+            >
+              {content}
+            </div>
+          ) : (
+            <div style={{ color: sd.system.color.component.onSurface }}>
+              <MarkdownRenderer>{content}</MarkdownRenderer>
+            </div>
+          )}
         </div>
       )}
     </div>
