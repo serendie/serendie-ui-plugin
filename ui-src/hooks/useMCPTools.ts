@@ -12,10 +12,11 @@ export function useMCPTools() {
       try {
         const mcp = await createMCPClient({
           transport: new StreamableHTTPClientTransport(
-            new URL('https://serendie.design/mcp')
+            new URL('http://localhost:4321/mcp')
           ),
         })
         const tools = await mcp.tools()
+        console.log('MCP Tools:', tools)
         setTools(tools)
       } catch (error) {
         console.error('MCP初期化エラー:', error)

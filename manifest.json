@@ -11,6 +11,7 @@
   "editorType": ["figma"],
   "networkAccess": {
     "allowedDomains": ["https://serendie.design/mcp", "https://api.openai.com"],
+    "devAllowedDomains": ["http://localhost:4321/mcp"],
     "reasoning": "デザインガイドラインに基づくアドバイスを提供するため、Serendie MCPやOpenAI APIと通信します。"
   }
 }
