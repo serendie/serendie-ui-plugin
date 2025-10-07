@@ -21,9 +21,11 @@ export default function MarkdownRenderer({
           h1: ({ children }) => (
             <h1
               style={{
-                ...sd.system.typography.headline.medium_expanded,
+                ...sd.system.typography.headline.small_expanded,
                 marginTop: sd.system.dimension.spacing.medium,
-                marginBottom: sd.system.dimension.spacing.small,
+                marginBottom: sd.system.dimension.spacing.extraSmall,
+                wordBreak: 'break-word',
+                overflowWrap: 'break-word',
               }}
             >
               {children}
@@ -32,9 +34,11 @@ export default function MarkdownRenderer({
           h2: ({ children }) => (
             <h2
               style={{
-                ...sd.system.typography.headline.medium_expanded,
+                ...sd.system.typography.headline.small_expanded,
                 marginTop: sd.system.dimension.spacing.medium,
-                marginBottom: sd.system.dimension.spacing.small,
+                marginBottom: sd.system.dimension.spacing.extraSmall,
+                wordBreak: 'break-word',
+                overflowWrap: 'break-word',
               }}
             >
               {children}
@@ -45,7 +49,9 @@ export default function MarkdownRenderer({
               style={{
                 ...sd.system.typography.headline.small_expanded,
                 marginTop: sd.system.dimension.spacing.medium,
-                marginBottom: sd.system.dimension.spacing.small,
+                marginBottom: sd.system.dimension.spacing.extraSmall,
+                wordBreak: 'break-word',
+                overflowWrap: 'break-word',
               }}
             >
               {children}
