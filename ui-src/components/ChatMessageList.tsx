@@ -1,12 +1,12 @@
 import { ModelMessage, ToolContent } from 'ai'
+import { useMemo } from 'react'
 import { Button } from '@serendie/ui'
 import tokens from '@serendie/design-token'
 
-import { Result } from '../App'
 import ChatMessage from './ChatMessage'
 import getToolDescription from '../utils/getToolDescription'
 import { useAutoScroll } from '../hooks/useAutoScroll'
-import { useMemo } from 'react'
+import { Result } from '../models/Result'
 
 const { sd } = tokens
 
@@ -87,7 +87,7 @@ export default function ChatMessageList({
             <ChatMessage
               key={index}
               role={role as 'user' | 'assistant'}
-              content={textContent}
+              content={imageContent ? '' : textContent}
               image={imageContent}
             />
           )

@@ -1,15 +1,31 @@
 import { createOpenAI } from '@ai-sdk/openai'
 import { ModelMessage, streamText, stepCountIs, Tool } from 'ai'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Result } from '../App'
+import { Result } from '../models/Result'
 
-interface UseChatProps {
+const systemPrompt = `あなたはSerendie Design Systemについてよく知るAIアシスタントです。
+これからデザインを進めているSerendie UIの画面と、Serendie Design Systemのガイドラインと不一致な部分を共有します。
+これらの情報をもとにデザイナーにアドバイスしてください。
+また、共有された情報以外に、画像から明らかに課題だと読み取れるものがある場合は、それについてもアドバイスしてください。
+
+# 重要事項
+- ** 必ず冒頭でSerendie MCPを用いて概要を取得するようにしてください。**
+- ** エンジニア向けの情報を提供しないでください **
+- ** 必ずSerendie MCPの各種ツールに基づいたこと以外は提供しないでください。**
+
+# 伝え方
+結論ファーストで、聞かれたことにまず端的に答えてください。
+そのうえで、なぜそう考えたのかを説明してください。`
+
+export function useChat({
+  apiKey,
+  tools,
+  result,
+}: {
   apiKey: string
   tools: Record<string, Tool> | undefined
   result: Result | null
-}
-
-export function useChat({ apiKey, tools, result }: UseChatProps) {
+}) {
   const [message, setMessage] = useState('')
   const [chatHistory, setChatHistory] = useState<ModelMessage[]>([])
   const abortControllerRef = useRef<AbortController | null>(null)
@@ -31,7 +47,7 @@ export function useChat({ apiKey, tools, result }: UseChatProps) {
           { role: 'user', content: messageToSend },
         ])
         const openai = createOpenAI({ apiKey })
-        const result = streamText({
+        const streamResult = streamText({
           model: openai('gpt-4.1'),
           tools,
           stopWhen: stepCountIs(10),
@@ -39,14 +55,14 @@ export function useChat({ apiKey, tools, result }: UseChatProps) {
           messages: [
             {
               role: 'system' as const,
-              content: 'あなたはフレンドリーなアシスタントです。',
+              content: systemPrompt,
             },
             ...chatHistory.filter(({ role }) => role !== 'tool'),
             { role: 'user' as const, content: messageToSend },
           ],
         })
         let assistantMessage = ''
-        for await (const part of result.fullStream) {
+        for await (const part of streamResult.fullStream) {
           if (part.type === 'text-delta') {
             assistantMessage += part.text
             setChatHistory(prev => {

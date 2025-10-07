@@ -1,7 +1,6 @@
 import tokens from '@serendie/design-token'
 import { useEffect } from 'react'
 
-import { Result } from '../App'
 import { useApiKey } from '../hooks/useApiKey'
 import { useMCPTools } from '../hooks/useMCPTools'
 import { useSelectionImage } from '../hooks/useSelectionImage'
@@ -9,6 +8,7 @@ import { useChat } from '../hooks/useChat'
 import ChatHeader from './ChatHeader'
 import ChatMessageList from './ChatMessageList'
 import ChatInputArea from './ChatInputArea'
+import { Result, serializeResult } from '../models/Result'
 
 const { sd } = tokens
 
@@ -30,15 +30,18 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
   const selectionImage = useSelectionImage(result)
 
   useEffect(() => {
-    if (selectionImage) {
+    if (selectionImage && result) {
       setChatHistory([
         {
           role: 'user',
-          content: [{ type: 'image', image: selectionImage }],
+          content: [
+            { type: 'image', image: selectionImage },
+            { type: 'text', text: serializeResult(result) },
+          ],
         },
       ])
     }
-  }, [selectionImage])
+  }, [selectionImage, result])
 
   return (
     <div

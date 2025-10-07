@@ -128,3 +128,11 @@ export type Issue = {
   nodeName: string
   nodeType: string
 } & IssueDetail
+
+export function serializeIssues(issue: Issue): string {
+  return (
+    [`${issue.severity}: ${issue.message}`, `提案: ${issue.suggestion}`].join(
+      '\n'
+    ) + '\n'
+  )
+}

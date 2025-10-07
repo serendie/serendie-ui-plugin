@@ -7,16 +7,9 @@ import IssuesList from './components/IssuesList'
 import Notification from './components/Notification'
 import ChatView from './components/ChatView'
 import SettingsDialog from './components/SettingsDialog'
-import { Issue } from '../shared-src/models/Rules'
+import { Result } from './models/Result'
 
 const { sd } = tokens
-
-export type Result = {
-  name: string
-  id: string
-  issues: Issue[]
-  totalNodes: number
-}
 
 type PluginMessage =
   | {
