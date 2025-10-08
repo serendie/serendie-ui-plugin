@@ -6,3 +6,7 @@ export default async function getImage(node: FrameNode) {
   const base64 = figma.base64Encode(imageData)
   return `data:image/png;base64,${base64}`
 }
+
+export function canGetImage(node: BaseNode): node is FrameNode {
+  return 'exportAsync' in node
+}

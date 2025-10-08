@@ -1,8 +1,15 @@
-import { Button, TextField } from '@serendie/ui'
 import tokens from '@serendie/design-token'
-import { SerendieSymbol } from '@serendie/symbols'
+import { useEffect } from 'react'
 
-import { Result } from '../App'
+import { useApiKey } from '../hooks/useApiKey'
+import { useMCPTools } from '../hooks/useMCPTools'
+import { useSelectionImage } from '../hooks/useSelectionImage'
+import { useChat } from '../hooks/useChat'
+import { useQuestions } from '../hooks/useQuestions'
+import ChatHeader from './ChatHeader'
+import ChatMessageList from './ChatMessageList'
+import ChatInputArea from './ChatInputArea'
+import { Result, serializeResult } from '../models/Result'
 
 const { sd } = tokens
 
@@ -12,6 +19,36 @@ interface ChatViewProps {
 }
 
 export default function ChatView({ result, onBack }: ChatViewProps) {
+  const { apiKey } = useApiKey()
+  const tools = useMCPTools()
+  const { message, setMessage, chatHistory, setChatHistory, request } = useChat(
+    {
+      apiKey,
+      tools,
+      result,
+    }
+  )
+  const selectionImage = useSelectionImage(result)
+  const { questions, isLoading: isLoadingQuestions } = useQuestions({
+    apiKey,
+    result,
+    imageData: selectionImage ?? undefined,
+  })
+
+  useEffect(() => {
+    if (selectionImage && result) {
+      setChatHistory([
+        {
+          role: 'user',
+          content: [
+            { type: 'image', image: selectionImage },
+            { type: 'text', text: serializeResult(result) },
+          ],
+        },
+      ])
+    }
+  }, [selectionImage, result])
+
   return (
     <div
       style={{
@@ -22,73 +59,19 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
         backgroundColor: sd.system.color.impression.tertiary,
       }}
     >
-      <div
-        style={{
-          padding: sd.system.dimension.spacing.extraSmall,
-        }}
-      >
-        <Button
-          leftIcon={<SerendieSymbol name='chevron-left' />}
-          size='small'
-          styleType='ghost'
-          onClick={onBack}
-        >
-          戻る
-        </Button>
-        <p
-          style={{
-            textAlign: 'center',
-            ...sd.system.typography.label.medium_expanded,
-            color: sd.system.color.component.onSurfaceVariant,
-            position: 'absolute',
-            top: 24,
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-          }}
-        >
-          {result?.name}
-        </p>
-        <div style={{ width: 60 }} />
-      </div>
-      <div
-        style={{
-          flex: 1,
-          overflow: 'auto',
-          padding: sd.system.dimension.spacing.threeExtraLarge,
-        }}
-      >
-        <div
-          style={{
-            ...sd.system.typography.body.large_expanded,
-            color: sd.system.color.component.onSurfaceVariant,
-            textAlign: 'center',
-            marginTop: sd.system.dimension.spacing.fourExtraLarge,
-          }}
-        >
-          チャット機能は準備中です
-        </div>
-        <div
-          style={{
-            ...sd.system.typography.body.medium_expanded,
-            color: sd.system.color.component.onSurfaceVariant,
-            textAlign: 'center',
-            marginTop: sd.system.dimension.spacing.large,
-          }}
-        >
-          検証結果: {result?.issues.length ?? 0}件のissue
-        </div>
-      </div>
-      <div
-        style={{
-          padding: sd.system.dimension.spacing.large,
-          display: 'flex',
-          gap: sd.system.dimension.spacing.medium,
-          alignItems: 'center',
-        }}
-      >
-        <TextField placeholder='メッセージを入力' style={{ flex: 1 }} />
-        <Button style={{ flexShrink: 0 }}>送信</Button>
-      </div>
+      <ChatHeader result={result} onBack={onBack} />
+      <ChatMessageList
+        chatHistory={chatHistory}
+        result={result}
+        questions={questions}
+        isLoadingQuestions={isLoadingQuestions}
+        onTemplateClick={template => request(template)}
+      />
+      <ChatInputArea
+        message={message}
+        onMessageChange={setMessage}
+        onSend={() => request()}
+      />
     </div>
   )
 }
