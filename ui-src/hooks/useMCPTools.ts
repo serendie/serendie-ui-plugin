@@ -12,7 +12,7 @@ export function useMCPTools() {
       try {
         const mcp = await createMCPClient({
           transport: new StreamableHTTPClientTransport(
-            new URL('http://localhost:4321/mcp')
+            new URL('https://serendie.design/mcp')
           ),
         })
         const tools = await mcp.tools()
