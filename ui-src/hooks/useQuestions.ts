@@ -24,8 +24,12 @@ export function useQuestions({
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
+    setQuestions([])
+  }, [result])
+
+  useEffect(() => {
     const generateQuestions = async () => {
-      if (!imageData || !apiKey) return
+      if (!imageData || !apiKey || questions.length > 0) return
 
       setIsLoading(true)
       try {
@@ -65,7 +69,7 @@ export function useQuestions({
     }
 
     generateQuestions()
-  }, [apiKey, result, imageData])
+  }, [apiKey, imageData, questions.length])
 
   return { questions, isLoading }
 }
