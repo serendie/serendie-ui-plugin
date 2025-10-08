@@ -1,7 +1,7 @@
 import { Button } from '@serendie/ui'
 import tokens from '@serendie/design-token'
 import { SerendieSymbol } from '@serendie/symbols'
-import { Result } from '../App'
+import { Result } from '../models/Result'
 
 const { sd } = tokens
 

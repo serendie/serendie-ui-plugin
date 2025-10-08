@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Result } from '../App'
+import { Result } from '../models/Result'
 
 export function useSelectionImage(result: Result | null) {
   const [image, setImage] = useState<string | null>(null)

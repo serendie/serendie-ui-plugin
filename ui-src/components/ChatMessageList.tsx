@@ -10,20 +10,19 @@ import { Result } from '../models/Result'
 
 const { sd } = tokens
 
-const QUESTION_TEMPLATES = {
-  FOR_ISSUE: ['改善の大きな方針を教えて', 'デザインシステムに準拠するには？'],
-  FOR_IMPROVEMENT: ['今のデザインを評価して', '改善案を3つ教えて'],
-}
-
 interface ChatMessageListProps {
   chatHistory: ModelMessage[]
   result: Result | null
+  questions: string[]
+  isLoadingQuestions: boolean
   onTemplateClick: (template: string) => void
 }
 
 export default function ChatMessageList({
   chatHistory,
   result,
+  questions,
+  isLoadingQuestions,
   onTemplateClick,
 }: ChatMessageListProps) {
   const scrollContainerRef = useAutoScroll(chatHistory)
@@ -92,7 +91,7 @@ export default function ChatMessageList({
             />
           )
         })}
-      {showTemplates && (
+      {showTemplates && !isLoadingQuestions && questions.length > 0 && (
         <div
           style={{
             display: 'flex',
@@ -102,18 +101,15 @@ export default function ChatMessageList({
             marginTop: sd.system.dimension.spacing.medium,
           }}
         >
-          {(result == null || result.issues.length == 0
-            ? QUESTION_TEMPLATES.FOR_IMPROVEMENT
-            : QUESTION_TEMPLATES.FOR_ISSUE
-          ).map((template, index) => (
+          {questions.map((question, index) => (
             <Button
               key={index}
               styleType='outlined'
               size='small'
-              onClick={() => onTemplateClick(template)}
+              onClick={() => onTemplateClick(question)}
               style={{ width: 'fit-content' }}
             >
-              {template}
+              {question}
             </Button>
           ))}
         </div>

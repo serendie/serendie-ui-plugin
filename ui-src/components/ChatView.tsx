@@ -5,6 +5,7 @@ import { useApiKey } from '../hooks/useApiKey'
 import { useMCPTools } from '../hooks/useMCPTools'
 import { useSelectionImage } from '../hooks/useSelectionImage'
 import { useChat } from '../hooks/useChat'
+import { useQuestions } from '../hooks/useQuestions'
 import ChatHeader from './ChatHeader'
 import ChatMessageList from './ChatMessageList'
 import ChatInputArea from './ChatInputArea'
@@ -28,6 +29,11 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
     }
   )
   const selectionImage = useSelectionImage(result)
+  const { questions, isLoading: isLoadingQuestions } = useQuestions({
+    apiKey,
+    result,
+    imageData: selectionImage ?? undefined,
+  })
 
   useEffect(() => {
     if (selectionImage && result) {
@@ -57,6 +63,8 @@ export default function ChatView({ result, onBack }: ChatViewProps) {
       <ChatMessageList
         chatHistory={chatHistory}
         result={result}
+        questions={questions}
+        isLoadingQuestions={isLoadingQuestions}
         onTemplateClick={template => request(template)}
       />
       <ChatInputArea
