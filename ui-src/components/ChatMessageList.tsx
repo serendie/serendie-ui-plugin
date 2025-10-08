@@ -107,7 +107,10 @@ export default function ChatMessageList({
               styleType='outlined'
               size='small'
               onClick={() => onTemplateClick(question)}
-              style={{ width: 'fit-content' }}
+              style={{
+                width: 'fit-content',
+                animation: `fadeIn 0.5s ease-in-out ${index * 0.25}s both`,
+              }}
             >
               {question}
             </Button>
