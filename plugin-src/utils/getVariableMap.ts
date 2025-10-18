@@ -1,4 +1,7 @@
-import { LIBRARY_NAME } from '../../shared-src/models/Rules'
+import {
+  COLLECTION_NAME_LIST,
+  LIBRARY_NAME,
+} from '../../shared-src/models/Rules'
 import notify from '../../shared-src/utils/notify'
 import extractVariableKey from './extractVariableKey'
 
@@ -14,9 +17,11 @@ export default async function getVariableMap(): Promise<VariableMap> {
     const collections = allCollections.filter(
       collection => collection.libraryName === LIBRARY_NAME
     )
-
     if (collections.length == 0) {
-      notify(`${LIBRARY_NAME}をインポートしてください。`)
+      const success = await getLocalVariableMap()
+      if (!success) {
+        notify(`${LIBRARY_NAME}をインポートしてください。`)
+      }
       return variableMap
     }
 
@@ -28,6 +33,7 @@ export default async function getVariableMap(): Promise<VariableMap> {
       for (const variable of variables) {
         const variableKey = extractVariableKey(variable.key)
         if (variableKey) {
+          console.log('variableKey', variableKey, variable.name)
           variableMap.set(variableKey, variable.name)
         }
       }
@@ -37,4 +43,32 @@ export default async function getVariableMap(): Promise<VariableMap> {
     variableMap.clear()
   }
   return variableMap
+}
+
+async function getLocalVariableMap() {
+  const allCollections =
+    await figma.variables.getLocalVariableCollectionsAsync()
+  const collections = allCollections.filter(collection => {
+    return COLLECTION_NAME_LIST.includes(collection.name)
+  })
+  if (collections.length == 0) {
+    return false
+  }
+
+  for (const collection of collections) {
+    const variablePromises = collection.variableIds.map(id =>
+      figma.variables.getVariableByIdAsync(id)
+    )
+    const variables = await Promise.all(variablePromises)
+    for (const variable of variables) {
+      if (variable !== null) {
+        // NOTE: ローカルライブラリから取得する場合は variable.id を 利用する
+        const variableKey = extractVariableKey(variable.id)
+        if (variableKey) {
+          variableMap.set(variableKey, variable.name)
+        }
+      }
+    }
+  }
+  return true
 }

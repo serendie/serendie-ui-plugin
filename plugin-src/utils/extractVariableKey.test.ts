@@ -104,4 +104,24 @@ describe('extractVariableKey', () => {
       )
     })
   })
+
+  describe('ローカル変数形式', () => {
+    it('VariableID:プレフィックス付きのローカル変数形式', () => {
+      const input = 'VariableID:4776:34700'
+      const result = extractVariableKey(input)
+      expect(result).toBe('4776:34700')
+    })
+
+    it('プレフィックスなしのローカル変数形式', () => {
+      const input = '4776:34700'
+      const result = extractVariableKey(input)
+      expect(result).toBe('4776:34700')
+    })
+
+    it('CollectionID:プレフィックス付きのローカル変数形式', () => {
+      const input = 'CollectionID:123:456'
+      const result = extractVariableKey(input)
+      expect(result).toBe('123:456')
+    })
+  })
 })
