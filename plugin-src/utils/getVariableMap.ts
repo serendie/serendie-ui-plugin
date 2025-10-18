@@ -33,7 +33,6 @@ export default async function getVariableMap(): Promise<VariableMap> {
       for (const variable of variables) {
         const variableKey = extractVariableKey(variable.key)
         if (variableKey) {
-          console.log('variableKey', variableKey, variable.name)
           variableMap.set(variableKey, variable.name)
         }
       }
