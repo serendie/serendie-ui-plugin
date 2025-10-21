@@ -3,10 +3,11 @@ import { Issue } from '../shared-src/models/Rules'
 import validateColorPairing from './utils/validateColorPairing'
 import validateAssignFrameVariable from './utils/validateAssignFrameVariable'
 import validateAssignTextVariable from './utils/validateAssignTextVariable'
+import getImage, { canGetImage } from '../shared-src/utils/getImage'
 
 figma.showUI(__html__, {
-  width: 400,
-  height: 640,
+  width: 360,
+  height: 720,
   title: 'Serendie Design Linter',
 })
 
@@ -25,13 +26,15 @@ figma.ui.onmessage = async msg => {
       type: 'selection-changed',
       selectionIds: selections.map(node => (node as FrameNode).id),
     })
-  } else if (msg.type === 'select-node') {
+  }
+  if (msg.type === 'select-node') {
     const node = await figma.getNodeByIdAsync(msg.nodeId)
     if (node && 'type' in node) {
       figma.currentPage.selection = [node as SceneNode]
       figma.viewport.scrollAndZoomIntoView([node as SceneNode])
     }
-  } else if (msg.type === 'run-linter') {
+  }
+  if (msg.type === 'run-linter') {
     const selections = figma.currentPage.selection
     if (selections.length === 0) {
       figma.ui.postMessage({
@@ -80,20 +83,54 @@ figma.ui.onmessage = async msg => {
             : '未知のエラーが発生しました。',
       })
     }
-  } else if (msg.type === 'get-storage') {
+  }
+  if (msg.type === 'get-storage') {
     const value = await figma.clientStorage.getAsync(msg.key)
     figma.ui.postMessage({
       type: 'storage-value',
       key: msg.key,
       value,
     })
-  } else if (msg.type === 'set-storage') {
+  }
+  if (msg.type === 'set-storage') {
     await figma.clientStorage.setAsync(msg.key, msg.value)
     figma.ui.postMessage({
       type: 'storage-saved',
       key: msg.key,
     })
-  } else if (msg.type === 'close') {
+  }
+  if (msg.type === 'get-selection-image') {
+    const nodeId = msg.nodeId
+    if (!nodeId) {
+      figma.ui.postMessage({
+        type: 'selection-image',
+        image: null,
+      })
+      return
+    }
+
+    try {
+      const node = await figma.getNodeByIdAsync(nodeId)
+      if (node && canGetImage(node)) {
+        const imageData = await getImage(node as FrameNode)
+        figma.ui.postMessage({
+          type: 'selection-image',
+          image: imageData,
+        })
+      } else {
+        figma.ui.postMessage({
+          type: 'selection-image',
+          image: null,
+        })
+      }
+    } catch (error) {
+      figma.ui.postMessage({
+        type: 'selection-image',
+        image: null,
+      })
+    }
+  }
+  if (msg.type === 'close') {
     figma.closePlugin()
   }
 }

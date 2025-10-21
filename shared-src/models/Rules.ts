@@ -1,4 +1,12 @@
 export const LIBRARY_NAME = '🛠️ Serendie UI Kit'
+export const COLLECTION_NAME_LIST = [
+  'color-reference',
+  'dimension-reference',
+  'typography-reference',
+  'color-system',
+  'dimension-system',
+  'typography-system',
+]
 export const UNEXPECTED = 'Unexpected'
 const surfaceSeries = [
   'surface',
@@ -118,7 +126,7 @@ export const COLOR_ROLES: string[] = Array.from(
 )
 
 export type IssueDetail = {
-  severity: 'error' | 'warning' | 'info'
+  severity: 'error' | 'warning'
   message: string
   suggestion: string
 }
@@ -128,3 +136,11 @@ export type Issue = {
   nodeName: string
   nodeType: string
 } & IssueDetail
+
+export function serializeIssues(issue: Issue): string {
+  return (
+    [`${issue.severity}: ${issue.message}`, `提案: ${issue.suggestion}`].join(
+      '\n'
+    ) + '\n'
+  )
+}

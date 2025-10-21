@@ -7,16 +7,9 @@ import IssuesList from './components/IssuesList'
 import Notification from './components/Notification'
 import ChatView from './components/ChatView'
 import SettingsDialog from './components/SettingsDialog'
-import { Issue } from '../shared-src/models/Rules'
+import { Result } from './models/Result'
 
 const { sd } = tokens
-
-export type Result = {
-  name: string
-  id: string
-  issues: Issue[]
-  totalNodes: number
-}
 
 type PluginMessage =
   | {
@@ -48,12 +41,15 @@ export default function App() {
       if (message.type === 'lint-result') {
         setIsLoading(false)
         setResults(message.results)
+        setSelectedResult(null)
         setError(null)
-      } else if (message.type === 'error') {
+      }
+      if (message.type === 'error') {
         setIsLoading(false)
         setError(message.message)
         setResults([])
-      } else if (message.type === 'selection-changed') {
+      }
+      if (message.type === 'selection-changed') {
         setSelections(message.selectionIds)
         setSelectionChanged(true)
       }
@@ -87,7 +83,6 @@ export default function App() {
   }
   const handleBackToMain = () => {
     setCurrentView('main')
-    setSelectedResult(null)
   }
 
   return (
@@ -117,37 +112,34 @@ export default function App() {
         <div
           style={{
             display: 'flex',
-            flexDirection: 'column',
+            flexDirection: 'row',
             gap: sd.system.dimension.spacing.medium,
             padding: sd.system.dimension.spacing.extraLarge,
-            paddingTop: sd.system.dimension.spacing.medium,
             flexShrink: 0,
           }}
         >
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-            }}
-          >
-            <Button
-              onClick={() => setSettingsOpen(true)}
-              leftIcon={<SerendieSymbol name='gear' />}
-              size='small'
-              styleType='ghost'
-            >
-              設定
-            </Button>
-          </div>
           <Button
             onClick={handleRunLinter}
             disabled={isLoading || selections.length === 0 || !selectionChanged}
             style={{
               width: '100%',
+              flex: 2,
             }}
             size='medium'
           >
-            {selections.length == 0 ? '要素を選択してください' : '検証する'}
+            {selections.length == 0 ? '要素を選んでください' : '検証する'}
+          </Button>
+          <Button
+            onClick={() => setSettingsOpen(true)}
+            leftIcon={<SerendieSymbol name='gear' />}
+            styleType='outlined'
+            style={{
+              width: '100%',
+              flex: 1,
+            }}
+            size='medium'
+          >
+            設定
           </Button>
           {error && <Notification summary={error} variant='error' />}
         </div>
@@ -155,46 +147,29 @@ export default function App() {
           style={{
             flex: 1,
             overflow: 'auto',
-            padding: sd.system.dimension.spacing.threeExtraLarge,
+            padding: sd.system.dimension.spacing.extraLarge,
             paddingBottom: sd.system.dimension.spacing.threeExtraLarge,
             backgroundColor: sd.system.color.impression.tertiaryContainer,
           }}
         >
           {results.length > 0 && (
             <div>
-              {results.map(result => (
+              {results.map((result, i) => (
                 <div
                   key={result.id}
                   style={{
-                    marginBottom: sd.system.dimension.spacing.twoExtraLarge,
+                    marginBottom:
+                      i == results.length - 1
+                        ? 0
+                        : sd.system.dimension.spacing.twoExtraLarge,
                   }}
                 >
                   <IssuesList
                     issues={result.issues}
                     totalNodes={result.totalNodes}
                     targetName={result.name}
+                    onOpenChat={() => handleOpenChat(result)}
                   />
-                  {result.issues.length === 0 && (
-                    <Notification
-                      summary={'すべてのルールを満たしています'}
-                      variant='success'
-                    />
-                  )}
-                  <div
-                    style={{
-                      textAlign: 'right',
-                      marginTop: sd.system.dimension.spacing.extraSmall,
-                    }}
-                  >
-                    <Button
-                      rightIcon={<SerendieSymbol name='chevron-right' />}
-                      styleType='ghost'
-                      size='small'
-                      onClick={() => handleOpenChat(result)}
-                    >
-                      AIに相談する
-                    </Button>
-                  </div>
                 </div>
               ))}
             </div>

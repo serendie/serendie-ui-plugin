@@ -2,6 +2,8 @@ import tokens from '@serendie/design-token'
 import { SerendieSymbol } from '@serendie/symbols'
 
 import { Issue } from '../../shared-src/models/Rules'
+import { Button } from '@serendie/ui'
+import StatLabel from './StatLabel'
 
 const { sd } = tokens
 
@@ -9,10 +11,12 @@ export default function IssueHeader({
   issues,
   targetName,
   totalNodes,
+  onOpenChat,
 }: {
   issues: Issue[]
   targetName?: string
   totalNodes: number
+  onOpenChat: () => void
 }) {
   return (
     <>
@@ -20,27 +24,38 @@ export default function IssueHeader({
         <div
           style={{
             display: 'flex',
+            flexDirection: 'row',
             alignItems: 'center',
-            gap: sd.system.dimension.spacing.medium,
+            gap: sd.system.dimension.spacing.small,
             marginBottom: sd.system.dimension.spacing.medium,
+            marginLeft: sd.system.dimension.radius.medium,
           }}
         >
           <h3
             style={{
               ...sd.system.typography.title.small_expanded,
               color: sd.system.color.component.onSurface,
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+              overflow: 'hidden',
             }}
           >
-            対象
+            {targetName}
           </h3>
-          <p
+          <div
             style={{
-              ...sd.system.typography.body.small_expanded,
-              color: sd.system.color.component.onSurfaceVariant,
+              flexShrink: 0,
             }}
           >
-            "{targetName}"
-          </p>
+            <Button
+              rightIcon={<SerendieSymbol name='chevron-right' />}
+              styleType='ghost'
+              size='small'
+              onClick={onOpenChat}
+            >
+              AIに相談する
+            </Button>
+          </div>
         </div>
       )}
       <div
@@ -48,45 +63,36 @@ export default function IssueHeader({
           display: 'flex',
           alignItems: 'center',
           gap: sd.system.dimension.spacing.medium,
-          marginBottom: sd.system.dimension.spacing.medium,
+          marginBottom: sd.system.dimension.spacing.small,
+          padding: sd.system.dimension.spacing.small,
+          backgroundColor: sd.system.color.component.surface,
+          borderRadius: sd.system.dimension.radius.medium,
+          border: `1px solid ${sd.system.color.component.outline}`,
         }}
       >
-        <h3
-          style={{
-            ...sd.system.typography.title.small_expanded,
-            color: sd.system.color.component.onSurface,
-            margin: 0,
-          }}
-        >
-          検証
-        </h3>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: sd.system.dimension.spacing.twoExtraSmall,
-          }}
-        >
-          <SerendieSymbol
-            name={issues.length > 0 ? 'alert-circle' : 'check-circle'}
-            variant='filled'
-            size={18}
-            style={{
-              color:
-                issues.length > 0
-                  ? sd.system.color.impression.negative
-                  : sd.system.color.impression.positive,
-            }}
+        <StatLabel
+          symbolName='check-circle'
+          targetNodes={totalNodes - issues.length}
+          totalNodes={totalNodes}
+        />
+        {issues.filter(issue => issue.severity === 'error').length > 0 && (
+          <StatLabel
+            symbolName='alert-circle'
+            targetNodes={
+              issues.filter(issue => issue.severity === 'error').length
+            }
+            totalNodes={totalNodes}
           />
-          <p
-            style={{
-              ...sd.system.typography.body.small_expanded,
-              color: sd.system.color.component.onSurfaceVariant,
-            }}
-          >
-            {totalNodes - issues.length}/{totalNodes}
-          </p>
-        </div>
+        )}
+        {issues.filter(issue => issue.severity === 'warning').length > 0 && (
+          <StatLabel
+            symbolName='alert-triangle'
+            targetNodes={
+              issues.filter(issue => issue.severity === 'warning').length
+            }
+            totalNodes={totalNodes}
+          />
+        )}
       </div>
     </>
   )
