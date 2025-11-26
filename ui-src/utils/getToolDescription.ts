@@ -15,9 +15,9 @@ export default function getToolDescription(toolName: string): string {
     case 'get-design-token-detail':
       return 'デザイントークンの詳細情報を取得しました'
     case 'search-component-docs':
-      return 'コンポーネントに関するドキュメントを検索しました'
+      return 'Ark UIや他のコンポーネントの事例を検索しました'
     case 'search-design-token-docs':
-      return 'デザイントークンに関するドキュメントを検索しました'
+      return 'Material Design 3のデザイントークンに関する資料を検索しました'
     default:
       return `${toolName}を実行しました`
   }
