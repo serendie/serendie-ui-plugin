@@ -112,7 +112,7 @@ export function useDocsSearchTools(): Record<string, Tool> {
   }, [])
 
   return {
-    searchComponentDocs,
-    searchDesignTokenDocs,
+    ['search-component-docs']: searchComponentDocs,
+    ['search-design-token-docs']: searchDesignTokenDocs,
   }
 }
