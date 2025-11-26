@@ -10,8 +10,12 @@
   "documentAccess": "dynamic-page",
   "editorType": ["figma"],
   "networkAccess": {
-    "allowedDomains": ["https://serendie.design/mcp", "https://api.openai.com"],
+    "allowedDomains": [
+      "https://serendie.design/mcp",
+      "https://api.openai.com",
+      "https://main-production-a912.up.railway.app"
+    ],
     "devAllowedDomains": ["http://localhost:4321/mcp"],
-    "reasoning": "デザインガイドラインに基づくアドバイスを提供するため、Serendie Design SystemのMCPサーバーやOpenAIのAPIと通信します。"
+    "reasoning": "デザインガイドラインに基づくアドバイスを提供するため、Serendie Design SystemのMCPサーバー・OpenAIのAPI・Serendie Design SystemのドキュメントAPIと通信します。"
   }
 }
