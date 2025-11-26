@@ -1,8 +1,9 @@
 import tokens from '@serendie/design-token'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { useApiKey } from '../hooks/useApiKey'
 import { useMCPTools } from '../hooks/useMCPTools'
+import { useDocsSearchTools } from '../hooks/useDocsSearchTools'
 import { useSelectionImage } from '../hooks/useSelectionImage'
 import { useChat } from '../hooks/useChat'
 import { useQuestions } from '../hooks/useQuestions'
@@ -20,7 +21,14 @@ interface ChatViewProps {
 
 export default function ChatView({ result, onBack }: ChatViewProps) {
   const { apiKey } = useApiKey()
-  const tools = useMCPTools()
+  const mcpTools = useMCPTools()
+  const docsSearchTools = useDocsSearchTools()
+
+  const tools = useMemo(() => {
+    if (!mcpTools) return docsSearchTools
+    return { ...mcpTools, ...docsSearchTools }
+  }, [mcpTools, docsSearchTools])
+
   const { message, setMessage, chatHistory, setChatHistory, request } = useChat(
     {
       apiKey,
