@@ -1,7 +1,45 @@
 import tokens from '@serendie/design-token'
+import { useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 
 const { sd } = tokens
+
+function MarkdownLink({
+  href,
+  children,
+}: {
+  href?: string
+  children: React.ReactNode
+}) {
+  const [isHovered, setIsHovered] = useState(false)
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    if (href) {
+      window.open(href, '_blank')
+    }
+  }
+
+  const primaryColor = sd.system.color.impression.primary
+  const hoveredColor = `color-mix(in srgb, ${sd.system.color.impression.primary} 80%, black)`
+
+  return (
+    <a
+      href={href}
+      onClick={handleClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      style={{
+        color: isHovered ? hoveredColor : primaryColor,
+        textDecoration: 'underline',
+        cursor: 'pointer',
+        transition: 'color 0.2s',
+      }}
+    >
+      {children}
+    </a>
+  )
+}
 
 export default function MarkdownRenderer({
   children: content,
@@ -125,6 +163,9 @@ export default function MarkdownRenderer({
                 margin: `${sd.system.dimension.spacing.twoExtraLarge} 0`,
               }}
             />
+          ),
+          a: ({ href, children }) => (
+            <MarkdownLink href={href}>{children}</MarkdownLink>
           ),
         }}
       >
