@@ -1,6 +1,6 @@
 import tokens from '@serendie/design-token'
 
-import { Issue } from '../../shared-src/models/Rules'
+import { Issue } from '../../../shared-src/models/Rules'
 import IssueListItem from './IssueListItem'
 import IssueHeader from './IssueHeader'
 
@@ -10,12 +10,10 @@ export default function IssuesList({
   issues,
   totalNodes,
   targetName,
-  onOpenChat,
 }: {
   issues: Issue[]
   totalNodes: number
   targetName?: string
-  onOpenChat: () => void
 }) {
   return (
     <div>
@@ -23,7 +21,6 @@ export default function IssuesList({
         issues={issues}
         totalNodes={totalNodes}
         targetName={targetName}
-        onOpenChat={onOpenChat}
       />
       {issues.length > 0 && (
         <div

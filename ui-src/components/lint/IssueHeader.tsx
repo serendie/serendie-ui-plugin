@@ -11,12 +11,10 @@ export default function IssueHeader({
   issues,
   targetName,
   totalNodes,
-  onOpenChat,
 }: {
   issues: Issue[]
   targetName?: string
   totalNodes: number
-  onOpenChat: () => void
 }) {
   return (
     <>
@@ -42,20 +40,6 @@ export default function IssueHeader({
           >
             {targetName}
           </h3>
-          <div
-            style={{
-              flexShrink: 0,
-            }}
-          >
-            <Button
-              rightIcon={<SerendieSymbol name='chevron-right' />}
-              styleType='ghost'
-              size='small'
-              onClick={onOpenChat}
-            >
-              AIに相談する
-            </Button>
-          </div>
         </div>
       )}
       <div
