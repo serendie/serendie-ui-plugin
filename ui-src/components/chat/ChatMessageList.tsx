@@ -4,9 +4,9 @@ import { Button } from '@serendie/ui'
 import tokens from '@serendie/design-token'
 
 import ChatMessage from './ChatMessage'
-import getToolDescription from '../utils/getToolDescription'
-import { useAutoScroll } from '../hooks/useAutoScroll'
-import { Result } from '../models/Result'
+import getToolDescription from '../../utils/getToolDescription'
+import { useAutoScroll } from '../../hooks/useAutoScroll'
+import { Result } from '../../models/Result'
 
 const { sd } = tokens
 

@@ -1,16 +1,16 @@
 import tokens from '@serendie/design-token'
 import { useEffect, useMemo } from 'react'
 
-import { useApiKey } from '../hooks/useApiKey'
-import { useMCPTools } from '../hooks/useMCPTools'
-import { useDocsSearchTools } from '../hooks/useDocsSearchTools'
-import { useSelectionImage } from '../hooks/useSelectionImage'
-import { useChat } from '../hooks/useChat'
-import { useQuestions } from '../hooks/useQuestions'
+import { useApiKey } from '../../hooks/useApiKey'
+import { useMCPTools } from '../../hooks/useMCPTools'
+import { useDocsSearchTools } from '../../hooks/useDocsSearchTools'
+import { useSelectionImage } from '../../hooks/useSelectionImage'
+import { useChat } from '../../hooks/useChat'
+import { useQuestions } from '../../hooks/useQuestions'
 import ChatHeader from './ChatHeader'
 import ChatMessageList from './ChatMessageList'
 import ChatInputArea from './ChatInputArea'
-import { Result, serializeResult } from '../models/Result'
+import { Result, serializeResult } from '../../models/Result'
 
 const { sd } = tokens
 
