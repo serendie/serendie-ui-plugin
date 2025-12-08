@@ -3,7 +3,7 @@ import { IconButton, TabItem, Tabs } from '@serendie/ui'
 import tokens from '@serendie/design-token'
 import { SerendieSymbol } from '@serendie/symbols'
 
-import IssuesList from './components/IssuesList'
+import IssuesList from './components/lint/IssuesList'
 import ChatView from './components/chat/ChatView'
 import SettingsDialog from './components/SettingsDialog'
 import { Result } from './models/Result'
@@ -129,10 +129,7 @@ export default function App() {
             flexDirection: 'column',
           }}
         >
-          <ChatView
-            result={selectedResult}
-            onBack={() => setCurrentView('lint')}
-          />
+          <ChatView result={selectedResult} />
         </div>
         <div
           style={{

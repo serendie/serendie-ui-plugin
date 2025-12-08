@@ -1,8 +1,8 @@
 import tokens from '@serendie/design-token'
 import { SerendieSymbol } from '@serendie/symbols'
-
-import { Issue } from '../../shared-src/models/Rules'
 import { Button } from '@serendie/ui'
+
+import { Issue } from '../../../shared-src/models/Rules'
 import StatLabel from './StatLabel'
 
 const { sd } = tokens
