@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { IconButton, TabItem, Tabs } from '@serendie/ui'
 import tokens from '@serendie/design-token'
 import { SerendieSymbol } from '@serendie/symbols'
@@ -6,76 +6,12 @@ import { SerendieSymbol } from '@serendie/symbols'
 import LintView from './components/lint/LintView'
 import ChatView from './components/chat/ChatView'
 import SettingsDialog from './components/SettingsDialog'
-import { Result } from './models/Result'
 
 const { sd } = tokens
 
-type PluginMessage =
-  | {
-      type: 'lint-result'
-      results: Result[]
-    }
-  | { type: 'error'; message: string }
-  | {
-      type: 'selection-changed'
-      selectionIds: string[]
-    }
-
 export default function App() {
-  const [isLoading, setIsLoading] = useState(false)
-  const [results, setResults] = useState<Result[]>([])
-  const [error, setError] = useState<string | null>(null)
-  const [selections, setSelections] = useState<string[]>([])
-  const [selectionChanged, setSelectionChanged] = useState(true)
   const [currentView, setCurrentView] = useState<'chat' | 'lint'>('chat')
-  const [selectedResult, setSelectedResult] = useState<Result | null>(null)
   const [settingsOpen, setSettingsOpen] = useState(false)
-
-  useEffect(() => {
-    window.onmessage = (
-      event: MessageEvent<{ pluginMessage: PluginMessage }>
-    ) => {
-      const message = event.data.pluginMessage
-
-      if (message.type === 'lint-result') {
-        setIsLoading(false)
-        setResults(message.results)
-        setSelectedResult(null)
-        setError(null)
-      }
-      if (message.type === 'error') {
-        setIsLoading(false)
-        setError(message.message)
-        setResults([])
-      }
-      if (message.type === 'selection-changed') {
-        setSelections(message.selectionIds)
-        setSelectionChanged(true)
-      }
-    }
-    parent.postMessage(
-      {
-        pluginMessage: {
-          type: 'request-selection',
-        },
-      },
-      '*'
-    )
-  }, [])
-
-  const handleRunLinter = () => {
-    setIsLoading(true)
-    setError(null)
-    setSelectionChanged(false)
-    parent.postMessage(
-      {
-        pluginMessage: {
-          type: 'run-linter',
-        },
-      },
-      '*'
-    )
-  }
 
   return (
     <div
@@ -129,7 +65,7 @@ export default function App() {
             flexDirection: 'column',
           }}
         >
-          <ChatView result={selectedResult} />
+          <ChatView result={null} />
         </div>
         <div
           style={{
@@ -142,7 +78,7 @@ export default function App() {
             transition: 'transform 0.3s ease-in-out',
           }}
         >
-          <LintView results={results} />
+          <LintView />
         </div>
       </div>
       <SettingsDialog
