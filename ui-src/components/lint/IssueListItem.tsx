@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import tokens from '@serendie/design-token'
-import { Issue } from '../../shared-src/models/Rules'
+import { Issue } from '../../../shared-src/models/Rules'
 import { SerendieSymbol, SymbolName } from '@serendie/symbols'
 
 const { sd } = tokens

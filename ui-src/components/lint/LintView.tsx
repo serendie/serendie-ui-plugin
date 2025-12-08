@@ -1,14 +1,32 @@
+import { useState, useCallback } from 'react'
 import tokens from '@serendie/design-token'
 import IssuesList from './IssuesList'
 import { Result } from '../../models/Result'
+import {
+  usePluginMessage,
+  postPluginMessage,
+} from '../../hooks/usePluginMessage'
+import { PluginMessage } from '../../../shared-src/models/PluginMessage'
 
 const { sd } = tokens
 
-type LintViewProps = {
-  results: Result[]
-}
+export default function LintView() {
+  const [results, setResults] = useState<Result[]>([])
+  const [_isLoading, setIsLoading] = useState(false)
 
-export default function LintView({ results }: LintViewProps) {
+  const handleMessage = useCallback((message: PluginMessage) => {
+    if (message.type === 'lint-result') {
+      setIsLoading(false)
+      setResults(message.results)
+    }
+  }, [])
+
+  usePluginMessage(handleMessage)
+
+  const _handleRunLinter = useCallback(() => {
+    setIsLoading(true)
+    postPluginMessage({ type: 'run-linter' })
+  }, [])
   return (
     <div
       style={{
