@@ -3,7 +3,7 @@ import { IconButton, TabItem, Tabs } from '@serendie/ui'
 import tokens from '@serendie/design-token'
 import { SerendieSymbol } from '@serendie/symbols'
 
-import IssuesList from './components/lint/IssuesList'
+import LintView from './components/lint/LintView'
 import ChatView from './components/chat/ChatView'
 import SettingsDialog from './components/SettingsDialog'
 import { Result } from './models/Result'
@@ -142,38 +142,7 @@ export default function App() {
             transition: 'transform 0.3s ease-in-out',
           }}
         >
-          <div
-            style={{
-              height: '100%',
-              overflow: 'auto',
-              padding: sd.system.dimension.spacing.extraLarge,
-              paddingBottom: sd.system.dimension.spacing.threeExtraLarge,
-              backgroundColor: sd.system.color.impression.tertiaryContainer,
-            }}
-          >
-            {results.length > 0 && (
-              <div>
-                {results.map((result, i) => (
-                  <div
-                    key={result.id}
-                    style={{
-                      marginBottom:
-                        i == results.length - 1
-                          ? 0
-                          : sd.system.dimension.spacing.twoExtraLarge,
-                    }}
-                  >
-                    <IssuesList
-                      issues={result.issues}
-                      totalNodes={result.totalNodes}
-                      targetName={result.name}
-                      onOpenChat={() => setCurrentView('chat')}
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <LintView results={results} />
         </div>
       </div>
       <SettingsDialog
