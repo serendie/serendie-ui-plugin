@@ -14,9 +14,13 @@ const { sd } = tokens
 
 interface SelectionCardProps {
   selection: SelectionInfo
+  onLoadComplete?: (nodeId: string) => void
 }
 
-export default function SelectionCard({ selection }: SelectionCardProps) {
+export default function SelectionCard({
+  selection,
+  onLoadComplete,
+}: SelectionCardProps) {
   const [image, setImage] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
@@ -28,9 +32,10 @@ export default function SelectionCard({ selection }: SelectionCardProps) {
       ) {
         setImage(message.image)
         setIsLoading(false)
+        onLoadComplete?.(selection.id)
       }
     },
-    [selection.id]
+    [selection.id, onLoadComplete]
   )
   usePluginMessage(handleMessage)
 

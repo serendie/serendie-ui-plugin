@@ -22,15 +22,30 @@ export default function LintView() {
   const [selections, setSelections] = useState<SelectionInfo[]>([])
   const [results, setResults] = useState<Result[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({})
+
+  const allImagesLoaded =
+    selections.length > 0 &&
+    selections.every(selection => loadedImages[selection.id])
 
   const handleMessage = useCallback(
     (message: PluginMessage) => {
       if (message.type === 'selection-changed' && phase === 'selecting') {
         setSelections(message.selections)
+        const newIds = message.selections.map(s => s.id)
+        setLoadedImages(prev => {
+          const next: Record<string, boolean> = {}
+          newIds.forEach(newId => {
+            next[newId] = prev[newId] || false
+          })
+          return next
+        })
       }
       if (message.type === 'lint-result') {
         setIsLoading(false)
         setResults(message.results)
+        setSelections([])
+        setLoadedImages({})
         setPhase('results')
       }
     },
@@ -51,6 +66,12 @@ export default function LintView() {
   const handleReselect = useCallback(() => {
     setPhase('selecting')
     setResults([])
+    setLoadedImages({})
+    postPluginMessage({ type: 'request-selection' })
+  }, [])
+
+  const handleImageLoadComplete = useCallback((nodeId: string) => {
+    setLoadedImages(prev => ({ ...prev, [nodeId]: true }))
   }, [])
 
   return (
@@ -74,8 +95,12 @@ export default function LintView() {
         }}
       >
         {phase === 'selecting' &&
-          selections.map((selection, i) => (
-            <SelectionCard key={selection.id} selection={selection} />
+          selections.map(selection => (
+            <SelectionCard
+              key={selection.id}
+              selection={selection}
+              onLoadComplete={handleImageLoadComplete}
+            />
           ))}
         {phase === 'results' && results.length > 0 && (
           <div>
@@ -110,10 +135,10 @@ export default function LintView() {
         {phase === 'selecting' ? (
           <Button
             onClick={handleRunLinter}
-            disabled={isLoading}
+            disabled={isLoading || !allImagesLoaded}
             style={{ flex: 1 }}
           >
-            {isLoading ? '検証中...' : '検証する'}
+            {isLoading ? '検証中' : '検証する'}
           </Button>
         ) : (
           <>
@@ -122,7 +147,7 @@ export default function LintView() {
               disabled={isLoading}
               style={{ flex: 1 }}
             >
-              {isLoading ? '検証中...' : '再検証'}
+              {isLoading ? '検証中' : '再検証'}
             </Button>
             <Button
               onClick={handleReselect}
