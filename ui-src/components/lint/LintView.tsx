@@ -78,16 +78,16 @@ export default function LintView() {
     <div
       style={{
         height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
+        position: 'relative',
         backgroundColor: sd.system.color.impression.tertiaryContainer,
       }}
     >
       <div
         style={{
-          flex: 1,
+          height: '100%',
           overflow: 'auto',
           padding: `${sd.system.dimension.spacing.twoExtraLarge} ${sd.system.dimension.spacing.extraLarge}`,
+          paddingBottom: '7rem',
           display: 'flex',
           flexDirection: 'column',
           gap: sd.system.dimension.spacing.twoExtraLarge,
@@ -123,40 +123,51 @@ export default function LintView() {
           </div>
         )}
       </div>
-
       <div
         style={{
-          padding: sd.system.dimension.spacing.large,
-          display: 'flex',
-          gap: sd.system.dimension.spacing.small,
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          padding: `0 ${sd.system.dimension.spacing.large}`,
         }}
       >
-        {phase === 'selecting' ? (
-          <Button
-            onClick={handleRunLinter}
-            disabled={isLoading || !allImagesLoaded}
-            style={{ flex: 1 }}
-          >
-            {isLoading ? '検証中' : '検証する'}
-          </Button>
-        ) : (
-          <>
+        <div
+          style={{
+            display: 'flex',
+            gap: sd.system.dimension.spacing.small,
+            width: '100%',
+            padding: `${sd.system.dimension.spacing.large} 0`,
+            background: `linear-gradient(transparent, ${sd.system.color.impression.tertiaryContainer} 100%)`,
+          }}
+        >
+          {phase === 'selecting' ? (
             <Button
               onClick={handleRunLinter}
-              disabled={isLoading}
+              disabled={isLoading || !allImagesLoaded}
               style={{ flex: 1 }}
             >
-              {isLoading ? '検証中' : '再検証'}
+              {isLoading ? '検証中' : '検証する'}
             </Button>
-            <Button
-              onClick={handleReselect}
-              styleType='outlined'
-              style={{ flex: 1 }}
-            >
-              要素を選び直す
-            </Button>
-          </>
-        )}
+          ) : (
+            <>
+              <Button
+                onClick={handleRunLinter}
+                disabled={isLoading}
+                style={{ flex: 1 }}
+              >
+                {isLoading ? '検証中' : '再検証'}
+              </Button>
+              <Button
+                onClick={handleReselect}
+                styleType='outlined'
+                style={{ flex: 1 }}
+              >
+                要素を選び直す
+              </Button>
+            </>
+          )}
+        </div>
       </div>
     </div>
   )
