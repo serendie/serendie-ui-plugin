@@ -43,7 +43,12 @@ figma.ui.onmessage = async msg => {
     }
   }
   if (msg.type === 'run-linter') {
-    const selections = figma.currentPage.selection
+    const nodes = await Promise.all(
+      msg.nodeIds.map((id: string) => figma.getNodeByIdAsync(id))
+    )
+    const selections = nodes.filter(
+      (node): node is SceneNode => node !== null && 'type' in node
+    )
     if (selections.length === 0) {
       figma.ui.postMessage({
         type: 'error',

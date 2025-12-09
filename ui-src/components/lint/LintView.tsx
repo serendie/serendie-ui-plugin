@@ -59,8 +59,11 @@ export default function LintView() {
 
   const handleRunLinter = useCallback(() => {
     setIsLoading(true)
-    postPluginMessage({ type: 'run-linter' })
-  }, [])
+    postPluginMessage({
+      type: 'run-linter',
+      nodeIds: selections.map(s => s.id),
+    })
+  }, [selections])
 
   const handleReselect = useCallback(() => {
     setPhase('selecting')

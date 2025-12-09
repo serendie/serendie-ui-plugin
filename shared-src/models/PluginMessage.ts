@@ -41,7 +41,7 @@ export type PluginToUIMessage =
 
 // UI → Plugin
 export type UIToPluginMessage =
-  | { type: 'run-linter' }
+  | { type: 'run-linter'; nodeIds: string[] }
   | { type: 'request-selection' }
   | { type: 'get-selection-image'; nodeId: string }
 
