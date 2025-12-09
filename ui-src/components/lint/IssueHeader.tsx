@@ -1,6 +1,4 @@
 import tokens from '@serendie/design-token'
-import { SerendieSymbol } from '@serendie/symbols'
-import { Button } from '@serendie/ui'
 
 import { Issue } from '../../../shared-src/models/Rules'
 import StatLabel from './StatLabel'
@@ -9,39 +7,13 @@ const { sd } = tokens
 
 export default function IssueHeader({
   issues,
-  targetName,
   totalNodes,
 }: {
   issues: Issue[]
-  targetName?: string
   totalNodes: number
 }) {
   return (
     <>
-      {targetName && (
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: sd.system.dimension.spacing.small,
-            marginBottom: sd.system.dimension.spacing.medium,
-            marginLeft: sd.system.dimension.radius.medium,
-          }}
-        >
-          <h3
-            style={{
-              ...sd.system.typography.title.small_expanded,
-              color: sd.system.color.component.onSurface,
-              whiteSpace: 'nowrap',
-              textOverflow: 'ellipsis',
-              overflow: 'hidden',
-            }}
-          >
-            {targetName}
-          </h3>
-        </div>
-      )}
       <div
         style={{
           display: 'flex',
