@@ -85,21 +85,32 @@ export default function LintView() {
       {phase === 'results' && (
         <div
           style={{
-            padding: sd.system.dimension.spacing.medium,
-            paddingBottom: 0,
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            padding: `0 ${sd.system.dimension.spacing.medium}`,
+            zIndex: 1,
           }}
         >
-          <Button
-            leftIcon={<SerendieSymbol name='chevron-left' />}
-            styleType='ghost'
-            size='small'
-            onClick={handleReselect}
+          <div
             style={{
-              width: 'fit-content',
+              padding: `${sd.system.dimension.spacing.medium} 0`,
+              background: `linear-gradient(${sd.system.color.impression.tertiaryContainer} 0%, transparent)`,
             }}
           >
-            戻る
-          </Button>
+            <Button
+              leftIcon={<SerendieSymbol name='chevron-left' />}
+              styleType='ghost'
+              size='small'
+              onClick={handleReselect}
+              style={{
+                width: 'fit-content',
+              }}
+            >
+              戻る
+            </Button>
+          </div>
         </div>
       )}
       <div
@@ -107,6 +118,10 @@ export default function LintView() {
           flex: 1,
           overflow: 'auto',
           padding: `${sd.system.dimension.spacing.twoExtraLarge} ${sd.system.dimension.spacing.extraLarge}`,
+          paddingTop:
+            phase === 'results'
+              ? '4rem'
+              : sd.system.dimension.spacing.twoExtraLarge,
           paddingBottom: '7rem',
           display: 'flex',
           flexDirection: 'column',
