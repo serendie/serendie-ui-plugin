@@ -1,8 +1,9 @@
-import { useState, useCallback, useEffect, Fragment } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { Button } from '@serendie/ui'
 import tokens from '@serendie/design-token'
 import IssuesList from './IssuesList'
 import SelectionCard from './SelectionCard'
+import { SerendieSymbol } from '@serendie/symbols'
 import { Result } from '../../models/Result'
 import {
   usePluginMessage,
@@ -75,14 +76,36 @@ export default function LintView() {
   return (
     <div
       style={{
+        display: 'flex',
+        flexDirection: 'column',
         height: '100%',
         position: 'relative',
         backgroundColor: sd.system.color.impression.tertiaryContainer,
       }}
     >
+      {phase === 'results' && (
+        <div
+          style={{
+            padding: sd.system.dimension.spacing.medium,
+            paddingBottom: 0,
+          }}
+        >
+          <Button
+            leftIcon={<SerendieSymbol name='chevron-left' />}
+            styleType='ghost'
+            size='small'
+            onClick={handleReselect}
+            style={{
+              width: 'fit-content',
+            }}
+          >
+            戻る
+          </Button>
+        </div>
+      )}
       <div
         style={{
-          height: '100%',
+          flex: 1,
           overflow: 'auto',
           padding: `${sd.system.dimension.spacing.twoExtraLarge} ${sd.system.dimension.spacing.extraLarge}`,
           paddingBottom: '7rem',
@@ -134,32 +157,17 @@ export default function LintView() {
             background: `linear-gradient(transparent, ${sd.system.color.impression.tertiaryContainer} 100%)`,
           }}
         >
-          {phase === 'selecting' ? (
-            <Button
-              onClick={handleRunLinter}
-              disabled={isLoading || !allImagesLoaded}
-              style={{ flex: 1 }}
-            >
-              {isLoading ? '検証中' : '検証する'}
-            </Button>
-          ) : (
-            <>
-              <Button
-                onClick={handleRunLinter}
-                disabled={isLoading}
-                style={{ flex: 1 }}
-              >
-                {isLoading ? '検証中' : '再検証'}
-              </Button>
-              <Button
-                onClick={handleReselect}
-                styleType='outlined'
-                style={{ flex: 1 }}
-              >
-                要素を選び直す
-              </Button>
-            </>
-          )}
+          <Button
+            onClick={handleRunLinter}
+            disabled={isLoading || !allImagesLoaded}
+            style={{ flex: 1 }}
+          >
+            {isLoading
+              ? '検証中'
+              : phase === 'selecting'
+                ? '検証する'
+                : 'もう一度検証する'}
+          </Button>
         </div>
       </div>
     </div>
