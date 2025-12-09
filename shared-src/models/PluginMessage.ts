@@ -8,6 +8,12 @@ export type LintResult = {
   totalNodes: number
 }
 
+// 選択要素の情報
+export type SelectionInfo = {
+  id: string
+  name: string
+}
+
 // Lint関連メッセージ
 export type LintMessage =
   | { type: 'lint-result'; results: LintResult[] }
@@ -15,19 +21,29 @@ export type LintMessage =
 
 // 選択関連メッセージ
 export type SelectionMessage =
-  | { type: 'selection-changed'; selectionIds: string[] }
+  | { type: 'selection-changed'; selections: SelectionInfo[] }
   | { type: 'request-selection' }
+
+// 画像関連メッセージ
+export type ImageMessage =
+  | { type: 'selection-image'; nodeId: string; image: string | null }
+  | { type: 'get-selection-image'; nodeId: string }
 
 // エラーメッセージ
 export type ErrorMessage = { type: 'error'; message: string }
 
 // Plugin → UI
-export type PluginToUIMessage = LintMessage | SelectionMessage | ErrorMessage
+export type PluginToUIMessage =
+  | LintMessage
+  | SelectionMessage
+  | ImageMessage
+  | ErrorMessage
 
 // UI → Plugin
 export type UIToPluginMessage =
   | { type: 'run-linter' }
   | { type: 'request-selection' }
+  | { type: 'get-selection-image'; nodeId: string }
 
 // 全メッセージ型
 export type PluginMessage = PluginToUIMessage | UIToPluginMessage

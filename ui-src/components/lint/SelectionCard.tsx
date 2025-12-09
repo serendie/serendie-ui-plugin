@@ -1,0 +1,105 @@
+import { useEffect, useState, useCallback } from 'react'
+import tokens from '@serendie/design-token'
+import { ProgressIndicator } from '@serendie/ui'
+import {
+  SelectionInfo,
+  PluginMessage,
+} from '../../../shared-src/models/PluginMessage'
+import {
+  usePluginMessage,
+  postPluginMessage,
+} from '../../hooks/usePluginMessage'
+
+const { sd } = tokens
+
+interface SelectionCardProps {
+  selection: SelectionInfo
+}
+
+export default function SelectionCard({ selection }: SelectionCardProps) {
+  const [image, setImage] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  const handleMessage = useCallback(
+    (message: PluginMessage) => {
+      if (
+        message.type === 'selection-image' &&
+        message.nodeId === selection.id
+      ) {
+        setImage(message.image)
+        setIsLoading(false)
+      }
+    },
+    [selection.id]
+  )
+  usePluginMessage(handleMessage)
+
+  useEffect(() => {
+    setImage(null)
+    setIsLoading(true)
+    postPluginMessage({ type: 'get-selection-image', nodeId: selection.id })
+  }, [selection.id])
+
+  const height = '10rem'
+
+  return (
+    <div>
+      <p
+        style={{
+          ...sd.system.typography.body.medium_expanded,
+          color: sd.system.color.component.onSurface,
+          marginBottom: sd.system.dimension.spacing.twoExtraSmall,
+        }}
+      >
+        {selection.name}
+      </p>
+      <div
+        style={{
+          backgroundColor: sd.system.color.component.surface,
+          borderRadius: sd.system.dimension.radius.medium,
+          padding: sd.system.dimension.spacing.medium,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        {isLoading ? (
+          <div
+            style={{
+              height,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <ProgressIndicator size='medium' />
+          </div>
+        ) : image ? (
+          <img
+            src={image}
+            alt={selection.name}
+            style={{
+              maxWidth: '100%',
+              height,
+              objectFit: 'contain',
+            }}
+          />
+        ) : (
+          <p
+            style={{
+              ...sd.system.typography.body.small_expanded,
+              color: sd.system.color.component.onSurfaceVariant,
+              height,
+              // center the text vertically
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            プレビューを取得できません
+          </p>
+        )}
+      </div>
+    </div>
+  )
+}
