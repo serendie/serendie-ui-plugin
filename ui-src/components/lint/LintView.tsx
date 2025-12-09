@@ -65,7 +65,6 @@ export default function LintView() {
   const handleReselect = useCallback(() => {
     setPhase('selecting')
     setResults([])
-    setLoadedImages({})
     postPluginMessage({ type: 'request-selection' })
   }, [])
 
