@@ -1,13 +1,17 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { Button } from '@serendie/ui'
 import tokens from '@serendie/design-token'
 import IssuesList from './IssuesList'
+import SelectionCard from './SelectionCard'
 import { Result } from '../../models/Result'
 import {
   usePluginMessage,
   postPluginMessage,
 } from '../../hooks/usePluginMessage'
-import { PluginMessage } from '../../../shared-src/models/PluginMessage'
+import {
+  PluginMessage,
+  SelectionInfo,
+} from '../../../shared-src/models/PluginMessage'
 
 const { sd } = tokens
 
@@ -15,15 +19,26 @@ type LintPhase = 'selecting' | 'results'
 
 export default function LintView() {
   const [phase, setPhase] = useState<LintPhase>('selecting')
+  const [selections, setSelections] = useState<SelectionInfo[]>([])
   const [results, setResults] = useState<Result[]>([])
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleMessage = useCallback((message: PluginMessage) => {
-    if (message.type === 'lint-result') {
-      setIsLoading(false)
-      setResults(message.results)
-      setPhase('results')
-    }
+  const handleMessage = useCallback(
+    (message: PluginMessage) => {
+      if (message.type === 'selection-changed' && phase === 'selecting') {
+        setSelections(message.selections)
+      }
+      if (message.type === 'lint-result') {
+        setIsLoading(false)
+        setResults(message.results)
+        setPhase('results')
+      }
+    },
+    [phase]
+  )
+
+  useEffect(() => {
+    postPluginMessage({ type: 'request-selection' })
   }, [])
 
   usePluginMessage(handleMessage)
@@ -53,8 +68,15 @@ export default function LintView() {
           overflow: 'auto',
           padding: sd.system.dimension.spacing.extraLarge,
           paddingBottom: sd.system.dimension.spacing.threeExtraLarge,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: sd.system.dimension.spacing.extraLarge,
         }}
       >
+        {phase === 'selecting' &&
+          selections.map((selection, i) => (
+            <SelectionCard key={selection.id} selection={selection} />
+          ))}
         {phase === 'results' && results.length > 0 && (
           <div>
             {results.map((result, i) => (
@@ -62,7 +84,7 @@ export default function LintView() {
                 key={result.id}
                 style={{
                   marginBottom:
-                    i == results.length - 1
+                    i === results.length - 1
                       ? 0
                       : sd.system.dimension.spacing.twoExtraLarge,
                 }}
@@ -104,7 +126,7 @@ export default function LintView() {
             </Button>
             <Button
               onClick={handleReselect}
-              styleType="outlined"
+              styleType='outlined'
               style={{ flex: 1 }}
             >
               要素を選び直す

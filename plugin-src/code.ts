@@ -11,20 +11,28 @@ figma.showUI(__html__, {
   title: 'Serendie Design Linter',
 })
 
-figma.on('selectionchange', () => {
+function getSelectionInfo() {
   const selections = figma.currentPage.selection
+  return selections.map(node => ({
+    id: node.id,
+    name: node.name,
+  }))
+}
+
+figma.on('selectionchange', () => {
+  const selections = getSelectionInfo()
   figma.ui.postMessage({
     type: 'selection-changed',
-    selectionIds: selections.map(node => (node as FrameNode).id),
+    selections,
   })
 })
 
 figma.ui.onmessage = async msg => {
   if (msg.type === 'request-selection') {
-    const selections = figma.currentPage.selection
+    const selections = getSelectionInfo()
     figma.ui.postMessage({
       type: 'selection-changed',
-      selectionIds: selections.map(node => (node as FrameNode).id),
+      selections,
     })
   }
   if (msg.type === 'select-node') {
@@ -104,6 +112,7 @@ figma.ui.onmessage = async msg => {
     if (!nodeId) {
       figma.ui.postMessage({
         type: 'selection-image',
+        nodeId: '',
         image: null,
       })
       return
@@ -115,17 +124,20 @@ figma.ui.onmessage = async msg => {
         const imageData = await getImage(node as FrameNode)
         figma.ui.postMessage({
           type: 'selection-image',
+          nodeId,
           image: imageData,
         })
       } else {
         figma.ui.postMessage({
           type: 'selection-image',
+          nodeId,
           image: null,
         })
       }
-    } catch (error) {
+    } catch {
       figma.ui.postMessage({
         type: 'selection-image',
+        nodeId,
         image: null,
       })
     }

@@ -1,14 +1,17 @@
 import { useState, useCallback, useEffect } from 'react'
 import { usePluginMessage, postPluginMessage } from './usePluginMessage'
-import { PluginMessage } from '../../shared-src/models/PluginMessage'
+import {
+  PluginMessage,
+  SelectionInfo,
+} from '../../shared-src/models/PluginMessage'
 
 export function useSelection() {
-  const [selectionIds, setSelectionIds] = useState<string[]>([])
+  const [selections, setSelections] = useState<SelectionInfo[]>([])
   const [error, setError] = useState<string | null>(null)
 
   const handleMessage = useCallback((message: PluginMessage) => {
     if (message.type === 'selection-changed') {
-      setSelectionIds(message.selectionIds)
+      setSelections(message.selections)
     }
     if (message.type === 'error') {
       setError(message.message)
@@ -24,8 +27,9 @@ export function useSelection() {
   const clearError = useCallback(() => setError(null), [])
 
   return {
-    selectionIds,
-    hasSelection: selectionIds.length > 0,
+    selections,
+    selectionIds: selections.map(s => s.id),
+    hasSelection: selections.length > 0,
     error,
     clearError,
   }
