@@ -9,19 +9,13 @@ const { sd } = tokens
 export default function IssuesList({
   issues,
   totalNodes,
-  targetName,
 }: {
   issues: Issue[]
   totalNodes: number
-  targetName?: string
 }) {
   return (
     <div>
-      <IssueHeader
-        issues={issues}
-        totalNodes={totalNodes}
-        targetName={targetName}
-      />
+      <IssueHeader issues={issues} totalNodes={totalNodes} />
       {issues.length > 0 && (
         <div
           style={{

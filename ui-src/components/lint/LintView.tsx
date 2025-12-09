@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, Fragment } from 'react'
 import { Button } from '@serendie/ui'
 import tokens from '@serendie/design-token'
 import IssuesList from './IssuesList'
@@ -44,8 +44,6 @@ export default function LintView() {
       if (message.type === 'lint-result') {
         setIsLoading(false)
         setResults(message.results)
-        setSelections([])
-        setLoadedImages({})
         setPhase('results')
       }
     },
@@ -93,35 +91,30 @@ export default function LintView() {
           gap: sd.system.dimension.spacing.twoExtraLarge,
         }}
       >
-        {phase === 'selecting' &&
-          selections.map(selection => (
-            <SelectionCard
+        {selections.map(selection => {
+          const result = results.find(r => r.id === selection.id)
+          return (
+            <div
               key={selection.id}
-              selection={selection}
-              onLoadComplete={handleImageLoadComplete}
-            />
-          ))}
-        {phase === 'results' && results.length > 0 && (
-          <div>
-            {results.map((result, i) => (
-              <div
-                key={result.id}
-                style={{
-                  marginBottom:
-                    i === results.length - 1
-                      ? 0
-                      : sd.system.dimension.spacing.twoExtraLarge,
-                }}
-              >
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: sd.system.dimension.spacing.medium,
+              }}
+            >
+              <SelectionCard
+                selection={selection}
+                onLoadComplete={handleImageLoadComplete}
+              />
+              {phase === 'results' && result && (
                 <IssuesList
                   issues={result.issues}
                   totalNodes={result.totalNodes}
-                  targetName={result.name}
                 />
-              </div>
-            ))}
-          </div>
-        )}
+              )}
+            </div>
+          )
+        })}
       </div>
       <div
         style={{
