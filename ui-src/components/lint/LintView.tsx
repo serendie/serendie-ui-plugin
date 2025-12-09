@@ -178,6 +178,7 @@ export default function LintView() {
             onClick={handleRunLinter}
             disabled={isLoading || !allImagesLoaded}
             style={{ flex: 1 }}
+            styleType={phase === 'selecting' ? 'filled' : 'outlined'}
           >
             {isLoading
               ? '検証中'
