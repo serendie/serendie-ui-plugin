@@ -87,11 +87,10 @@ export default function LintView() {
         style={{
           flex: 1,
           overflow: 'auto',
-          padding: sd.system.dimension.spacing.extraLarge,
-          paddingBottom: sd.system.dimension.spacing.threeExtraLarge,
+          padding: `${sd.system.dimension.spacing.twoExtraLarge} ${sd.system.dimension.spacing.extraLarge}`,
           display: 'flex',
           flexDirection: 'column',
-          gap: sd.system.dimension.spacing.extraLarge,
+          gap: sd.system.dimension.spacing.twoExtraLarge,
         }}
       >
         {phase === 'selecting' &&
