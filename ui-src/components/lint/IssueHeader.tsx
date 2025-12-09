@@ -1,63 +1,19 @@
 import tokens from '@serendie/design-token'
-import { SerendieSymbol } from '@serendie/symbols'
 
-import { Issue } from '../../shared-src/models/Rules'
-import { Button } from '@serendie/ui'
+import { Issue } from '../../../shared-src/models/Rules'
 import StatLabel from './StatLabel'
 
 const { sd } = tokens
 
 export default function IssueHeader({
   issues,
-  targetName,
   totalNodes,
-  onOpenChat,
 }: {
   issues: Issue[]
-  targetName?: string
   totalNodes: number
-  onOpenChat: () => void
 }) {
   return (
     <>
-      {targetName && (
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: sd.system.dimension.spacing.small,
-            marginBottom: sd.system.dimension.spacing.medium,
-            marginLeft: sd.system.dimension.radius.medium,
-          }}
-        >
-          <h3
-            style={{
-              ...sd.system.typography.title.small_expanded,
-              color: sd.system.color.component.onSurface,
-              whiteSpace: 'nowrap',
-              textOverflow: 'ellipsis',
-              overflow: 'hidden',
-            }}
-          >
-            {targetName}
-          </h3>
-          <div
-            style={{
-              flexShrink: 0,
-            }}
-          >
-            <Button
-              rightIcon={<SerendieSymbol name='chevron-right' />}
-              styleType='ghost'
-              size='small'
-              onClick={onOpenChat}
-            >
-              AIに相談する
-            </Button>
-          </div>
-        </div>
-      )}
       <div
         style={{
           display: 'flex',
