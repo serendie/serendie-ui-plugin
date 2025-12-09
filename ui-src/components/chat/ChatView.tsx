@@ -7,6 +7,7 @@ import { useDocsSearchTools } from '../../hooks/useDocsSearchTools'
 import { useSelectionImage } from '../../hooks/useSelectionImage'
 import { useChat } from '../../hooks/useChat'
 import { useQuestions } from '../../hooks/useQuestions'
+import { useSelection } from '../../hooks/useSelection'
 import ChatMessageList from './ChatMessageList'
 import ChatInputArea from './ChatInputArea'
 import { Result, serializeResult } from '../../models/Result'
@@ -15,6 +16,7 @@ const { sd } = tokens
 
 export default function ChatView({ result }: { result: Result | null }) {
   const { apiKey } = useApiKey()
+  const { selections } = useSelection()
   const mcpTools = useMCPTools()
   const docsSearchTools = useDocsSearchTools()
 
@@ -72,6 +74,7 @@ export default function ChatView({ result }: { result: Result | null }) {
         message={message}
         onMessageChange={setMessage}
         onSend={() => request()}
+        selectionNames={selections.map(s => s.name)}
       />
     </div>
   )
