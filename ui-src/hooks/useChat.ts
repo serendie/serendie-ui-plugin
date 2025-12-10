@@ -51,6 +51,15 @@ export function useChat({
   const [imageMetas, setImageMetas] = useState<ImageMetas>({})
   const abortControllerRef = useRef<AbortController | null>(null)
 
+  const clearChat = useCallback(() => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+    }
+    setChatHistory([])
+    setImageMetas({})
+    setMessage('')
+  }, [])
+
   const request = useCallback(
     async (
       customMessage?: string,
@@ -162,6 +171,7 @@ export function useChat({
     chatHistory,
     setChatHistory,
     imageMetas,
+    clearChat,
     request,
   }
 }
