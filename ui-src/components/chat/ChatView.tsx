@@ -10,6 +10,7 @@ import { useSelection } from '../../hooks/useSelection'
 import { postPluginMessage } from '../../hooks/usePluginMessage'
 import ChatMessageList from './ChatMessageList'
 import ChatInputArea from './ChatInputArea'
+import ChatHeader from './ChatHeader'
 
 const { sd } = tokens
 
@@ -26,10 +27,11 @@ export default function ChatView() {
     return { ...mcpTools, ...docsSearchTools }
   }, [mcpTools, docsSearchTools])
 
-  const { message, setMessage, chatHistory, imageMetas, request } = useChat({
-    apiKey,
-    tools,
-  })
+  const { message, setMessage, chatHistory, imageMetas, clearChat, request } =
+    useChat({
+      apiKey,
+      tools,
+    })
 
   const handleSend = useCallback(
     async (customMessage?: string) => {
@@ -67,6 +69,7 @@ export default function ChatView() {
         backgroundColor: sd.system.color.impression.tertiary,
       }}
     >
+      <ChatHeader onNewChat={clearChat} />
       <ChatMessageList chatHistory={chatHistory} imageMetas={imageMetas} />
       <div
         style={{
