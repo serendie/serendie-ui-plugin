@@ -145,6 +145,9 @@ figma.ui.onmessage = async msg => {
     )
     figma.ui.postMessage({ type: 'selection-images', images })
   }
+  if (msg.type === 'clear-selection') {
+    figma.currentPage.selection = []
+  }
   if (msg.type === 'close') {
     figma.closePlugin()
   }

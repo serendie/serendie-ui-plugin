@@ -7,6 +7,7 @@ import { useDocsSearchTools } from '../../hooks/useDocsSearchTools'
 import { useSelectionImages } from '../../hooks/useSelectionImages'
 import { useChat } from '../../hooks/useChat'
 import { useSelection } from '../../hooks/useSelection'
+import { postPluginMessage } from '../../hooks/usePluginMessage'
 import ChatMessageList from './ChatMessageList'
 import ChatInputArea from './ChatInputArea'
 
@@ -39,6 +40,9 @@ export default function ChatView() {
       try {
         const images =
           selectionIds.length > 0 ? await getSelectionImages(selectionIds) : []
+        if (images.length > 0) {
+          postPluginMessage({ type: 'clear-selection' })
+        }
         await request(messageToSend, images.length > 0 ? images : undefined)
       } finally {
         setIsSending(false)
