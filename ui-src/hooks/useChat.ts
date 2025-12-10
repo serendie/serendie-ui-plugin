@@ -1,7 +1,6 @@
 import { createOpenAI } from '@ai-sdk/openai'
 import { ModelMessage, streamText, stepCountIs, Tool } from 'ai'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { Result } from '../models/Result'
+import { useCallback, useRef, useState } from 'react'
 
 const systemPrompt = `あなたはSerendie Design Systemについてよく知るAIアシスタントです。
 これからデザインを進めているSerendie UIの画像と、Serendie Design Systemのガイドラインと一致しない部分を共有します。これらの情報をもとに、デザイナーからの質問に応えるようにアドバイスしてください。
@@ -41,18 +40,16 @@ const systemPrompt = `あなたはSerendie Design Systemについてよく知る
 export function useChat({
   apiKey,
   tools,
-  result,
 }: {
   apiKey: string
   tools: Record<string, Tool> | undefined
-  result: Result | null
 }) {
   const [message, setMessage] = useState('')
   const [chatHistory, setChatHistory] = useState<ModelMessage[]>([])
   const abortControllerRef = useRef<AbortController | null>(null)
 
   const request = useCallback(
-    async (customMessage?: string) => {
+    async (customMessage?: string, images?: string[]) => {
       try {
         if (abortControllerRef.current) {
           abortControllerRef.current.abort()
@@ -63,10 +60,16 @@ export function useChat({
 
         const messageToSend = customMessage ?? message
         setMessage('')
-        setChatHistory(prev => [
-          ...prev,
-          { role: 'user', content: messageToSend },
-        ])
+
+        const userContent =
+          images && images.length > 0
+            ? [
+                ...images.map(image => ({ type: 'image' as const, image })),
+                { type: 'text' as const, text: messageToSend },
+              ]
+            : messageToSend
+
+        setChatHistory(prev => [...prev, { role: 'user', content: userContent }])
         const openai = createOpenAI({ apiKey })
         const streamResult = streamText({
           model: openai('gpt-4.1'),
@@ -79,7 +82,7 @@ export function useChat({
               content: systemPrompt,
             },
             ...chatHistory.filter(({ role }) => role !== 'tool'),
-            { role: 'user' as const, content: messageToSend },
+            { role: 'user' as const, content: userContent },
           ],
         })
         let assistantMessage = ''
@@ -131,15 +134,6 @@ export function useChat({
     },
     [apiKey, message, chatHistory, tools]
   )
-
-  useEffect(() => {
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort()
-      abortControllerRef.current = null
-    }
-    setMessage('')
-    setChatHistory([])
-  }, [result])
 
   return { message, setMessage, chatHistory, setChatHistory, request }
 }

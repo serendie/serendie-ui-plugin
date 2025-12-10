@@ -65,7 +65,7 @@ export default function App() {
             flexDirection: 'column',
           }}
         >
-          <ChatView result={null} />
+          <ChatView />
         </div>
         <div
           style={{
