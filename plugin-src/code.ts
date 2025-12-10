@@ -127,40 +127,23 @@ figma.ui.onmessage = async msg => {
       key: msg.key,
     })
   }
-  if (msg.type === 'get-selection-image') {
-    const nodeId = msg.nodeId
-    if (!nodeId) {
-      figma.ui.postMessage({
-        type: 'selection-image',
-        nodeId: '',
-        image: null,
+  if (msg.type === 'get-selection-images') {
+    const nodeIds: string[] = msg.nodeIds ?? []
+    const images = await Promise.all(
+      nodeIds.map(async nodeId => {
+        try {
+          const node = await figma.getNodeByIdAsync(nodeId)
+          if (node && canGetImage(node)) {
+            const image = await getImage(node as FrameNode)
+            return { nodeId, image }
+          }
+          return { nodeId, image: null }
+        } catch {
+          return { nodeId, image: null }
+        }
       })
-      return
-    }
-
-    try {
-      const node = await figma.getNodeByIdAsync(nodeId)
-      if (node && canGetImage(node)) {
-        const imageData = await getImage(node as FrameNode)
-        figma.ui.postMessage({
-          type: 'selection-image',
-          nodeId,
-          image: imageData,
-        })
-      } else {
-        figma.ui.postMessage({
-          type: 'selection-image',
-          nodeId,
-          image: null,
-        })
-      }
-    } catch {
-      figma.ui.postMessage({
-        type: 'selection-image',
-        nodeId,
-        image: null,
-      })
-    }
+    )
+    figma.ui.postMessage({ type: 'selection-images', images })
   }
   if (msg.type === 'close') {
     figma.closePlugin()
