@@ -18,8 +18,8 @@ export default function ChatHeader({ onNewChat }: ChatHeaderProps) {
         padding: `${sd.system.dimension.spacing.extraSmall} ${sd.system.dimension.spacing.twoExtraSmall}`,
         paddingLeft: sd.system.dimension.spacing.medium,
         backgroundColor: sd.system.color.component.surface,
-        borderTop: `${sd.system.dimension.border.medium} solid ${sd.system.color.component.outline}`,
-        borderBottom: `${sd.system.dimension.border.medium} solid ${sd.system.color.component.outline}`,
+        borderTop: `${sd.system.dimension.border.medium} solid ${sd.system.color.component.outlineBright}`,
+        borderBottom: `${sd.system.dimension.border.medium} solid ${sd.system.color.component.outlineBright}`,
       }}
     >
       <Button
