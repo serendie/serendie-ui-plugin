@@ -63,7 +63,7 @@ export default function ChatMessageList({ chatHistory }: ChatMessageListProps) {
             <ChatMessage
               key={index}
               role={role as 'user' | 'assistant'}
-              content={imageContents.length > 0 ? '' : textContent}
+              content={textContent}
               images={imageContents.length > 0 ? imageContents : undefined}
             />
           )
