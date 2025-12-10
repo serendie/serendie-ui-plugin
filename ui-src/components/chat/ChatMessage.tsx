@@ -7,10 +7,12 @@ export default function ChatMessage({
   role,
   content,
   images,
+  imageLabels,
 }: {
   role: 'user' | 'assistant'
   content: string
   images?: string[]
+  imageLabels?: string[]
 }) {
   return (
     <div
@@ -28,15 +30,34 @@ export default function ChatMessage({
     >
       {images &&
         images.map((image, index) => (
-          <img
+          <div
             key={index}
-            src={image}
-            alt='添付画像'
             style={{
-              backgroundColor: sd.system.color.component.surface,
-              maxHeight: '40vh',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-end',
             }}
-          />
+          >
+            <img
+              src={image}
+              alt={imageLabels?.[index] || '添付画像'}
+              style={{
+                backgroundColor: sd.system.color.component.surface,
+                maxHeight: '40vh',
+              }}
+            />
+            {imageLabels?.[index] && (
+              <p
+                style={{
+                  ...sd.system.typography.label.small_expanded,
+                  color: sd.system.color.component.onSurfaceVariant,
+                  marginTop: sd.system.dimension.spacing.twoExtraSmall,
+                }}
+              >
+                {imageLabels[index]}
+              </p>
+            )}
+          </div>
         ))}
       {content && (
         <div

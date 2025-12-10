@@ -15,7 +15,7 @@ const { sd } = tokens
 
 export default function ChatView() {
   const { apiKey } = useApiKey()
-  const { selections, selectionIds } = useSelection()
+  const { selections } = useSelection()
   const mcpTools = useMCPTools()
   const docsSearchTools = useDocsSearchTools()
   const { getSelectionImages } = useSelectionImages()
@@ -26,7 +26,7 @@ export default function ChatView() {
     return { ...mcpTools, ...docsSearchTools }
   }, [mcpTools, docsSearchTools])
 
-  const { message, setMessage, chatHistory, request } = useChat({
+  const { message, setMessage, chatHistory, imageMetas, request } = useChat({
     apiKey,
     tools,
   })
@@ -38,17 +38,23 @@ export default function ChatView() {
 
       setIsSending(true)
       try {
-        const images =
-          selectionIds.length > 0 ? await getSelectionImages(selectionIds) : []
-        if (images.length > 0) {
+        const result =
+          selections.length > 0
+            ? await getSelectionImages(selections)
+            : { images: [], labels: [] }
+        if (result.images.length > 0) {
           postPluginMessage({ type: 'clear-selection' })
         }
-        await request(messageToSend, images.length > 0 ? images : undefined)
+        await request(
+          messageToSend,
+          result.images.length > 0 ? result.images : undefined,
+          result.labels.length > 0 ? result.labels : undefined
+        )
       } finally {
         setIsSending(false)
       }
     },
-    [message, selectionIds, getSelectionImages, request]
+    [message, selections, getSelectionImages, request]
   )
 
   return (
@@ -61,7 +67,7 @@ export default function ChatView() {
         backgroundColor: sd.system.color.impression.tertiary,
       }}
     >
-      <ChatMessageList chatHistory={chatHistory} />
+      <ChatMessageList chatHistory={chatHistory} imageMetas={imageMetas} />
       <div
         style={{
           padding: `0 ${sd.system.dimension.spacing.medium} ${sd.system.dimension.spacing.extraLarge}`,

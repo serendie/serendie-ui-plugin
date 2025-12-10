@@ -4,14 +4,19 @@ import tokens from '@serendie/design-token'
 import ChatMessage from './ChatMessage'
 import getToolDescription from '../../utils/getToolDescription'
 import { useAutoScroll } from '../../hooks/useAutoScroll'
+import { getImageMetaKey, ImageMetas } from '../../utils/getImageMetaKey'
 
 const { sd } = tokens
 
 interface ChatMessageListProps {
   chatHistory: ModelMessage[]
+  imageMetas: ImageMetas
 }
 
-export default function ChatMessageList({ chatHistory }: ChatMessageListProps) {
+export default function ChatMessageList({
+  chatHistory,
+  imageMetas,
+}: ChatMessageListProps) {
   const scrollContainerRef = useAutoScroll(chatHistory)
 
   return (
@@ -59,12 +64,17 @@ export default function ChatMessageList({ chatHistory }: ChatMessageListProps) {
                 .filter(Boolean)
             : []
 
+          const imageLabels = imageContents.map((_, imageIndex) =>
+            imageMetas[getImageMetaKey(index, imageIndex)] ?? ''
+          )
+
           return (
             <ChatMessage
               key={index}
               role={role as 'user' | 'assistant'}
               content={textContent}
               images={imageContents.length > 0 ? imageContents : undefined}
+              imageLabels={imageLabels.length > 0 ? imageLabels : undefined}
             />
           )
         })}

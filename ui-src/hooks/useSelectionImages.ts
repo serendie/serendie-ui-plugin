@@ -1,26 +1,38 @@
 import { useCallback } from 'react'
-import { SelectionImage } from '../../shared-src/models/PluginMessage'
+import {
+  SelectionImage,
+  SelectionInfo,
+} from '../../shared-src/models/PluginMessage'
+
+export type SelectionImagesResult = {
+  images: string[]
+  labels: string[]
+}
 
 export function useSelectionImages() {
   const getSelectionImages = useCallback(
-    (nodeIds: string[]): Promise<string[]> => {
+    (selections: SelectionInfo[]): Promise<SelectionImagesResult> => {
       return new Promise(resolve => {
-        if (nodeIds.length === 0) {
-          resolve([])
+        if (selections.length === 0) {
+          resolve({ images: [], labels: [] })
           return
         }
+
+        const nodeIds = selections.map(s => s.id)
+        const nameMap = new Map(selections.map(s => [s.id, s.name]))
 
         const handleMessage = (event: MessageEvent) => {
           const msg = event.data.pluginMessage
           if (msg?.type === 'selection-images') {
             window.removeEventListener('message', handleMessage)
-            const images = (msg.images as SelectionImage[])
-              .filter(
-                (item): item is { nodeId: string; image: string } =>
-                  item.image !== null
-              )
-              .map(item => item.image)
-            resolve(images)
+            const validItems = (msg.images as SelectionImage[]).filter(
+              (item): item is { nodeId: string; image: string } =>
+                item.image !== null
+            )
+            resolve({
+              images: validItems.map(item => item.image),
+              labels: validItems.map(item => nameMap.get(item.nodeId) ?? ''),
+            })
           }
         }
         window.addEventListener('message', handleMessage)
