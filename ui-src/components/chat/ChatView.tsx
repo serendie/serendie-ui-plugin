@@ -50,7 +50,7 @@ export default function ChatView() {
   return (
     <div
       style={{
-        height: '100vh',
+        height: '100%',
         display: 'flex',
         flexDirection: 'column',
         fontFamily: sd.reference.typography.fontFamily.primary,
@@ -58,13 +58,19 @@ export default function ChatView() {
       }}
     >
       <ChatMessageList chatHistory={chatHistory} />
-      <ChatInputArea
-        message={message}
-        onMessageChange={setMessage}
-        onSend={() => handleSend()}
-        selectionNames={selections.map(s => s.name)}
-        isSending={isSending}
-      />
+      <div
+        style={{
+          padding: `0 ${sd.system.dimension.spacing.medium} ${sd.system.dimension.spacing.extraLarge}`,
+        }}
+      >
+        <ChatInputArea
+          message={message}
+          onMessageChange={setMessage}
+          onSend={() => handleSend()}
+          selectionNames={selections.map(s => s.name)}
+          isSending={isSending}
+        />
+      </div>
     </div>
   )
 }
