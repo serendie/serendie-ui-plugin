@@ -1,6 +1,7 @@
 import { createOpenAI } from '@ai-sdk/openai'
 import { ModelMessage, streamText, stepCountIs, Tool } from 'ai'
 import { useCallback, useRef, useState } from 'react'
+import { getImageMetaKey, ImageMetas } from '../utils/getImageMetaKey'
 
 const systemPrompt = `あなたはSerendie Design Systemについてよく知るAIアシスタントです。
 これからデザインを進めているSerendie UIの画像と、Serendie Design Systemのガイドラインと一致しない部分を共有します。これらの情報をもとに、デザイナーからの質問に応えるようにアドバイスしてください。
@@ -47,10 +48,15 @@ export function useChat({
 }) {
   const [message, setMessage] = useState('')
   const [chatHistory, setChatHistory] = useState<ModelMessage[]>([])
+  const [imageMetas, setImageMetas] = useState<ImageMetas>({})
   const abortControllerRef = useRef<AbortController | null>(null)
 
   const request = useCallback(
-    async (customMessage?: string, images?: string[]) => {
+    async (
+      customMessage?: string,
+      images?: string[],
+      imageLabels?: string[]
+    ) => {
       try {
         if (abortControllerRef.current) {
           abortControllerRef.current.abort()
@@ -70,10 +76,21 @@ export function useChat({
               ]
             : messageToSend
 
+        const nextMessageIndex = chatHistory.length
         setChatHistory(prev => [
           ...prev,
           { role: 'user', content: userContent },
         ])
+
+        if (imageLabels && imageLabels.length > 0) {
+          setImageMetas(prev => {
+            const newMetas = { ...prev }
+            imageLabels.forEach((label, imageIndex) => {
+              newMetas[getImageMetaKey(nextMessageIndex, imageIndex)] = label
+            })
+            return newMetas
+          })
+        }
         const openai = createOpenAI({ apiKey })
         const streamResult = streamText({
           model: openai('gpt-4.1'),
@@ -139,5 +156,12 @@ export function useChat({
     [apiKey, message, chatHistory, tools]
   )
 
-  return { message, setMessage, chatHistory, setChatHistory, request }
+  return {
+    message,
+    setMessage,
+    chatHistory,
+    setChatHistory,
+    imageMetas,
+    request,
+  }
 }
