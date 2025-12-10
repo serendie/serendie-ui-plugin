@@ -22,7 +22,8 @@ const systemPrompt = `あなたはSerendie Design Systemについてよく知る
 
 # 重要事項
 - チャットの冒頭で、Serendie MCPの**get-serendie-ui-overview**をまず呼んでください
-- もし情報のソースがある場合は、参考リンクを必ず提供してください
+- もし情報ソースがある場合は、参考リンクを必ず提供してください
+- 逆に情報ソースがない場合は、参考リンクなしでよいので、絶対に捏造しないでください
 - エンジニア向けの情報は提供しないでください
 - アドバイスは必ずツールから取得した情報に基づいてください
 
@@ -69,7 +70,10 @@ export function useChat({
               ]
             : messageToSend
 
-        setChatHistory(prev => [...prev, { role: 'user', content: userContent }])
+        setChatHistory(prev => [
+          ...prev,
+          { role: 'user', content: userContent },
+        ])
         const openai = createOpenAI({ apiKey })
         const streamResult = streamText({
           model: openai('gpt-4.1'),
