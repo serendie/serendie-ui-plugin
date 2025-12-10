@@ -41,7 +41,7 @@ export default function ChatInputArea({
 
   const selectionLabel =
     selectionNames.length === 0
-      ? null
+      ? '選択なし'
       : selectionNames.length === 1
         ? `"${selectionNames[0]}"を選択`
         : `"${selectionNames[0]}"、他${selectionNames.length - 1}つを選択`
@@ -66,7 +66,7 @@ export default function ChatInputArea({
       >
         <textarea
           ref={textareaRef}
-          placeholder="メッセージを入力"
+          placeholder='メッセージを入力'
           value={message}
           onChange={e => onMessageChange(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -106,12 +106,12 @@ export default function ChatInputArea({
             )}
           </div>
           <IconButton
-            shape="rectangle"
-            size="small"
-            styleType="filled"
+            shape='rectangle'
+            size='small'
+            styleType='filled'
             disabled={message.trim() === ''}
             onClick={handleSend}
-            icon={<SerendieSymbol name="send" />}
+            icon={<SerendieSymbol name='send' />}
           />
         </div>
       </div>
