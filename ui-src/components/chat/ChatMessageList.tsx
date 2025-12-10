@@ -11,9 +11,7 @@ interface ChatMessageListProps {
   chatHistory: ModelMessage[]
 }
 
-export default function ChatMessageList({
-  chatHistory,
-}: ChatMessageListProps) {
+export default function ChatMessageList({ chatHistory }: ChatMessageListProps) {
   const scrollContainerRef = useAutoScroll(chatHistory)
 
   return (
@@ -22,7 +20,7 @@ export default function ChatMessageList({
       style={{
         flex: 1,
         overflow: 'auto',
-        padding: sd.system.dimension.spacing.large,
+        padding: sd.system.dimension.spacing.extraLarge,
       }}
     >
       {chatHistory

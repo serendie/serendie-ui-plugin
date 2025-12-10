@@ -51,71 +51,65 @@ export default function ChatInputArea({
   return (
     <div
       style={{
-        padding: sd.system.dimension.spacing.extraLarge,
+        backgroundColor: sd.system.color.component.surface,
+        border: `1px solid ${sd.system.color.component.outline}`,
+        borderRadius: sd.system.dimension.radius.medium,
+        paddingTop: sd.system.dimension.spacing.small,
+        paddingLeft: sd.system.dimension.spacing.medium,
+        paddingRight: sd.system.dimension.spacing.medium,
+        display: 'flex',
+        flexDirection: 'column',
       }}
     >
+      <textarea
+        ref={textareaRef}
+        placeholder='メッセージを入力'
+        value={message}
+        onChange={e => onMessageChange(e.target.value)}
+        onKeyDown={handleKeyDown}
+        rows={1}
+        style={{
+          ...sd.system.typography.body.extraSmall_expanded,
+          color: sd.system.color.component.onSurface,
+          border: 'none',
+          outline: 'none',
+          resize: 'none',
+          background: 'transparent',
+          width: '100%',
+        }}
+      />
       <div
         style={{
-          backgroundColor: sd.system.color.component.surface,
-          border: `1px solid ${sd.system.color.component.outline}`,
-          borderRadius: sd.system.dimension.radius.medium,
-          paddingTop: sd.system.dimension.spacing.small,
-          paddingLeft: sd.system.dimension.spacing.medium,
-          paddingRight: sd.system.dimension.spacing.medium,
           display: 'flex',
-          flexDirection: 'column',
+          alignItems: 'flex-end',
+          justifyContent: 'space-between',
+          padding: `${sd.system.dimension.spacing.extraSmall} 0`,
         }}
       >
-        <textarea
-          ref={textareaRef}
-          placeholder='メッセージを入力'
-          value={message}
-          onChange={e => onMessageChange(e.target.value)}
-          onKeyDown={handleKeyDown}
-          rows={1}
-          style={{
-            ...sd.system.typography.body.extraSmall_expanded,
-            color: sd.system.color.component.onSurface,
-            border: 'none',
-            outline: 'none',
-            resize: 'none',
-            background: 'transparent',
-            width: '100%',
-          }}
-        />
         <div
           style={{
-            display: 'flex',
-            alignItems: 'flex-end',
-            justifyContent: 'space-between',
-            padding: `${sd.system.dimension.spacing.extraSmall} 0`,
+            paddingBottom: sd.system.dimension.spacing.twoExtraSmall,
           }}
         >
-          <div
-            style={{
-              paddingBottom: sd.system.dimension.spacing.twoExtraSmall,
-            }}
-          >
-            {selectionLabel && (
-              <span
-                style={{
-                  ...sd.system.typography.label.small_expanded,
-                  color: sd.system.color.component.onSurfaceVariant,
-                }}
-              >
-                {selectionLabel}
-              </span>
-            )}
-          </div>
-          <IconButton
-            shape='rectangle'
-            size='small'
-            styleType='filled'
-            disabled={message.trim() === '' || isSending}
-            onClick={handleSend}
-            icon={<SerendieSymbol name='send' />}
-          />
+          {selectionLabel && (
+            <span
+              style={{
+                ...sd.system.typography.label.small_expanded,
+                color: sd.system.color.component.onSurfaceVariant,
+              }}
+            >
+              {selectionLabel}
+            </span>
+          )}
         </div>
+        <IconButton
+          shape='rectangle'
+          size='small'
+          styleType='filled'
+          disabled={message.trim() === '' || isSending}
+          onClick={handleSend}
+          icon={<SerendieSymbol name='send' />}
+        />
       </div>
     </div>
   )
