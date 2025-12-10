@@ -11,12 +11,27 @@ figma.showUI(__html__, {
   title: 'Serendie Design Linter',
 })
 
+let orderedSelectionIds: string[] = []
+
 function getSelectionInfo() {
-  const selections = figma.currentPage.selection
-  return selections.map(node => ({
-    id: node.id,
-    name: node.name,
-  }))
+  // NOTE: Figmaプラグインでは選択順序が保存されない
+  const currentSelection = figma.currentPage.selection
+  const currentIds = new Set(currentSelection.map(node => node.id))
+  orderedSelectionIds = orderedSelectionIds.filter(id => currentIds.has(id))
+  const existingIds = new Set(orderedSelectionIds)
+  for (const node of currentSelection) {
+    if (!existingIds.has(node.id)) {
+      orderedSelectionIds.push(node.id)
+    }
+  }
+  const nodeMap = new Map(currentSelection.map(node => [node.id, node]))
+  return orderedSelectionIds
+    .map(id => nodeMap.get(id))
+    .filter((node): node is SceneNode => node !== undefined)
+    .map(node => ({
+      id: node.id,
+      name: node.name,
+    }))
 }
 
 figma.on('selectionchange', () => {
