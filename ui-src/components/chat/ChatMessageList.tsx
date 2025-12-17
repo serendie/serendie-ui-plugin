@@ -25,7 +25,7 @@ export default function ChatMessageList({
       style={{
         flex: 1,
         overflow: 'auto',
-        padding: `${sd.system.dimension.spacing.extraLarge} ${sd.system.dimension.spacing.extraLarge} 80px`,
+        padding: `${sd.system.dimension.spacing.extraLarge} ${sd.system.dimension.spacing.extraLarge} 8rem`,
       }}
     >
       {chatHistory
@@ -64,8 +64,9 @@ export default function ChatMessageList({
                 .filter(Boolean)
             : []
 
-          const imageLabels = imageContents.map((_, imageIndex) =>
-            imageMetas[getImageMetaKey(index, imageIndex)] ?? ''
+          const imageLabels = imageContents.map(
+            (_, imageIndex) =>
+              imageMetas[getImageMetaKey(index, imageIndex)] ?? ''
           )
 
           return (
