@@ -1,39 +1,84 @@
 import { createOpenAI } from '@ai-sdk/openai'
 import { generateObject } from 'ai'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { z } from 'zod'
-import { Result, serializeResult } from '../models/Result'
+import { SelectionInfo } from '../../shared-src/models/PluginMessage'
 
 const questionSchema = z.object({
   questions: z
     .array(z.string())
     .length(2)
-    .describe('ユーザーに提案する質問候補を3つ'),
+    .describe('ユーザーに提案する質問候補を2つ'),
 })
 
 export function useQuestions({
   apiKey,
-  result,
-  imageData,
+  selections,
+  getSelectionImages,
+  hasChat,
 }: {
   apiKey: string
-  result: Result | null
-  imageData?: string
+  selections: SelectionInfo[]
+  getSelectionImages: (
+    selections: SelectionInfo[]
+  ) => Promise<{ images: string[]; labels: string[] }>
+  hasChat: boolean
 }) {
   const [questions, setQuestions] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const abortControllerRef = useRef<AbortController | null>(null)
 
-  useEffect(() => {
+  const clearQuestions = useCallback(() => {
     setQuestions([])
-  }, [result])
+  }, [])
 
   useEffect(() => {
-    const generateQuestions = async () => {
-      if (!imageData || !apiKey || questions.length > 0) return
+    // 前のリクエストをキャンセル
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+    }
 
+    if (!apiKey || selections.length === 0) {
+      setQuestions([])
+      setIsLoading(false)
+      return
+    }
+
+    const abortController = new AbortController()
+    abortControllerRef.current = abortController
+
+    const generateQuestions = async () => {
       setIsLoading(true)
+      setQuestions([])
+
       try {
+        const { images } = await getSelectionImages(selections)
+
+        // キャンセルされていたら終了
+        if (abortController.signal.aborted) return
+
+        if (images.length === 0) {
+          setQuestions([])
+          setIsLoading(false)
+          return
+        }
+
         const openai = createOpenAI({ apiKey })
+
+        const promptText = hasChat
+          ? `あなたはSerendie Design Systemのアシスタントです。
+画面のスクリーンショットを見て、ユーザーが次に聞きたくなりそうな質問を2つ生成してください。
+会話の続きとして自然な質問にしてください。
+各質問はですます調で、40文字以内の簡潔な表現にしてください。`
+          : `あなたはSerendie Design Systemを設計するデザイナーのアシスタントです。
+選択中の要素のスクリーンショットを見て、デザイナーがこの要素の何に悩んでいるか推定してください。
+そして、推定した結果をもとに、ベテランデザイナーに投げかけるための質問文にしてください。
+
+生成する質問文は2つ、各質問はですます調で、40文字以内の簡潔な表現にしてください。
+
+なお、選択される要素は以下のいずれかが想定されます。
+- SDSにまだない、設計途中の新しいコンポーネント
+- 既存コンポーネントを組み合わせて制作中の画面`
 
         const { object } = await generateObject({
           model: openai('gpt-4o-mini'),
@@ -42,34 +87,40 @@ export function useQuestions({
             {
               role: 'user',
               content: [
-                { type: 'image', image: imageData },
-                {
-                  type: 'text',
-                  text: `あなたはSerendie Design Systemのアシスタントです。
-画面のスクリーンショットと検証結果を見て、デザイナーが次に聞きたくなりそうな質問を2つ生成してください。
-各質問はですます調で、40文字以内の簡潔な表現にしてください。
-
-- 1つ目の質問は、検証結果に基づいて、デザイナーが実際に改善に取り組む際に役立つ具体的なものにしてください
-- 2つ目の質問は、検証結果以外で、画像から読み取れる課題に基づいたものにしてください
-
-検証結果: ${result ? serializeResult(result) : 'なし'}`,
-                },
+                ...images.map(image => ({ type: 'image' as const, image })),
+                { type: 'text', text: promptText },
               ],
             },
           ],
+          abortSignal: abortController.signal,
         })
+
+        // キャンセルされていたら結果を反映しない
+        if (abortController.signal.aborted) return
 
         setQuestions(object.questions)
       } catch (error) {
+        // キャンセルによるエラーは無視
+        if (error instanceof Error && error.name === 'AbortError') {
+          return
+        }
         console.error('質問生成エラー:', error)
         setQuestions([])
       } finally {
-        setIsLoading(false)
+        // キャンセルされていなければローディング終了
+        if (!abortController.signal.aborted) {
+          setIsLoading(false)
+        }
       }
     }
 
     generateQuestions()
-  }, [apiKey, imageData, questions.length])
 
-  return { questions, isLoading }
+    // クリーンアップ
+    return () => {
+      abortController.abort()
+    }
+  }, [apiKey, selections, getSelectionImages, hasChat])
+
+  return { questions, isLoading, clearQuestions }
 }

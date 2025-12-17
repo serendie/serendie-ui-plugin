@@ -25,7 +25,7 @@ export default function ChatMessageList({
       style={{
         flex: 1,
         overflow: 'auto',
-        padding: sd.system.dimension.spacing.extraLarge,
+        padding: `${sd.system.dimension.spacing.extraLarge} ${sd.system.dimension.spacing.extraLarge} 80px`,
       }}
     >
       {chatHistory
