@@ -12,6 +12,7 @@ const systemPrompt = `あなたはSerendie Design Systemについてよく知る
 ## 既存のSDS要素について質問された場合 → Serendie MCP + Serendie Design Docs Search API
 - 既にSerendie Design Systemに定義されているコンポーネントやトークンについての質問
 - **search-serendie-guideline**: SDSの設計思想や設計パターンの参考
+- もしガイドライン情報が見つからない場合は、新規のSDS要素の質問のシナリオに移行してください
 - 補足情報としてSerendie Design Docs Search APIも利用する
 - 例：「Buttonコンポーネントの使い方は？」「このトークンの値は？」「SDSのガイドラインではどのような指定がある？」
 
