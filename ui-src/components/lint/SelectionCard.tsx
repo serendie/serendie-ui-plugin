@@ -56,6 +56,9 @@ export default function SelectionCard({
           color: sd.system.color.component.onSurface,
           marginLeft: sd.system.dimension.spacing.extraSmall,
           marginBottom: sd.system.dimension.spacing.small,
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
         }}
       >
         {selection.name}

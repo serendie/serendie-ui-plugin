@@ -52,6 +52,10 @@ export default function ChatMessage({
                   ...sd.system.typography.label.small_expanded,
                   color: sd.system.color.component.onSurfaceVariant,
                   marginTop: sd.system.dimension.spacing.twoExtraSmall,
+                  maxWidth: '100%',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
                 }}
               >
                 {imageLabels[index]}
