@@ -11,12 +11,27 @@ figma.showUI(__html__, {
   title: 'Serendie Design Linter',
 })
 
+let orderedSelectionIds: string[] = []
+
 function getSelectionInfo() {
-  const selections = figma.currentPage.selection
-  return selections.map(node => ({
-    id: node.id,
-    name: node.name,
-  }))
+  // NOTE: Figmaプラグインでは選択順序が保存されない
+  const currentSelection = figma.currentPage.selection
+  const currentIds = new Set(currentSelection.map(node => node.id))
+  orderedSelectionIds = orderedSelectionIds.filter(id => currentIds.has(id))
+  const existingIds = new Set(orderedSelectionIds)
+  for (const node of currentSelection) {
+    if (!existingIds.has(node.id)) {
+      orderedSelectionIds.push(node.id)
+    }
+  }
+  const nodeMap = new Map(currentSelection.map(node => [node.id, node]))
+  return orderedSelectionIds
+    .map(id => nodeMap.get(id))
+    .filter((node): node is SceneNode => node !== undefined)
+    .map(node => ({
+      id: node.id,
+      name: node.name,
+    }))
 }
 
 figma.on('selectionchange', () => {
@@ -112,40 +127,26 @@ figma.ui.onmessage = async msg => {
       key: msg.key,
     })
   }
-  if (msg.type === 'get-selection-image') {
-    const nodeId = msg.nodeId
-    if (!nodeId) {
-      figma.ui.postMessage({
-        type: 'selection-image',
-        nodeId: '',
-        image: null,
+  if (msg.type === 'get-selection-images') {
+    const nodeIds: string[] = msg.nodeIds ?? []
+    const images = await Promise.all(
+      nodeIds.map(async nodeId => {
+        try {
+          const node = await figma.getNodeByIdAsync(nodeId)
+          if (node && canGetImage(node)) {
+            const image = await getImage(node as FrameNode)
+            return { nodeId, image }
+          }
+          return { nodeId, image: null }
+        } catch {
+          return { nodeId, image: null }
+        }
       })
-      return
-    }
-
-    try {
-      const node = await figma.getNodeByIdAsync(nodeId)
-      if (node && canGetImage(node)) {
-        const imageData = await getImage(node as FrameNode)
-        figma.ui.postMessage({
-          type: 'selection-image',
-          nodeId,
-          image: imageData,
-        })
-      } else {
-        figma.ui.postMessage({
-          type: 'selection-image',
-          nodeId,
-          image: null,
-        })
-      }
-    } catch {
-      figma.ui.postMessage({
-        type: 'selection-image',
-        nodeId,
-        image: null,
-      })
-    }
+    )
+    figma.ui.postMessage({ type: 'selection-images', images })
+  }
+  if (msg.type === 'clear-selection') {
+    figma.currentPage.selection = []
   }
   if (msg.type === 'close') {
     figma.closePlugin()

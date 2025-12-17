@@ -160,8 +160,8 @@ export default function LintView() {
         style={{
           position: 'absolute',
           bottom: 0,
-          left: 0,
-          right: 0,
+          left: `calc(${sd.system.dimension.spacing.extraSmall} * -1)`,
+          right: `calc(${sd.system.dimension.spacing.extraSmall} * -1)`,
           padding: `0 ${sd.system.dimension.spacing.large}`,
         }}
       >

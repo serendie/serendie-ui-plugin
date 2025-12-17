@@ -51,35 +51,25 @@ export default function App() {
           size='small'
         />
       </div>
-      <div style={{ flex: 1, position: 'relative' }}>
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            transform: `translateX(${currentView === 'lint' ? '-100%' : '0'})`,
-            transition: 'transform 0.3s ease-in-out',
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          <ChatView result={null} />
-        </div>
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            transform: `translateX(${currentView === 'lint' ? '0' : '100%'})`,
-            transition: 'transform 0.3s ease-in-out',
-          }}
-        >
-          <LintView />
-        </div>
+      <div
+        style={{
+          flex: 1,
+          minHeight: 0,
+          display: currentView === 'chat' ? 'flex' : 'none',
+          flexDirection: 'column',
+        }}
+      >
+        <ChatView />
+      </div>
+      <div
+        style={{
+          flex: 1,
+          minHeight: 0,
+          display: currentView === 'lint' ? 'flex' : 'none',
+          flexDirection: 'column',
+        }}
+      >
+        <LintView />
       </div>
       <SettingsDialog
         open={settingsOpen}

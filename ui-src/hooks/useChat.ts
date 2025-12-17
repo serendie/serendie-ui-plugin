@@ -1,7 +1,7 @@
 import { createOpenAI } from '@ai-sdk/openai'
 import { ModelMessage, streamText, stepCountIs, Tool } from 'ai'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { Result } from '../models/Result'
+import { useCallback, useRef, useState } from 'react'
+import { getImageMetaKey, ImageMetas } from '../utils/getImageMetaKey'
 
 const systemPrompt = `あなたはSerendie Design Systemについてよく知るAIアシスタントです。
 これからデザインを進めているSerendie UIの画像と、Serendie Design Systemのガイドラインと一致しない部分を共有します。これらの情報をもとに、デザイナーからの質問に応えるようにアドバイスしてください。
@@ -23,7 +23,8 @@ const systemPrompt = `あなたはSerendie Design Systemについてよく知る
 
 # 重要事項
 - チャットの冒頭で、Serendie MCPの**get-serendie-ui-overview**をまず呼んでください
-- もし情報のソースがある場合は、参考リンクを必ず提供してください
+- もし情報ソースがある場合は、参考リンクを必ず提供してください
+- 逆に情報ソースがない場合は、参考リンクなしでよいので、絶対に捏造しないでください
 - エンジニア向けの情報は提供しないでください
 - アドバイスは必ずツールから取得した情報に基づいてください
 
@@ -41,18 +42,30 @@ const systemPrompt = `あなたはSerendie Design Systemについてよく知る
 export function useChat({
   apiKey,
   tools,
-  result,
 }: {
   apiKey: string
   tools: Record<string, Tool> | undefined
-  result: Result | null
 }) {
   const [message, setMessage] = useState('')
   const [chatHistory, setChatHistory] = useState<ModelMessage[]>([])
+  const [imageMetas, setImageMetas] = useState<ImageMetas>({})
   const abortControllerRef = useRef<AbortController | null>(null)
 
+  const clearChat = useCallback(() => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+    }
+    setChatHistory([])
+    setImageMetas({})
+    setMessage('')
+  }, [])
+
   const request = useCallback(
-    async (customMessage?: string) => {
+    async (
+      customMessage?: string,
+      images?: string[],
+      imageLabels?: string[]
+    ) => {
       try {
         if (abortControllerRef.current) {
           abortControllerRef.current.abort()
@@ -63,10 +76,30 @@ export function useChat({
 
         const messageToSend = customMessage ?? message
         setMessage('')
+
+        const userContent =
+          images && images.length > 0
+            ? [
+                ...images.map(image => ({ type: 'image' as const, image })),
+                { type: 'text' as const, text: messageToSend },
+              ]
+            : messageToSend
+
+        const nextMessageIndex = chatHistory.length
         setChatHistory(prev => [
           ...prev,
-          { role: 'user', content: messageToSend },
+          { role: 'user', content: userContent },
         ])
+
+        if (imageLabels && imageLabels.length > 0) {
+          setImageMetas(prev => {
+            const newMetas = { ...prev }
+            imageLabels.forEach((label, imageIndex) => {
+              newMetas[getImageMetaKey(nextMessageIndex, imageIndex)] = label
+            })
+            return newMetas
+          })
+        }
         const openai = createOpenAI({ apiKey })
         const streamResult = streamText({
           model: openai('gpt-4.1'),
@@ -79,7 +112,7 @@ export function useChat({
               content: systemPrompt,
             },
             ...chatHistory.filter(({ role }) => role !== 'tool'),
-            { role: 'user' as const, content: messageToSend },
+            { role: 'user' as const, content: userContent },
           ],
         })
         let assistantMessage = ''
@@ -132,14 +165,13 @@ export function useChat({
     [apiKey, message, chatHistory, tools]
   )
 
-  useEffect(() => {
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort()
-      abortControllerRef.current = null
-    }
-    setMessage('')
-    setChatHistory([])
-  }, [result])
-
-  return { message, setMessage, chatHistory, setChatHistory, request }
+  return {
+    message,
+    setMessage,
+    chatHistory,
+    setChatHistory,
+    imageMetas,
+    clearChat,
+    request,
+  }
 }

@@ -25,9 +25,10 @@ export type SelectionMessage =
   | { type: 'request-selection' }
 
 // 画像関連メッセージ
+export type SelectionImage = { nodeId: string; image: string | null }
 export type ImageMessage =
-  | { type: 'selection-image'; nodeId: string; image: string | null }
-  | { type: 'get-selection-image'; nodeId: string }
+  | { type: 'selection-images'; images: SelectionImage[] }
+  | { type: 'get-selection-images'; nodeIds: string[] }
 
 // エラーメッセージ
 export type ErrorMessage = { type: 'error'; message: string }
@@ -43,7 +44,8 @@ export type PluginToUIMessage =
 export type UIToPluginMessage =
   | { type: 'run-linter'; nodeIds: string[] }
   | { type: 'request-selection' }
-  | { type: 'get-selection-image'; nodeId: string }
+  | { type: 'get-selection-images'; nodeIds: string[] }
+  | { type: 'clear-selection' }
 
 // 全メッセージ型
 export type PluginMessage = PluginToUIMessage | UIToPluginMessage
