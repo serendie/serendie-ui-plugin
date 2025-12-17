@@ -6,11 +6,13 @@ const { sd } = tokens
 export default function ChatMessage({
   role,
   content,
-  image,
+  images,
+  imageLabels,
 }: {
   role: 'user' | 'assistant'
   content: string
-  image?: string
+  images?: string[]
+  imageLabels?: string[]
 }) {
   return (
     <div
@@ -26,16 +28,37 @@ export default function ChatMessage({
         alignItems: role === 'user' ? 'flex-end' : 'flex-start',
       }}
     >
-      {image && (
-        <img
-          src={image}
-          alt='添付画像'
-          style={{
-            backgroundColor: sd.system.color.component.surface,
-            maxHeight: '40vh',
-          }}
-        />
-      )}
+      {images &&
+        images.map((image, index) => (
+          <div
+            key={index}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-end',
+            }}
+          >
+            <img
+              src={image}
+              alt={imageLabels?.[index] || '添付画像'}
+              style={{
+                backgroundColor: sd.system.color.component.surface,
+                maxHeight: '40vh',
+              }}
+            />
+            {imageLabels?.[index] && (
+              <p
+                style={{
+                  ...sd.system.typography.label.small_expanded,
+                  color: sd.system.color.component.onSurfaceVariant,
+                  marginTop: sd.system.dimension.spacing.twoExtraSmall,
+                }}
+              >
+                {imageLabels[index]}
+              </p>
+            )}
+          </div>
+        ))}
       {content && (
         <div
           style={{

@@ -26,13 +26,13 @@ export default function SelectionCard({
 
   const handleMessage = useCallback(
     (message: PluginMessage) => {
-      if (
-        message.type === 'selection-image' &&
-        message.nodeId === selection.id
-      ) {
-        setImage(message.image)
-        setIsLoading(false)
-        onLoadComplete?.(selection.id)
+      if (message.type === 'selection-images') {
+        const found = message.images.find(img => img.nodeId === selection.id)
+        if (found) {
+          setImage(found.image)
+          setIsLoading(false)
+          onLoadComplete?.(selection.id)
+        }
       }
     },
     [selection.id, onLoadComplete]
@@ -42,7 +42,7 @@ export default function SelectionCard({
   useEffect(() => {
     setImage(null)
     setIsLoading(true)
-    postPluginMessage({ type: 'get-selection-image', nodeId: selection.id })
+    postPluginMessage({ type: 'get-selection-images', nodeIds: [selection.id] })
   }, [selection.id])
 
   const height = '10rem'

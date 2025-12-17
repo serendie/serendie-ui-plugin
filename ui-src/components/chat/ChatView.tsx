@@ -1,78 +1,89 @@
 import tokens from '@serendie/design-token'
-import { useEffect, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { useApiKey } from '../../hooks/useApiKey'
 import { useMCPTools } from '../../hooks/useMCPTools'
 import { useDocsSearchTools } from '../../hooks/useDocsSearchTools'
-import { useSelectionImage } from '../../hooks/useSelectionImage'
+import { useSelectionImages } from '../../hooks/useSelectionImages'
 import { useChat } from '../../hooks/useChat'
-import { useQuestions } from '../../hooks/useQuestions'
+import { useSelection } from '../../hooks/useSelection'
+import { postPluginMessage } from '../../hooks/usePluginMessage'
 import ChatMessageList from './ChatMessageList'
 import ChatInputArea from './ChatInputArea'
-import { Result, serializeResult } from '../../models/Result'
+import ChatHeader from './ChatHeader'
 
 const { sd } = tokens
 
-export default function ChatView({ result }: { result: Result | null }) {
+export default function ChatView() {
   const { apiKey } = useApiKey()
+  const { selections } = useSelection()
   const mcpTools = useMCPTools()
   const docsSearchTools = useDocsSearchTools()
+  const { getSelectionImages } = useSelectionImages()
+  const [isSending, setIsSending] = useState(false)
 
   const tools = useMemo(() => {
     if (!mcpTools) return docsSearchTools
     return { ...mcpTools, ...docsSearchTools }
   }, [mcpTools, docsSearchTools])
 
-  const { message, setMessage, chatHistory, setChatHistory, request } = useChat(
-    {
+  const { message, setMessage, chatHistory, imageMetas, clearChat, request } =
+    useChat({
       apiKey,
       tools,
-      result,
-    }
-  )
-  const selectionImage = useSelectionImage(result)
-  const { questions, isLoading: isLoadingQuestions } = useQuestions({
-    apiKey,
-    result,
-    imageData: selectionImage ?? undefined,
-  })
+    })
 
-  useEffect(() => {
-    if (selectionImage && result) {
-      setChatHistory([
-        {
-          role: 'user',
-          content: [
-            { type: 'image', image: selectionImage },
-            { type: 'text', text: serializeResult(result) },
-          ],
-        },
-      ])
-    }
-  }, [selectionImage, result])
+  const handleSend = useCallback(
+    async (customMessage?: string) => {
+      const messageToSend = customMessage ?? message
+      if (messageToSend.trim() === '') return
+
+      setIsSending(true)
+      try {
+        const result =
+          selections.length > 0
+            ? await getSelectionImages(selections)
+            : { images: [], labels: [] }
+        if (result.images.length > 0) {
+          postPluginMessage({ type: 'clear-selection' })
+        }
+        await request(
+          messageToSend,
+          result.images.length > 0 ? result.images : undefined,
+          result.labels.length > 0 ? result.labels : undefined
+        )
+      } finally {
+        setIsSending(false)
+      }
+    },
+    [message, selections, getSelectionImages, request]
+  )
 
   return (
     <div
       style={{
-        height: '100vh',
+        height: '100%',
         display: 'flex',
         flexDirection: 'column',
         fontFamily: sd.reference.typography.fontFamily.primary,
         backgroundColor: sd.system.color.impression.tertiary,
       }}
     >
-      <ChatMessageList
-        chatHistory={chatHistory}
-        result={result}
-        questions={questions}
-        isLoadingQuestions={isLoadingQuestions}
-        onTemplateClick={template => request(template)}
-      />
-      <ChatInputArea
-        message={message}
-        onMessageChange={setMessage}
-        onSend={() => request()}
-      />
+      <ChatHeader onNewChat={clearChat} />
+      <ChatMessageList chatHistory={chatHistory} imageMetas={imageMetas} />
+      <div
+        style={{
+          padding: `0 ${sd.system.dimension.spacing.medium} ${sd.system.dimension.spacing.extraLarge}`,
+        }}
+      >
+        <ChatInputArea
+          message={message}
+          onMessageChange={setMessage}
+          onSend={() => handleSend()}
+          selectionNames={selections.map(s => s.name)}
+          isSending={isSending}
+        />
+      </div>
     </div>
   )
 }
