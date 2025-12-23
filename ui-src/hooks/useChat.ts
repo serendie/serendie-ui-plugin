@@ -2,12 +2,21 @@ import { createOpenAI } from '@ai-sdk/openai'
 import { ModelMessage, streamText, stepCountIs, Tool } from 'ai'
 import { useCallback, useRef, useState } from 'react'
 import { getImageMetaKey, ImageMetas } from '../utils/getImageMetaKey'
+import { SelectionImageItem } from './useSelectionImages'
 
 const systemPrompt = `あなたはSerendie Design Systemについてよく知るAIアシスタントです。
-これからデザインを進めているSerendie UIの画像と、Serendie Design Systemのガイドラインと一致しない部分を共有します。これらの情報をもとに、デザイナーからの質問に応えるようにアドバイスしてください。
+デザイナーからの質問に対して、適切なツールを使って情報を収集し、具体的で実践的なアドバイスを提供してください。
 
 # 利用可能なツールと使い分け
-用途に応じて適切なツールを選択してください。
+
+## デザインの検証が必要な場合 → run-linter
+- ユーザーがデザイン要素を選択して「問題ない？」「何かおかしい？」と質問した場合
+- **run-linter**: 選択中のノードをSerendie Design Systemの規約に基づいて検証
+  - デザイントークンの適用状況
+  - カラーペアリングの適切性
+  - 具体的な問題点と改善提案を取得
+- 例：「このボタンの色は正しい？」「デザイントークンは適切に使われている？」
+- **重要**: linter結果に基づいて具体的にアドバイスしてください。単なる一般論ではなく、検出された問題を踏まえた改善案を提示してください。
 
 ## 既存のSDS要素について質問された場合 → Serendie MCP + Serendie Design Docs Search API
 - 既にSerendie Design Systemに定義されているコンポーネントやトークンについての質問
@@ -25,12 +34,15 @@ const systemPrompt = `あなたはSerendie Design Systemについてよく知る
 
 # 重要事項
 - チャットの冒頭で、Serendie MCPの**get-serendie-ui-overview**をまず呼んでください
+- デザイン検証が必要な場合は、まず**run-linter**を実行して具体的な問題を把握してください
 - もし情報ソースがある場合は、参考リンクを必ず提供してください
 - 逆に情報ソースがない場合は、参考リンクなしでよいので、絶対に捏造しないでください
 - エンジニア向けの情報は提供しないでください
 - アドバイスは必ずツールから取得した情報に基づいてください
 
 # 特定の質問への回答方法
+- デザインの検証について聞かれた場合：
+  run-linterツールを使って具体的な問題を検出し、その結果に基づいてアドバイスしてください。
 - 既存のトークンについて聞かれた場合：
   Serendie MCPで適切なシステムトークンを探し、見つからない場合はリファレンストークンを提案してください。
   また、トークンの選び方はsearch-design-token-docsを参照して確認してください。
@@ -63,11 +75,7 @@ export function useChat({
   }, [])
 
   const request = useCallback(
-    async (
-      customMessage?: string,
-      images?: string[],
-      imageLabels?: string[]
-    ) => {
+    async (customMessage?: string, imageItems?: SelectionImageItem[]) => {
       try {
         if (abortControllerRef.current) {
           abortControllerRef.current.abort()
@@ -76,13 +84,24 @@ export function useChat({
         const abortController = new AbortController()
         abortControllerRef.current = abortController
 
-        const messageToSend = customMessage ?? message
+        let messageToSend = customMessage ?? message
         setMessage('')
 
+        // 画像があればnodeID情報を追加
+        if (imageItems && imageItems.length > 0) {
+          const nodeInfo = imageItems
+            .map(item => `- ${item.label} (ID: ${item.nodeId})`)
+            .join('\n')
+          messageToSend = `${messageToSend}\n\n[選択中のノード]\n${nodeInfo}`
+        }
+
         const userContent =
-          images && images.length > 0
+          imageItems && imageItems.length > 0
             ? [
-                ...images.map(image => ({ type: 'image' as const, image })),
+                ...imageItems.map(item => ({
+                  type: 'image' as const,
+                  image: item.image,
+                })),
                 { type: 'text' as const, text: messageToSend },
               ]
             : messageToSend
@@ -93,11 +112,11 @@ export function useChat({
           { role: 'user', content: userContent },
         ])
 
-        if (imageLabels && imageLabels.length > 0) {
+        if (imageItems && imageItems.length > 0) {
           setImageMetas(prev => {
             const newMetas = { ...prev }
-            imageLabels.forEach((label, imageIndex) => {
-              newMetas[getImageMetaKey(nextMessageIndex, imageIndex)] = label
+            imageItems.forEach((item, imageIndex) => {
+              newMetas[getImageMetaKey(nextMessageIndex, imageIndex)] = item
             })
             return newMetas
           })

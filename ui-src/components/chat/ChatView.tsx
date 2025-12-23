@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { useApiKey } from '../../hooks/useApiKey'
 import { useMCPTools } from '../../hooks/useMCPTools'
 import { useDocsSearchTools } from '../../hooks/useDocsSearchTools'
+import { useLinterTool } from '../../hooks/useLinterTool'
 import { useSelectionImages } from '../../hooks/useSelectionImages'
 import { useChat } from '../../hooks/useChat'
 import { useSelection } from '../../hooks/useSelection'
@@ -23,11 +24,13 @@ export default function ChatView() {
   const docsSearchTools = useDocsSearchTools()
   const { getSelectionImages } = useSelectionImages()
   const [isSending, setIsSending] = useState(false)
+  const linterTool = useLinterTool()
 
   const tools = useMemo(() => {
-    if (!mcpTools) return docsSearchTools
-    return { ...mcpTools, ...docsSearchTools }
-  }, [mcpTools, docsSearchTools])
+    const baseTools = { ...docsSearchTools, ...linterTool }
+    if (!mcpTools) return baseTools
+    return { ...mcpTools, ...baseTools }
+  }, [mcpTools, docsSearchTools, linterTool])
 
   const { message, setMessage, chatHistory, imageMetas, clearChat, request } =
     useChat({
@@ -55,18 +58,12 @@ export default function ChatView() {
 
       setIsSending(true)
       try {
-        const result =
-          selections.length > 0
-            ? await getSelectionImages(selections)
-            : { images: [], labels: [] }
-        if (result.images.length > 0) {
+        const items =
+          selections.length > 0 ? await getSelectionImages(selections) : []
+        if (items.length > 0) {
           postPluginMessage({ type: 'clear-selection' })
         }
-        await request(
-          messageToSend,
-          result.images.length > 0 ? result.images : undefined,
-          result.labels.length > 0 ? result.labels : undefined
-        )
+        await request(messageToSend, items.length > 0 ? items : undefined)
       } finally {
         setIsSending(false)
       }

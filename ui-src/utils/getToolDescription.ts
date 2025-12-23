@@ -20,6 +20,8 @@ export default function getToolDescription(toolName: string): string {
       return 'Ark UIや他のコンポーネントの事例を検索しました'
     case 'search-design-token-docs':
       return 'Material Design 3のデザイントークンに関する資料を検索しました'
+    case 'run-linter':
+      return '選択中の要素を検証しました'
     default:
       return `${toolName}を実行しました`
   }
