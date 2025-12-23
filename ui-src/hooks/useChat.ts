@@ -133,7 +133,7 @@ export function useChat({
               role: 'system' as const,
               content: systemPromptWithContext,
             },
-            ...chatHistory.filter(({ role }) => role !== 'tool'),
+            ...chatHistory,
             { role: 'user' as const, content: userContent },
           ],
         })
@@ -145,7 +145,27 @@ export function useChat({
               const newHistory = [...prev]
               const lastMessage = newHistory[newHistory.length - 1]
               if (lastMessage && lastMessage.role === 'assistant') {
-                lastMessage.content = assistantMessage
+                if (Array.isArray(lastMessage.content)) {
+                  // 配列形式の場合は、text部分だけを更新
+                  const textPartIndex = lastMessage.content.findIndex(
+                    p => p.type === 'text'
+                  )
+                  if (textPartIndex !== -1) {
+                    lastMessage.content[textPartIndex] = {
+                      type: 'text' as const,
+                      text: assistantMessage,
+                    }
+                  } else {
+                    // text部分がない場合は先頭に追加
+                    lastMessage.content.unshift({
+                      type: 'text' as const,
+                      text: assistantMessage,
+                    })
+                  }
+                } else {
+                  // 文字列形式の場合はそのまま更新
+                  lastMessage.content = assistantMessage
+                }
               } else {
                 newHistory.push({
                   role: 'assistant',
@@ -156,6 +176,37 @@ export function useChat({
             })
           } else if (part.type === 'tool-call') {
             console.log(part.toolName, part.input)
+            setChatHistory(prev => {
+              const newHistory = [...prev]
+              const lastMessage = newHistory[newHistory.length - 1]
+              if (lastMessage && lastMessage.role === 'assistant') {
+                const content = Array.isArray(lastMessage.content)
+                  ? lastMessage.content
+                  : [{ type: 'text' as const, text: lastMessage.content }]
+                lastMessage.content = [
+                  ...content,
+                  {
+                    type: 'tool-call' as const,
+                    toolCallId: part.toolCallId,
+                    toolName: part.toolName,
+                    input: part.input,
+                  },
+                ]
+              } else {
+                newHistory.push({
+                  role: 'assistant',
+                  content: [
+                    {
+                      type: 'tool-call' as const,
+                      toolCallId: part.toolCallId,
+                      toolName: part.toolName,
+                      input: part.input,
+                    },
+                  ],
+                })
+              }
+              return newHistory
+            })
           } else if (part.type === 'tool-result') {
             console.log(part.toolName, part.output)
             setChatHistory(prev => [
@@ -167,7 +218,10 @@ export function useChat({
                     type: 'tool-result' as const,
                     toolCallId: part.toolCallId,
                     toolName: part.toolName,
-                    output: part.output,
+                    output:
+                      typeof part.output === 'string'
+                        ? { type: 'text' as const, value: part.output }
+                        : { type: 'json' as const, value: part.output },
                   },
                 ],
               },
