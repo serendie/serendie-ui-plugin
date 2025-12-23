@@ -17,6 +17,7 @@ export function useQuestions({
   selections,
   getSelectionImages,
   hasChat,
+  isActive,
 }: {
   apiKey: string
   selections: SelectionInfo[]
@@ -24,6 +25,7 @@ export function useQuestions({
     selections: SelectionInfo[]
   ) => Promise<SelectionImageItem[]>
   hasChat: boolean
+  isActive: boolean
 }) {
   const [questions, setQuestions] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -39,7 +41,7 @@ export function useQuestions({
       abortControllerRef.current.abort()
     }
 
-    if (!apiKey || selections.length === 0) {
+    if (!isActive || !apiKey || selections.length === 0) {
       setQuestions([])
       setIsLoading(false)
       return
@@ -116,7 +118,7 @@ export function useQuestions({
     return () => {
       abortController.abort()
     }
-  }, [apiKey, selections, getSelectionImages, hasChat])
+  }, [apiKey, selections, getSelectionImages, hasChat, isActive])
 
   return { questions, isLoading, clearQuestions }
 }
