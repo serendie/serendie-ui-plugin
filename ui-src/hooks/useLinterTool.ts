@@ -18,7 +18,7 @@ function runLinter(nodeIds: string[]): Promise<LintResult[]> {
     // 一時的なリスナーを設定
     const listener = (event: MessageEvent<{ pluginMessage: PluginMessage }>) => {
       const msg = event.data.pluginMessage
-      if (msg.type === 'lint-result') {
+      if (msg.type === 'lint-result' && msg.source === 'chat-view') {
         resolve(msg.results)
         window.removeEventListener('message', listener)
       } else if (msg.type === 'error') {
@@ -28,7 +28,7 @@ function runLinter(nodeIds: string[]): Promise<LintResult[]> {
     }
 
     window.addEventListener('message', listener)
-    postPluginMessage({ type: 'run-linter', nodeIds })
+    postPluginMessage({ type: 'run-linter', nodeIds, source: 'chat-view' })
 
     // タイムアウト処理
     setTimeout(() => {

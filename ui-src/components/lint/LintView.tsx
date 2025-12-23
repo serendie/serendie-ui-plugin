@@ -42,7 +42,7 @@ export default function LintView() {
           return next
         })
       }
-      if (message.type === 'lint-result') {
+      if (message.type === 'lint-result' && message.source === 'lint-view') {
         setIsLoading(false)
         setResults(message.results)
         setPhase('results')
@@ -62,6 +62,7 @@ export default function LintView() {
     postPluginMessage({
       type: 'run-linter',
       nodeIds: selections.map(s => s.id),
+      source: 'lint-view',
     })
   }, [selections])
 
