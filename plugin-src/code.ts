@@ -27,9 +27,6 @@ function getSelectionInfo() {
     }
   }
   const nodeMap = new Map(currentSelection.map(node => [node.id, node]))
-  currentSelection.forEach(node => {
-    console.log(node)
-  })
   return orderedSelectionIds
     .map(id => nodeMap.get(id))
     .filter((node): node is SceneNode => node !== undefined)
