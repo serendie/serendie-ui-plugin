@@ -3,6 +3,7 @@ import { generateObject } from 'ai'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { z } from 'zod'
 import { SelectionInfo } from '../../shared-src/models/PluginMessage'
+import { SelectionImageItem } from './useSelectionImages'
 
 const questionSchema = z.object({
   questions: z
@@ -21,7 +22,7 @@ export function useQuestions({
   selections: SelectionInfo[]
   getSelectionImages: (
     selections: SelectionInfo[]
-  ) => Promise<{ images: string[]; labels: string[] }>
+  ) => Promise<SelectionImageItem[]>
   hasChat: boolean
 }) {
   const [questions, setQuestions] = useState<string[]>([])
@@ -52,12 +53,12 @@ export function useQuestions({
       setQuestions([])
 
       try {
-        const { images } = await getSelectionImages(selections)
+        const items = await getSelectionImages(selections)
 
         // キャンセルされていたら終了
         if (abortController.signal.aborted) return
 
-        if (images.length === 0) {
+        if (items.length === 0) {
           setQuestions([])
           setIsLoading(false)
           return
@@ -79,7 +80,10 @@ export function useQuestions({
             {
               role: 'user',
               content: [
-                ...images.map(image => ({ type: 'image' as const, image })),
+                ...items.map(item => ({
+                  type: 'image' as const,
+                  image: item.image,
+                })),
                 { type: 'text', text: promptText },
               ],
             },

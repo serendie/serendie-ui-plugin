@@ -1,3 +1,5 @@
+import { SelectionImageItem } from '../hooks/useSelectionImages'
+
 /**
  * 画像メタ情報のキーを生成する
  * @param messageIndex メッセージのインデックス
@@ -11,4 +13,4 @@ export function getImageMetaKey(
 }
 
 /** 画像メタ情報の型 */
-export type ImageMetas = Record<string, string>
+export type ImageMetas = Record<string, SelectionImageItem>

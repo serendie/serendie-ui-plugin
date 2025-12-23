@@ -64,10 +64,10 @@ export default function ChatMessageList({
                 .filter(Boolean)
             : []
 
-          const imageLabels = imageContents.map(
-            (_, imageIndex) =>
-              imageMetas[getImageMetaKey(index, imageIndex)] ?? ''
-          )
+          const imageLabels = imageContents.map((_, imageIndex) => {
+            const item = imageMetas[getImageMetaKey(index, imageIndex)]
+            return item?.label ?? ''
+          })
 
           return (
             <ChatMessage
