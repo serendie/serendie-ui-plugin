@@ -64,6 +64,10 @@ export default function ChatMessageList({
                 .filter(Boolean)
             : []
 
+          if (!textContent && imageContents.length === 0) {
+            return null
+          }
+
           const imageLabels = imageContents.map((_, imageIndex) => {
             const item = imageMetas[getImageMetaKey(index, imageIndex)]
             return item?.label ?? ''
