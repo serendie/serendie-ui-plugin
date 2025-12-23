@@ -17,7 +17,7 @@ import SuggestedQuestions from './SuggestedQuestions'
 
 const { sd } = tokens
 
-export default function ChatView() {
+export default function ChatView({ isActive }: { isActive: boolean }) {
   const { apiKey } = useApiKey()
   const { selections } = useSelection()
   const mcpTools = useMCPTools()
@@ -49,6 +49,7 @@ export default function ChatView() {
     selections,
     getSelectionImages,
     hasChat,
+    isActive,
   })
 
   const handleSend = useCallback(

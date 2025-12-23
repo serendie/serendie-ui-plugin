@@ -59,7 +59,7 @@ export default function App() {
           flexDirection: 'column',
         }}
       >
-        <ChatView />
+        <ChatView isActive={currentView === 'chat'} />
       </div>
       <div
         style={{
