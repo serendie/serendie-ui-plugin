@@ -18,7 +18,7 @@ const { sd } = tokens
 
 type LintPhase = 'selecting' | 'results'
 
-export default function LintView({ isActive }: { isActive: boolean }) {
+export default function LintView() {
   const [phase, setPhase] = useState<LintPhase>('selecting')
   const [selections, setSelections] = useState<SelectionInfo[]>([])
   const [results, setResults] = useState<Result[]>([])
@@ -146,7 +146,6 @@ export default function LintView({ isActive }: { isActive: boolean }) {
               <SelectionCard
                 selection={selection}
                 onLoadComplete={handleImageLoadComplete}
-                isActive={isActive}
               />
               {phase === 'results' && result && (
                 <IssuesList
