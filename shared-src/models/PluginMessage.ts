@@ -7,6 +7,7 @@ export type NodeStructure = {
   nodeType: string
   fills: string[]
   strokes: string[]
+  textStyle?: string
   width: number
   height: number
   children: NodeStructure[]
