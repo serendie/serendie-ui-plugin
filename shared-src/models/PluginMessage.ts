@@ -1,11 +1,25 @@
 import { Issue } from './Rules'
 
+// ノード構造情報（階層構造）
+export type NodeStructure = {
+  nodeId: string
+  nodeName: string
+  nodeType: string
+  fills: string[]
+  strokes: string[]
+  textStyle?: string
+  width: number
+  height: number
+  children: NodeStructure[]
+}
+
 // Lint結果の型（ui-src/models/Result.tsと同じ構造）
 export type LintResult = {
   name: string
   id: string
   issues: Issue[]
   totalNodes: number
+  structure: NodeStructure
 }
 
 // 選択要素の情報
@@ -14,9 +28,11 @@ export type SelectionInfo = {
   name: string
 }
 
+type Source = 'chat-view' | 'lint-view'
+
 // Lint関連メッセージ
 export type LintMessage =
-  | { type: 'lint-result'; results: LintResult[] }
+  | { type: 'lint-result'; results: LintResult[]; source?: Source }
   | { type: 'run-linter' }
 
 // 選択関連メッセージ
@@ -42,7 +58,7 @@ export type PluginToUIMessage =
 
 // UI → Plugin
 export type UIToPluginMessage =
-  | { type: 'run-linter'; nodeIds: string[] }
+  | { type: 'run-linter'; nodeIds: string[]; source: Source }
   | { type: 'request-selection' }
   | { type: 'get-selection-images'; nodeIds: string[] }
   | { type: 'clear-selection' }

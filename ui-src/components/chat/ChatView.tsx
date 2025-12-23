@@ -4,34 +4,53 @@ import { useCallback, useMemo, useState } from 'react'
 import { useApiKey } from '../../hooks/useApiKey'
 import { useMCPTools } from '../../hooks/useMCPTools'
 import { useDocsSearchTools } from '../../hooks/useDocsSearchTools'
+import { useLinterTool } from '../../hooks/useLinterTool'
 import { useSelectionImages } from '../../hooks/useSelectionImages'
 import { useChat } from '../../hooks/useChat'
 import { useSelection } from '../../hooks/useSelection'
+import { useQuestions } from '../../hooks/useQuestions'
 import { postPluginMessage } from '../../hooks/usePluginMessage'
 import ChatMessageList from './ChatMessageList'
 import ChatInputArea from './ChatInputArea'
 import ChatHeader from './ChatHeader'
+import SuggestedQuestions from './SuggestedQuestions'
 
 const { sd } = tokens
 
-export default function ChatView() {
+export default function ChatView({ isActive }: { isActive: boolean }) {
   const { apiKey } = useApiKey()
   const { selections } = useSelection()
   const mcpTools = useMCPTools()
   const docsSearchTools = useDocsSearchTools()
   const { getSelectionImages } = useSelectionImages()
   const [isSending, setIsSending] = useState(false)
+  const linterTool = useLinterTool()
 
   const tools = useMemo(() => {
-    if (!mcpTools) return docsSearchTools
-    return { ...mcpTools, ...docsSearchTools }
-  }, [mcpTools, docsSearchTools])
+    const baseTools = { ...docsSearchTools, ...linterTool }
+    if (!mcpTools) return baseTools
+    return { ...mcpTools, ...baseTools }
+  }, [mcpTools, docsSearchTools, linterTool])
 
   const { message, setMessage, chatHistory, imageMetas, clearChat, request } =
     useChat({
       apiKey,
       tools,
     })
+
+  const hasChat = chatHistory.length > 0
+
+  const {
+    questions,
+    isLoading: isQuestionsLoading,
+    clearQuestions,
+  } = useQuestions({
+    apiKey,
+    selections,
+    getSelectionImages,
+    hasChat,
+    isActive,
+  })
 
   const handleSend = useCallback(
     async (customMessage?: string) => {
@@ -40,18 +59,12 @@ export default function ChatView() {
 
       setIsSending(true)
       try {
-        const result =
-          selections.length > 0
-            ? await getSelectionImages(selections)
-            : { images: [], labels: [] }
-        if (result.images.length > 0) {
+        const items =
+          selections.length > 0 ? await getSelectionImages(selections) : []
+        if (items.length > 0) {
           postPluginMessage({ type: 'clear-selection' })
         }
-        await request(
-          messageToSend,
-          result.images.length > 0 ? result.images : undefined,
-          result.labels.length > 0 ? result.labels : undefined
-        )
+        await request(messageToSend, items.length > 0 ? items : undefined)
       } finally {
         setIsSending(false)
       }
@@ -69,13 +82,33 @@ export default function ChatView() {
         backgroundColor: sd.system.color.impression.tertiary,
       }}
     >
-      <ChatHeader onNewChat={clearChat} />
+      <ChatHeader
+        onNewChat={() => {
+          clearChat()
+          clearQuestions()
+        }}
+      />
       <ChatMessageList chatHistory={chatHistory} imageMetas={imageMetas} />
       <div
         style={{
+          position: 'relative',
           padding: `0 ${sd.system.dimension.spacing.medium} ${sd.system.dimension.spacing.extraLarge}`,
         }}
       >
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '100%',
+            right: sd.system.dimension.spacing.medium,
+            paddingBottom: sd.system.dimension.spacing.small,
+          }}
+        >
+          <SuggestedQuestions
+            questions={questions}
+            onSelect={handleSend}
+            isLoading={isQuestionsLoading}
+          />
+        </div>
         <ChatInputArea
           message={message}
           onMessageChange={setMessage}
