@@ -18,7 +18,11 @@ const { sd } = tokens
 
 type LintPhase = 'selecting' | 'results'
 
-export default function LintView() {
+interface LintViewProps {
+  isActive: boolean
+}
+
+export default function LintView({ isActive }: LintViewProps) {
   const [phase, setPhase] = useState<LintPhase>('selecting')
   const [selections, setSelections] = useState<SelectionInfo[]>([])
   const [results, setResults] = useState<Result[]>([])
@@ -42,7 +46,7 @@ export default function LintView() {
           return next
         })
       }
-      if (message.type === 'lint-result') {
+      if (message.type === 'lint-result' && message.source === 'lint-view') {
         setIsLoading(false)
         setResults(message.results)
         setPhase('results')
@@ -62,6 +66,7 @@ export default function LintView() {
     postPluginMessage({
       type: 'run-linter',
       nodeIds: selections.map(s => s.id),
+      source: 'lint-view',
     })
   }, [selections])
 
@@ -145,6 +150,7 @@ export default function LintView() {
               <SelectionCard
                 selection={selection}
                 onLoadComplete={handleImageLoadComplete}
+                isActive={isActive}
               />
               {phase === 'results' && result && (
                 <IssuesList

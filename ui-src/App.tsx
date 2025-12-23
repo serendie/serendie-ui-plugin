@@ -59,7 +59,7 @@ export default function App() {
           flexDirection: 'column',
         }}
       >
-        <ChatView />
+        <ChatView isActive={currentView === 'chat'} />
       </div>
       <div
         style={{
@@ -69,7 +69,7 @@ export default function App() {
           flexDirection: 'column',
         }}
       >
-        <LintView />
+        <LintView isActive={currentView === 'lint'} />
       </div>
       <SettingsDialog
         open={settingsOpen}

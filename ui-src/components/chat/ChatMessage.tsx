@@ -20,7 +20,6 @@ export default function ChatMessage({
         marginBottom: sd.system.dimension.spacing.large,
         marginRight: role === 'user' ? 0 : 'auto',
         marginLeft: role === 'user' ? 'auto' : 0,
-        width: 'fit-content',
         maxWidth: role === 'user' ? '80%' : '100%',
         display: 'flex',
         flexDirection: 'column',
@@ -36,6 +35,8 @@ export default function ChatMessage({
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'flex-end',
+              maxWidth: '100%',
+              overflow: 'hidden',
             }}
           >
             <img
@@ -44,6 +45,8 @@ export default function ChatMessage({
               style={{
                 backgroundColor: sd.system.color.component.surface,
                 maxHeight: '40vh',
+                maxWidth: '100%',
+                objectFit: 'contain',
               }}
             />
             {imageLabels?.[index] && (
@@ -52,6 +55,10 @@ export default function ChatMessage({
                   ...sd.system.typography.label.small_expanded,
                   color: sd.system.color.component.onSurfaceVariant,
                   marginTop: sd.system.dimension.spacing.twoExtraSmall,
+                  maxWidth: '100%',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
                 }}
               >
                 {imageLabels[index]}

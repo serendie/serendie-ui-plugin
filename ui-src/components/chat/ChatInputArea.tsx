@@ -41,12 +41,14 @@ export default function ChatInputArea({
     }
   }, [message])
 
-  const selectionLabel =
-    selectionNames.length === 0
-      ? '選択なし'
-      : selectionNames.length === 1
-        ? `"${selectionNames[0]}"を選択`
-        : `"${selectionNames[0]}"、他${selectionNames.length - 1}つを選択`
+  const selectionCount = selectionNames.length
+  const firstName = selectionNames[0] ?? ''
+  const suffix =
+    selectionCount === 0
+      ? ''
+      : selectionCount === 1
+        ? 'を選択'
+        : `、他${selectionCount - 1}つを選択`
 
   return (
     <div
@@ -89,17 +91,30 @@ export default function ChatInputArea({
         <div
           style={{
             paddingBottom: sd.system.dimension.spacing.twoExtraSmall,
+            flex: 1,
+            minWidth: 0,
+            marginRight: sd.system.dimension.spacing.small,
+            ...sd.system.typography.label.small_expanded,
+            color: sd.system.color.component.onSurfaceVariant,
+            display: 'flex',
+            alignItems: 'baseline',
           }}
         >
-          {selectionLabel && (
-            <span
-              style={{
-                ...sd.system.typography.label.small_expanded,
-                color: sd.system.color.component.onSurfaceVariant,
-              }}
-            >
-              {selectionLabel}
-            </span>
+          {selectionCount === 0 ? (
+            <span>選択なし</span>
+          ) : (
+            <>
+              <span
+                style={{
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                "{firstName}"
+              </span>
+              <span style={{ flexShrink: 0 }}>{suffix}</span>
+            </>
           )}
         </div>
         <IconButton

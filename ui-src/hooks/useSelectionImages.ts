@@ -4,17 +4,18 @@ import {
   SelectionInfo,
 } from '../../shared-src/models/PluginMessage'
 
-export type SelectionImagesResult = {
-  images: string[]
-  labels: string[]
+export type SelectionImageItem = {
+  image: string
+  label: string
+  nodeId: string
 }
 
 export function useSelectionImages() {
   const getSelectionImages = useCallback(
-    (selections: SelectionInfo[]): Promise<SelectionImagesResult> => {
+    (selections: SelectionInfo[]): Promise<SelectionImageItem[]> => {
       return new Promise(resolve => {
         if (selections.length === 0) {
-          resolve({ images: [], labels: [] })
+          resolve([])
           return
         }
 
@@ -29,10 +30,13 @@ export function useSelectionImages() {
               (item): item is { nodeId: string; image: string } =>
                 item.image !== null
             )
-            resolve({
-              images: validItems.map(item => item.image),
-              labels: validItems.map(item => nameMap.get(item.nodeId) ?? ''),
-            })
+            resolve(
+              validItems.map(item => ({
+                image: item.image,
+                label: nameMap.get(item.nodeId) ?? '',
+                nodeId: item.nodeId,
+              }))
+            )
           }
         }
         window.addEventListener('message', handleMessage)
