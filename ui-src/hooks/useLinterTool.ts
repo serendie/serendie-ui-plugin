@@ -1,12 +1,9 @@
 import { tool, Tool } from 'ai'
 import { useMemo } from 'react'
 import { z } from 'zod'
-import {
-  LintResult,
-  NodeAnalysis,
-  PluginMessage,
-} from '../../shared-src/models/PluginMessage'
+import { LintResult, PluginMessage } from '../../shared-src/models/PluginMessage'
 import { serializeIssues } from '../../shared-src/models/Rules'
+import { serializeNodeStructure } from '../../shared-src/utils/serializeNodeStructure'
 import { postPluginMessage } from './usePluginMessage'
 
 const runLinterParams = z.object({
@@ -16,34 +13,6 @@ const runLinterParams = z.object({
       '検証対象のノードID配列。ユーザーが選択中のノードIDを指定してください。'
     ),
 })
-
-function serializeNodeAnalysis(node: NodeAnalysis, indent = 0): string {
-  const indentStr = '  '.repeat(indent)
-
-  const details: string[] = []
-
-  if (node.fills.length > 0) {
-    details.push(`fills: [${node.fills.join(', ')}]`)
-  }
-
-  if (node.strokes.length > 0) {
-    details.push(`strokes: [${node.strokes.join(', ')}]`)
-  }
-
-  details.push(`size: ${node.width}x${node.height}`)
-
-  const detailsStr = details.length > 0 ? ` ${details.join(', ')}` : ''
-
-  let result = `${indentStr}- ${node.nodeName} (${node.nodeType})${detailsStr}\n`
-
-  if (node.children.length > 0) {
-    for (const child of node.children) {
-      result += serializeNodeAnalysis(child, indent + 1)
-    }
-  }
-
-  return result
-}
 
 function runLinter(nodeIds: string[]): Promise<LintResult[]> {
   return new Promise((resolve, reject) => {
@@ -87,14 +56,14 @@ export function useLinterTool(): Record<string, Tool> {
                 ? result.issues.map(issue => serializeIssues(issue)).join('\n')
                 : '問題なし'
 
-            const analysisText = serializeNodeAnalysis(result.analysis)
+            const structureText = serializeNodeStructure(result.structure)
 
             return `## ${result.name} (ID: ${result.id})
 検証ノード数: ${result.totalNodes}
 検出された問題数: ${result.issues.length}
 
 ### 要素の構造とデザイントークン
-${analysisText}
+${structureText}
 
 ### 検出された問題
 ${issuesText}`
