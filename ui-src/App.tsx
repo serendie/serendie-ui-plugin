@@ -69,7 +69,7 @@ export default function App() {
           flexDirection: 'column',
         }}
       >
-        <LintView isActive={currentView === 'lint'} />
+        <LintView />
       </div>
       <SettingsDialog
         open={settingsOpen}

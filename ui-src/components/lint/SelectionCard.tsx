@@ -15,13 +15,11 @@ const { sd } = tokens
 interface SelectionCardProps {
   selection: SelectionInfo
   onLoadComplete?: (nodeId: string) => void
-  isActive: boolean
 }
 
 export default function SelectionCard({
   selection,
   onLoadComplete,
-  isActive,
 }: SelectionCardProps) {
   const [image, setImage] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -42,14 +40,10 @@ export default function SelectionCard({
   usePluginMessage(handleMessage)
 
   useEffect(() => {
-    if (!isActive) {
-      setIsLoading(true)
-      return
-    }
     setImage(null)
     setIsLoading(true)
     postPluginMessage({ type: 'get-selection-images', nodeIds: [selection.id] })
-  }, [selection.id, isActive])
+  }, [selection.id])
 
   const height = '10rem'
 
