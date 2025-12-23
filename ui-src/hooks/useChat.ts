@@ -84,16 +84,8 @@ export function useChat({
         const abortController = new AbortController()
         abortControllerRef.current = abortController
 
-        let messageToSend = customMessage ?? message
+        const messageToSend = customMessage ?? message
         setMessage('')
-
-        // 画像があればnodeID情報を追加
-        if (imageItems && imageItems.length > 0) {
-          const nodeInfo = imageItems
-            .map(item => `- ${item.label} (ID: ${item.nodeId})`)
-            .join('\n')
-          messageToSend = `${messageToSend}\n\n[選択中のノード]\n${nodeInfo}`
-        }
 
         const userContent =
           imageItems && imageItems.length > 0
@@ -105,6 +97,15 @@ export function useChat({
                 { type: 'text' as const, text: messageToSend },
               ]
             : messageToSend
+
+        // システムプロンプトにノード情報を追加
+        let systemPromptWithContext = systemPrompt
+        if (imageItems && imageItems.length > 0) {
+          const nodeInfo = imageItems
+            .map(item => `- ${item.label} (ID: ${item.nodeId})`)
+            .join('\n')
+          systemPromptWithContext = `${systemPrompt}\n\n# 現在選択中のノード\n${nodeInfo}`
+        }
 
         const nextMessageIndex = chatHistory.length
         setChatHistory(prev => [
@@ -130,7 +131,7 @@ export function useChat({
           messages: [
             {
               role: 'system' as const,
-              content: systemPrompt,
+              content: systemPromptWithContext,
             },
             ...chatHistory.filter(({ role }) => role !== 'tool'),
             { role: 'user' as const, content: userContent },
