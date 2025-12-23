@@ -1,7 +1,7 @@
 export default async function getImage(node: FrameNode) {
   const imageData = await node.exportAsync({
     format: 'JPG',
-    constraint: { type: 'WIDTH', value: 1920 },
+    constraint: { type: 'WIDTH', value: 960 },
   })
   const base64 = figma.base64Encode(imageData)
   return `data:image/jpeg;base64,${base64}`
