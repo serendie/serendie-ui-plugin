@@ -1,11 +1,11 @@
-import { NodeAnalysis } from '../../shared-src/models/PluginMessage'
+import { NodeStructure } from '../../shared-src/models/PluginMessage'
 import extractVariableKey from './extractVariableKey'
 import getVariableMap from './getVariableMap'
 
-async function buildNodeTreeRecursive(
+async function buildNodeStructureRecursive(
   node: SceneNode,
   variableMap: Map<string, string>
-): Promise<NodeAnalysis> {
+): Promise<NodeStructure> {
   const extractFills = (node: SceneNode): string[] => {
     const fills: string[] = []
     if ('fills' in node && Array.isArray(node.fills)) {
@@ -48,15 +48,18 @@ async function buildNodeTreeRecursive(
     return strokes
   }
 
-  const children: NodeAnalysis[] = []
+  const children: NodeStructure[] = []
   if ('children' in node && node.visible) {
     for (const child of node.children) {
       if (!child.visible) {
         continue
       }
 
-      const childAnalysis = await buildNodeTreeRecursive(child, variableMap)
-      children.push(childAnalysis)
+      const childStructure = await buildNodeStructureRecursive(
+        child,
+        variableMap
+      )
+      children.push(childStructure)
     }
   }
 
@@ -72,9 +75,9 @@ async function buildNodeTreeRecursive(
   }
 }
 
-export default async function buildNodeTree(
+export default async function buildNodeStructure(
   node: SceneNode
-): Promise<NodeAnalysis> {
+): Promise<NodeStructure> {
   const variableMap = await getVariableMap()
-  return buildNodeTreeRecursive(node, variableMap)
+  return buildNodeStructureRecursive(node, variableMap)
 }

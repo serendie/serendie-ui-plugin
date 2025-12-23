@@ -2,7 +2,7 @@ import {
   COLLECTION_NAME_LIST,
   LIBRARY_NAME,
 } from '../../shared-src/models/Rules'
-import notify from '../../shared-src/utils/notify'
+import notify from './notify'
 import extractVariableKey from './extractVariableKey'
 
 export type VariableMap = Map<string, string>

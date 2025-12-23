@@ -4,8 +4,8 @@ import validateColorPairing from './utils/validateColorPairing'
 import validateAssignFrameVariable from './utils/validateAssignFrameVariable'
 import validateAssignTextVariable from './utils/validateAssignTextVariable'
 import getImage, { canGetImage } from '../shared-src/utils/getImage'
-import buildNodeTree from './utils/buildNodeTree'
-import { NodeAnalysis } from '../shared-src/models/PluginMessage'
+import buildNodeStructure from './utils/buildNodeStructure'
+import { NodeStructure } from '../shared-src/models/PluginMessage'
 
 figma.showUI(__html__, {
   width: 360,
@@ -80,7 +80,7 @@ figma.ui.onmessage = async msg => {
         id: string
         issues: Issue[]
         totalNodes: number
-        analysis: NodeAnalysis
+        structure: NodeStructure
       }> = []
       for (const selection of selections) {
         const colorInfoList = await extractColorInfo(selection)
@@ -93,14 +93,14 @@ figma.ui.onmessage = async msg => {
           ...frameColorResult.issues,
         ]
 
-        const analysis = await buildNodeTree(selection)
+        const structure = await buildNodeStructure(selection)
 
         results.push({
           name: selection.name,
           id: selection.id,
           issues,
           totalNodes: colorInfoList.length,
-          analysis,
+          structure,
         })
       }
 

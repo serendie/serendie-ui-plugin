@@ -1,12 +1,12 @@
 import { Issue, serializeIssues } from '../../shared-src/models/Rules'
-import { NodeAnalysis } from '../../shared-src/models/PluginMessage'
+import { NodeStructure } from '../../shared-src/models/PluginMessage'
 
 export type Result = {
   name: string
   id: string
   issues: Issue[]
   totalNodes: number
-  analysis: NodeAnalysis
+  structure: NodeStructure
 }
 
 export function serializeResult(result: Result): string {
