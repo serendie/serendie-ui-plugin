@@ -4,6 +4,8 @@ import validateColorPairing from './utils/validateColorPairing'
 import validateAssignFrameVariable from './utils/validateAssignFrameVariable'
 import validateAssignTextVariable from './utils/validateAssignTextVariable'
 import getImage, { canGetImage } from '../shared-src/utils/getImage'
+import buildNodeTree from './utils/buildNodeTree'
+import { NodeAnalysis } from '../shared-src/models/PluginMessage'
 
 figma.showUI(__html__, {
   width: 360,
@@ -25,6 +27,9 @@ function getSelectionInfo() {
     }
   }
   const nodeMap = new Map(currentSelection.map(node => [node.id, node]))
+  currentSelection.forEach(node => {
+    console.log(node)
+  })
   return orderedSelectionIds
     .map(id => nodeMap.get(id))
     .filter((node): node is SceneNode => node !== undefined)
@@ -78,6 +83,7 @@ figma.ui.onmessage = async msg => {
         id: string
         issues: Issue[]
         totalNodes: number
+        analysis: NodeAnalysis
       }> = []
       for (const selection of selections) {
         const colorInfoList = await extractColorInfo(selection)
@@ -90,11 +96,14 @@ figma.ui.onmessage = async msg => {
           ...frameColorResult.issues,
         ]
 
+        const analysis = await buildNodeTree(selection)
+
         results.push({
           name: selection.name,
           id: selection.id,
           issues,
           totalNodes: colorInfoList.length,
+          analysis,
         })
       }
 

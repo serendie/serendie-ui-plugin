@@ -1,11 +1,24 @@
 import { Issue } from './Rules'
 
+// ノード分析結果（階層構造）
+export type NodeAnalysis = {
+  nodeId: string
+  nodeName: string
+  nodeType: string
+  fills: string[]
+  strokes: string[]
+  width: number
+  height: number
+  children: NodeAnalysis[]
+}
+
 // Lint結果の型（ui-src/models/Result.tsと同じ構造）
 export type LintResult = {
   name: string
   id: string
   issues: Issue[]
   totalNodes: number
+  analysis: NodeAnalysis
 }
 
 // 選択要素の情報

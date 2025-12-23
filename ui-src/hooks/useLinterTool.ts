@@ -1,7 +1,11 @@
 import { tool, Tool } from 'ai'
 import { useMemo } from 'react'
 import { z } from 'zod'
-import { LintResult, PluginMessage } from '../../shared-src/models/PluginMessage'
+import {
+  LintResult,
+  NodeAnalysis,
+  PluginMessage,
+} from '../../shared-src/models/PluginMessage'
 import { serializeIssues } from '../../shared-src/models/Rules'
 import { postPluginMessage } from './usePluginMessage'
 
@@ -13,10 +17,39 @@ const runLinterParams = z.object({
     ),
 })
 
+function serializeNodeAnalysis(node: NodeAnalysis, indent = 0): string {
+  const indentStr = '  '.repeat(indent)
+
+  const details: string[] = []
+
+  if (node.fills.length > 0) {
+    details.push(`fills: [${node.fills.join(', ')}]`)
+  }
+
+  if (node.strokes.length > 0) {
+    details.push(`strokes: [${node.strokes.join(', ')}]`)
+  }
+
+  details.push(`size: ${node.width}x${node.height}`)
+
+  const detailsStr = details.length > 0 ? ` ${details.join(', ')}` : ''
+
+  let result = `${indentStr}- ${node.nodeName} (${node.nodeType})${detailsStr}\n`
+
+  if (node.children.length > 0) {
+    for (const child of node.children) {
+      result += serializeNodeAnalysis(child, indent + 1)
+    }
+  }
+
+  return result
+}
+
 function runLinter(nodeIds: string[]): Promise<LintResult[]> {
   return new Promise((resolve, reject) => {
-    // 一時的なリスナーを設定
-    const listener = (event: MessageEvent<{ pluginMessage: PluginMessage }>) => {
+    const listener = (
+      event: MessageEvent<{ pluginMessage: PluginMessage }>
+    ) => {
       const msg = event.data.pluginMessage
       if (msg.type === 'lint-result' && msg.source === 'chat-view') {
         resolve(msg.results)
@@ -30,7 +63,6 @@ function runLinter(nodeIds: string[]): Promise<LintResult[]> {
     window.addEventListener('message', listener)
     postPluginMessage({ type: 'run-linter', nodeIds, source: 'chat-view' })
 
-    // タイムアウト処理
     setTimeout(() => {
       window.removeEventListener('message', listener)
       reject(new Error('Linter timeout'))
@@ -48,7 +80,6 @@ export function useLinterTool(): Record<string, Tool> {
       execute: async ({ nodeIds }: z.infer<typeof runLinterParams>) => {
         const results = await runLinter(nodeIds)
 
-        // 結果を読みやすいテキスト形式に変換
         const summary = results
           .map(result => {
             const issuesText =
@@ -56,10 +87,16 @@ export function useLinterTool(): Record<string, Tool> {
                 ? result.issues.map(issue => serializeIssues(issue)).join('\n')
                 : '問題なし'
 
+            const analysisText = serializeNodeAnalysis(result.analysis)
+
             return `## ${result.name} (ID: ${result.id})
 検証ノード数: ${result.totalNodes}
 検出された問題数: ${result.issues.length}
 
+### 要素の構造とデザイントークン
+${analysisText}
+
+### 検出された問題
 ${issuesText}`
           })
           .join('\n\n---\n\n')
