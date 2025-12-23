@@ -48,6 +48,20 @@ async function buildNodeStructureRecursive(
     return strokes
   }
 
+  const extractTextStyle = async (
+    node: SceneNode
+  ): Promise<string | undefined> => {
+    if (node.type !== 'TEXT') return undefined
+    const textStyleId = node.textStyleId
+    if (textStyleId && typeof textStyleId === 'string') {
+      const style = await figma.getStyleByIdAsync(textStyleId)
+      if (style) {
+        return style.name
+      }
+    }
+    return undefined
+  }
+
   const children: NodeStructure[] = []
   if ('children' in node && node.visible) {
     for (const child of node.children) {
@@ -72,6 +86,7 @@ async function buildNodeStructureRecursive(
     width: 'width' in node ? Math.round(node.width) : 0,
     height: 'height' in node ? Math.round(node.height) : 0,
     children,
+    textStyle: await extractTextStyle(node),
   }
 }
 

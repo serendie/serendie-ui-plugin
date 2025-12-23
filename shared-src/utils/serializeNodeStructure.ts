@@ -16,6 +16,10 @@ export function serializeNodeStructure(
     details.push(`strokes: [${node.strokes.join(', ')}]`)
   }
 
+  if (node.textStyle) {
+    details.push(`textStyle: ${node.textStyle}`)
+  }
+
   details.push(`size: ${node.width}x${node.height}`)
 
   const detailsStr = details.length > 0 ? ` ${details.join(', ')}` : ''
