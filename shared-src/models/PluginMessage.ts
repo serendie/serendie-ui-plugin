@@ -14,9 +14,11 @@ export type SelectionInfo = {
   name: string
 }
 
+type Source = 'chat-view' | 'lint-view'
+
 // Lint関連メッセージ
 export type LintMessage =
-  | { type: 'lint-result'; results: LintResult[] }
+  | { type: 'lint-result'; results: LintResult[]; source?: Source }
   | { type: 'run-linter' }
 
 // 選択関連メッセージ
@@ -42,7 +44,7 @@ export type PluginToUIMessage =
 
 // UI → Plugin
 export type UIToPluginMessage =
-  | { type: 'run-linter'; nodeIds: string[] }
+  | { type: 'run-linter'; nodeIds: string[]; source: Source }
   | { type: 'request-selection' }
   | { type: 'get-selection-images'; nodeIds: string[] }
   | { type: 'clear-selection' }

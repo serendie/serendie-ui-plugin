@@ -101,6 +101,7 @@ figma.ui.onmessage = async msg => {
       figma.ui.postMessage({
         type: 'lint-result',
         results,
+        source: msg.source,
       })
     } catch (error) {
       figma.ui.postMessage({
