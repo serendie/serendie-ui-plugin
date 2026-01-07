@@ -1,5 +1,12 @@
 import { Issue } from './Rules'
 
+// インスタンスのコンポーネントプロパティ
+export type ComponentProperty = {
+  name: string
+  type: string
+  value: string | boolean
+}
+
 // ノード構造情報（階層構造）
 export type NodeStructure = {
   nodeId: string
@@ -11,6 +18,9 @@ export type NodeStructure = {
   width: number
   height: number
   children: NodeStructure[]
+  // インスタンス固有の情報
+  componentName?: string
+  componentProperties?: ComponentProperty[]
 }
 
 // Lint結果の型（ui-src/models/Result.tsと同じ構造）

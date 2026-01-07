@@ -20,6 +20,17 @@ export function serializeNodeStructure(
     details.push(`textStyle: ${node.textStyle}`)
   }
 
+  if (node.componentName) {
+    details.push(`component: ${node.componentName}`)
+  }
+
+  if (node.componentProperties && node.componentProperties.length > 0) {
+    const propsStr = node.componentProperties
+      .map((p) => `${p.name}=${p.value}`)
+      .join(', ')
+    details.push(`props: {${propsStr}}`)
+  }
+
   details.push(`size: ${node.width}x${node.height}`)
 
   const detailsStr = details.length > 0 ? ` ${details.join(', ')}` : ''
