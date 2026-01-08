@@ -1,0 +1,3967 @@
+[
+  {
+    "name": "Accordion",
+    "displayName": "アコーディオン",
+    "description": "関連するコンテンツを列挙し、ユーザーが展開・折りたたむことができるコンポーネントです。表示スペースを節約しながら、ユーザーが詳細な情報を得る手段を提供します。",
+    "category": "Layout",
+    "hasDocumentation": true,
+    "source": "mdx",
+    "lastUpdated": "2024-11-1",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "required": true,
+        "description": ""
+      },
+      {
+        "name": "isLeftIcon",
+        "type": "boolean",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": true,
+        "description": "The value of the accordion item."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the accordion item is disabled."
+      },
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "required": false,
+        "description": "Use the provided child element as the default rendered element, combining their props and behavior."
+      }
+    ],
+    "examples": [
+      {
+        "title": "Type",
+        "description": "",
+        "code": "import { Accordion, AccordionGroup } from \"@serendie/ui\";\nimport { Dd, Dl, Dt } from \"src/components/LayoutUtils\";\n\nexport function TypeSample() {\n  return (\n    <Dl variant=\"dim\">\n      <Dt>Right Icon</Dt>\n      <Dd>\n        <AccordionGroup>\n          <Accordion\n            title=\"Title\"\n            description=\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\"\n          />\n        </AccordionGroup>\n      </Dd>\n      <Dt>Left Icon</Dt>\n      <Dd>\n        <AccordionGroup>\n          <Accordion\n            title=\"Title\"\n            description=\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\"\n            isLeftIcon\n          />\n        </AccordionGroup>\n      </Dd>\n    </Dl>\n  );\n}\n",
+        "fileName": "TypeSample.tsx",
+        "language": "tsx"
+      }
+    ],
+    "storybookUrls": [
+      {
+        "title": "バリエーション",
+        "path": "/story/components-accordion--default",
+        "variant": "default"
+      }
+    ],
+    "relatedComponents": [
+      "AccordionGroup"
+    ]
+  },
+  {
+    "name": "AccordionGroup",
+    "displayName": "AccordionGroup",
+    "description": "",
+    "category": "Layout",
+    "hasDocumentation": false,
+    "source": "auto-detected",
+    "lastUpdated": "2025-10-28",
+    "props": [],
+    "examples": [],
+    "storybookUrls": [],
+    "relatedComponents": [
+      "Accordion"
+    ]
+  },
+  {
+    "name": "Avatar",
+    "displayName": "アバター",
+    "description": "ユーザーについて視覚的に表現するコンポーネントです。",
+    "category": "Display",
+    "hasDocumentation": true,
+    "source": "mdx",
+    "lastUpdated": "2024-11-1",
+    "props": [
+      {
+        "name": "src",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "alt",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "text",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "placeholder",
+        "type": "enum",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "size",
+        "type": "enum",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "onStatusChange",
+        "type": "(details: StatusChangeDetails) => void",
+        "required": false,
+        "description": "Functional called when the image loading status changes."
+      },
+      {
+        "name": "ids",
+        "type": "Partial<{ root: string; image: string; fallback: string; }>",
+        "required": false,
+        "description": "The ids of the elements in the avatar. Useful for composition."
+      },
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "required": false,
+        "description": "Use the provided child element as the default rendered element, combining their props and behavior."
+      }
+    ],
+    "examples": [
+      {
+        "title": "Size",
+        "description": "",
+        "code": "import { Avatar } from \"@serendie/ui\";\nimport { HBox, VBox } from \"src/components/LayoutUtils\";\n\nexport function SizeSample() {\n  return (\n    <HBox>\n      <VBox>\n        <Avatar size=\"small\" text=\"SD\" />\n        <p>Small</p>\n      </VBox>\n      <VBox>\n        <Avatar size=\"medium\" text=\"SD\" />\n        <p>Medium</p>\n      </VBox>\n      <VBox>\n        <Avatar size=\"large\" text=\"SD\" />\n        <p>Large</p>\n      </VBox>\n    </HBox>\n  );\n}\n",
+        "fileName": "SizeSample.tsx",
+        "language": "tsx"
+      },
+      {
+        "title": "Type",
+        "description": "",
+        "code": "import { Avatar } from \"@serendie/ui\";\nimport { VBox, HBox } from \"src/components/LayoutUtils\";\n\nexport function TypeSample() {\n  return (\n    <HBox>\n      <VBox>\n        <Avatar src=\"https://i.pravatar.cc/300\" />\n        <p>Image</p>\n      </VBox>\n      <VBox>\n        <Avatar text=\"SD\" />\n        <p>Text</p>\n      </VBox>\n      <VBox>\n        <Avatar />\n        <p>Placeholder(filled)</p>\n      </VBox>\n      <VBox>\n        <Avatar placeholder=\"outlined\" />\n        <p>Placeholder(outlined)</p>\n      </VBox>\n    </HBox>\n  );\n}\n",
+        "fileName": "TypeSample.tsx",
+        "language": "tsx"
+      }
+    ],
+    "storybookUrls": [
+      {
+        "title": "サイズ",
+        "path": "/story/components-avatar--text&args=size:small"
+      },
+      {
+        "title": "バリエーション",
+        "path": "/docs/components-avatar--docs",
+        "variant": "docs"
+      }
+    ],
+    "relatedComponents": []
+  },
+  {
+    "name": "Badge",
+    "displayName": "バッジ",
+    "description": "ステータス、カテゴリなどを表すコンポーネントです。情報を簡潔に表示し、ユーザーの注意を引きつけます。",
+    "category": "Display",
+    "hasDocumentation": true,
+    "source": "mdx",
+    "lastUpdated": "2024-11-1",
+    "props": [
+      {
+        "name": "size",
+        "type": "enum",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "styleColor",
+        "type": "enum",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "closeButton",
+        "type": "ReactElement<BadgeCloseButtonProps, string | JSXElementConstructor<any>>",
+        "required": false,
+        "description": ""
+      }
+    ],
+    "examples": [
+      {
+        "title": "Close Button",
+        "description": "",
+        "code": "import { Badge, BadgeCloseButton } from \"@serendie/ui\";\nimport { HBox, VBox } from \"src/components/LayoutUtils\";\n\nexport function CloseButtonSample() {\n  return (\n    <HBox>\n      <VBox>\n        <Badge size=\"small\" closeButton={<BadgeCloseButton />}>\n          Label\n        </Badge>\n        <p>Small</p>\n      </VBox>\n      <VBox>\n        <Badge closeButton={<BadgeCloseButton />}>Label</Badge>\n        <p>Medium</p>\n      </VBox>\n      <VBox>\n        <Badge size=\"large\" closeButton={<BadgeCloseButton />}>\n          Label\n        </Badge>\n        <p>Large</p>\n      </VBox>\n    </HBox>\n  );\n}\n",
+        "fileName": "CloseButtonSample.tsx",
+        "language": "tsx"
+      },
+      {
+        "title": "Color",
+        "description": "",
+        "code": "import { Badge } from \"@serendie/ui\";\nimport { Dd, Dl, Dt, HBox } from \"src/components/LayoutUtils\";\n\nexport function ColorSample() {\n  return (\n    <HBox>\n      <Dl\n        w=\"100%\"\n        gridTemplateColumns={{ sm: \"max-content auto max-content auto\" }}\n      >\n        <Dt>Gray</Dt>\n        <Dd>\n          <Badge>Label</Badge>\n        </Dd>\n\n        <Dt>Gray-subtle</Dt>\n        <Dd>\n          <Badge styleColor=\"gray-subtle\">Label</Badge>\n        </Dd>\n\n        <Dt>Blue</Dt>\n        <Dd>\n          <Badge styleColor=\"blue\">Label</Badge>\n        </Dd>\n\n        <Dt>Blue-subtle</Dt>\n        <Dd>\n          <Badge styleColor=\"blue-subtle\">Label</Badge>\n        </Dd>\n\n        <Dt>Green</Dt>\n        <Dd>\n          <Badge styleColor=\"green\">Label</Badge>\n        </Dd>\n\n        <Dt>Green-subtle</Dt>\n        <Dd>\n          <Badge styleColor=\"green-subtle\">Label</Badge>\n        </Dd>\n\n        <Dt>Yellow</Dt>\n        <Dd>\n          <Badge styleColor=\"yellow\">Label</Badge>\n        </Dd>\n\n        <Dt>Yellow-subtle</Dt>\n        <Dd>\n          <Badge styleColor=\"yellow-subtle\">Label</Badge>\n        </Dd>\n\n        <Dt>Chestnut</Dt>\n        <Dd>\n          <Badge styleColor=\"chestnut\">Label</Badge>\n        </Dd>\n\n        <Dt>Chestnut-subtle</Dt>\n        <Dd>\n          <Badge styleColor=\"chestnut-subtle\">Label</Badge>\n        </Dd>\n\n        <Dt>Red</Dt>\n        <Dd>\n          <Badge styleColor=\"red\">Label</Badge>\n        </Dd>\n\n        <Dt>Red-subtle</Dt>\n        <Dd>\n          <Badge styleColor=\"red-subtle\">Label</Badge>\n        </Dd>\n      </Dl>\n    </HBox>\n  );\n}\n",
+        "fileName": "ColorSample.tsx",
+        "language": "tsx"
+      },
+      {
+        "title": "Size",
+        "description": "",
+        "code": "import { Badge } from \"@serendie/ui\";\nimport { HBox, VBox } from \"src/components/LayoutUtils\";\n\nexport function SizeSample() {\n  return (\n    <HBox>\n      <VBox>\n        <Badge size=\"small\">Label</Badge>\n        <p>Small</p>\n      </VBox>\n      <VBox>\n        <Badge>Label</Badge>\n        <p>Medium</p>\n      </VBox>\n      <VBox>\n        <Badge size=\"large\">Label</Badge>\n        <p>Large</p>\n      </VBox>\n    </HBox>\n  );\n}\n",
+        "fileName": "SizeSample.tsx",
+        "language": "tsx"
+      }
+    ],
+    "storybookUrls": [
+      {
+        "title": "サイズ",
+        "path": "/story/components-badge--small",
+        "variant": "small"
+      },
+      {
+        "title": "カラー",
+        "path": "/docs/components-badge--docs",
+        "variant": "docs"
+      },
+      {
+        "title": "バリエーション",
+        "path": "/docs/components-badge--docs",
+        "variant": "docs"
+      }
+    ],
+    "relatedComponents": []
+  },
+  {
+    "name": "Banner",
+    "displayName": "バナー",
+    "description": "エラーや警告など重要なメッセージを目立つように表示し、ユーザーの注意を喚起するコンポーネントです。",
+    "category": "Feedback",
+    "hasDocumentation": true,
+    "source": "mdx",
+    "lastUpdated": "2024-11-1",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "required": true,
+        "description": ""
+      },
+      {
+        "name": "icon",
+        "type": "ReactElement<any, string | JSXElementConstructor<any>>",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "type",
+        "type": "enum",
+        "required": false,
+        "description": ""
+      }
+    ],
+    "examples": [
+      {
+        "title": "Type",
+        "description": "",
+        "code": "import { Banner } from \"@serendie/ui\";\nimport { Dd, Dl, Dt } from \"src/components/LayoutUtils\";\n\nexport function TypeSample() {\n  return (\n    <Dl>\n      <Dt>Information</Dt>\n      <Dd>\n        <Banner\n          type=\"information\"\n          title=\"Title\"\n          description=\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. \"\n        />\n      </Dd>\n      <Dt>Error</Dt>\n      <Dd>\n        <Banner\n          type=\"error\"\n          title=\"Title\"\n          description=\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. \"\n        />\n      </Dd>\n      <Dt>Warning</Dt>\n      <Dd>\n        <Banner\n          type=\"warning\"\n          title=\"Title\"\n          description=\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. \"\n        />\n      </Dd>\n    </Dl>\n  );\n}\n",
+        "fileName": "TypeSample.tsx",
+        "language": "tsx"
+      }
+    ],
+    "storybookUrls": [
+      {
+        "title": "バリエーション",
+        "path": "/story/components-banner--information",
+        "variant": "information"
+      }
+    ],
+    "relatedComponents": []
+  },
+  {
+    "name": "BottomNavigation",
+    "displayName": "ボトムナビゲーション",
+    "description": "画面下部に配置するモバイルやタブレット向けのグローバルなタブナビゲーションです。",
+    "category": "Actions",
+    "hasDocumentation": true,
+    "source": "mdx",
+    "lastUpdated": "2024-11-1",
+    "props": [],
+    "examples": [],
+    "storybookUrls": [
+      {
+        "title": "サンプル",
+        "path": "/story/components-bottomnavigation--default",
+        "variant": "default"
+      },
+      {
+        "title": "バリエーション",
+        "path": "/docs/components-bottomnavigation--docs",
+        "variant": "docs"
+      }
+    ],
+    "relatedComponents": [
+      "BottomNavigationItem"
+    ]
+  },
+  {
+    "name": "BottomNavigationItem",
+    "displayName": "BottomNavigationItem",
+    "description": "",
+    "category": "Other",
+    "hasDocumentation": false,
+    "source": "auto-detected",
+    "lastUpdated": "2025-10-28",
+    "props": [],
+    "examples": [],
+    "storybookUrls": [],
+    "relatedComponents": [
+      "BottomNavigation"
+    ]
+  },
+  {
+    "name": "Button",
+    "displayName": "ボタン",
+    "description": "アクションをトリガーするためのクリック可能なコンポーネントです。",
+    "category": "Actions",
+    "hasDocumentation": true,
+    "source": "mdx",
+    "lastUpdated": "2024-11-1",
+    "props": [
+      {
+        "name": "styleType",
+        "type": "enum",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "size",
+        "type": "enum",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "leftIcon",
+        "type": "ReactElement<any, string | JSXElementConstructor<any>>",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "rightIcon",
+        "type": "ReactElement<any, string | JSXElementConstructor<any>>",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "isLoading",
+        "type": "boolean",
+        "required": false,
+        "description": ""
+      }
+    ],
+    "examples": [
+      {
+        "title": "Icon",
+        "description": "",
+        "code": "import { Button } from \"@serendie/ui\";\nimport { SerendieSymbol } from \"@serendie/symbols\";\nimport { HBox } from \"src/components/LayoutUtils\";\n\nexport function IconSample() {\n  return (\n    <HBox>\n      <Button leftIcon={<SerendieSymbol name=\"chevron-left\" />}>\n        LeftIcon\n      </Button>\n      <Button\n        rightIcon={<SerendieSymbol name=\"chevron-right\" />}\n        styleType=\"ghost\"\n      >\n        RightIcon\n      </Button>\n    </HBox>\n  );\n}\n",
+        "fileName": "IconSample.tsx",
+        "language": "tsx"
+      },
+      {
+        "title": "Size",
+        "description": "",
+        "code": "import { Button } from \"@serendie/ui\";\nimport { HBox } from \"src/components/LayoutUtils\";\n\nexport function SizeSample() {\n  return (\n    <HBox>\n      <Button size=\"small\">Small</Button>\n      <Button size=\"medium\">Medium</Button>\n    </HBox>\n  );\n}\n",
+        "fileName": "SizeSample.tsx",
+        "language": "tsx"
+      },
+      {
+        "title": "State",
+        "description": "",
+        "code": "import { Button } from \"@serendie/ui\";\nimport type { ComponentProps } from \"react\";\nimport { StateMatrix } from \"src/components/StateMatrix\";\n\nexport const StateSample: React.FC = () => {\n  return (\n    <StateMatrix<ComponentProps<typeof Button>>\n      component={Button}\n      children=\"Button\"\n      propsName=\"styleType\"\n      states={[\"enabled\", \"hover\", \"focus-visible\", \"disabled\", \"loading\"]}\n      props={[\"filled\", \"ghost\", \"outlined\", \"rectangle\"]}\n    />\n  );\n};\n",
+        "fileName": "StateSample.tsx",
+        "language": "tsx"
+      },
+      {
+        "title": "Type",
+        "description": "",
+        "code": "import { Button } from \"@serendie/ui\";\nimport { HBox } from \"src/components/LayoutUtils\";\n\nexport function TypeSample() {\n  return (\n    <HBox>\n      <Button>Filled</Button>\n      <Button styleType=\"outlined\">Outlined</Button>\n      <Button styleType=\"ghost\">Ghost</Button>\n      <Button styleType=\"rectangle\">Rectangle</Button>\n    </HBox>\n  );\n}\n",
+        "fileName": "TypeSample.tsx",
+        "language": "tsx"
+      }
+    ],
+    "storybookUrls": [
+      {
+        "title": "サイズ",
+        "path": "/story/components-button--medium",
+        "variant": "medium"
+      },
+      {
+        "title": "バリエーション",
+        "path": "/story/components-button--outlined",
+        "variant": "outlined"
+      },
+      {
+        "title": "アイコン付きボタン",
+        "path": "/story/components-button--with-left-icon"
+      },
+      {
+        "title": "状態",
+        "path": "/docs/components-button--docs",
+        "variant": "docs"
+      }
+    ],
+    "relatedComponents": []
+  },
+  {
+    "name": "SerendieChartTheme",
+    "displayName": "SerendieChartTheme",
+    "description": "",
+    "category": "Other",
+    "hasDocumentation": false,
+    "source": "auto-detected",
+    "lastUpdated": "2025-10-28",
+    "props": [],
+    "examples": [],
+    "storybookUrls": [],
+    "relatedComponents": [
+      "SerendieChartProps"
+    ]
+  },
+  {
+    "name": "SerendieChartProps",
+    "displayName": "SerendieChartProps",
+    "description": "",
+    "category": "Other",
+    "hasDocumentation": false,
+    "source": "auto-detected",
+    "lastUpdated": "2025-10-28",
+    "props": [],
+    "examples": [],
+    "storybookUrls": [],
+    "relatedComponents": [
+      "SerendieChartTheme"
+    ]
+  },
+  {
+    "name": "CheckBox",
+    "displayName": "チェックボックス",
+    "description": "ChoiceBoxにラベルを付けたコンポーネントです。複数の選択肢から、1つ以上を選択する際に使用します。",
+    "category": "Inputs",
+    "hasDocumentation": true,
+    "source": "mdx",
+    "lastUpdated": "2024-11-1",
+    "props": [
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "The unique identifier of the machine."
+      },
+      {
+        "name": "form",
+        "type": "string",
+        "required": false,
+        "description": "The id of the form that the checkbox belongs to."
+      },
+      {
+        "name": "defaultChecked",
+        "type": "CheckedState",
+        "required": false,
+        "description": "The initial checked state of the checkbox when rendered.\nUse when you don't need to control the checked state of the checkbox."
+      },
+      {
+        "name": "ids",
+        "type": "Partial<{ root: string; hiddenInput: string; control: string; label: string; }>",
+        "required": false,
+        "description": "The ids of the elements in the checkbox. Useful for composition."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the checkbox is disabled"
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the checkbox is invalid"
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the checkbox is required"
+      },
+      {
+        "name": "checked",
+        "type": "CheckedState",
+        "required": false,
+        "description": "The controlled checked state of the checkbox"
+      },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the checkbox is read-only"
+      },
+      {
+        "name": "onCheckedChange",
+        "type": "(details: CheckedChangeDetails) => void",
+        "required": false,
+        "description": "The callback invoked when the checked state changes."
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "The name of the input field in a checkbox.\nUseful for form submission."
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "defaultValue": "\"on\"",
+        "description": "The value of checkbox input. Useful for form submission."
+      },
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "required": false,
+        "description": "Use the provided child element as the default rendered element, combining their props and behavior."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "description": ""
+      },
+      {
+        "name": "helperText",
+        "type": "string",
+        "required": false,
+        "description": ""
+      }
+    ],
+    "examples": [],
+    "storybookUrls": [
+      {
+        "title": "バリエーション",
+        "path": "/story/components-checkbox--default",
+        "variant": "default"
+      },
+      {
+        "title": "状態",
+        "path": "/docs/components-checkbox--docs",
+        "variant": "docs"
+      }
+    ],
+    "relatedComponents": []
+  },
+  {
+    "name": "ChoiceBox",
+    "displayName": "チョイスボックス",
+    "description": "CheckBoxとRadioButtonからラベルを除いたコンポーネントです。カードやリストと併用して使用できます。",
+    "category": "Inputs",
+    "hasDocumentation": true,
+    "source": "mdx",
+    "lastUpdated": "2025-05-23",
+    "props": [
+      {
+        "name": "type",
+        "type": "enum",
+        "required": true,
+        "description": ""
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "defaultValue": "\"on\"",
+        "description": "The value of checkbox input. Useful for form submission."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the checkbox is disabled"
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the checkbox is invalid"
+      },
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "required": false,
+        "description": "Use the provided child element as the default rendered element, combining their props and behavior."
+      },
+      {
+        "name": "ids",
+        "type": "Partial<{ root: string; hiddenInput: string; control: string; label: string; }>",
+        "required": false,
+        "description": "The ids of the elements in the checkbox. Useful for composition."
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the checkbox is required"
+      },
+      {
+        "name": "checked",
+        "type": "CheckedState",
+        "required": false,
+        "description": "The controlled checked state of the checkbox"
+      },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the checkbox is read-only"
+      },
+      {
+        "name": "onCheckedChange",
+        "type": "(details: CheckedChangeDetails) => void",
+        "required": false,
+        "description": "The callback invoked when the checked state changes."
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "The name of the input field in a checkbox.\nUseful for form submission."
+      }
+    ],
+    "examples": [],
+    "storybookUrls": [
+      {
+        "title": "バリエーション",
+        "path": "/story/components-choicebox--radio",
+        "variant": "radio"
+      },
+      {
+        "title": "Indeterminate状態",
+        "path": "/story/components-choicebox--indeterminate",
+        "variant": "indeterminate"
+      }
+    ],
+    "relatedComponents": []
+  },
+  {
+    "name": "DashboardWidget",
+    "displayName": "ダッシュボードウィジェット",
+    "description": "ダッシュボード画面で使うことを想定したコンポーネントです。データをサマライズして表示する際に使用します。",
+    "category": "Display",
+    "hasDocumentation": true,
+    "source": "mdx",
+    "lastUpdated": "2024-11-1",
+    "props": [
+      {
+        "name": "values",
+        "type": "[AreaValueProps, AreaValueProps] | [AreaValueProps]",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "linkTo",
+        "type": "string",
+        "required": false,
+        "description": ""
+      }
+    ],
+    "examples": [],
+    "storybookUrls": [
+      {
+        "title": "バリエーション",
+        "path": "/story/components-dashboardwidget--no-value"
+      }
+    ],
+    "relatedComponents": []
+  },
+  {
+    "name": "DataTable",
+    "displayName": "データテーブル",
+    "description": "構造化されたデータを表形式で表示・操作するコンポーネントです。ソート、選択、カスタムレンダリングの機能も提供します。",
+    "category": "Layout",
+    "hasDocumentation": true,
+    "source": "mdx",
+    "lastUpdated": "2025-07-10",
+    "props": [
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "state",
+        "type": "Partial<TableState>",
+        "required": false,
+        "description": "The `state` option can be used to optionally _control_ part or all of the table state. The state you pass here will merge with and overwrite the internal automatically-managed state to produce the final state for the table. You can also listen to state changes via the `onStateChange` option.\n> Note: Any state passed in here will override both the internal state and any other `initialState` you provide.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/core/table#state)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/tables)"
+      },
+      {
+        "name": "onStateChange",
+        "type": "(updater: Updater<TableState>) => void",
+        "required": false,
+        "description": "The `onStateChange` option can be used to optionally listen to state changes within the table.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/core/table#onstatechange)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/tables)"
+      },
+      {
+        "name": "renderFallbackValue",
+        "type": "any",
+        "required": false,
+        "description": "Value used when the desired value is not found in the data.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/core/table#renderfallbackvalue)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/tables)"
+      },
+      {
+        "name": "_features",
+        "type": "TableFeature<any>[]",
+        "required": false,
+        "description": "An array of extra features that you can add to the table instance.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/core/table#_features)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/tables)"
+      },
+      {
+        "name": "autoResetAll",
+        "type": "boolean",
+        "required": false,
+        "description": "Set this option to override any of the `autoReset...` feature options.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/core/table#autoresetall)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/tables)"
+      },
+      {
+        "name": "columns",
+        "type": "ColumnDef<TData, any>[]",
+        "required": true,
+        "description": "The array of column defs to use for the table.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/core/table#columns)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/tables)"
+      },
+      {
+        "name": "data",
+        "type": "TData[]",
+        "required": true,
+        "description": "The data for the table to display. This array should match the type you provided to `table.setRowType<...>`. Columns can access this data via string/index or a functional accessor. When the `data` option changes reference, the table will reprocess the data.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/core/table#data)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/tables)"
+      },
+      {
+        "name": "debugAll",
+        "type": "boolean",
+        "required": false,
+        "description": "Set this option to `true` to output all debugging information to the console.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/core/table#debugall)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/tables)"
+      },
+      {
+        "name": "debugCells",
+        "type": "boolean",
+        "required": false,
+        "description": "Set this option to `true` to output cell debugging information to the console.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/core/table#debugcells]\n@link [Guide](https://tanstack.com/table/v8/docs/guide/tables)"
+      },
+      {
+        "name": "debugColumns",
+        "type": "boolean",
+        "required": false,
+        "description": "Set this option to `true` to output column debugging information to the console.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/core/table#debugcolumns)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/tables)"
+      },
+      {
+        "name": "debugHeaders",
+        "type": "boolean",
+        "required": false,
+        "description": "Set this option to `true` to output header debugging information to the console.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/core/table#debugheaders)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/tables)"
+      },
+      {
+        "name": "debugRows",
+        "type": "boolean",
+        "required": false,
+        "description": "Set this option to `true` to output row debugging information to the console.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/core/table#debugrows)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/tables)"
+      },
+      {
+        "name": "debugTable",
+        "type": "boolean",
+        "required": false,
+        "description": "Set this option to `true` to output table debugging information to the console.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/core/table#debugtable)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/tables)"
+      },
+      {
+        "name": "defaultColumn",
+        "type": "Partial<ColumnDef<TData, unknown>>",
+        "required": false,
+        "description": "Default column options to use for all column defs supplied to the table.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/core/table#defaultcolumn)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/tables)"
+      },
+      {
+        "name": "getRowId",
+        "type": "(originalRow: TData, index: number, parent?: Row<TData>) => string",
+        "required": false,
+        "description": "This optional function is used to derive a unique ID for any given row. If not provided the rows index is used (nested rows join together with `.` using their grandparents' index eg. `index.index.index`). If you need to identify individual rows that are originating from any server-side operations, it's suggested you use this function to return an ID that makes sense regardless of network IO/ambiguity eg. a userId, taskId, database ID field, etc.\n@example getRowId: row => row.userId\n@link [API Docs](https://tanstack.com/table/v8/docs/api/core/table#getrowid)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/tables)"
+      },
+      {
+        "name": "getSubRows",
+        "type": "(originalRow: TData, index: number) => TData[]",
+        "required": false,
+        "description": "This optional function is used to access the sub rows for any given row. If you are using nested rows, you will need to use this function to return the sub rows object (or undefined) from the row.\n@example getSubRows: row => row.subRows\n@link [API Docs](https://tanstack.com/table/v8/docs/api/core/table#getsubrows)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/tables)"
+      },
+      {
+        "name": "initialState",
+        "type": "InitialTableState",
+        "required": false,
+        "description": "Use this option to optionally pass initial state to the table. This state will be used when resetting various table states either automatically by the table (eg. `options.autoResetPageIndex`) or via functions like `table.resetRowSelection()`. Most reset function allow you optionally pass a flag to reset to a blank/default state instead of the initial state.\n\nTable state will not be reset when this object changes, which also means that the initial state object does not need to be stable.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/core/table#initialstate)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/tables)"
+      },
+      {
+        "name": "mergeOptions",
+        "type": "(defaultOptions: TableOptions<TData>, options: Partial<TableOptions<TData>>) => TableOptions<TData>",
+        "required": false,
+        "description": "This option is used to optionally implement the merging of table options.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/core/table#mergeoptions)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/tables)"
+      },
+      {
+        "name": "meta",
+        "type": "TableMeta<TData>",
+        "required": false,
+        "description": "You can pass any object to `options.meta` and access it anywhere the `table` is available via `table.options.meta`.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/core/table#meta)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/tables)"
+      },
+      {
+        "name": "enableHiding",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether to enable column hiding. Defaults to `true`.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/column-visibility#enablehiding)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/column-visibility)"
+      },
+      {
+        "name": "onColumnVisibilityChange",
+        "type": "OnChangeFn<VisibilityState>",
+        "required": false,
+        "description": "If provided, this function will be called with an `updaterFn` when `state.columnVisibility` changes. This overrides the default internal state management, so you will need to persist the state change either fully or partially outside of the table.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/column-visibility#oncolumnvisibilitychange)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/column-visibility)"
+      },
+      {
+        "name": "onColumnOrderChange",
+        "type": "OnChangeFn<ColumnOrderState>",
+        "required": false,
+        "description": "If provided, this function will be called with an `updaterFn` when `state.columnOrder` changes. This overrides the default internal state management, so you will need to persist the state change either fully or partially outside of the table.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/column-ordering#oncolumnorderchange)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/column-ordering)"
+      },
+      {
+        "name": "enableColumnPinning",
+        "type": "boolean",
+        "required": false,
+        "description": "Enables/disables column pinning for the table. Defaults to `true`.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/column-pinning#enablecolumnpinning)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/column-pinning)"
+      },
+      {
+        "name": "enablePinning",
+        "type": "boolean",
+        "required": false,
+        "description": "@deprecated Use `enableColumnPinning` or `enableRowPinning` instead.\nEnables/disables all pinning for the table. Defaults to `true`.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/column-pinning#enablepinning)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/column-pinning)"
+      },
+      {
+        "name": "onColumnPinningChange",
+        "type": "OnChangeFn<ColumnPinningState>",
+        "required": false,
+        "description": "If provided, this function will be called with an `updaterFn` when `state.columnPinning` changes. This overrides the default internal state management, so you will also need to supply `state.columnPinning` from your own managed state.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/column-pinning#oncolumnpinningchange)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/oncolumnpinningchange)"
+      },
+      {
+        "name": "enableRowPinning",
+        "type": "boolean | ((row: Row<TData>) => boolean)",
+        "required": false,
+        "description": "Enables/disables row pinning for the table. Defaults to `true`.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/row-pinning#enablerowpinning)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/row-pinning)"
+      },
+      {
+        "name": "keepPinnedRows",
+        "type": "boolean",
+        "required": false,
+        "description": "When `false`, pinned rows will not be visible if they are filtered or paginated out of the table. When `true`, pinned rows will always be visible regardless of filtering or pagination. Defaults to `true`.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/row-pinning#keeppinnedrows)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/row-pinning)"
+      },
+      {
+        "name": "onRowPinningChange",
+        "type": "OnChangeFn<RowPinningState>",
+        "required": false,
+        "description": "If provided, this function will be called with an `updaterFn` when `state.rowPinning` changes. This overrides the default internal state management, so you will also need to supply `state.rowPinning` from your own managed state.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/row-pinning#onrowpinningchange)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/onrowpinningchange)"
+      },
+      {
+        "name": "getFacetedMinMaxValues",
+        "type": "(table: Table<TData>, columnId: string) => () => [number, number]",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "getFacetedRowModel",
+        "type": "(table: Table<TData>, columnId: string) => () => RowModel<TData>",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "getFacetedUniqueValues",
+        "type": "(table: Table<TData>, columnId: string) => () => Map<any, number>",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "enableColumnFilters",
+        "type": "boolean",
+        "required": false,
+        "description": "Enables/disables **column** filtering for all columns.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/column-filtering#enablecolumnfilters)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/column-filtering)"
+      },
+      {
+        "name": "enableFilters",
+        "type": "boolean",
+        "required": false,
+        "description": "Enables/disables all filtering for the table.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/column-filtering#enablefilters)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/column-filtering)"
+      },
+      {
+        "name": "filterFromLeafRows",
+        "type": "boolean",
+        "required": false,
+        "description": "By default, filtering is done from parent rows down (so if a parent row is filtered out, all of its children will be filtered out as well). Setting this option to `true` will cause filtering to be done from leaf rows up (which means parent rows will be included so long as one of their child or grand-child rows is also included).\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/column-filtering#filterfromleafrows)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/column-filtering)"
+      },
+      {
+        "name": "getFilteredRowModel",
+        "type": "(table: Table<any>) => () => RowModel<any>",
+        "required": false,
+        "description": "If provided, this function is called **once** per table and should return a **new function** which will calculate and return the row model for the table when it's filtered.\n- For server-side filtering, this function is unnecessary and can be ignored since the server should already return the filtered row model.\n- For client-side filtering, this function is required. A default implementation is provided via any table adapter's `{ getFilteredRowModel }` export.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/column-filtering#getfilteredrowmodel)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/column-filtering)"
+      },
+      {
+        "name": "manualFiltering",
+        "type": "boolean",
+        "required": false,
+        "description": "Disables the `getFilteredRowModel` from being used to filter data. This may be useful if your table needs to dynamically support both client-side and server-side filtering.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/column-filtering#manualfiltering)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/column-filtering)"
+      },
+      {
+        "name": "maxLeafRowFilterDepth",
+        "type": "number",
+        "required": false,
+        "description": "By default, filtering is done for all rows (max depth of 100), no matter if they are root level parent rows or the child leaf rows of a parent row. Setting this option to `0` will cause filtering to only be applied to the root level parent rows, with all sub-rows remaining unfiltered. Similarly, setting this option to `1` will cause filtering to only be applied to child leaf rows 1 level deep, and so on.\n\nThis is useful for situations where you want a row's entire child hierarchy to be visible regardless of the applied filter.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/column-filtering#maxleafrowfilterdepth)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/column-filtering)"
+      },
+      {
+        "name": "onColumnFiltersChange",
+        "type": "OnChangeFn<ColumnFiltersState>",
+        "required": false,
+        "description": "If provided, this function will be called with an `updaterFn` when `state.columnFilters` changes. This overrides the default internal state management, so you will need to persist the state change either fully or partially outside of the table.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/column-filtering#oncolumnfilterschange)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/column-filtering)"
+      },
+      {
+        "name": "filterFns",
+        "type": "Record<string, FilterFn<any>>",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "enableGlobalFilter",
+        "type": "boolean",
+        "required": false,
+        "description": "Enables/disables **global** filtering for all columns.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/global-filtering#enableglobalfilter)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/global-filtering)"
+      },
+      {
+        "name": "getColumnCanGlobalFilter",
+        "type": "(column: Column<TData, unknown>) => boolean",
+        "required": false,
+        "description": "If provided, this function will be called with the column and should return `true` or `false` to indicate whether this column should be used for global filtering.\n\nThis is useful if the column can contain data that is not `string` or `number` (i.e. `undefined`).\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/global-filtering#getcolumncanglobalfilter)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/global-filtering)"
+      },
+      {
+        "name": "globalFilterFn",
+        "type": "FilterFnOption<TData>",
+        "required": false,
+        "description": "The filter function to use for global filtering.\n- A `string` referencing a built-in filter function\n- A `string` that references a custom filter functions provided via the `tableOptions.filterFns` option\n- A custom filter function\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/global-filtering#globalfilterfn)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/global-filtering)"
+      },
+      {
+        "name": "onGlobalFilterChange",
+        "type": "OnChangeFn<any>",
+        "required": false,
+        "description": "If provided, this function will be called with an `updaterFn` when `state.globalFilter` changes. This overrides the default internal state management, so you will need to persist the state change either fully or partially outside of the table.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/global-filtering#onglobalfilterchange)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/global-filtering)"
+      },
+      {
+        "name": "enableMultiRemove",
+        "type": "boolean",
+        "required": false,
+        "description": "Enables/disables the ability to remove multi-sorts\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/sorting#enablemultiremove)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/sorting)"
+      },
+      {
+        "name": "enableMultiSort",
+        "type": "boolean",
+        "required": false,
+        "description": "Enables/Disables multi-sorting for the table.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/sorting#enablemultisort)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/sorting)"
+      },
+      {
+        "name": "enableSorting",
+        "type": "boolean",
+        "required": false,
+        "description": "Enables/Disables sorting for the table.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/sorting#enablesorting)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/sorting)"
+      },
+      {
+        "name": "enableSortingRemoval",
+        "type": "boolean",
+        "required": false,
+        "description": "Enables/Disables the ability to remove sorting for the table.\n- If `true` then changing sort order will circle like: 'none' -> 'desc' -> 'asc' -> 'none' -> ...\n- If `false` then changing sort order will circle like: 'none' -> 'desc' -> 'asc' -> 'desc' -> 'asc' -> ...\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/sorting#enablesortingremoval)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/sorting)"
+      },
+      {
+        "name": "isMultiSortEvent",
+        "type": "(e: unknown) => boolean",
+        "required": false,
+        "description": "Pass a custom function that will be used to determine if a multi-sort event should be triggered. It is passed the event from the sort toggle handler and should return `true` if the event should trigger a multi-sort.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/sorting#ismultisortevent)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/sorting)"
+      },
+      {
+        "name": "manualSorting",
+        "type": "boolean",
+        "required": false,
+        "description": "Enables manual sorting for the table. If this is `true`, you will be expected to sort your data before it is passed to the table. This is useful if you are doing server-side sorting.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/sorting#manualsorting)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/sorting)"
+      },
+      {
+        "name": "maxMultiSortColCount",
+        "type": "number",
+        "required": false,
+        "description": "Set a maximum number of columns that can be multi-sorted.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/sorting#maxmultisortcolcount)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/sorting)"
+      },
+      {
+        "name": "onSortingChange",
+        "type": "OnChangeFn<SortingState>",
+        "required": false,
+        "description": "If provided, this function will be called with an `updaterFn` when `state.sorting` changes. This overrides the default internal state management, so you will need to persist the state change either fully or partially outside of the table.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/sorting#onsortingchange)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/sorting)"
+      },
+      {
+        "name": "sortDescFirst",
+        "type": "boolean",
+        "required": false,
+        "description": "If `true`, all sorts will default to descending as their first toggle state.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/sorting#sortdescfirst)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/sorting)"
+      },
+      {
+        "name": "sortingFns",
+        "type": "Record<string, SortingFn<any>>",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "enableGrouping",
+        "type": "boolean",
+        "required": false,
+        "description": "Enables/disables grouping for the table.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/grouping#enablegrouping)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/grouping)"
+      },
+      {
+        "name": "getGroupedRowModel",
+        "type": "(table: Table<any>) => () => RowModel<any>",
+        "required": false,
+        "description": "Returns the row model after grouping has taken place, but no further.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/grouping#getgroupedrowmodel)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/grouping)"
+      },
+      {
+        "name": "groupedColumnMode",
+        "type": "false | \"reorder\" | \"remove\"",
+        "required": false,
+        "description": "Grouping columns are automatically reordered by default to the start of the columns list. If you would rather remove them or leave them as-is, set the appropriate mode here.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/grouping#groupedcolumnmode)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/grouping)"
+      },
+      {
+        "name": "manualGrouping",
+        "type": "boolean",
+        "required": false,
+        "description": "Enables manual grouping. If this option is set to `true`, the table will not automatically group rows using `getGroupedRowModel()` and instead will expect you to manually group the rows before passing them to the table. This is useful if you are doing server-side grouping and aggregation.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/grouping#manualgrouping)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/grouping)"
+      },
+      {
+        "name": "onGroupingChange",
+        "type": "OnChangeFn<GroupingState>",
+        "required": false,
+        "description": "If this function is provided, it will be called when the grouping state changes and you will be expected to manage the state yourself. You can pass the managed state back to the table via the `tableOptions.state.grouping` option.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/grouping#ongroupingchange)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/grouping)"
+      },
+      {
+        "name": "aggregationFns",
+        "type": "Record<string, AggregationFn<any>>",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "autoResetExpanded",
+        "type": "boolean",
+        "required": false,
+        "description": "Enable this setting to automatically reset the expanded state of the table when expanding state changes.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/expanding#autoresetexpanded)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/expanding)"
+      },
+      {
+        "name": "enableExpanding",
+        "type": "boolean",
+        "required": false,
+        "description": "Enable/disable expanding for all rows.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/expanding#enableexpanding)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/expanding)"
+      },
+      {
+        "name": "getExpandedRowModel",
+        "type": "(table: Table<any>) => () => RowModel<any>",
+        "required": false,
+        "description": "This function is responsible for returning the expanded row model. If this function is not provided, the table will not expand rows. You can use the default exported `getExpandedRowModel` function to get the expanded row model or implement your own.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/expanding#getexpandedrowmodel)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/expanding)"
+      },
+      {
+        "name": "getIsRowExpanded",
+        "type": "(row: Row<TData>) => boolean",
+        "required": false,
+        "description": "If provided, allows you to override the default behavior of determining whether a row is currently expanded.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/expanding#getisrowexpanded)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/expanding)"
+      },
+      {
+        "name": "getRowCanExpand",
+        "type": "(row: Row<TData>) => boolean",
+        "required": false,
+        "description": "If provided, allows you to override the default behavior of determining whether a row can be expanded.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/expanding#getrowcanexpand)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/expanding)"
+      },
+      {
+        "name": "manualExpanding",
+        "type": "boolean",
+        "required": false,
+        "description": "Enables manual row expansion. If this is set to `true`, `getExpandedRowModel` will not be used to expand rows and you would be expected to perform the expansion in your own data model. This is useful if you are doing server-side expansion.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/expanding#manualexpanding)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/expanding)"
+      },
+      {
+        "name": "onExpandedChange",
+        "type": "OnChangeFn<ExpandedState>",
+        "required": false,
+        "description": "This function is called when the `expanded` table state changes. If a function is provided, you will be responsible for managing this state on your own. To pass the managed state back to the table, use the `tableOptions.state.expanded` option.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/expanding#onexpandedchange)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/expanding)"
+      },
+      {
+        "name": "paginateExpandedRows",
+        "type": "boolean",
+        "required": false,
+        "description": "If `true` expanded rows will be paginated along with the rest of the table (which means expanded rows may span multiple pages). If `false` expanded rows will not be considered for pagination (which means expanded rows will always render on their parents page. This also means more rows will be rendered than the set page size)\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/expanding#paginateexpandedrows)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/expanding)"
+      },
+      {
+        "name": "columnResizeMode",
+        "type": "enum",
+        "required": false,
+        "description": "Determines when the columnSizing state is updated. `onChange` updates the state when the user is dragging the resize handle. `onEnd` updates the state when the user releases the resize handle.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/column-sizing#columnresizemode)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/column-sizing)"
+      },
+      {
+        "name": "enableColumnResizing",
+        "type": "boolean",
+        "required": false,
+        "description": "Enables or disables column resizing for the column.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/column-sizing#enablecolumnresizing)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/column-sizing)"
+      },
+      {
+        "name": "columnResizeDirection",
+        "type": "enum",
+        "required": false,
+        "description": "Enables or disables right-to-left support for resizing the column. defaults to 'ltr'.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/column-sizing#columnResizeDirection)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/column-sizing)"
+      },
+      {
+        "name": "onColumnSizingChange",
+        "type": "OnChangeFn<ColumnSizingState>",
+        "required": false,
+        "description": "If provided, this function will be called with an `updaterFn` when `state.columnSizing` changes. This overrides the default internal state management, so you will also need to supply `state.columnSizing` from your own managed state.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/column-sizing#oncolumnsizingchange)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/column-sizing)"
+      },
+      {
+        "name": "onColumnSizingInfoChange",
+        "type": "OnChangeFn<ColumnSizingInfoState>",
+        "required": false,
+        "description": "If provided, this function will be called with an `updaterFn` when `state.columnSizingInfo` changes. This overrides the default internal state management, so you will also need to supply `state.columnSizingInfo` from your own managed state.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/column-sizing#oncolumnsizinginfochange)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/column-sizing)"
+      },
+      {
+        "name": "autoResetPageIndex",
+        "type": "boolean",
+        "required": false,
+        "description": "If set to `true`, pagination will be reset to the first page when page-altering state changes eg. `data` is updated, filters change, grouping changes, etc.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/pagination#autoresetpageindex)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/pagination)"
+      },
+      {
+        "name": "getPaginationRowModel",
+        "type": "(table: Table<any>) => () => RowModel<any>",
+        "required": false,
+        "description": "Returns the row model after pagination has taken place, but no further.\n\nPagination columns are automatically reordered by default to the start of the columns list. If you would rather remove them or leave them as-is, set the appropriate mode here.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/pagination#getpaginationrowmodel)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/pagination)"
+      },
+      {
+        "name": "manualPagination",
+        "type": "boolean",
+        "required": false,
+        "description": "Enables manual pagination. If this option is set to `true`, the table will not automatically paginate rows using `getPaginationRowModel()` and instead will expect you to manually paginate the rows before passing them to the table. This is useful if you are doing server-side pagination and aggregation.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/pagination#manualpagination)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/pagination)"
+      },
+      {
+        "name": "onPaginationChange",
+        "type": "OnChangeFn<PaginationState>",
+        "required": false,
+        "description": "If this function is provided, it will be called when the pagination state changes and you will be expected to manage the state yourself. You can pass the managed state back to the table via the `tableOptions.state.pagination` option.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/pagination#onpaginationchange)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/pagination)"
+      },
+      {
+        "name": "pageCount",
+        "type": "number",
+        "required": false,
+        "description": "When manually controlling pagination, you can supply a total `pageCount` value to the table if you know it (Or supply a `rowCount` and `pageCount` will be calculated). If you do not know how many pages there are, you can set this to `-1`.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/pagination#pagecount)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/pagination)"
+      },
+      {
+        "name": "rowCount",
+        "type": "number",
+        "required": false,
+        "description": "When manually controlling pagination, you can supply a total `rowCount` value to the table if you know it. The `pageCount` can be calculated from this value and the `pageSize`.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/pagination#rowcount)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/pagination)"
+      },
+      {
+        "name": "enableMultiRowSelection",
+        "type": "boolean | ((row: Row<TData>) => boolean)",
+        "required": false,
+        "description": "- Enables/disables multiple row selection for all rows in the table OR\n- A function that given a row, returns whether to enable/disable multiple row selection for that row's children/grandchildren\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/row-selection#enablemultirowselection)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/row-selection)"
+      },
+      {
+        "name": "enableRowSelection",
+        "type": "boolean | ((row: Row<TData>) => boolean)",
+        "required": false,
+        "description": "- Enables/disables row selection for all rows in the table OR\n- A function that given a row, returns whether to enable/disable row selection for that row\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/row-selection#enablerowselection)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/row-selection)"
+      },
+      {
+        "name": "enableSubRowSelection",
+        "type": "boolean | ((row: Row<TData>) => boolean)",
+        "required": false,
+        "description": "Enables/disables automatic sub-row selection when a parent row is selected, or a function that enables/disables automatic sub-row selection for each row.\n(Use in combination with expanding or grouping features)\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/row-selection#enablesubrowselection)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/row-selection)"
+      },
+      {
+        "name": "onRowSelectionChange",
+        "type": "OnChangeFn<RowSelectionState>",
+        "required": false,
+        "description": "If provided, this function will be called with an `updaterFn` when `state.rowSelection` changes. This overrides the default internal state management, so you will need to persist the state change either fully or partially outside of the table.\n@link [API Docs](https://tanstack.com/table/v8/docs/api/features/row-selection#onrowselectionchange)\n@link [Guide](https://tanstack.com/table/v8/docs/guide/row-selection)"
+      }
+    ],
+    "examples": [],
+    "storybookUrls": [
+      {
+        "title": "基本的な使用方法",
+        "path": "/story/components-datatable--default",
+        "variant": "default"
+      },
+      {
+        "title": "カラム形式の指定",
+        "path": "/story/components-datatable--default",
+        "variant": "default"
+      },
+      {
+        "title": "ソート機能",
+        "path": "/story/components-datatable--with-custom-sorting"
+      },
+      {
+        "title": "選択機能",
+        "path": "/story/components-datatable--without-row-selection"
+      },
+      {
+        "title": "イベントハンドリング",
+        "path": "/story/components-datatable--with-callbacks"
+      },
+      {
+        "title": "異なるデータ型への対応",
+        "path": "/story/components-datatable--different-data-type"
+      }
+    ],
+    "relatedComponents": []
+  },
+  {
+    "name": "DatePicker",
+    "displayName": "デートピッカー",
+    "description": "日付を選択するためのコンポーネントです。カレンダー形式で日付を選択できます。",
+    "category": "Inputs",
+    "hasDocumentation": true,
+    "source": "mdx",
+    "lastUpdated": "2025-09-03",
+    "props": [
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false,
+        "description": "The placeholder text to display in the input."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "invalidMessage",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "startPlaceholder",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "endPlaceholder",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "isCalendarOnly",
+        "type": "boolean",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "The unique identifier of the machine."
+      },
+      {
+        "name": "view",
+        "type": "enum",
+        "required": false,
+        "description": "The view of the calendar"
+      },
+      {
+        "name": "defaultValue",
+        "type": "DateValue[]",
+        "required": false,
+        "description": "The initial selected date(s) when rendered.\nUse when you don't need to control the selected date(s) of the date picker."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "defaultValue": "\"en-US\"",
+        "description": "The locale (BCP 47 language tag) to use when formatting the date."
+      },
+      {
+        "name": "translations",
+        "type": "IntlTranslations",
+        "required": false,
+        "description": "The localized messages to use."
+      },
+      {
+        "name": "ids",
+        "type": "Partial<{ root: string; label: (index: number) => string; table: (id: string) => string; tableHeader: (id: string) => string; tableBody: (id: string) => string; tableRow: (id: string) => string; content: string; ... 10 more ...; positioner: string; }>",
+        "required": false,
+        "description": "The ids of the elements in the date picker. Useful for composition."
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "The `name` attribute of the input element."
+      },
+      {
+        "name": "timeZone",
+        "type": "string",
+        "required": false,
+        "defaultValue": "\"UTC\"",
+        "description": "The time zone to use"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the calendar is disabled."
+      },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the calendar is read-only."
+      },
+      {
+        "name": "outsideDaySelectable",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "false",
+        "description": "Whether day outside the visible range can be selected."
+      },
+      {
+        "name": "min",
+        "type": "DateValue",
+        "required": false,
+        "description": "The minimum date that can be selected."
+      },
+      {
+        "name": "max",
+        "type": "DateValue",
+        "required": false,
+        "description": "The maximum date that can be selected."
+      },
+      {
+        "name": "closeOnSelect",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "true",
+        "description": "Whether the calendar should close after the date selection is complete.\nThis is ignored when the selection mode is `multiple`."
+      },
+      {
+        "name": "value",
+        "type": "DateValue[]",
+        "required": false,
+        "description": "The controlled selected date(s)."
+      },
+      {
+        "name": "focusedValue",
+        "type": "DateValue",
+        "required": false,
+        "description": "The controlled focused date."
+      },
+      {
+        "name": "defaultFocusedValue",
+        "type": "DateValue",
+        "required": false,
+        "description": "The initial focused date when rendered.\nUse when you don't need to control the focused date of the date picker."
+      },
+      {
+        "name": "numOfMonths",
+        "type": "number",
+        "required": false,
+        "description": "The number of months to display."
+      },
+      {
+        "name": "startOfWeek",
+        "type": "number",
+        "required": false,
+        "description": "The first day of the week.\n `0` - Sunday\n `1` - Monday\n `2` - Tuesday\n `3` - Wednesday\n `4` - Thursday\n `5` - Friday\n `6` - Saturday"
+      },
+      {
+        "name": "fixedWeeks",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the calendar should have a fixed number of weeks.\nThis renders the calendar with 6 weeks instead of 5 or 6."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(details: ValueChangeDetails) => void",
+        "required": false,
+        "description": "Function called when the value changes."
+      },
+      {
+        "name": "onFocusChange",
+        "type": "(details: FocusChangeDetails) => void",
+        "required": false,
+        "description": "Function called when the focused date changes."
+      },
+      {
+        "name": "onViewChange",
+        "type": "(details: ViewChangeDetails) => void",
+        "required": false,
+        "description": "Function called when the view changes."
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(details: OpenChangeDetails) => void",
+        "required": false,
+        "description": "Function called when the calendar opens or closes."
+      },
+      {
+        "name": "isDateUnavailable",
+        "type": "(date: DateValue, locale: string) => boolean",
+        "required": false,
+        "description": "Returns whether a date of the calendar is available."
+      },
+      {
+        "name": "selectionMode",
+        "type": "enum",
+        "required": false,
+        "defaultValue": "\"single\"",
+        "description": "The selection mode of the calendar.\n- `single` - only one date can be selected\n- `multiple` - multiple dates can be selected\n- `range` - a range of dates can be selected"
+      },
+      {
+        "name": "format",
+        "type": "(date: DateValue, details: LocaleDetails) => string",
+        "required": false,
+        "description": "The format of the date to display in the input."
+      },
+      {
+        "name": "parse",
+        "type": "(value: string, details: LocaleDetails) => DateValue",
+        "required": false,
+        "description": "Function to parse the date from the input back to a DateValue."
+      },
+      {
+        "name": "defaultView",
+        "type": "enum",
+        "required": false,
+        "defaultValue": "\"day\"",
+        "description": "The default view of the calendar"
+      },
+      {
+        "name": "minView",
+        "type": "enum",
+        "required": false,
+        "defaultValue": "\"day\"",
+        "description": "The minimum view of the calendar"
+      },
+      {
+        "name": "maxView",
+        "type": "enum",
+        "required": false,
+        "defaultValue": "\"year\"",
+        "description": "The maximum view of the calendar"
+      },
+      {
+        "name": "positioning",
+        "type": "PositioningOptions",
+        "required": false,
+        "description": "The user provided options used to position the date picker content"
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false,
+        "description": "The controlled open state of the date picker"
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false,
+        "description": "The initial open state of the date picker when rendered.\nUse when you don't need to control the open state of the date picker."
+      },
+      {
+        "name": "inline",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether to render the date picker inline"
+      },
+      {
+        "name": "skipAnimationOnMount",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "false",
+        "description": "Whether to allow the initial presence animation."
+      },
+      {
+        "name": "present",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the node is present (controlled by the user)"
+      },
+      {
+        "name": "onExitComplete",
+        "type": "VoidFunction",
+        "required": false,
+        "description": "Function called when the animation ends in the closed state"
+      },
+      {
+        "name": "immediate",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether to synchronize the present change immediately or defer it to the next frame"
+      },
+      {
+        "name": "lazyMount",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "false",
+        "description": "Whether to enable lazy mounting"
+      },
+      {
+        "name": "unmountOnExit",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "false",
+        "description": "Whether to unmount on exit."
+      },
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "required": false,
+        "description": "Use the provided child element as the default rendered element, combining their props and behavior."
+      }
+    ],
+    "examples": [],
+    "storybookUrls": [
+      {
+        "title": "基本",
+        "path": "/story/components-datepicker--basic",
+        "variant": "basic"
+      },
+      {
+        "title": "日付範囲",
+        "path": "/story/components-datepicker--range",
+        "variant": "range"
+      },
+      {
+        "title": "状態",
+        "path": "/story/components-datepicker--states",
+        "variant": "states"
+      },
+      {
+        "title": "カレンダーのみ",
+        "path": "/story/components-datepicker--calendar-only"
+      }
+    ],
+    "relatedComponents": [
+      "parseDate"
+    ]
+  },
+  {
+    "name": "parseDate",
+    "displayName": "parseDate",
+    "description": "",
+    "category": "Other",
+    "hasDocumentation": false,
+    "source": "auto-detected",
+    "lastUpdated": "2025-10-28",
+    "props": [],
+    "examples": [],
+    "storybookUrls": [],
+    "relatedComponents": [
+      "DatePicker"
+    ]
+  },
+  {
+    "name": "Divider",
+    "displayName": "ディバイダー",
+    "description": "視覚的に区切るためのコンポーネントです。コンテナ内でコンテンツをグループ化する際にも使用します。",
+    "category": "Layout",
+    "hasDocumentation": true,
+    "source": "mdx",
+    "lastUpdated": "2024-11-1",
+    "props": [
+      {
+        "name": "type",
+        "type": "enum",
+        "required": false,
+        "description": ""
+      }
+    ],
+    "examples": [
+      {
+        "title": "Color",
+        "description": "",
+        "code": "import { Divider } from \"@serendie/ui\";\nimport { Dd, Dl, Dt } from \"src/components/LayoutUtils\";\n\nexport function ColorSample() {\n  return (\n    <Dl>\n      <Dt>Light</Dt>\n      <Dd>\n        <Divider color=\"light\" />\n      </Dd>\n\n      <Dt>Normal</Dt>\n      <Dd>\n        <Divider color=\"normal\" />\n      </Dd>\n\n      <Dt>Dark</Dt>\n      <Dd>\n        <Divider color=\"dark\" />\n      </Dd>\n    </Dl>\n  );\n}\n",
+        "fileName": "ColorSample.tsx",
+        "language": "tsx"
+      },
+      {
+        "title": "Type",
+        "description": "",
+        "code": "import { Divider } from \"@serendie/ui\";\nimport { css } from \"styled-system/css\";\nimport { HBox, VBox } from \"src/components/LayoutUtils\";\n\nexport function TypeSample() {\n  return (\n    <div\n      className={css({\n        display: \"grid\",\n        gridTemplateColumns: \"1fr 1fr\",\n        height: \"200px\",\n        alignItems: \"center\",\n      })}\n    >\n      <HBox\n        data-name=\"horizontal\"\n        className={css({\n          alignItems: \"center !important\",\n        })}\n      >\n        Horizontal\n        <Divider />\n      </HBox>\n\n      <VBox\n        className={css({\n          height: \"100%\",\n        })}\n      >\n        <Divider type=\"vertical\" />\n        Vertical\n      </VBox>\n    </div>\n  );\n}\n",
+        "fileName": "TypeSample.tsx",
+        "language": "tsx"
+      }
+    ],
+    "storybookUrls": [
+      {
+        "title": "カラー",
+        "path": "/story/components-divider--horizontal",
+        "variant": "horizontal"
+      },
+      {
+        "title": "バリエーション",
+        "path": "/story/components-divider--vertical",
+        "variant": "vertical"
+      }
+    ],
+    "relatedComponents": []
+  },
+  {
+    "name": "Drawer",
+    "displayName": "ドロワー",
+    "description": "メニューやナビゲーションを格納するコンポーネントです。主に表示領域が限られるモバイルやタブレットにおいて使用されます。",
+    "category": "Feedback",
+    "hasDocumentation": true,
+    "source": "mdx",
+    "lastUpdated": "2024-11-1",
+    "props": [
+      {
+        "name": "isOpen",
+        "type": "boolean",
+        "required": true,
+        "description": ""
+      },
+      {
+        "name": "contentClassName",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "backdropClassName",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "onOpenChange",
+        "type": "((e: { open: boolean; }) => void) & ((details: OpenChangeDetails) => void)",
+        "required": false,
+        "description": "Function to call when the dialog's open state changes"
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "The unique identifier of the machine."
+      },
+      {
+        "name": "ids",
+        "type": "Partial<{ trigger: string; positioner: string; backdrop: string; content: string; closeTrigger: string; title: string; description: string; }>",
+        "required": false,
+        "description": "The ids of the elements in the dialog. Useful for composition."
+      },
+      {
+        "name": "trapFocus",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "true",
+        "description": "Whether to trap focus inside the dialog when it's opened"
+      },
+      {
+        "name": "preventScroll",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "true",
+        "description": "Whether to prevent scrolling behind the dialog when it's opened"
+      },
+      {
+        "name": "modal",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "true",
+        "description": "Whether to prevent pointer interaction outside the element and hide all content below it"
+      },
+      {
+        "name": "initialFocusEl",
+        "type": "() => HTMLElement",
+        "required": false,
+        "description": "Element to receive focus when the dialog is opened"
+      },
+      {
+        "name": "finalFocusEl",
+        "type": "() => HTMLElement",
+        "required": false,
+        "description": "Element to receive focus when the dialog is closed"
+      },
+      {
+        "name": "restoreFocus",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether to restore focus to the element that had focus before the dialog was opened"
+      },
+      {
+        "name": "closeOnInteractOutside",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "true",
+        "description": "Whether to close the dialog when the outside is clicked"
+      },
+      {
+        "name": "closeOnEscape",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "true",
+        "description": "Whether to close the dialog when the escape key is pressed"
+      },
+      {
+        "name": "aria-label",
+        "type": "string",
+        "required": false,
+        "description": "Human readable label for the dialog, in event the dialog title is not rendered"
+      },
+      {
+        "name": "role",
+        "type": "enum",
+        "required": false,
+        "defaultValue": "\"dialog\"",
+        "description": "The dialog's role"
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false,
+        "description": "The controlled open state of the dialog"
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "false",
+        "description": "The initial open state of the dialog when rendered.\nUse when you don't need to control the open state of the dialog."
+      },
+      {
+        "name": "onEscapeKeyDown",
+        "type": "(event: KeyboardEvent) => void",
+        "required": false,
+        "description": "Function called when the escape key is pressed"
+      },
+      {
+        "name": "onPointerDownOutside",
+        "type": "(event: PointerDownOutsideEvent) => void",
+        "required": false,
+        "description": "Function called when the pointer is pressed down outside the component"
+      },
+      {
+        "name": "onFocusOutside",
+        "type": "(event: FocusOutsideEvent) => void",
+        "required": false,
+        "description": "Function called when the focus is moved outside the component"
+      },
+      {
+        "name": "onInteractOutside",
+        "type": "(event: InteractOutsideEvent) => void",
+        "required": false,
+        "description": "Function called when an interaction happens outside the component"
+      },
+      {
+        "name": "persistentElements",
+        "type": "(() => Element)[]",
+        "required": false,
+        "description": "Returns the persistent elements that:\n- should not have pointer-events disabled\n- should not trigger the dismiss event"
+      },
+      {
+        "name": "skipAnimationOnMount",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "false",
+        "description": "Whether to allow the initial presence animation."
+      },
+      {
+        "name": "present",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the node is present (controlled by the user)"
+      },
+      {
+        "name": "onExitComplete",
+        "type": "VoidFunction",
+        "required": false,
+        "description": "Function called when the animation ends in the closed state"
+      },
+      {
+        "name": "immediate",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether to synchronize the present change immediately or defer it to the next frame"
+      },
+      {
+        "name": "lazyMount",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "false",
+        "description": "Whether to enable lazy mounting"
+      },
+      {
+        "name": "unmountOnExit",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "false",
+        "description": "Whether to unmount on exit."
+      },
+      {
+        "name": "type",
+        "type": "enum",
+        "required": false,
+        "description": ""
+      }
+    ],
+    "examples": [
+      {
+        "title": "Type",
+        "description": "",
+        "code": "import { Drawer, IconButton, ListItem, List } from \"@serendie/ui\";\nimport { SerendieSymbol } from \"@serendie/symbols\";\nimport { Dd, Dl, Dt } from \"src/components/LayoutUtils\";\nimport { useState } from \"react\";\n\nexport function TypeSample() {\n  const [leftOpen, setLeftOpen] = useState(false);\n  const [rightOpen, setRightOpen] = useState(false);\n  const [fullOpen, setFullOpen] = useState(false);\n\n  return (\n    <Dl>\n      <Dt>Right</Dt>\n      <Dd>\n        <IconButton\n          icon={<SerendieSymbol name=\"menu\" />}\n          shape=\"rectangle\"\n          styleType=\"outlined\"\n          onClick={() => {\n            setRightOpen(true);\n          }}\n        />\n        <Drawer isOpen={rightOpen} onOpenChange={(e) => setRightOpen(e.open)}>\n          <List>\n            <ListItem title=\"Navigation 1\" />\n            <ListItem title=\"Navigation 2\" />\n            <ListItem title=\"Navigation 3\" />\n          </List>\n        </Drawer>\n      </Dd>\n      <Dt>Left</Dt>\n      <Dd>\n        <IconButton\n          icon={<SerendieSymbol name=\"menu\" />}\n          shape=\"rectangle\"\n          styleType=\"outlined\"\n          onClick={() => {\n            setLeftOpen(true);\n          }}\n        />\n        <Drawer\n          isOpen={leftOpen}\n          onOpenChange={(e) => setLeftOpen(e.open)}\n          type=\"left\"\n        >\n          <List>\n            <ListItem title=\"Navigation 1\" />\n            <ListItem title=\"Navigation 2\" />\n            <ListItem title=\"Navigation 3\" />\n          </List>\n        </Drawer>\n      </Dd>\n      <Dt>Full</Dt>\n      <Dd>\n        <IconButton\n          icon={<SerendieSymbol name=\"menu\" />}\n          shape=\"rectangle\"\n          styleType=\"outlined\"\n          onClick={() => {\n            setFullOpen(true);\n          }}\n        />\n        <Drawer\n          isOpen={fullOpen}\n          onOpenChange={(e) => setFullOpen(e.open)}\n          type=\"full\"\n        >\n          <List>\n            <ListItem title=\"Navigation 1\" />\n            <ListItem title=\"Navigation 2\" />\n            <ListItem title=\"Navigation 3\" />\n          </List>\n        </Drawer>\n      </Dd>\n    </Dl>\n  );\n}\n",
+        "fileName": "TypeSample.tsx",
+        "language": "tsx"
+      }
+    ],
+    "storybookUrls": [
+      {
+        "title": "バリエーション",
+        "path": "/story/components-drawer--left",
+        "variant": "left"
+      }
+    ],
+    "relatedComponents": []
+  },
+  {
+    "name": "DropdownMenu",
+    "displayName": "ドロップダウンメニュー",
+    "description": "複数のアクションを格納するためのコンポーネントです。メニュー内のアクションは、クリック時にイベントをトリガーします。アクションではなく、選択肢を表示する場合は、Selectを使用してください。",
+    "category": "Feedback",
+    "hasDocumentation": true,
+    "source": "mdx",
+    "lastUpdated": "2024-11-1",
+    "props": [
+      {
+        "name": "styleType",
+        "type": "enum",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "required": true,
+        "description": ""
+      },
+      {
+        "name": "items",
+        "type": "MenuItemProps[]",
+        "required": true,
+        "description": ""
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "icon",
+        "type": "ReactElement<any, string | JSXElementConstructor<any>>",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "The unique identifier of the machine."
+      },
+      {
+        "name": "ids",
+        "type": "Partial<{ trigger: string; contextTrigger: string; content: string; groupLabel: (id: string) => string; group: (id: string) => string; positioner: string; arrow: string; }>",
+        "required": false,
+        "description": "The ids of the elements in the menu. Useful for composition."
+      },
+      {
+        "name": "defaultHighlightedValue",
+        "type": "string",
+        "required": false,
+        "description": "The initial highlighted value of the menu item when rendered.\nUse when you don't need to control the highlighted value of the menu item."
+      },
+      {
+        "name": "highlightedValue",
+        "type": "string",
+        "required": false,
+        "description": "The controlled highlighted value of the menu item."
+      },
+      {
+        "name": "onHighlightChange",
+        "type": "(details: HighlightChangeDetails) => void",
+        "required": false,
+        "description": "Function called when the highlighted menu item changes."
+      },
+      {
+        "name": "onSelect",
+        "type": "(details: SelectionDetails) => void",
+        "required": false,
+        "description": "Function called when a menu item is selected."
+      },
+      {
+        "name": "anchorPoint",
+        "type": "Point",
+        "required": false,
+        "description": "The positioning point for the menu. Can be set by the context menu trigger or the button trigger."
+      },
+      {
+        "name": "loopFocus",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "false",
+        "description": "Whether to loop the keyboard navigation."
+      },
+      {
+        "name": "positioning",
+        "type": "PositioningOptions",
+        "required": false,
+        "description": "The options used to dynamically position the menu"
+      },
+      {
+        "name": "closeOnSelect",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "true",
+        "description": "Whether to close the menu when an option is selected"
+      },
+      {
+        "name": "aria-label",
+        "type": "string",
+        "required": false,
+        "description": "The accessibility label for the menu"
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false,
+        "description": "The controlled open state of the menu"
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(details: OpenChangeDetails) => void",
+        "required": false,
+        "description": "Function called when the menu opens or closes"
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false,
+        "description": "The initial open state of the menu when rendered.\nUse when you don't need to control the open state of the menu."
+      },
+      {
+        "name": "typeahead",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "true",
+        "description": "Whether the pressing printable characters should trigger typeahead navigation"
+      },
+      {
+        "name": "composite",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "true",
+        "description": "Whether the menu is a composed with other composite widgets like a combobox or tabs"
+      },
+      {
+        "name": "navigate",
+        "type": "(details: NavigateDetails) => void",
+        "required": false,
+        "description": "Function to navigate to the selected item if it's an anchor element"
+      },
+      {
+        "name": "onEscapeKeyDown",
+        "type": "(event: KeyboardEvent) => void",
+        "required": false,
+        "description": "Function called when the escape key is pressed"
+      },
+      {
+        "name": "onPointerDownOutside",
+        "type": "(event: PointerDownOutsideEvent) => void",
+        "required": false,
+        "description": "Function called when the pointer is pressed down outside the component"
+      },
+      {
+        "name": "onFocusOutside",
+        "type": "(event: FocusOutsideEvent) => void",
+        "required": false,
+        "description": "Function called when the focus is moved outside the component"
+      },
+      {
+        "name": "onInteractOutside",
+        "type": "(event: InteractOutsideEvent) => void",
+        "required": false,
+        "description": "Function called when an interaction happens outside the component"
+      },
+      {
+        "name": "skipAnimationOnMount",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "false",
+        "description": "Whether to allow the initial presence animation."
+      },
+      {
+        "name": "present",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the node is present (controlled by the user)"
+      },
+      {
+        "name": "onExitComplete",
+        "type": "VoidFunction",
+        "required": false,
+        "description": "Function called when the animation ends in the closed state"
+      },
+      {
+        "name": "immediate",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether to synchronize the present change immediately or defer it to the next frame"
+      },
+      {
+        "name": "lazyMount",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "false",
+        "description": "Whether to enable lazy mounting"
+      },
+      {
+        "name": "unmountOnExit",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "false",
+        "description": "Whether to unmount on exit."
+      }
+    ],
+    "examples": [],
+    "storybookUrls": [
+      {
+        "title": "バリエーション",
+        "path": "/story/components-dropdownmenu--default",
+        "variant": "default"
+      }
+    ],
+    "relatedComponents": []
+  },
+  {
+    "name": "IconButton",
+    "displayName": "アイコンボタン",
+    "description": "アクションをトリガーするためのクリック可能なコンポーネントです。アイコンを使用してアクションの内容を視覚的に伝えます。",
+    "category": "Actions",
+    "hasDocumentation": true,
+    "source": "mdx",
+    "lastUpdated": "2024-11-1",
+    "props": [
+      {
+        "name": "shape",
+        "type": "enum",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "styleType",
+        "type": "enum",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "size",
+        "type": "enum",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "icon",
+        "type": "ReactElement<any, string | JSXElementConstructor<any>>",
+        "required": true,
+        "description": ""
+      }
+    ],
+    "examples": [],
+    "storybookUrls": [
+      {
+        "title": "サイズ",
+        "path": "/story/components-iconbutton--small",
+        "variant": "small"
+      },
+      {
+        "title": "バリエーション",
+        "path": "/story/components-iconbutton--outlined",
+        "variant": "outlined"
+      },
+      {
+        "title": "シェイプ",
+        "path": "/story/components-iconbutton--rectangle",
+        "variant": "rectangle"
+      },
+      {
+        "title": "状態",
+        "path": "/docs/components-button--docs",
+        "variant": "docs"
+      }
+    ],
+    "relatedComponents": []
+  },
+  {
+    "name": "List",
+    "displayName": "リストアイテム",
+    "description": "関連する項目を縦に並べて、メニューや一覧を構成するためのコンポーネントです。",
+    "category": "Layout",
+    "hasDocumentation": true,
+    "source": "mdx",
+    "lastUpdated": "2024-11-1",
+    "props": [],
+    "examples": [
+      {
+        "title": "State",
+        "description": "",
+        "code": "import { List, ListItem } from \"@serendie/ui\";\nimport { SerendieSymbol } from \"@serendie/symbols\";\nimport { Dd, Dl, Dt } from \"src/components/LayoutUtils\";\n\nexport function StateSample() {\n  return (\n    <Dl>\n      <Dt>Enabled</Dt>\n      <Dd>\n        <List>\n          <ListItem\n            title=\"リストタイトル\"\n            leftIcon={<SerendieSymbol name={\"placeholder\"} />}\n          />\n        </List>\n      </Dd>\n      <Dt>Focused</Dt>\n      <Dd>\n        <List>\n          <ListItem\n            title=\"リストタイトル\"\n            leftIcon={<SerendieSymbol name={\"placeholder\"} />}\n            focusVisible\n          />\n        </List>\n      </Dd>\n      <Dt>Disabled</Dt>\n      <Dd>\n        <List>\n          <ListItem\n            title=\"リストタイトル\"\n            leftIcon={<SerendieSymbol name={\"placeholder\"} />}\n            disabled\n          />\n        </List>\n      </Dd>\n      <Dt>Selected</Dt>\n      <Dd>\n        <List>\n          <ListItem\n            title=\"リストタイトル\"\n            leftIcon={<SerendieSymbol name={\"placeholder\"} />}\n            selected\n          />\n        </List>\n      </Dd>\n    </Dl>\n  );\n}\n",
+        "fileName": "StateSample.tsx",
+        "language": "tsx"
+      },
+      {
+        "title": "Type",
+        "description": "",
+        "code": "import { List, ListItem } from \"@serendie/ui\";\nimport { SerendieSymbol } from \"@serendie/symbols\";\nimport { Dd, Dl, Dt } from \"src/components/LayoutUtils\";\n\nexport function TypeSample() {\n  return (\n    <Dl variant=\"dim\">\n      <Dt>Title Only</Dt>\n      <Dd>\n        <List>\n          <ListItem title=\"リストタイトル\" />\n        </List>\n      </Dd>\n\n      <Dt>Left Icon</Dt>\n      <Dd>\n        <List>\n          <ListItem\n            title=\"リストタイトル\"\n            leftIcon={<SerendieSymbol name={\"placeholder\"} />}\n          />\n        </List>\n      </Dd>\n\n      <Dt>Multiple Lines</Dt>\n      <Dd>\n        <List>\n          <ListItem\n            title=\"リストタイトル\"\n            description=\"補足テキスト\"\n            leftIcon={<SerendieSymbol name={\"placeholder\"} />}\n          >\n            <p>タイムスタンプなど</p>\n          </ListItem>\n        </List>\n      </Dd>\n\n      <Dt>Large Left Icon</Dt>\n      <Dd>\n        <List>\n          <ListItem\n            title=\"リストタイトル\"\n            leftIcon={<SerendieSymbol name={\"placeholder\"} />}\n            isLargeLeftIcon\n          />\n        </List>\n      </Dd>\n\n      <Dt>Multiple Lines</Dt>\n      <Dd>\n        <List>\n          <ListItem\n            title=\"リストタイトル\"\n            description=\"補足テキスト\"\n            leftIcon={<SerendieSymbol name={\"placeholder\"} />}\n            isLargeLeftIcon\n          >\n            <p>タイムスタンプなど</p>\n          </ListItem>\n        </List>\n      </Dd>\n\n      <Dt>Right Icon</Dt>\n      <Dd>\n        <List>\n          <ListItem\n            title=\"リストタイトル\"\n            rightIcon={<SerendieSymbol name={\"chevron-right\"} />}\n          />\n        </List>\n      </Dd>\n\n      <Dt>Multiple Lines</Dt>\n      <Dd>\n        <List>\n          <ListItem\n            title=\"リストタイトル\"\n            description=\"補足テキスト\"\n            rightIcon={<SerendieSymbol name={\"chevron-right\"} />}\n          />\n        </List>\n      </Dd>\n\n      <Dt>With Badge</Dt>\n      <Dd>\n        <List>\n          <ListItem\n            title=\"リストタイトル\"\n            description=\"補足テキスト\"\n            leftIcon={<SerendieSymbol name={\"placeholder\"} />}\n            isLargeLeftIcon\n            badge={3}\n          />\n        </List>\n      </Dd>\n    </Dl>\n  );\n}\n",
+        "fileName": "TypeSample.tsx",
+        "language": "tsx"
+      }
+    ],
+    "storybookUrls": [
+      {
+        "title": "バリエーション",
+        "path": "/story/components-list--basic",
+        "variant": "basic"
+      },
+      {
+        "title": "状態",
+        "path": "/docs/components-list--docs",
+        "variant": "docs"
+      }
+    ],
+    "relatedComponents": [
+      "ListItem"
+    ]
+  },
+  {
+    "name": "ListItem",
+    "displayName": "ListItem",
+    "description": "",
+    "category": "Layout",
+    "hasDocumentation": false,
+    "source": "auto-detected",
+    "lastUpdated": "2025-10-28",
+    "props": [],
+    "examples": [],
+    "storybookUrls": [],
+    "relatedComponents": [
+      "List"
+    ]
+  },
+  {
+    "name": "ModalDialog",
+    "displayName": "モーダルダイアログ",
+    "description": "アプリケーションを覆うレイヤー上にダイアログを表示するコンポーネントです。Modal Dialogが表示されている間は、ユーザーはその他の操作ができなくなることに注意が必要です。",
+    "category": "Feedback",
+    "hasDocumentation": true,
+    "source": "mdx",
+    "lastUpdated": "2024-11-1",
+    "props": [
+      {
+        "name": "isOpen",
+        "type": "boolean",
+        "required": true,
+        "description": ""
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "required": true,
+        "description": ""
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "cancelButtonLabel",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "submitButtonLabel",
+        "type": "string",
+        "required": true,
+        "description": ""
+      },
+      {
+        "name": "onButtonClick",
+        "type": "() => void",
+        "required": true,
+        "description": ""
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "The unique identifier of the machine."
+      },
+      {
+        "name": "ids",
+        "type": "Partial<{ trigger: string; positioner: string; backdrop: string; content: string; closeTrigger: string; title: string; description: string; }>",
+        "required": false,
+        "description": "The ids of the elements in the dialog. Useful for composition."
+      },
+      {
+        "name": "trapFocus",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "true",
+        "description": "Whether to trap focus inside the dialog when it's opened"
+      },
+      {
+        "name": "preventScroll",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "true",
+        "description": "Whether to prevent scrolling behind the dialog when it's opened"
+      },
+      {
+        "name": "modal",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "true",
+        "description": "Whether to prevent pointer interaction outside the element and hide all content below it"
+      },
+      {
+        "name": "initialFocusEl",
+        "type": "() => HTMLElement",
+        "required": false,
+        "description": "Element to receive focus when the dialog is opened"
+      },
+      {
+        "name": "finalFocusEl",
+        "type": "() => HTMLElement",
+        "required": false,
+        "description": "Element to receive focus when the dialog is closed"
+      },
+      {
+        "name": "restoreFocus",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether to restore focus to the element that had focus before the dialog was opened"
+      },
+      {
+        "name": "closeOnInteractOutside",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "true",
+        "description": "Whether to close the dialog when the outside is clicked"
+      },
+      {
+        "name": "closeOnEscape",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "true",
+        "description": "Whether to close the dialog when the escape key is pressed"
+      },
+      {
+        "name": "aria-label",
+        "type": "string",
+        "required": false,
+        "description": "Human readable label for the dialog, in event the dialog title is not rendered"
+      },
+      {
+        "name": "role",
+        "type": "enum",
+        "required": false,
+        "defaultValue": "\"dialog\"",
+        "description": "The dialog's role"
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false,
+        "description": "The controlled open state of the dialog"
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "false",
+        "description": "The initial open state of the dialog when rendered.\nUse when you don't need to control the open state of the dialog."
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(details: OpenChangeDetails) => void",
+        "required": false,
+        "description": "Function to call when the dialog's open state changes"
+      },
+      {
+        "name": "onEscapeKeyDown",
+        "type": "(event: KeyboardEvent) => void",
+        "required": false,
+        "description": "Function called when the escape key is pressed"
+      },
+      {
+        "name": "onPointerDownOutside",
+        "type": "(event: PointerDownOutsideEvent) => void",
+        "required": false,
+        "description": "Function called when the pointer is pressed down outside the component"
+      },
+      {
+        "name": "onFocusOutside",
+        "type": "(event: FocusOutsideEvent) => void",
+        "required": false,
+        "description": "Function called when the focus is moved outside the component"
+      },
+      {
+        "name": "onInteractOutside",
+        "type": "(event: InteractOutsideEvent) => void",
+        "required": false,
+        "description": "Function called when an interaction happens outside the component"
+      },
+      {
+        "name": "persistentElements",
+        "type": "(() => Element)[]",
+        "required": false,
+        "description": "Returns the persistent elements that:\n- should not have pointer-events disabled\n- should not trigger the dismiss event"
+      },
+      {
+        "name": "skipAnimationOnMount",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "false",
+        "description": "Whether to allow the initial presence animation."
+      },
+      {
+        "name": "present",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the node is present (controlled by the user)"
+      },
+      {
+        "name": "onExitComplete",
+        "type": "VoidFunction",
+        "required": false,
+        "description": "Function called when the animation ends in the closed state"
+      },
+      {
+        "name": "immediate",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether to synchronize the present change immediately or defer it to the next frame"
+      },
+      {
+        "name": "lazyMount",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "false",
+        "description": "Whether to enable lazy mounting"
+      },
+      {
+        "name": "unmountOnExit",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "false",
+        "description": "Whether to unmount on exit."
+      }
+    ],
+    "examples": [],
+    "storybookUrls": [
+      {
+        "title": "サンプル",
+        "path": "/story/components-modaldialog--basic",
+        "variant": "basic"
+      }
+    ],
+    "relatedComponents": []
+  },
+  {
+    "name": "NotificationBadge",
+    "displayName": "バッジ",
+    "description": "未読の通知や新着情報をユーザーに知らせるためのコンポーネントです。",
+    "category": "Display",
+    "hasDocumentation": true,
+    "source": "mdx",
+    "lastUpdated": "2024-11-1",
+    "props": [
+      {
+        "name": "count",
+        "type": "number",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "size",
+        "type": "enum",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "variant",
+        "type": "enum",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "noNumber",
+        "type": "boolean",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "position",
+        "type": "\"relative\"",
+        "required": false,
+        "description": ""
+      }
+    ],
+    "examples": [],
+    "storybookUrls": [
+      {
+        "title": "サイズ",
+        "path": "/story/components-notificationbadge--default&args=size:small"
+      },
+      {
+        "title": "カラー",
+        "path": "/story/components-notificationbadge--default&args=variant:secondary;size:medium"
+      },
+      {
+        "title": "バリエーション",
+        "path": "/story/components-notificationbadge--no-number"
+      }
+    ],
+    "relatedComponents": []
+  },
+  {
+    "name": "Pagination",
+    "displayName": "ページネーション",
+    "description": "複数ページにまたがるデータやコンテンツのページ切り替えを行うためのコンポーネントです。",
+    "category": "Feedback",
+    "hasDocumentation": true,
+    "source": "mdx",
+    "lastUpdated": "2025-05-23",
+    "props": [
+      {
+        "name": "size",
+        "type": "\"medium\"",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "page",
+        "type": "number",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "count",
+        "type": "number",
+        "required": true,
+        "description": ""
+      },
+      {
+        "name": "pageSize",
+        "type": "number",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "onPageChange",
+        "type": "(details: { page: number; }) => void",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "siblingCount",
+        "type": "number",
+        "required": false,
+        "description": ""
+      }
+    ],
+    "examples": [
+      {
+        "title": "Basic",
+        "description": "",
+        "code": "import { Pagination } from \"@serendie/ui\";\nimport { useState } from \"react\";\n\nexport function BasicSample() {\n  const [page, setPage] = useState(1);\n  return (\n    <Pagination\n      count={10}\n      page={page}\n      onPageChange={({ page }) => setPage(page)}\n    />\n  );\n}\n",
+        "fileName": "BasicSample.tsx",
+        "language": "tsx"
+      },
+      {
+        "title": "With More Siblings",
+        "description": "",
+        "code": "import { Pagination } from \"@serendie/ui\";\n\nexport function WithMoreSiblingsSample() {\n  return <Pagination count={100} siblingCount={4} />;\n}\n",
+        "fileName": "WithMoreSiblingsSample.tsx",
+        "language": "tsx"
+      }
+    ],
+    "storybookUrls": [
+      {
+        "title": "サンプル",
+        "path": "/story/components-pagination--basic",
+        "variant": "basic"
+      },
+      {
+        "title": "表示数の調整",
+        "path": "/story/components-pagination--with-more-siblings"
+      }
+    ],
+    "relatedComponents": []
+  },
+  {
+    "name": "PasswordField",
+    "displayName": "PasswordField",
+    "description": "",
+    "category": "Inputs",
+    "hasDocumentation": false,
+    "source": "auto-detected",
+    "lastUpdated": "2025-10-28",
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "invalidMessage",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "leftContent",
+        "type": "ReactNode",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "disableToggle",
+        "type": "boolean",
+        "required": false,
+        "description": "パスワードの表示/非表示切り替えを無効にする"
+      }
+    ],
+    "examples": [],
+    "storybookUrls": [],
+    "relatedComponents": []
+  },
+  {
+    "name": "ProgressIndicator",
+    "displayName": "プログレスインジケーター",
+    "description": "ユーザーにアプリケーションの待機状態を視覚的に示すためのコンポーネントです。",
+    "category": "Display",
+    "hasDocumentation": true,
+    "source": "mdx",
+    "lastUpdated": "2025-09-18",
+    "props": [
+      {
+        "name": "type",
+        "type": "enum",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "size",
+        "type": "enum",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "value",
+        "type": "number",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false,
+        "description": ""
+      }
+    ],
+    "examples": [],
+    "storybookUrls": [
+      {
+        "title": "サイズ",
+        "path": "/docs/components-progressindicator--docs",
+        "variant": "docs"
+      },
+      {
+        "title": "確定値（Determinate）",
+        "path": "/docs/components-progressindicator--docs",
+        "variant": "docs"
+      },
+      {
+        "title": "不確定値（Indeterminate）",
+        "path": "/docs/components-progressindicatorindeterminate--docs",
+        "variant": "docs"
+      },
+      {
+        "title": "カラー（Indeterminate）",
+        "path": "/docs/components-progressindicatorindeterminate--docs",
+        "variant": "docs"
+      }
+    ],
+    "relatedComponents": [
+      "ProgressIndicatorIndeterminate"
+    ]
+  },
+  {
+    "name": "ProgressIndicatorIndeterminate",
+    "displayName": "ProgressIndicatorIndeterminate",
+    "description": "",
+    "category": "Display",
+    "hasDocumentation": false,
+    "source": "auto-detected",
+    "lastUpdated": "2025-10-28",
+    "props": [],
+    "examples": [],
+    "storybookUrls": [],
+    "relatedComponents": [
+      "ProgressIndicator"
+    ]
+  },
+  {
+    "name": "RadioButton",
+    "displayName": "ラジオボタン",
+    "description": "ChoiceBoxにラベルを付けたコンポーネントです。複数の選択肢から、一つを排他的に選択する際に使用します。",
+    "category": "Inputs",
+    "hasDocumentation": true,
+    "source": "mdx",
+    "lastUpdated": "2024-11-1",
+    "props": [
+      {
+        "name": "value",
+        "type": "string",
+        "required": true,
+        "description": ""
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "required": false,
+        "description": "Use the provided child element as the default rendered element, combining their props and behavior."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "helperText",
+        "type": "string",
+        "required": false,
+        "description": ""
+      }
+    ],
+    "examples": [],
+    "storybookUrls": [
+      {
+        "title": "バリエーション",
+        "path": "/story/components-radiobutton--default",
+        "variant": "default"
+      },
+      {
+        "title": "状態",
+        "path": "/docs/components-radiobutton--docs",
+        "variant": "docs"
+      }
+    ],
+    "relatedComponents": [
+      "RadioGroup"
+    ]
+  },
+  {
+    "name": "RadioGroup",
+    "displayName": "RadioGroup",
+    "description": "",
+    "category": "Inputs",
+    "hasDocumentation": false,
+    "source": "auto-detected",
+    "lastUpdated": "2025-10-28",
+    "props": [],
+    "examples": [],
+    "storybookUrls": [],
+    "relatedComponents": [
+      "RadioButton"
+    ]
+  },
+  {
+    "name": "Search",
+    "displayName": "サーチ",
+    "description": "検索用途に特化した入力コンポーネントです。検索キーワードを入力した際に候補をサジェストする機能も持ちます。",
+    "category": "Inputs",
+    "hasDocumentation": true,
+    "source": "mdx",
+    "lastUpdated": "2024-11-1",
+    "props": [
+      {
+        "name": "collection",
+        "type": "ListCollection<string>",
+        "required": true,
+        "description": "The collection of items"
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "The unique identifier of the machine."
+      },
+      {
+        "name": "form",
+        "type": "string",
+        "required": false,
+        "description": "The associate form of the combobox."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string[]",
+        "required": false,
+        "defaultValue": "[]",
+        "description": "The initial value of the combobox's selected items when rendered.\nUse when you don't need to control the value of the combobox's selected items."
+      },
+      {
+        "name": "autoFocus",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether to autofocus the input on mount"
+      },
+      {
+        "name": "onSelect",
+        "type": "(details: SelectionDetails) => void",
+        "required": false,
+        "description": "Function called when an item is selected"
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false,
+        "description": "The controlled open state of the combobox"
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false,
+        "description": "The initial open state of the combobox when rendered.\nUse when you don't need to control the open state of the combobox."
+      },
+      {
+        "name": "ids",
+        "type": "Partial<{ root: string; label: string; control: string; input: string; content: string; trigger: string; clearTrigger: string; item: (id: string, index?: number) => string; positioner: string; itemGroup: (id: string | number) => string; itemGroupLabel: (id: string | number) => string; }>",
+        "required": false,
+        "description": "The ids of the elements in the combobox. Useful for composition."
+      },
+      {
+        "name": "inputValue",
+        "type": "string",
+        "required": false,
+        "description": "The controlled value of the combobox's input"
+      },
+      {
+        "name": "defaultInputValue",
+        "type": "string",
+        "required": false,
+        "defaultValue": "\"\"",
+        "description": "The initial value of the combobox's input when rendered.\nUse when you don't need to control the value of the combobox's input."
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "The `name` attribute of the combobox's input. Useful for form submission"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the combobox is disabled"
+      },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the combobox is readonly. This puts the combobox in a \"non-editable\" mode\nbut the user can still interact with it"
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the combobox is invalid"
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the combobox is required"
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false,
+        "description": "The placeholder text of the combobox's input"
+      },
+      {
+        "name": "defaultHighlightedValue",
+        "type": "string",
+        "required": false,
+        "description": "The initial highlighted value of the combobox when rendered.\nUse when you don't need to control the highlighted value of the combobox."
+      },
+      {
+        "name": "highlightedValue",
+        "type": "string",
+        "required": false,
+        "description": "The controlled highlighted value of the combobox"
+      },
+      {
+        "name": "value",
+        "type": "string[]",
+        "required": false,
+        "description": "The controlled value of the combobox's selected items"
+      },
+      {
+        "name": "inputBehavior",
+        "type": "enum",
+        "required": false,
+        "defaultValue": "\"none\"",
+        "description": "Defines the auto-completion behavior of the combobox.\n\n- `autohighlight`: The first focused item is highlighted as the user types\n- `autocomplete`: Navigating the listbox with the arrow keys selects the item and the input is updated"
+      },
+      {
+        "name": "selectionBehavior",
+        "type": "enum",
+        "required": false,
+        "defaultValue": "\"replace\"",
+        "description": "The behavior of the combobox input when an item is selected\n\n- `replace`: The selected item string is set as the input value\n- `clear`: The input value is cleared\n- `preserve`: The input value is preserved"
+      },
+      {
+        "name": "openOnClick",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "false",
+        "description": "Whether to open the combobox popup on initial click on the input"
+      },
+      {
+        "name": "openOnChange",
+        "type": "boolean | ((details: InputValueChangeDetails) => boolean)",
+        "required": false,
+        "defaultValue": "true",
+        "description": "Whether to show the combobox when the input value changes"
+      },
+      {
+        "name": "allowCustomValue",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether to allow typing custom values in the input"
+      },
+      {
+        "name": "loopFocus",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "true",
+        "description": "Whether to loop the keyboard navigation through the items"
+      },
+      {
+        "name": "positioning",
+        "type": "PositioningOptions",
+        "required": false,
+        "defaultValue": "{ placement: \"bottom-start\" }",
+        "description": "The positioning options to dynamically position the menu"
+      },
+      {
+        "name": "onInputValueChange",
+        "type": "(details: InputValueChangeDetails) => void",
+        "required": false,
+        "description": "Function called when the input's value changes"
+      },
+      {
+        "name": "onValueChange",
+        "type": "(details: ValueChangeDetails<string>) => void",
+        "required": false,
+        "description": "Function called when a new item is selected"
+      },
+      {
+        "name": "onHighlightChange",
+        "type": "(details: HighlightChangeDetails<string>) => void",
+        "required": false,
+        "description": "Function called when an item is highlighted using the pointer\nor keyboard navigation."
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(details: OpenChangeDetails) => void",
+        "required": false,
+        "description": "Function called when the popup is opened"
+      },
+      {
+        "name": "translations",
+        "type": "IntlTranslations",
+        "required": false,
+        "description": "Specifies the localized strings that identifies the accessibility elements and their states"
+      },
+      {
+        "name": "multiple",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether to allow multiple selection.\n\n**Good to know:** When `multiple` is `true`, the `selectionBehavior` is automatically set to `clear`.\nIt is recommended to render the selected items in a separate container."
+      },
+      {
+        "name": "closeOnSelect",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether to close the combobox when an item is selected."
+      },
+      {
+        "name": "openOnKeyPress",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "true",
+        "description": "Whether to open the combobox on arrow key press"
+      },
+      {
+        "name": "scrollToIndexFn",
+        "type": "(details: ScrollToIndexDetails) => void",
+        "required": false,
+        "description": "Function to scroll to a specific index"
+      },
+      {
+        "name": "composite",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "true",
+        "description": "Whether the combobox is a composed with other composite widgets like tabs"
+      },
+      {
+        "name": "disableLayer",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether to disable registering this a dismissable layer"
+      },
+      {
+        "name": "navigate",
+        "type": "(details: NavigateDetails) => void",
+        "required": false,
+        "description": "Function to navigate to the selected item"
+      },
+      {
+        "name": "onPointerDownOutside",
+        "type": "(event: PointerDownOutsideEvent) => void",
+        "required": false,
+        "description": "Function called when the pointer is pressed down outside the component"
+      },
+      {
+        "name": "onFocusOutside",
+        "type": "(event: FocusOutsideEvent) => void",
+        "required": false,
+        "description": "Function called when the focus is moved outside the component"
+      },
+      {
+        "name": "onInteractOutside",
+        "type": "(event: InteractOutsideEvent) => void",
+        "required": false,
+        "description": "Function called when an interaction happens outside the component"
+      },
+      {
+        "name": "skipAnimationOnMount",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "false",
+        "description": "Whether to allow the initial presence animation."
+      },
+      {
+        "name": "present",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the node is present (controlled by the user)"
+      },
+      {
+        "name": "onExitComplete",
+        "type": "VoidFunction",
+        "required": false,
+        "description": "Function called when the animation ends in the closed state"
+      },
+      {
+        "name": "immediate",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether to synchronize the present change immediately or defer it to the next frame"
+      },
+      {
+        "name": "lazyMount",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "false",
+        "description": "Whether to enable lazy mounting"
+      },
+      {
+        "name": "unmountOnExit",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "false",
+        "description": "Whether to unmount on exit."
+      },
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "required": false,
+        "description": "Use the provided child element as the default rendered element, combining their props and behavior."
+      },
+      {
+        "name": "size",
+        "type": "enum",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "items",
+        "type": "string[]",
+        "required": false,
+        "description": ""
+      }
+    ],
+    "examples": [
+      {
+        "title": "Size",
+        "description": "",
+        "code": "import { Search } from \"@serendie/ui\";\nimport { Dd, Dl, Dt } from \"src/components/LayoutUtils\";\n\nexport function SizeSample() {\n  return (\n    <Dl>\n      <Dt>Small</Dt>\n      <Dd>\n        <Search\n          items={[\"React\", \"Vue\", \"Angular\", \"Svelte\", \"Ember\"]}\n          size=\"small\"\n        />\n      </Dd>\n\n      <Dt>Medium</Dt>\n      <Dd>\n        <Search\n          items={[\"React\", \"Vue\", \"Angular\", \"Svelte\", \"Ember\"]}\n          size=\"medium\"\n        />\n      </Dd>\n    </Dl>\n  );\n}\n",
+        "fileName": "SizeSample.tsx",
+        "language": "tsx"
+      },
+      {
+        "title": "State",
+        "description": "",
+        "code": "import { Search } from \"@serendie/ui\";\nimport { Dd, Dl, Dt } from \"src/components/LayoutUtils\";\n\nexport function StateSample() {\n  return (\n    <Dl>\n      <Dt>Enabled</Dt>\n      <Dd>\n        <Search items={[\"React\", \"Vue\", \"Angular\", \"Svelte\", \"Ember\"]} />\n      </Dd>\n\n      <Dt>Filled</Dt>\n      <Dd>\n        <Search\n          items={[\"React\", \"Vue\", \"Angular\", \"Svelte\", \"Ember\"]}\n          value={[\"React\"]}\n        />\n      </Dd>\n\n      <Dt>Disabled</Dt>\n      <Dd>\n        <Search\n          items={[\"React\", \"Vue\", \"Angular\", \"Svelte\", \"Ember\"]}\n          disabled\n        />\n      </Dd>\n    </Dl>\n  );\n}\n",
+        "fileName": "StateSample.tsx",
+        "language": "tsx"
+      }
+    ],
+    "storybookUrls": [
+      {
+        "title": "サイズ",
+        "path": "/story/components-search--basic",
+        "variant": "basic"
+      },
+      {
+        "title": "状態",
+        "path": "/docs/components-search--docs",
+        "variant": "docs"
+      }
+    ],
+    "relatedComponents": []
+  },
+  {
+    "name": "Select",
+    "displayName": "セレクト",
+    "description": "複数の選択肢を格納し、ユーザーは1つの選択肢を選ぶコンポーネントです。選択肢ではなくアクションを表示する場合は、DropdownMenuを使用してください。",
+    "category": "Inputs",
+    "hasDocumentation": true,
+    "source": "mdx",
+    "lastUpdated": "2024-11-1",
+    "props": [
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the select is required"
+      },
+      {
+        "name": "invalidMessage",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "items",
+        "type": "selectItem[]",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "collection",
+        "type": "ListCollection<selectItem>",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "form",
+        "type": "string",
+        "required": false,
+        "description": "The associate form of the underlying select."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string[]",
+        "required": false,
+        "description": "The initial default value of the select when rendered.\nUse when you don't need to control the value of the select."
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "The unique identifier of the machine."
+      },
+      {
+        "name": "onSelect",
+        "type": "(details: SelectionDetails) => void",
+        "required": false,
+        "description": "Function called when an item is selected"
+      },
+      {
+        "name": "ids",
+        "type": "Partial<{ root: string; content: string; control: string; trigger: string; clearTrigger: string; label: string; hiddenSelect: string; positioner: string; item: (id: string | number) => string; itemGroup: (id: string | number) => string; itemGroupLabel: (id: string | number) => string; }>",
+        "required": false,
+        "description": "The ids of the elements in the select. Useful for composition."
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "The `name` attribute of the underlying select."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the select is disabled"
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the select is invalid"
+      },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the select is read-only"
+      },
+      {
+        "name": "closeOnSelect",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "true",
+        "description": "Whether the select should close after an item is selected"
+      },
+      {
+        "name": "onHighlightChange",
+        "type": "(details: HighlightChangeDetails<selectItem>) => void",
+        "required": false,
+        "description": "The callback fired when the highlighted item changes."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(details: ValueChangeDetails<selectItem>) => void",
+        "required": false,
+        "description": "The callback fired when the selected item changes."
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(details: OpenChangeDetails) => void",
+        "required": false,
+        "description": "Function called when the popup is opened"
+      },
+      {
+        "name": "positioning",
+        "type": "PositioningOptions",
+        "required": false,
+        "description": "The positioning options of the menu."
+      },
+      {
+        "name": "value",
+        "type": "string[]",
+        "required": false,
+        "description": "The controlled keys of the selected items"
+      },
+      {
+        "name": "highlightedValue",
+        "type": "string",
+        "required": false,
+        "description": "The controlled key of the highlighted item"
+      },
+      {
+        "name": "defaultHighlightedValue",
+        "type": "string",
+        "required": false,
+        "description": "The initial value of the highlighted item when opened.\nUse when you don't need to control the highlighted value of the select."
+      },
+      {
+        "name": "loopFocus",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "false",
+        "description": "Whether to loop the keyboard navigation through the options"
+      },
+      {
+        "name": "multiple",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether to allow multiple selection"
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the select menu is open"
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the select's open state is controlled by the user"
+      },
+      {
+        "name": "scrollToIndexFn",
+        "type": "(details: ScrollToIndexDetails) => void",
+        "required": false,
+        "description": "Function to scroll to a specific index"
+      },
+      {
+        "name": "composite",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "true",
+        "description": "Whether the select is a composed with other composite widgets like tabs or combobox"
+      },
+      {
+        "name": "deselectable",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the value can be cleared by clicking the selected item.\n\n**Note:** this is only applicable for single selection"
+      },
+      {
+        "name": "onPointerDownOutside",
+        "type": "(event: PointerDownOutsideEvent) => void",
+        "required": false,
+        "description": "Function called when the pointer is pressed down outside the component"
+      },
+      {
+        "name": "onFocusOutside",
+        "type": "(event: FocusOutsideEvent) => void",
+        "required": false,
+        "description": "Function called when the focus is moved outside the component"
+      },
+      {
+        "name": "onInteractOutside",
+        "type": "(event: InteractOutsideEvent) => void",
+        "required": false,
+        "description": "Function called when an interaction happens outside the component"
+      },
+      {
+        "name": "present",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the node is present (controlled by the user)"
+      },
+      {
+        "name": "onExitComplete",
+        "type": "VoidFunction",
+        "required": false,
+        "description": "Function called when the animation ends in the closed state"
+      },
+      {
+        "name": "immediate",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether to synchronize the present change immediately or defer it to the next frame"
+      },
+      {
+        "name": "skipAnimationOnMount",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "false",
+        "description": "Whether to allow the initial presence animation."
+      },
+      {
+        "name": "lazyMount",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "false",
+        "description": "Whether to enable lazy mounting"
+      },
+      {
+        "name": "unmountOnExit",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "false",
+        "description": "Whether to unmount on exit."
+      },
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "required": false,
+        "description": "Use the provided child element as the default rendered element, combining their props and behavior."
+      },
+      {
+        "name": "size",
+        "type": "enum",
+        "required": false,
+        "description": ""
+      }
+    ],
+    "examples": [
+      {
+        "title": "Size",
+        "description": "",
+        "code": "import { Select } from \"@serendie/ui\";\nimport { Dd, Dl, Dt } from \"src/components/LayoutUtils\";\n\nexport function SizeSample() {\n  return (\n    <Dl>\n      <Dt>Small</Dt>\n      <Dd>\n        <Select\n          size=\"small\"\n          label=\"ラベル\"\n          placeholder=\"選択してください\"\n          required\n          items={[\n            { label: \"React\", value: \"React\" },\n            { label: \"Vue\", value: \"Vue\" },\n            { label: \"Angular\", value: \"Angular\" },\n            { label: \"Svelte\", value: \"Svelte\" },\n            { label: \"Ember\", value: \"Ember\" },\n          ]}\n        />\n      </Dd>\n\n      <Dt>Medium</Dt>\n      <Dd>\n        <Select\n          size=\"medium\"\n          label=\"ラベル\"\n          placeholder=\"選択してください\"\n          required\n          items={[\n            { label: \"React\", value: \"React\" },\n            { label: \"Vue\", value: \"Vue\" },\n            { label: \"Angular\", value: \"Angular\" },\n            { label: \"Svelte\", value: \"Svelte\" },\n            { label: \"Ember\", value: \"Ember\" },\n          ]}\n        />\n      </Dd>\n    </Dl>\n  );\n}\n",
+        "fileName": "SizeSample.tsx",
+        "language": "tsx"
+      },
+      {
+        "title": "State",
+        "description": "",
+        "code": "import { Select } from \"@serendie/ui\";\nimport { Dd, Dl, Dt } from \"src/components/LayoutUtils\";\n\nexport function StateSample() {\n  return (\n    <Dl>\n      <Dt>Enabled</Dt>\n      <Dd>\n        <Select\n          label=\"ラベル\"\n          placeholder=\"選択してください\"\n          required\n          items={[\n            { label: \"React\", value: \"React\" },\n            { label: \"Vue\", value: \"Vue\" },\n            { label: \"Angular\", value: \"Angular\" },\n            { label: \"Svelte\", value: \"Svelte\" },\n            { label: \"Ember\", value: \"Ember\" },\n          ]}\n        />\n      </Dd>\n\n      <Dt>Error</Dt>\n      <Dd>\n        <Select\n          label=\"ラベル\"\n          placeholder=\"選択してください\"\n          required\n          invalid\n          invalidMessage=\"エラーメッセージ\"\n          items={[\n            { label: \"React\", value: \"React\" },\n            { label: \"Vue\", value: \"Vue\" },\n            { label: \"Angular\", value: \"Angular\" },\n            { label: \"Svelte\", value: \"Svelte\" },\n            { label: \"Ember\", value: \"Ember\" },\n          ]}\n        />\n      </Dd>\n\n      <Dt>Disabled</Dt>\n      <Dd>\n        <Select\n          label=\"ラベル\"\n          placeholder=\"選択してください\"\n          required\n          disabled\n          items={[\n            { label: \"React\", value: \"React\" },\n            { label: \"Vue\", value: \"Vue\" },\n            { label: \"Angular\", value: \"Angular\" },\n            { label: \"Svelte\", value: \"Svelte\" },\n            { label: \"Ember\", value: \"Ember\" },\n          ]}\n        />\n      </Dd>\n    </Dl>\n  );\n}\n",
+        "fileName": "StateSample.tsx",
+        "language": "tsx"
+      }
+    ],
+    "storybookUrls": [
+      {
+        "title": "サイズ",
+        "path": "/story/components-select--basic",
+        "variant": "basic"
+      },
+      {
+        "title": "状態",
+        "path": "/docs/components-select--docs",
+        "variant": "docs"
+      }
+    ],
+    "relatedComponents": []
+  },
+  {
+    "name": "Switch",
+    "displayName": "スイッチ",
+    "description": "オン/オフの2つの状態を切り替えるためのコンポーネントです。設定画面などでその状態を視覚的に伝えることができます。",
+    "category": "Inputs",
+    "hasDocumentation": true,
+    "source": "mdx",
+    "lastUpdated": "2024-11-1",
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "description": "Specifies the localized strings that identifies the accessibility elements and their states"
+      },
+      {
+        "name": "ids",
+        "type": "Partial<{ root: string; hiddenInput: string; control: string; label: string; thumb: string; }>",
+        "required": false,
+        "description": "The ids of the elements in the switch. Useful for composition."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the switch is disabled."
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false,
+        "description": "If `true`, the switch is marked as invalid."
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "required": false,
+        "description": "If `true`, the switch input is marked as required,"
+      },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the switch is read-only"
+      },
+      {
+        "name": "onCheckedChange",
+        "type": "(details: CheckedChangeDetails) => void",
+        "required": false,
+        "description": "Function to call when the switch is clicked."
+      },
+      {
+        "name": "checked",
+        "type": "boolean",
+        "required": false,
+        "description": "The controlled checked state of the switch"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "The name of the input field in a switch\n(Useful for form submission)."
+      },
+      {
+        "name": "value",
+        "type": "string | number",
+        "required": false,
+        "defaultValue": "\"on\"",
+        "description": "The value of switch input. Useful for form submission."
+      },
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "required": false,
+        "description": "Use the provided child element as the default rendered element, combining their props and behavior."
+      },
+      {
+        "name": "helperText",
+        "type": "string",
+        "required": false,
+        "description": ""
+      }
+    ],
+    "examples": [
+      {
+        "title": "State",
+        "description": "",
+        "code": "import { Switch } from \"@serendie/ui\";\nimport { Dd, Dl, Dt } from \"src/components/LayoutUtils\";\n\nexport function StateSample() {\n  return (\n    <Dl>\n      <Dt>Enabled</Dt>\n      <Dd>\n        <Switch label={\"スイッチラベル\"} />\n      </Dd>\n      <Dt>Checked</Dt>\n      <Dd>\n        <Switch checked={true} label={\"スイッチラベル\"} />\n      </Dd>\n      <Dt>Disabled</Dt>\n      <Dd>\n        <Switch checked={false} disabled label={\"スイッチラベル\"} />\n      </Dd>\n      <Dt>Selected - Disabled</Dt>\n      <Dd>\n        <Switch checked={true} disabled label={\"スイッチラベル\"} />\n      </Dd>\n      <Dt>Focused</Dt>\n      <Dd>\n        <Switch checked={false} data-focus label={\"スイッチラベル\"} />\n      </Dd>\n    </Dl>\n  );\n}\n",
+        "fileName": "StateSample.tsx",
+        "language": "tsx"
+      },
+      {
+        "title": "Type",
+        "description": "",
+        "code": "import { Switch } from \"@serendie/ui\";\nimport { useState } from \"react\";\n\nexport function TypeSample() {\n  const [checked, setChecked] = useState(false);\n  const handleClick = () => {\n    setChecked(!checked);\n  };\n\n  return (\n    <Switch\n      checked={checked}\n      onCheckedChange={handleClick}\n      label={\"スイッチラベル\"}\n    />\n  );\n}\n",
+        "fileName": "TypeSample.tsx",
+        "language": "tsx"
+      }
+    ],
+    "storybookUrls": [
+      {
+        "title": "サンプル",
+        "path": "/story/components-switch--default",
+        "variant": "default"
+      },
+      {
+        "title": "状態",
+        "path": "/docs/components-switch--docs",
+        "variant": "docs"
+      }
+    ],
+    "relatedComponents": []
+  },
+  {
+    "name": "Tabs",
+    "displayName": "タブ",
+    "description": "複数のビューを切り替えるためのコンポーネントです。TopAppBarやBottomNavigationはグローバルなナビゲーションとして使用しますが、Tabsはローカルなナビゲーションであることに注意してください。",
+    "category": "Layout",
+    "hasDocumentation": true,
+    "source": "mdx",
+    "lastUpdated": "2024-11-1",
+    "props": [
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "The unique identifier of the machine."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "required": false,
+        "description": "The initial selected tab value when rendered.\nUse when you don't need to control the selected tab value."
+      },
+      {
+        "name": "ids",
+        "type": "Partial<{ root: string; trigger: string; list: string; content: string; indicator: string; }>",
+        "required": false,
+        "description": "The ids of the elements in the tabs. Useful for composition."
+      },
+      {
+        "name": "translations",
+        "type": "IntlTranslations",
+        "required": false,
+        "description": "Specifies the localized strings that identifies the accessibility elements and their states"
+      },
+      {
+        "name": "loopFocus",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "true",
+        "description": "Whether the keyboard navigation will loop from last tab to first, and vice versa."
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "description": "The controlled selected tab value"
+      },
+      {
+        "name": "orientation",
+        "type": "enum",
+        "required": false,
+        "defaultValue": "\"horizontal\"",
+        "description": "The orientation of the tabs. Can be `horizontal` or `vertical`\n- `horizontal`: only left and right arrow key navigation will work.\n- `vertical`: only up and down arrow key navigation will work."
+      },
+      {
+        "name": "activationMode",
+        "type": "enum",
+        "required": false,
+        "defaultValue": "\"automatic\"",
+        "description": "The activation mode of the tabs. Can be `manual` or `automatic`\n- `manual`: Tabs are activated when clicked or press `enter` key.\n- `automatic`: Tabs are activated when receiving focus"
+      },
+      {
+        "name": "onValueChange",
+        "type": "(details: ValueChangeDetails) => void",
+        "required": false,
+        "description": "Callback to be called when the selected/active tab changes"
+      },
+      {
+        "name": "onFocusChange",
+        "type": "(details: FocusChangeDetails) => void",
+        "required": false,
+        "description": "Callback to be called when the focused tab changes"
+      },
+      {
+        "name": "composite",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the tab is composite"
+      },
+      {
+        "name": "deselectable",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the active tab can be deselected when clicking on it."
+      },
+      {
+        "name": "navigate",
+        "type": "(details: NavigateDetails) => void",
+        "required": false,
+        "description": "Function to navigate to the selected tab when clicking on it.\nUseful if tab triggers are anchor elements."
+      },
+      {
+        "name": "lazyMount",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "false",
+        "description": "Whether to enable lazy mounting"
+      },
+      {
+        "name": "unmountOnExit",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "false",
+        "description": "Whether to unmount on exit."
+      },
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "required": false,
+        "description": "Use the provided child element as the default rendered element, combining their props and behavior."
+      }
+    ],
+    "examples": [
+      {
+        "title": "State",
+        "description": "",
+        "code": "import { Dd, Dl, Dt } from \"@/components/LayoutUtils\";\nimport { Tabs, TabItem } from \"@serendie/ui\";\n\nexport function StateSample() {\n  return (\n    <Dl\n      style={{\n        gridTemplateColumns: \"80px auto auto\",\n      }}\n    >\n      <Dt></Dt>\n      <Dt\n        style={{\n          textAlign: \"center\",\n        }}\n      >\n        Default\n      </Dt>\n      <Dt\n        style={{\n          textAlign: \"center\",\n        }}\n      >\n        Selected\n      </Dt>\n\n      <Dt>Default</Dt>\n      <Dd>\n        <Tabs>\n          <TabItem title=\"連絡先\" value=\"1\" />\n        </Tabs>\n      </Dd>\n      <Dd>\n        <Tabs defaultValue=\"1\">\n          <TabItem title=\"連絡先\" value=\"1\" />\n        </Tabs>\n      </Dd>\n\n      <Dt>Focused</Dt>\n      <Dd>\n        <Tabs>\n          <TabItem title=\"連絡先\" value=\"1\" data-focus-visible={true} />\n        </Tabs>\n      </Dd>\n      <Dd>\n        <Tabs defaultValue=\"1\">\n          <TabItem title=\"連絡先\" value=\"1\" data-focus-visible={true} />\n        </Tabs>\n      </Dd>\n\n      <Dt>Disabled</Dt>\n      <Dd>\n        <Tabs>\n          <TabItem title=\"連絡先\" value=\"1\" disabled />\n        </Tabs>\n      </Dd>\n      <Dd>\n        <Tabs defaultValue=\"1\">\n          <TabItem title=\"連絡先\" value=\"1\" disabled />\n        </Tabs>\n      </Dd>\n    </Dl>\n  );\n}\n",
+        "fileName": "StateSample.tsx",
+        "language": "tsx"
+      },
+      {
+        "title": "Tabs Notification",
+        "description": "",
+        "code": "import { Dd, Dl, Dt } from \"@/components/LayoutUtils\";\nimport { TabItem, Tabs } from \"@serendie/ui\";\n\nexport function TabsNotificationSample() {\n  return (\n    <Dl>\n      <Dt>Default</Dt>\n      <Dd>\n        <Tabs defaultValue=\"1\">\n          <TabItem title=\"連絡先\" value=\"1\" />\n          <TabItem title=\"トーク\" value=\"2\" />\n          <TabItem title=\"売上履歴\" value=\"3\" />\n          <TabItem title=\"入出金\" value=\"4\" />\n        </Tabs>\n      </Dd>\n\n      <Dt>With Badge</Dt>\n      <Dd>\n        <Tabs defaultValue=\"1\">\n          <TabItem title=\"連絡先\" value=\"1\" dot />\n          <TabItem title=\"トーク\" value=\"2\" />\n          <TabItem title=\"売上履歴\" value=\"3\" />\n          <TabItem title=\"入出金\" value=\"4\" />\n        </Tabs>\n      </Dd>\n\n      <Dt>With Badge (Number)</Dt>\n      <Dd>\n        <Tabs defaultValue=\"1\">\n          <TabItem title=\"連絡先\" value=\"1\" badge={3} />\n          <TabItem title=\"トーク\" value=\"2\" />\n          <TabItem title=\"売上履歴\" value=\"3\" />\n          <TabItem title=\"入出金\" value=\"4\" />\n        </Tabs>\n      </Dd>\n    </Dl>\n  );\n}\n",
+        "fileName": "TabsNotificationSample.tsx",
+        "language": "tsx"
+      },
+      {
+        "title": "Tabs",
+        "description": "",
+        "code": "import { TabItem } from \"@serendie/ui\";\nimport { Tabs } from \"@serendie/ui\";\n\nexport function TabsSample() {\n  return (\n    <Tabs defaultValue=\"2\">\n      <TabItem title=\"連絡先\" value=\"1\" />\n      <TabItem title=\"トーク\" value=\"2\" />\n      <TabItem title=\"売上履歴\" value=\"3\" dot />\n      <TabItem title=\"入出金\" value=\"4\" badge={3} disabled />\n    </Tabs>\n  );\n}\n",
+        "fileName": "TabsSample.tsx",
+        "language": "tsx"
+      }
+    ],
+    "storybookUrls": [
+      {
+        "title": "サンプル",
+        "path": "/story/components-tabs--default",
+        "variant": "default"
+      },
+      {
+        "title": "バリエーション",
+        "path": "/docs/components-tabs--docs",
+        "variant": "docs"
+      },
+      {
+        "title": "状態",
+        "path": "/docs/components-tabs--docs",
+        "variant": "docs"
+      }
+    ],
+    "relatedComponents": [
+      "TabItem"
+    ]
+  },
+  {
+    "name": "TabItem",
+    "displayName": "TabItem",
+    "description": "",
+    "category": "Layout",
+    "hasDocumentation": false,
+    "source": "auto-detected",
+    "lastUpdated": "2025-10-28",
+    "props": [],
+    "examples": [],
+    "storybookUrls": [],
+    "relatedComponents": [
+      "Tabs"
+    ]
+  },
+  {
+    "name": "TextArea",
+    "displayName": "テキストエリア",
+    "description": "複数行のテキストを入力するためのコンポーネントです。Buttonなどと合わせてフォームを構成します。",
+    "category": "Inputs",
+    "hasDocumentation": true,
+    "source": "mdx",
+    "lastUpdated": "2024-11-1",
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "invalidMessage",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "autoAdjustHeight",
+        "type": "boolean",
+        "required": false,
+        "description": ""
+      }
+    ],
+    "examples": [],
+    "storybookUrls": [
+      {
+        "title": "状態",
+        "path": "/story/components-textarea--basic",
+        "variant": "basic"
+      },
+      {
+        "title": "高さの自動調整",
+        "path": "/story/components-textarea--auto-adjust-height"
+      }
+    ],
+    "relatedComponents": []
+  },
+  {
+    "name": "TextField",
+    "displayName": "テキストフィールド",
+    "description": "1行のテキストを入力するためのコンポーネントです。Buttonなどと合わせてフォームを構成します。複数行にはTextAreaを使用してください。",
+    "category": "Inputs",
+    "hasDocumentation": true,
+    "source": "mdx",
+    "lastUpdated": "2025-03-21",
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "invalidMessage",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "leftContent",
+        "type": "ReactNode",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "rightContent",
+        "type": "ReactNode",
+        "required": false,
+        "description": ""
+      }
+    ],
+    "examples": [],
+    "storybookUrls": [
+      {
+        "title": "状態",
+        "path": "/story/components-textfield--basic",
+        "variant": "basic"
+      },
+      {
+        "title": "Password Field",
+        "path": "/story/components-passwordfield--basic",
+        "variant": "basic"
+      }
+    ],
+    "relatedComponents": []
+  },
+  {
+    "name": "Toast",
+    "displayName": "トースト",
+    "description": "画面上に一時的に表示される短い通知メッセージです。アクションの結果やエラーメッセージなどをユーザーに伝えるために使用します。",
+    "category": "Feedback",
+    "hasDocumentation": true,
+    "source": "mdx",
+    "lastUpdated": "2024-11-1",
+    "props": [
+      {
+        "name": "toaster",
+        "type": "ToastStore<any>",
+        "required": true,
+        "description": ""
+      }
+    ],
+    "examples": [
+      {
+        "title": "Toast",
+        "description": "",
+        "code": "import { Button, Toast, toaster } from \"@serendie/ui\";\nimport { Dd, Dl, Dt } from \"src/components/LayoutUtils\";\n\nexport function ToastSample() {\n  return (\n    <Dl>\n      <Dt>Default</Dt>\n      <Dd>\n        <Button\n          styleType=\"outlined\"\n          onClick={() =>\n            toaster.create({\n              title: \"お知らせメッセージ\",\n              duration: 1500,\n            })\n          }\n        >\n          Show Toast\n        </Button>\n        <Toast toaster={toaster} />\n      </Dd>\n      <Dt>Success</Dt>\n      <Dd>\n        <Button\n          styleType=\"outlined\"\n          onClick={() =>\n            toaster.create({\n              type: \"success\",\n              title: \"成功しました\",\n              duration: 1500,\n            })\n          }\n        >\n          Show Toast\n        </Button>\n        <Toast toaster={toaster} />\n      </Dd>\n      <Dt>Error</Dt>\n      <Dd>\n        <Button\n          styleType=\"outlined\"\n          onClick={() =>\n            toaster.create({\n              type: \"error\",\n              title: \"エラーがあります\",\n              duration: 1500,\n            })\n          }\n        >\n          Show Toast\n        </Button>\n        <Toast toaster={toaster} />\n      </Dd>\n    </Dl>\n  );\n}\n",
+        "fileName": "ToastSample.tsx",
+        "language": "tsx"
+      }
+    ],
+    "storybookUrls": [
+      {
+        "title": "バリエーション",
+        "path": "/story/components-toast--default",
+        "variant": "default"
+      }
+    ],
+    "relatedComponents": []
+  },
+  {
+    "name": "Tooltip",
+    "displayName": "ツールチップ",
+    "description": "ホバーやフォーカス時に追加情報を表示する小さなポップアップです。要素の説明や補足情報を提供するために使用します。",
+    "category": "Display",
+    "hasDocumentation": true,
+    "source": "mdx",
+    "lastUpdated": "2025-07-28",
+    "props": [
+      {
+        "name": "content",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "placement",
+        "type": "enum",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "openDelay",
+        "type": "number",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "closeDelay",
+        "type": "number",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "description": ""
+      }
+    ],
+    "examples": [
+      {
+        "title": "Basic",
+        "description": "",
+        "code": "import { Tooltip, Button, IconButton } from \"@serendie/ui\";\nimport { SerendieSymbol } from \"@serendie/symbols\";\nimport { HBox } from \"src/components/LayoutUtils\";\nimport { styled } from \"styled-system/jsx\";\n\nconst Span = styled(\"span\", {\n  base: {\n    width: \"fit-content\",\n  },\n});\n\nexport function BasicSample() {\n  return (\n    <HBox alignItems=\"center\">\n      <Tooltip content=\"削除ボタンです。この操作は取り消せません。\">\n        <Span>\n          <Button>削除</Button>\n        </Span>\n      </Tooltip>\n\n      <Tooltip content=\"編集ボタンです\">\n        <Span>\n          <Button styleType=\"outlined\">編集</Button>\n        </Span>\n      </Tooltip>\n\n      <Tooltip content=\"詳細情報を表示します\">\n        <Span>\n          <IconButton\n            icon={<SerendieSymbol name=\"information\" />}\n            styleType=\"ghost\"\n            size=\"small\"\n            shape=\"circle\"\n          />\n        </Span>\n      </Tooltip>\n    </HBox>\n  );\n}\n",
+        "fileName": "BasicSample.tsx",
+        "language": "tsx"
+      },
+      {
+        "title": "Placement",
+        "description": "",
+        "code": "import { Tooltip, Button } from \"@serendie/ui\";\nimport { styled } from \"../../../styled-system/jsx\";\n\nconst Grid = styled(\"div\", {\n  base: {\n    display: \"grid\",\n    gridTemplateColumns: \"repeat(3, 1fr)\",\n    gridTemplateRows: \"repeat(3, 1fr)\",\n    gap: \"6\",\n    maxWidth: \"400px\",\n    margin: \"0 auto\",\n    padding: \"8\",\n  },\n});\n\nconst GridItem = styled(\"div\", {\n  base: {\n    display: \"flex\",\n    justifyContent: \"center\",\n    alignItems: \"center\",\n  },\n});\n\nconst Span = styled(\"span\", {\n  base: {\n    width: \"fit-content\",\n  },\n});\n\nexport function PlacementSample() {\n  return (\n    <Grid>\n      <GridItem style={{ gridColumn: \"2\" }}>\n        <Tooltip content=\"上\" placement=\"top\">\n          <Span>\n            <Button size=\"small\" styleType=\"ghost\">\n              Top\n            </Button>\n          </Span>\n        </Tooltip>\n      </GridItem>\n\n      <GridItem style={{ gridColumn: \"1\", gridRow: \"2\" }}>\n        <Tooltip content=\"左\" placement=\"left\">\n          <Span>\n            <Button size=\"small\" styleType=\"ghost\">\n              Left\n            </Button>\n          </Span>\n        </Tooltip>\n      </GridItem>\n\n      <GridItem style={{ gridColumn: \"2\", gridRow: \"2\" }} />\n\n      <GridItem style={{ gridColumn: \"3\", gridRow: \"2\" }}>\n        <Tooltip content=\"右\" placement=\"right\">\n          <Span>\n            <Button size=\"small\" styleType=\"ghost\">\n              Right\n            </Button>\n          </Span>\n        </Tooltip>\n      </GridItem>\n\n      <GridItem style={{ gridColumn: \"2\", gridRow: \"3\" }}>\n        <Tooltip content=\"下\" placement=\"bottom\">\n          <Span>\n            <Button size=\"small\" styleType=\"ghost\">\n              Bottom\n            </Button>\n          </Span>\n        </Tooltip>\n      </GridItem>\n    </Grid>\n  );\n}\n",
+        "fileName": "PlacementSample.tsx",
+        "language": "tsx"
+      },
+      {
+        "title": "State",
+        "description": "",
+        "code": "import { Tooltip, Button } from \"@serendie/ui\";\nimport { styled } from \"../../../styled-system/jsx\";\n\nconst Span = styled(\"span\", {\n  base: {\n    width: \"fit-content\",\n  },\n});\n\nconst Label = styled(\"span\", {\n  base: {\n    fontSize: \"sm\",\n    minWidth: \"80px\",\n    textAlign: \"right\",\n  },\n});\n\nconst Grid = styled(\"div\", {\n  base: {\n    display: \"grid\",\n    gridTemplateColumns: \"repeat(2, auto)\",\n    width: \"fit-content\",\n    margin: \"0 auto\",\n    rowGap: \"sd.system.dimension.spacing.medium\",\n    columnGap: \"sd.system.dimension.spacing.large\",\n    pr: \"sd.system.dimension.spacing.medium\",\n  },\n});\n\nconst GridItemContainer = styled(\"div\", {\n  base: {\n    display: \"grid\",\n    gridTemplateColumns: \"subgrid\",\n    gridColumn: \"span 2\",\n    alignItems: \"center\",\n  },\n});\n\nexport function StateSample() {\n  return (\n    <Grid>\n      <GridItemContainer>\n        <Label>プロパティなし:</Label>\n        <Tooltip content=\"これは有効なツールチップです\">\n          <Span>\n            <Button>enabledの場合</Button>\n          </Span>\n        </Tooltip>\n      </GridItemContainer>\n\n      <GridItemContainer>\n        <Label>disabled:</Label>\n        <Tooltip content=\"このツールチップは表示されません\" disabled>\n          <Span>\n            <Button>disabledの場合</Button>\n          </Span>\n        </Tooltip>\n      </GridItemContainer>\n    </Grid>\n  );\n}\n",
+        "fileName": "StateSample.tsx",
+        "language": "tsx"
+      }
+    ],
+    "storybookUrls": [
+      {
+        "title": "基本的な使い方",
+        "path": "/story/components-tooltip--default",
+        "variant": "default"
+      },
+      {
+        "title": "配置",
+        "path": "/story/components-tooltip--positions",
+        "variant": "positions"
+      },
+      {
+        "title": "状態",
+        "path": "/story/components-tooltip--disabled",
+        "variant": "disabled"
+      }
+    ],
+    "relatedComponents": []
+  },
+  {
+    "name": "TopAppBar",
+    "displayName": "トップアップバー",
+    "description": "画面上部に配置するモバイルやタブレット向けのグローバルなナビゲーションです。",
+    "category": "Layout",
+    "hasDocumentation": true,
+    "source": "mdx",
+    "lastUpdated": "2024-11-1",
+    "props": [
+      {
+        "name": "headingIconButton",
+        "type": "ReactElement<any, string | JSXElementConstructor<any>>",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "trailingIconButtons",
+        "type": "ReactElement<any, string | JSXElementConstructor<any>>",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "badge",
+        "type": "number",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "type",
+        "type": "enum",
+        "required": true,
+        "description": ""
+      }
+    ],
+    "examples": [],
+    "storybookUrls": [
+      {
+        "title": "バリエーション",
+        "path": "/story/components-topappbar--all",
+        "variant": "all"
+      }
+    ],
+    "relatedComponents": []
+  }
+]

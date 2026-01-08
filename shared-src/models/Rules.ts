@@ -131,10 +131,13 @@ export type IssueDetail = {
   suggestion: string
 }
 
+export type IssueSource = 'design-token' | 'component'
+
 export type Issue = {
   nodeId: string
   nodeName: string
   nodeType: string
+  source?: IssueSource
 } & IssueDetail
 
 export function serializeIssues(issue: Issue): string {

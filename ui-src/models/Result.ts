@@ -7,6 +7,7 @@ export type Result = {
   issues: Issue[]
   totalNodes: number
   structure: NodeStructure
+  totalComponents?: number
 }
 
 export function serializeResult(result: Result): string {
