@@ -8,21 +8,23 @@ const { sd } = tokens
 
 export default function IssuesList({
   issues,
-  totalNodes,
+  totalItems,
+  title,
 }: {
   issues: Issue[]
-  totalNodes: number
+  totalItems: number
+  title?: string
 }) {
   return (
     <div>
-      <IssueHeader issues={issues} totalNodes={totalNodes} />
+      <IssueHeader issues={issues} totalItems={totalItems} />
       {issues.length > 0 && (
         <div
           style={{
             border: `1px solid ${sd.system.color.component.outline}`,
             borderRadius: sd.system.dimension.radius.medium,
             backgroundColor: sd.system.color.component.surface,
-            maxHeight: 400,
+            maxHeight: 200,
             overflowY: 'scroll',
           }}
         >

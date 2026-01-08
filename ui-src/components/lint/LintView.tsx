@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
-import { Button } from '@serendie/ui'
+import { Button, ProgressIndicator } from '@serendie/ui'
 import tokens from '@serendie/design-token'
 import IssuesList from './IssuesList'
 import SelectionCard from './SelectionCard'
@@ -16,6 +16,7 @@ import {
 } from '../../../shared-src/models/PluginMessage'
 import { useApiKey } from '../../hooks/useApiKey'
 import { useComponentValidation } from '../../validations/useComponentValidation'
+import IssueTitle from './IssueTitle'
 
 const { sd } = tokens
 
@@ -37,7 +38,11 @@ export default function LintView({ isActive }: LintViewProps) {
   const pendingLintResultsRef = useRef<LintResult[] | null>(null)
 
   const { apiKey } = useApiKey()
-  const { validate: validateComponents } = useComponentValidation({ apiKey })
+  const {
+    state: componentValidationState,
+    validate: validateComponents,
+    cancel: cancelComponentValidation,
+  } = useComponentValidation({ apiKey })
 
   const allImagesLoaded =
     selections.length > 0 &&
@@ -69,12 +74,14 @@ export default function LintView({ isActive }: LintViewProps) {
         })
       }
       if (message.type === 'lint-result' && message.source === 'lint-view') {
-        // デザイントークン検証完了、コンポーネント検証を開始
+        // デザイントークン検証完了、まず結果を表示
+        setIsLoading(false)
+        setResults(message.results)
+        setPhase('results')
+
+        // APIキーがあればコンポーネント検証を裏で実行
         if (apiKey) {
           pendingLintResultsRef.current = message.results
-          setPhase('validating-components')
-
-          // 各結果に対してコンポーネント検証を実行
           const runComponentValidation = async () => {
             const updatedResults: Result[] = []
             for (const result of message.results) {
@@ -86,18 +93,13 @@ export default function LintView({ isActive }: LintViewProps) {
               updatedResults.push({
                 ...result,
                 issues: [...result.issues, ...(componentResult?.issues || [])],
+                totalComponents: componentResult?.candidates.length ?? 0,
               })
             }
+            // コンポーネント検証完了後に結果を更新
             setResults(updatedResults)
-            setIsLoading(false)
-            setPhase('results')
           }
           runComponentValidation()
-        } else {
-          // APIキーがない場合はデザイントークン検証のみ
-          setIsLoading(false)
-          setResults(message.results)
-          setPhase('results')
         }
       }
     },
@@ -120,10 +122,11 @@ export default function LintView({ isActive }: LintViewProps) {
   }, [selections])
 
   const handleReselect = useCallback(() => {
+    cancelComponentValidation()
     setPhase('selecting')
     setResults([])
     postPluginMessage({ type: 'request-selection' })
-  }, [])
+  }, [cancelComponentValidation])
 
   const handleImageLoadComplete = useCallback((nodeId: string) => {
     setLoadedImages(prev => ({ ...prev, [nodeId]: true }))
@@ -174,7 +177,7 @@ export default function LintView({ isActive }: LintViewProps) {
         style={{
           flex: 1,
           overflow: 'auto',
-          padding: `${sd.system.dimension.spacing.twoExtraLarge} ${sd.system.dimension.spacing.extraLarge}`,
+          padding: `${sd.system.dimension.spacing.twoExtraLarge} ${sd.system.dimension.spacing.large}`,
           paddingTop:
             phase !== 'selecting'
               ? '4rem'
@@ -193,7 +196,7 @@ export default function LintView({ isActive }: LintViewProps) {
               style={{
                 display: 'flex',
                 flexDirection: 'column',
-                gap: sd.system.dimension.spacing.medium,
+                gap: sd.system.dimension.spacing.large,
               }}
             >
               <SelectionCard
@@ -202,10 +205,51 @@ export default function LintView({ isActive }: LintViewProps) {
                 isActive={isActive}
               />
               {phase === 'results' && result && (
-                <IssuesList
-                  issues={result.issues}
-                  totalNodes={result.totalNodes}
-                />
+                <>
+                  {apiKey && (
+                    <div>
+                      <IssueTitle title='コンポーネント' />
+                      {componentValidationState === 'analyzing' ? (
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: sd.system.dimension.spacing.small,
+                            padding: sd.system.dimension.spacing.small,
+                            backgroundColor: sd.system.color.component.surface,
+                            borderRadius: sd.system.dimension.radius.medium,
+                          }}
+                        >
+                          <ProgressIndicator size='small' />
+                          <span
+                            style={{
+                              ...sd.system.typography.body.small_expanded,
+                              color: sd.system.color.component.onSurfaceVariant,
+                            }}
+                          >
+                            AIで検証中...
+                          </span>
+                        </div>
+                      ) : (
+                        <IssuesList
+                          issues={result.issues.filter(
+                            issue => issue.source === 'component'
+                          )}
+                          totalItems={result.totalComponents ?? 0}
+                        />
+                      )}
+                    </div>
+                  )}
+                  <div>
+                    <IssueTitle title='デザイントークン' />
+                    <IssuesList
+                      issues={result.issues.filter(
+                        issue => issue.source !== 'component'
+                      )}
+                      totalItems={result.totalNodes}
+                    />
+                  </div>
+                </>
               )}
             </div>
           )
