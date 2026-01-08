@@ -6,11 +6,13 @@ const { sd } = tokens
 export default function ChatMessage({
   role,
   content,
-  image,
+  images,
+  imageLabels,
 }: {
   role: 'user' | 'assistant'
   content: string
-  image?: string
+  images?: string[]
+  imageLabels?: string[]
 }) {
   return (
     <div
@@ -18,7 +20,6 @@ export default function ChatMessage({
         marginBottom: sd.system.dimension.spacing.large,
         marginRight: role === 'user' ? 0 : 'auto',
         marginLeft: role === 'user' ? 'auto' : 0,
-        width: 'fit-content',
         maxWidth: role === 'user' ? '80%' : '100%',
         display: 'flex',
         flexDirection: 'column',
@@ -26,16 +27,45 @@ export default function ChatMessage({
         alignItems: role === 'user' ? 'flex-end' : 'flex-start',
       }}
     >
-      {image && (
-        <img
-          src={image}
-          alt='添付画像'
-          style={{
-            backgroundColor: sd.system.color.component.surface,
-            maxHeight: '40vh',
-          }}
-        />
-      )}
+      {images &&
+        images.map((image, index) => (
+          <div
+            key={index}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-end',
+              maxWidth: '100%',
+              overflow: 'hidden',
+            }}
+          >
+            <img
+              src={image}
+              alt={imageLabels?.[index] || '添付画像'}
+              style={{
+                backgroundColor: sd.system.color.component.surface,
+                maxHeight: '40vh',
+                maxWidth: '100%',
+                objectFit: 'contain',
+              }}
+            />
+            {imageLabels?.[index] && (
+              <p
+                style={{
+                  ...sd.system.typography.label.small_expanded,
+                  color: sd.system.color.component.onSurfaceVariant,
+                  marginTop: sd.system.dimension.spacing.twoExtraSmall,
+                  maxWidth: '100%',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {imageLabels[index]}
+              </p>
+            )}
+          </div>
+        ))}
       {content && (
         <div
           style={{

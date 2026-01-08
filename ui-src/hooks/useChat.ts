@@ -1,59 +1,64 @@
 import { createOpenAI } from '@ai-sdk/openai'
 import { ModelMessage, streamText, stepCountIs, Tool } from 'ai'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { Result } from '../models/Result'
+import { useCallback, useRef, useState } from 'react'
+import { getImageMetaKey, ImageMetas } from '../utils/getImageMetaKey'
+import { SelectionImageItem } from './useSelectionImages'
 
-const systemPrompt = `あなたはSerendie Design Systemについてよく知るAIアシスタントです。
-これからデザインを進めているSerendie UIの画面と、Serendie Design Systemのガイドラインと不一致な部分を共有します。
-これらの情報をもとにデザイナーにアドバイスしてください。
-また、共有された情報以外に、画像から明らかに課題だと読み取れるものがある場合は、それについてもアドバイスしてください。
+const systemPrompt = `あなたはSerendie Design System（以後、SDS）についてよく知るAIアシスタントです。
+デザイナーからの質問に対して、適切なツールを使って情報を収集し、具体的で実践的なアドバイスを提供してください。
 
-# 利用可能なツールと使い分け
-用途に応じて適切なツールを選択してください。
+# 利用可能なツール（複数同時に使うことも可）
 
-## 既存のSDS要素について質問された場合 → Serendie MCP + Serendie Design Docs Search API
-- 既にSerendie Design Systemに定義されているコンポーネントやトークンについての質問
-- 補足情報としてSerendie Design Docs Search APIも利用する
-- 例：「Buttonコンポーネントの使い方は？」「このトークンの値は？」「SDSのガイドラインは？」
+## チャットの冒頭（重要）
+- **get-serendie-ui-overview**：**必ず**会話の冒頭でSDSの概要を取得してください
 
-## 新規のSDS要素の設計について質問された場合 → Serendie Design Docs Search API
-- まだSerendieに存在しない要素を新しく設計する際の参考情報
+## 選択中の要素のデザインまたはバリアントについて質問された場合 → 検証ツール + Serendie MCP
+- **run-linter**: 選択中の要素がSDSのガイドラインに沿っているかの検証を行えます
+  - 例：「このボタンの色は正しい？」「デザイントークンは適切に使われている？」「バリアントの名前は適切ですか？」
+- 検証はガイドラインの一部のみで完璧なものではないため、必ず他のツールと合わせて使用してください
+- 選択中の要素の構成やデザイン（色・サイズなど）の把握も同時に行えます
+
+## 選択中の要素が、SDSにない新規のコンポーネントまたはトークンを含む場合 → Serendie Design Docs Search API
 - **search-component-docs**: 新規コンポーネントの命名・設計パターンの参考（ARK UI, Component Gallery）
-  - 例：「新しいコンポーネントの命名は？」「他のDSではこのパターンをどう実装している？」
+  - 例：「新しいコンポーネントの命名は？」「他のDSではこのパターンをどう実装している？」「バリアントの過不足を知りたいです」
 - **search-design-token-docs**: 新規トークンの設計思想の参考（Material Design 3）
   - 例：「新しいトークンをどう設計すべき？」「この要素にはどのトークンを使用するべき？」
 
-# 重要事項
-- チャットの冒頭で、Serendie MCPの**get-serendie-ui-overview**をまず呼んでください
-- エンジニア向けの情報は提供しないでください
-- アドバイスは必ずツールから取得した情報に基づいてください
+## 選択中の要素が、SDSで定義されたコンポーネントまたはトークンを含む場合 → Serendie MCP + Serendie Design Docs Search API
+- **search-serendie-guideline**: SDSの設計思想や設計パターンの参考
+  - 例：「Buttonコンポーネントの使い方は？」「このトークンの値は？」「SDSのガイドラインではどのような指定がある？」
+- もしガイドラインが見つからない場合は、SDSにない新規要素としてSerendie Design Docs Search APIを利用してください
+- もしガイドラインが見つかった場合も、補足情報としてSerendie Design Docs Search APIを同時に利用してください
 
-# 特定の質問への回答方法
-- 既存のトークンについて聞かれた場合：
-  Serendie MCPで適切なシステムトークンを探し、見つからない場合はリファレンストークンを提案してください。
-  また、トークンの選び方はsearch-design-token-docsを参照して確認してください。
-- 既存のコンポーネントについて聞かれた場合：
-  Serendie MCPでコンポーネントの仕様やガイドラインを確認してください。
-- 新規コンポーネントの設計について聞かれた場合：
-  search-component-docsでSerendie UIが継承しているArk UIの事例や、他のデザインシステムの事例を参照してください。
-- 新規トークンの設計について聞かれた場合：
-  search-design-token-docsでSerendie UIが継承しているMaterial Design 3のデザイントークンの設計思想を参照してください。`
+# 重要事項
+- もし情報ソースがある場合は、参考リンクを必ず提供してください
+- 逆に情報ソースがない場合は、参考リンクなしでよいので、絶対に捏造しないでください
+- アドバイスは必ずツールから取得した情報に基づいてください
+- エンジニア向けの情報は提供しないでください`
 
 export function useChat({
   apiKey,
   tools,
-  result,
 }: {
   apiKey: string
   tools: Record<string, Tool> | undefined
-  result: Result | null
 }) {
   const [message, setMessage] = useState('')
   const [chatHistory, setChatHistory] = useState<ModelMessage[]>([])
+  const [imageMetas, setImageMetas] = useState<ImageMetas>({})
   const abortControllerRef = useRef<AbortController | null>(null)
 
+  const clearChat = useCallback(() => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+    }
+    setChatHistory([])
+    setImageMetas({})
+    setMessage('')
+  }, [])
+
   const request = useCallback(
-    async (customMessage?: string) => {
+    async (customMessage?: string, imageItems?: SelectionImageItem[]) => {
       try {
         if (abortControllerRef.current) {
           abortControllerRef.current.abort()
@@ -64,10 +69,42 @@ export function useChat({
 
         const messageToSend = customMessage ?? message
         setMessage('')
+
+        const userContent =
+          imageItems && imageItems.length > 0
+            ? [
+                ...imageItems.map(item => ({
+                  type: 'image' as const,
+                  image: item.image,
+                })),
+                { type: 'text' as const, text: messageToSend },
+              ]
+            : messageToSend
+
+        // システムプロンプトにノード情報を追加
+        let systemPromptWithContext = systemPrompt
+        if (imageItems && imageItems.length > 0) {
+          const nodeInfo = imageItems
+            .map(item => `- ${item.label} (ID: ${item.nodeId})`)
+            .join('\n')
+          systemPromptWithContext = `${systemPrompt}\n\n# 現在選択中のノード\n${nodeInfo}`
+        }
+
+        const nextMessageIndex = chatHistory.length
         setChatHistory(prev => [
           ...prev,
-          { role: 'user', content: messageToSend },
+          { role: 'user', content: userContent },
         ])
+
+        if (imageItems && imageItems.length > 0) {
+          setImageMetas(prev => {
+            const newMetas = { ...prev }
+            imageItems.forEach((item, imageIndex) => {
+              newMetas[getImageMetaKey(nextMessageIndex, imageIndex)] = item
+            })
+            return newMetas
+          })
+        }
         const openai = createOpenAI({ apiKey })
         const streamResult = streamText({
           model: openai('gpt-4.1'),
@@ -77,10 +114,10 @@ export function useChat({
           messages: [
             {
               role: 'system' as const,
-              content: systemPrompt,
+              content: systemPromptWithContext,
             },
-            ...chatHistory.filter(({ role }) => role !== 'tool'),
-            { role: 'user' as const, content: messageToSend },
+            ...chatHistory,
+            { role: 'user' as const, content: userContent },
           ],
         })
         let assistantMessage = ''
@@ -91,7 +128,27 @@ export function useChat({
               const newHistory = [...prev]
               const lastMessage = newHistory[newHistory.length - 1]
               if (lastMessage && lastMessage.role === 'assistant') {
-                lastMessage.content = assistantMessage
+                if (Array.isArray(lastMessage.content)) {
+                  // 配列形式の場合は、text部分だけを更新
+                  const textPartIndex = lastMessage.content.findIndex(
+                    p => p.type === 'text'
+                  )
+                  if (textPartIndex !== -1) {
+                    lastMessage.content[textPartIndex] = {
+                      type: 'text' as const,
+                      text: assistantMessage,
+                    }
+                  } else {
+                    // text部分がない場合は先頭に追加
+                    lastMessage.content.unshift({
+                      type: 'text' as const,
+                      text: assistantMessage,
+                    })
+                  }
+                } else {
+                  // 文字列形式の場合はそのまま更新
+                  lastMessage.content = assistantMessage
+                }
               } else {
                 newHistory.push({
                   role: 'assistant',
@@ -102,6 +159,37 @@ export function useChat({
             })
           } else if (part.type === 'tool-call') {
             console.log(part.toolName, part.input)
+            setChatHistory(prev => {
+              const newHistory = [...prev]
+              const lastMessage = newHistory[newHistory.length - 1]
+              if (lastMessage && lastMessage.role === 'assistant') {
+                const content = Array.isArray(lastMessage.content)
+                  ? lastMessage.content
+                  : [{ type: 'text' as const, text: lastMessage.content }]
+                lastMessage.content = [
+                  ...content,
+                  {
+                    type: 'tool-call' as const,
+                    toolCallId: part.toolCallId,
+                    toolName: part.toolName,
+                    input: part.input,
+                  },
+                ]
+              } else {
+                newHistory.push({
+                  role: 'assistant',
+                  content: [
+                    {
+                      type: 'tool-call' as const,
+                      toolCallId: part.toolCallId,
+                      toolName: part.toolName,
+                      input: part.input,
+                    },
+                  ],
+                })
+              }
+              return newHistory
+            })
           } else if (part.type === 'tool-result') {
             console.log(part.toolName, part.output)
             setChatHistory(prev => [
@@ -113,7 +201,10 @@ export function useChat({
                     type: 'tool-result' as const,
                     toolCallId: part.toolCallId,
                     toolName: part.toolName,
-                    output: part.output,
+                    output:
+                      typeof part.output === 'string'
+                        ? { type: 'text' as const, value: part.output }
+                        : { type: 'json' as const, value: part.output },
                   },
                 ],
               },
@@ -133,14 +224,13 @@ export function useChat({
     [apiKey, message, chatHistory, tools]
   )
 
-  useEffect(() => {
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort()
-      abortControllerRef.current = null
-    }
-    setMessage('')
-    setChatHistory([])
-  }, [result])
-
-  return { message, setMessage, chatHistory, setChatHistory, request }
+  return {
+    message,
+    setMessage,
+    chatHistory,
+    setChatHistory,
+    imageMetas,
+    clearChat,
+    request,
+  }
 }
