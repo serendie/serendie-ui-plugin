@@ -97,7 +97,10 @@ export default function LintView({ isActive }: LintViewProps) {
               updatedResults.push({
                 ...result,
                 issues: [...result.issues, ...(componentResult?.issues || [])],
-                totalComponents: componentResult?.candidates.length ?? 0,
+                totalComponents:
+                  componentResult?.candidates.filter(
+                    c => c.suggestedComponent !== null
+                  ).length ?? 0,
               })
             }
             // コンポーネント検証完了後に結果を更新
