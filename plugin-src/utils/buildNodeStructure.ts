@@ -1,4 +1,7 @@
-import { NodeStructure } from '../../shared-src/models/PluginMessage'
+import {
+  NodeStructure,
+  ComponentProperty,
+} from '../../shared-src/models/PluginMessage'
 import extractVariableKey from './extractVariableKey'
 import getVariableMap from './getVariableMap'
 
@@ -62,6 +65,40 @@ async function buildNodeStructureRecursive(
     return undefined
   }
 
+  const extractInstanceInfo = async (
+    node: SceneNode
+  ): Promise<{
+    componentName?: string
+    componentProperties?: ComponentProperty[]
+  }> => {
+    if (node.type !== 'INSTANCE') return {}
+
+    const mainComponent = await node.getMainComponentAsync()
+    // バリアントコンポーネントの場合、親のコンポーネントセット名を使用
+    const componentName =
+      mainComponent?.parent?.type === 'COMPONENT_SET'
+        ? mainComponent.parent.name
+        : mainComponent?.name
+
+    const componentProperties: ComponentProperty[] = []
+    const props = node.componentProperties
+    if (props) {
+      for (const [name, prop] of Object.entries(props)) {
+        componentProperties.push({
+          name,
+          type: prop.type,
+          value: prop.value,
+        })
+      }
+    }
+
+    return {
+      componentName,
+      componentProperties:
+        componentProperties.length > 0 ? componentProperties : undefined,
+    }
+  }
+
   const children: NodeStructure[] = []
   if ('children' in node && node.visible) {
     for (const child of node.children) {
@@ -77,6 +114,8 @@ async function buildNodeStructureRecursive(
     }
   }
 
+  const instanceInfo = await extractInstanceInfo(node)
+
   return {
     nodeId: node.id,
     nodeName: node.name,
@@ -87,6 +126,7 @@ async function buildNodeStructureRecursive(
     height: 'height' in node ? Math.round(node.height) : 0,
     children,
     textStyle: await extractTextStyle(node),
+    ...instanceInfo,
   }
 }
 
