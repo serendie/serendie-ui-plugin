@@ -31,16 +31,6 @@ function flattenNodes(node: NodeStructure): Map<string, NodeStructure> {
   return map
 }
 
-// SDSコンポーネントかどうかを判定
-function isSDSComponent(componentName: string | undefined): boolean {
-  if (!componentName) return false
-  // コンポーネント名がSDSリストに含まれているか確認
-  return SDS_COMPONENT_NAMES.some(
-    sdsName =>
-      componentName === sdsName || componentName.startsWith(`${sdsName}/`)
-  )
-}
-
 export function useComponentValidation({ apiKey }: { apiKey: string }) {
   const [state, setState] = useState<ValidationState>('idle')
   const [result, setResult] = useState<ComponentValidationResult | null>(null)
@@ -121,9 +111,12 @@ ${SDS_COMPONENT_NAMES.join(', ')}
           const node = nodeMap.get(candidate.nodeId)
           if (!node) continue
 
-          const actualIsSDSComponent = isSDSComponent(node.componentName)
+          // 推奨されたコンポーネントを既に使用しているかチェック
+          const isUsingSuggestedComponent =
+            node.componentName === candidate.suggestedComponent ||
+            node.componentName?.startsWith(`${candidate.suggestedComponent}/`)
 
-          if (!actualIsSDSComponent) {
+          if (!isUsingSuggestedComponent) {
             issues.push({
               nodeId: candidate.nodeId,
               nodeName: node.nodeName,

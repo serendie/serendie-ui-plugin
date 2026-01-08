@@ -74,7 +74,11 @@ async function buildNodeStructureRecursive(
     if (node.type !== 'INSTANCE') return {}
 
     const mainComponent = await node.getMainComponentAsync()
-    const componentName = mainComponent?.name
+    // バリアントコンポーネントの場合、親のコンポーネントセット名を使用
+    const componentName =
+      mainComponent?.parent?.type === 'COMPONENT_SET'
+        ? mainComponent.parent.name
+        : mainComponent?.name
 
     const componentProperties: ComponentProperty[] = []
     const props = node.componentProperties
