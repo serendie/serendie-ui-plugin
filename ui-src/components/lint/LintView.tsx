@@ -90,6 +90,10 @@ export default function LintView({ isActive }: LintViewProps) {
                 result.structure,
                 image
               )
+              // キャンセルされた場合はループを中断
+              if (componentResult === null) {
+                return
+              }
               updatedResults.push({
                 ...result,
                 issues: [...result.issues, ...(componentResult?.issues || [])],
