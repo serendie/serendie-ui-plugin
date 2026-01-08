@@ -20,7 +20,7 @@ import IssueTitle from './IssueTitle'
 
 const { sd } = tokens
 
-type LintPhase = 'selecting' | 'validating-components' | 'results'
+type LintPhase = 'selecting' | 'results'
 
 interface LintViewProps {
   isActive: boolean
@@ -291,11 +291,9 @@ export default function LintView({ isActive }: LintViewProps) {
           >
             {isLoading
               ? '検証中'
-              : phase === 'validating-components'
-                ? 'コンポーネントを検証中'
-                : phase === 'selecting'
-                  ? '検証する'
-                  : 'もう一度検証する'}
+              : phase === 'selecting'
+                ? '検証する'
+                : 'もう一度検証する'}
           </Button>
         </div>
       </div>
