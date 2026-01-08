@@ -7,11 +7,16 @@ const { sd } = tokens
 
 export default function IssueHeader({
   issues,
-  totalNodes,
+  totalItems,
 }: {
   issues: Issue[]
-  totalNodes: number
+  totalItems: number
 }) {
+  const errorCount = issues.filter(issue => issue.severity === 'error').length
+  const warningCount = issues.filter(
+    issue => issue.severity === 'warning'
+  ).length
+
   return (
     <>
       <div
@@ -19,7 +24,7 @@ export default function IssueHeader({
           display: 'flex',
           alignItems: 'center',
           gap: sd.system.dimension.spacing.medium,
-          marginBottom: sd.system.dimension.spacing.small,
+          marginBottom: sd.system.dimension.spacing.extraSmall,
           padding: sd.system.dimension.spacing.small,
           backgroundColor: sd.system.color.component.surface,
           borderRadius: sd.system.dimension.radius.medium,
@@ -28,25 +33,21 @@ export default function IssueHeader({
       >
         <StatLabel
           symbolName='check-circle'
-          targetNodes={totalNodes - issues.length}
-          totalNodes={totalNodes}
+          targetNodes={totalItems - issues.length}
+          totalNodes={totalItems}
         />
-        {issues.filter(issue => issue.severity === 'error').length > 0 && (
+        {errorCount > 0 && (
           <StatLabel
             symbolName='alert-circle'
-            targetNodes={
-              issues.filter(issue => issue.severity === 'error').length
-            }
-            totalNodes={totalNodes}
+            targetNodes={errorCount}
+            totalNodes={totalItems}
           />
         )}
-        {issues.filter(issue => issue.severity === 'warning').length > 0 && (
+        {warningCount > 0 && (
           <StatLabel
             symbolName='alert-triangle'
-            targetNodes={
-              issues.filter(issue => issue.severity === 'warning').length
-            }
-            totalNodes={totalNodes}
+            targetNodes={warningCount}
+            totalNodes={totalItems}
           />
         )}
       </div>

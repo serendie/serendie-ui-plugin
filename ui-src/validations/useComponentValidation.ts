@@ -1,6 +1,6 @@
 import { createOpenAI } from '@ai-sdk/openai'
 import { generateObject } from 'ai'
-import { useCallback, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { NodeStructure } from '../../shared-src/models/PluginMessage'
 import { Issue } from '../../shared-src/models/Rules'
 import { serializeNodeStructure } from '../../shared-src/utils/serializeNodeStructure'
@@ -45,12 +45,20 @@ export function useComponentValidation({ apiKey }: { apiKey: string }) {
   const [state, setState] = useState<ValidationState>('idle')
   const [result, setResult] = useState<ComponentValidationResult | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const abortControllerRef = useRef<AbortController | null>(null)
 
   const validate = useCallback(
     async (
       structure: NodeStructure,
       image?: string
     ): Promise<ComponentValidationResult | null> => {
+      // 既存のリクエストをキャンセル
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
+      }
+      const abortController = new AbortController()
+      abortControllerRef.current = abortController
+
       setState('analyzing')
       setError(null)
 
@@ -96,6 +104,7 @@ ${SDS_COMPONENT_NAMES.join(', ')}
             { role: 'system', content: systemPrompt },
             { role: 'user', content: userContent },
           ],
+          abortSignal: abortController.signal,
         })
 
         const candidates = response.object.candidates
@@ -122,6 +131,7 @@ ${SDS_COMPONENT_NAMES.join(', ')}
               severity: 'warning',
               message: `「${candidate.suggestedComponent}」を未使用`,
               suggestion: `「${candidate.suggestedComponent}」コンポーネントを使用できる可能性があります。`,
+              source: 'component',
             })
           }
         }
@@ -133,28 +143,43 @@ ${SDS_COMPONENT_NAMES.join(', ')}
         setState('done')
         return validationResult
       } catch (err) {
+        if (err instanceof Error && err.name === 'AbortError') {
+          console.log('Component validation aborted')
+          return null
+        }
         console.error('Component validation error:', err)
         setError(
           err instanceof Error ? err.message : '検証中にエラーが発生しました'
         )
         setState('error')
         return null
+      } finally {
+        abortControllerRef.current = null
       }
     },
     [apiKey]
   )
 
-  const reset = useCallback(() => {
+  const cancel = useCallback(() => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+      abortControllerRef.current = null
+    }
     setState('idle')
+  }, [])
+
+  const reset = useCallback(() => {
+    cancel()
     setResult(null)
     setError(null)
-  }, [])
+  }, [cancel])
 
   return {
     state,
     result,
     error,
     validate,
+    cancel,
     reset,
   }
 }

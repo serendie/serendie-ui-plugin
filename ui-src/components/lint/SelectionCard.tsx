@@ -54,7 +54,7 @@ export default function SelectionCard({
     <div>
       <p
         style={{
-          ...sd.system.typography.label.medium_expanded,
+          ...sd.system.typography.label.large_expanded,
           fontWeight: 'bold',
           color: sd.system.color.component.onSurface,
           marginLeft: sd.system.dimension.spacing.extraSmall,
