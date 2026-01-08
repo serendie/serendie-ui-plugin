@@ -158,6 +158,7 @@ export default function LintView({ isActive }: LintViewProps) {
             right: 0,
             padding: `0 ${sd.system.dimension.spacing.medium}`,
             zIndex: 1,
+            pointerEvents: 'none',
           }}
         >
           <div
@@ -173,6 +174,7 @@ export default function LintView({ isActive }: LintViewProps) {
               onClick={handleReselect}
               style={{
                 width: 'fit-content',
+                pointerEvents: 'auto',
               }}
             >
               戻る
@@ -269,6 +271,7 @@ export default function LintView({ isActive }: LintViewProps) {
           left: `calc(${sd.system.dimension.spacing.extraSmall} * -1)`,
           right: `calc(${sd.system.dimension.spacing.extraSmall} * -1)`,
           padding: `0 ${sd.system.dimension.spacing.large}`,
+          pointerEvents: 'none',
         }}
       >
         <div
@@ -283,7 +286,7 @@ export default function LintView({ isActive }: LintViewProps) {
           <Button
             onClick={handleRunLinter}
             disabled={isLoading || !allImagesLoaded}
-            style={{ flex: 1 }}
+            style={{ flex: 1, pointerEvents: 'auto' }}
             styleType={phase === 'selecting' ? 'filled' : 'outlined'}
           >
             {isLoading
