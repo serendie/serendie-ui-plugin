@@ -230,11 +230,11 @@ export default function LintView({ isActive }: LintViewProps) {
                           <ProgressIndicator size='small' />
                           <span
                             style={{
-                              ...sd.system.typography.body.small_expanded,
+                              ...sd.system.typography.body.extraSmall_expanded,
                               color: sd.system.color.component.onSurfaceVariant,
                             }}
                           >
-                            AIで検証中...
+                            Serendie UIを適用できる可能性を検証しています
                           </span>
                         </div>
                       ) : (
