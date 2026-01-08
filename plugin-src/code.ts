@@ -4,27 +4,52 @@ import validateColorPairing from './utils/validateColorPairing'
 import validateAssignFrameVariable from './utils/validateAssignFrameVariable'
 import validateAssignTextVariable from './utils/validateAssignTextVariable'
 import getImage, { canGetImage } from '../shared-src/utils/getImage'
+import buildNodeStructure from './utils/buildNodeStructure'
+import { NodeStructure } from '../shared-src/models/PluginMessage'
 
 figma.showUI(__html__, {
-  width: 360,
-  height: 720,
+  width: 320,
+  height: 800,
   title: 'Serendie Design Linter',
 })
 
+let orderedSelectionIds: string[] = []
+
+function getSelectionInfo() {
+  // NOTE: Figmaプラグインでは選択順序が保存されない
+  const currentSelection = figma.currentPage.selection
+  const currentIds = new Set(currentSelection.map(node => node.id))
+  orderedSelectionIds = orderedSelectionIds.filter(id => currentIds.has(id))
+  const existingIds = new Set(orderedSelectionIds)
+  for (const node of currentSelection) {
+    if (!existingIds.has(node.id)) {
+      orderedSelectionIds.push(node.id)
+    }
+  }
+  const nodeMap = new Map(currentSelection.map(node => [node.id, node]))
+  return orderedSelectionIds
+    .map(id => nodeMap.get(id))
+    .filter((node): node is SceneNode => node !== undefined)
+    .map(node => ({
+      id: node.id,
+      name: node.name,
+    }))
+}
+
 figma.on('selectionchange', () => {
-  const selections = figma.currentPage.selection
+  const selections = getSelectionInfo()
   figma.ui.postMessage({
     type: 'selection-changed',
-    selectionIds: selections.map(node => (node as FrameNode).id),
+    selections,
   })
 })
 
 figma.ui.onmessage = async msg => {
   if (msg.type === 'request-selection') {
-    const selections = figma.currentPage.selection
+    const selections = getSelectionInfo()
     figma.ui.postMessage({
       type: 'selection-changed',
-      selectionIds: selections.map(node => (node as FrameNode).id),
+      selections,
     })
   }
   if (msg.type === 'select-node') {
@@ -35,7 +60,12 @@ figma.ui.onmessage = async msg => {
     }
   }
   if (msg.type === 'run-linter') {
-    const selections = figma.currentPage.selection
+    const nodes = await Promise.all(
+      msg.nodeIds.map((id: string) => figma.getNodeByIdAsync(id))
+    )
+    const selections = nodes.filter(
+      (node): node is SceneNode => node !== null && 'type' in node
+    )
     if (selections.length === 0) {
       figma.ui.postMessage({
         type: 'error',
@@ -50,6 +80,7 @@ figma.ui.onmessage = async msg => {
         id: string
         issues: Issue[]
         totalNodes: number
+        structure: NodeStructure
       }> = []
       for (const selection of selections) {
         const colorInfoList = await extractColorInfo(selection)
@@ -62,17 +93,21 @@ figma.ui.onmessage = async msg => {
           ...frameColorResult.issues,
         ]
 
+        const structure = await buildNodeStructure(selection)
+
         results.push({
           name: selection.name,
           id: selection.id,
           issues,
           totalNodes: colorInfoList.length,
+          structure,
         })
       }
 
       figma.ui.postMessage({
         type: 'lint-result',
         results,
+        source: msg.source,
       })
     } catch (error) {
       figma.ui.postMessage({
@@ -99,36 +134,26 @@ figma.ui.onmessage = async msg => {
       key: msg.key,
     })
   }
-  if (msg.type === 'get-selection-image') {
-    const nodeId = msg.nodeId
-    if (!nodeId) {
-      figma.ui.postMessage({
-        type: 'selection-image',
-        image: null,
+  if (msg.type === 'get-selection-images') {
+    const nodeIds: string[] = msg.nodeIds ?? []
+    const images = await Promise.all(
+      nodeIds.map(async nodeId => {
+        try {
+          const node = await figma.getNodeByIdAsync(nodeId)
+          if (node && canGetImage(node)) {
+            const image = await getImage(node as FrameNode)
+            return { nodeId, image }
+          }
+          return { nodeId, image: null }
+        } catch {
+          return { nodeId, image: null }
+        }
       })
-      return
-    }
-
-    try {
-      const node = await figma.getNodeByIdAsync(nodeId)
-      if (node && canGetImage(node)) {
-        const imageData = await getImage(node as FrameNode)
-        figma.ui.postMessage({
-          type: 'selection-image',
-          image: imageData,
-        })
-      } else {
-        figma.ui.postMessage({
-          type: 'selection-image',
-          image: null,
-        })
-      }
-    } catch (error) {
-      figma.ui.postMessage({
-        type: 'selection-image',
-        image: null,
-      })
-    }
+    )
+    figma.ui.postMessage({ type: 'selection-images', images })
+  }
+  if (msg.type === 'clear-selection') {
+    figma.currentPage.selection = []
   }
   if (msg.type === 'close') {
     figma.closePlugin()

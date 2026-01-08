@@ -7,10 +7,12 @@ export default function StatLabel({
   symbolName,
   targetNodes,
   totalNodes,
+  label,
 }: {
   symbolName: 'alert-circle' | 'alert-triangle' | 'check-circle'
   targetNodes: number
-  totalNodes: number
+  totalNodes?: number
+  label?: string
 }) {
   return (
     <div
@@ -39,7 +41,7 @@ export default function StatLabel({
           color: sd.system.color.component.onSurfaceVariant,
         }}
       >
-        {targetNodes}/{totalNodes}
+        {label ? `${targetNodes} ${label}` : `${targetNodes}/${totalNodes}`}
       </p>
     </div>
   )
