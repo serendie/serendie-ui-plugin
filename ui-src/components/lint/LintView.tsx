@@ -292,7 +292,9 @@ export default function LintView({ isActive }: LintViewProps) {
             {isLoading
               ? '検証中'
               : phase === 'selecting'
-                ? '検証する'
+                ? !allImagesLoaded
+                  ? '要素を選んでください'
+                  : '検証する'
                 : 'もう一度検証する'}
           </Button>
         </div>
