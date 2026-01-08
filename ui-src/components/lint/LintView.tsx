@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { Button } from '@serendie/ui'
 import tokens from '@serendie/design-token'
 import IssuesList from './IssuesList'
@@ -10,13 +10,16 @@ import {
   postPluginMessage,
 } from '../../hooks/usePluginMessage'
 import {
+  LintResult,
   PluginMessage,
   SelectionInfo,
 } from '../../../shared-src/models/PluginMessage'
+import { useApiKey } from '../../hooks/useApiKey'
+import { useComponentValidation } from '../../validations/useComponentValidation'
 
 const { sd } = tokens
 
-type LintPhase = 'selecting' | 'results'
+type LintPhase = 'selecting' | 'validating-components' | 'results'
 
 interface LintViewProps {
   isActive: boolean
@@ -28,6 +31,13 @@ export default function LintView({ isActive }: LintViewProps) {
   const [results, setResults] = useState<Result[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({})
+  const [selectionImages, setSelectionImages] = useState<
+    Record<string, string>
+  >({})
+  const pendingLintResultsRef = useRef<LintResult[] | null>(null)
+
+  const { apiKey } = useApiKey()
+  const { validate: validateComponents } = useComponentValidation({ apiKey })
 
   const allImagesLoaded =
     selections.length > 0 &&
@@ -46,13 +56,52 @@ export default function LintView({ isActive }: LintViewProps) {
           return next
         })
       }
+      if (message.type === 'selection-images') {
+        // 画像を保存（コンポーネント検証で使用）
+        setSelectionImages(prev => {
+          const next = { ...prev }
+          for (const img of message.images) {
+            if (img.image) {
+              next[img.nodeId] = img.image
+            }
+          }
+          return next
+        })
+      }
       if (message.type === 'lint-result' && message.source === 'lint-view') {
-        setIsLoading(false)
-        setResults(message.results)
-        setPhase('results')
+        // デザイントークン検証完了、コンポーネント検証を開始
+        if (apiKey) {
+          pendingLintResultsRef.current = message.results
+          setPhase('validating-components')
+
+          // 各結果に対してコンポーネント検証を実行
+          const runComponentValidation = async () => {
+            const updatedResults: Result[] = []
+            for (const result of message.results) {
+              const image = selectionImages[result.id]
+              const componentResult = await validateComponents(
+                result.structure,
+                image
+              )
+              updatedResults.push({
+                ...result,
+                issues: [...result.issues, ...(componentResult?.issues || [])],
+              })
+            }
+            setResults(updatedResults)
+            setIsLoading(false)
+            setPhase('results')
+          }
+          runComponentValidation()
+        } else {
+          // APIキーがない場合はデザイントークン検証のみ
+          setIsLoading(false)
+          setResults(message.results)
+          setPhase('results')
+        }
       }
     },
-    [phase]
+    [phase, apiKey, selectionImages, validateComponents]
   )
 
   useEffect(() => {
@@ -90,7 +139,7 @@ export default function LintView({ isActive }: LintViewProps) {
         backgroundColor: sd.system.color.impression.tertiaryContainer,
       }}
     >
-      {phase === 'results' && (
+      {phase !== 'selecting' && (
         <div
           style={{
             position: 'absolute',
@@ -127,7 +176,7 @@ export default function LintView({ isActive }: LintViewProps) {
           overflow: 'auto',
           padding: `${sd.system.dimension.spacing.twoExtraLarge} ${sd.system.dimension.spacing.extraLarge}`,
           paddingTop:
-            phase === 'results'
+            phase !== 'selecting'
               ? '4rem'
               : sd.system.dimension.spacing.twoExtraLarge,
           paddingBottom: '7rem',
@@ -188,9 +237,11 @@ export default function LintView({ isActive }: LintViewProps) {
           >
             {isLoading
               ? '検証中'
-              : phase === 'selecting'
-                ? '検証する'
-                : 'もう一度検証する'}
+              : phase === 'validating-components'
+                ? 'コンポーネントを検証中'
+                : phase === 'selecting'
+                  ? '検証する'
+                  : 'もう一度検証する'}
           </Button>
         </div>
       </div>

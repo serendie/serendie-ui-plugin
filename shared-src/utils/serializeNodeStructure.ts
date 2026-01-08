@@ -35,7 +35,7 @@ export function serializeNodeStructure(
 
   const detailsStr = details.length > 0 ? ` ${details.join(', ')}` : ''
 
-  let result = `${indentStr}- ${node.nodeName} (${node.nodeType})${detailsStr}\n`
+  let result = `${indentStr}- [${node.nodeId}] ${node.nodeName} (${node.nodeType})${detailsStr}\n`
 
   if (node.children.length > 0) {
     for (const child of node.children) {
