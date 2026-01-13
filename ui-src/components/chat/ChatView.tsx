@@ -1,5 +1,5 @@
 import tokens from '@serendie/design-token'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 
 import { useApiKey } from '../../hooks/useApiKey'
 import { useMCPTools } from '../../hooks/useMCPTools'
@@ -11,7 +11,7 @@ import { useChatSessions } from '../../hooks/useChatSessions'
 import { useSelection } from '../../hooks/useSelection'
 import { useQuestions } from '../../hooks/useQuestions'
 import { postPluginMessage } from '../../hooks/usePluginMessage'
-import ChatMessageList from './ChatMessageList'
+import ChatMessageList, { ChatMessageListRef } from './ChatMessageList'
 import ChatInputArea from './ChatInputArea'
 import ChatHeader from './ChatHeader'
 import ChatHistoryModal from './ChatHistoryModal'
@@ -28,6 +28,7 @@ export default function ChatView({ isActive }: { isActive: boolean }) {
   const [isSending, setIsSending] = useState(false)
   const [historyOpen, setHistoryOpen] = useState(false)
   const linterTool = useLinterTool()
+  const viewRef = useRef<ChatMessageListRef>(null)
 
   const tools = useMemo(() => {
     const baseTools = { ...docsSearchTools, ...linterTool }
@@ -35,12 +36,8 @@ export default function ChatView({ isActive }: { isActive: boolean }) {
     return { ...mcpTools, ...baseTools }
   }, [mcpTools, docsSearchTools, linterTool])
 
-  const {
-    sessions,
-    saveSession,
-    loadSession,
-    startNewSession,
-  } = useChatSessions()
+  const { sessions, saveSession, loadSession, startNewSession } =
+    useChatSessions()
 
   const {
     message,
@@ -100,6 +97,10 @@ export default function ChatView({ isActive }: { isActive: boolean }) {
         setMessages(session.messages)
         setImageMetas(session.imageMetas)
         clearQuestions()
+        // 次のレンダリング後にスクロール
+        requestAnimationFrame(() => {
+          viewRef.current?.scrollToBottom()
+        })
       }
     },
     [loadSession, setMessages, setImageMetas, clearQuestions]
@@ -113,7 +114,14 @@ export default function ChatView({ isActive }: { isActive: boolean }) {
     startNewSession()
     clearChat()
     clearQuestions()
-  }, [messages, imageMetas, saveSession, startNewSession, clearChat, clearQuestions])
+  }, [
+    messages,
+    imageMetas,
+    saveSession,
+    startNewSession,
+    clearChat,
+    clearQuestions,
+  ])
 
   return (
     <div
@@ -129,7 +137,11 @@ export default function ChatView({ isActive }: { isActive: boolean }) {
         onNewChat={handleNewChat}
         onOpenHistory={() => setHistoryOpen(true)}
       />
-      <ChatMessageList messages={messages} imageMetas={imageMetas} />
+      <ChatMessageList
+        ref={viewRef}
+        messages={messages}
+        imageMetas={imageMetas}
+      />
       <div
         style={{
           position: 'relative',
