@@ -6,9 +6,13 @@ const { sd } = tokens
 
 interface ChatHeaderProps {
   onNewChat: () => void
+  onOpenHistory: () => void
 }
 
-export default function ChatHeader({ onNewChat }: ChatHeaderProps) {
+export default function ChatHeader({
+  onNewChat,
+  onOpenHistory,
+}: ChatHeaderProps) {
   return (
     <div
       style={{
@@ -29,6 +33,14 @@ export default function ChatHeader({ onNewChat }: ChatHeaderProps) {
         onClick={onNewChat}
       >
         新規相談
+      </Button>
+      <Button
+        styleType='ghost'
+        size='small'
+        leftIcon={<SerendieSymbol name='history' />}
+        onClick={onOpenHistory}
+      >
+        履歴
       </Button>
     </div>
   )

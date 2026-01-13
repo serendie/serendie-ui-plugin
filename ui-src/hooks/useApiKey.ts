@@ -7,7 +7,7 @@ export function useApiKey() {
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       const { type, value, key } = event.data.pluginMessage || {}
-      if (type === 'storage-value') {
+      if (type === 'storage-value' && key === ClientStorage.OPENAI_API_KEY) {
         setApiKey(value || '')
       }
       if (type === 'storage-saved' && key === ClientStorage.OPENAI_API_KEY) {
