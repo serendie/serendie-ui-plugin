@@ -8,7 +8,7 @@ import {
   DEFAULT_CHAT_TITLE,
 } from '../utils/generateChatTitle'
 
-const MAX_SESSIONS = 20
+export const MAX_SESSIONS = 20
 const MAX_IMAGE_SIZE_BYTES = 2 * 1024 * 1024 // 1セッションあたりの画像最大2MB
 
 function generateId(): string {

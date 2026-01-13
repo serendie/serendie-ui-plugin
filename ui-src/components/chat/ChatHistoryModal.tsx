@@ -3,6 +3,7 @@ import tokens from '@serendie/design-token'
 import { Search } from '@serendie/ui'
 import { createListCollection } from '@ark-ui/react'
 import { ChatSession } from '../../models/ChatSession'
+import { MAX_SESSIONS } from '../../hooks/useChatSessions'
 
 const { sd } = tokens
 
@@ -184,6 +185,17 @@ export default function ChatHistoryModal({
             ))
           )}
         </div>
+        <span
+          style={{
+            ...sd.system.typography.label.small_expanded,
+            color: sd.system.color.component.onSurfaceVariant,
+            flex: 1,
+            marginTop: sd.system.dimension.spacing.small,
+            marginLeft: sd.system.dimension.spacing.medium,
+          }}
+        >
+          ※最大{MAX_SESSIONS}件まで保存されます。
+        </span>
       </div>
     </div>
   )
