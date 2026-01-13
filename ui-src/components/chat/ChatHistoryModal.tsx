@@ -6,6 +6,58 @@ import { ChatSession } from '../../models/ChatSession'
 
 const { sd } = tokens
 
+function SessionItem({
+  session,
+  onSelect,
+}: {
+  session: ChatSession
+  onSelect: () => void
+}) {
+  const [isHovered, setIsHovered] = useState(false)
+
+  return (
+    <button
+      onClick={onSelect}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      style={{
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        gap: sd.system.dimension.spacing.small,
+        padding: sd.system.dimension.spacing.extraSmall,
+        border: 'none',
+        borderRadius: sd.system.dimension.radius.small,
+        background: isHovered
+          ? sd.system.color.interaction.hovered
+          : 'transparent',
+        cursor: 'pointer',
+        textAlign: 'left',
+      }}
+    >
+      <span
+        style={{
+          ...sd.system.typography.body.extraSmall_expanded,
+          color: sd.system.color.component.onSurface,
+          flex: 1,
+        }}
+      >
+        {session.title}
+      </span>
+      <span
+        style={{
+          ...sd.system.typography.label.small_compact,
+          color: sd.system.color.component.onSurfaceVariant,
+          whiteSpace: 'nowrap',
+        }}
+      >
+        {formatRelativeTime(session.updatedAt)}
+      </span>
+    </button>
+  )
+}
+
 interface ChatHistoryModalProps {
   open: boolean
   onClose: () => void
@@ -100,12 +152,18 @@ export default function ChatHistoryModal({
             flex: 1,
             overflow: 'auto',
             minHeight: 0,
+            maxHeight: 336,
+            padding: sd.system.dimension.spacing.extraSmall,
+            borderStyle: 'solid',
+            borderWidth: sd.system.dimension.border.medium,
+            borderColor: sd.system.color.component.outline,
+            borderRadius: sd.system.dimension.radius.medium,
           }}
         >
           {filteredSessions.length === 0 ? (
             <p
               style={{
-                ...sd.system.typography.body.medium_expanded,
+                ...sd.system.typography.body.extraSmall_expanded,
                 color: sd.system.color.component.onSurfaceVariant,
                 textAlign: 'center',
                 padding: sd.system.dimension.spacing.large,
@@ -115,45 +173,14 @@ export default function ChatHistoryModal({
             </p>
           ) : (
             filteredSessions.map(session => (
-              <button
+              <SessionItem
                 key={session.id}
-                onClick={() => {
+                session={session}
+                onSelect={() => {
                   onSelectSession(session.id)
                   onClose()
                 }}
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'flex-start',
-                  gap: sd.system.dimension.spacing.small,
-                  padding: `${sd.system.dimension.spacing.small} 0`,
-                  border: 'none',
-                  borderBottom: `${sd.system.dimension.border.medium} solid ${sd.system.color.component.outlineBright}`,
-                  background: 'transparent',
-                  cursor: 'pointer',
-                  textAlign: 'left',
-                }}
-              >
-                <span
-                  style={{
-                    ...sd.system.typography.body.medium_expanded,
-                    color: sd.system.color.component.onSurface,
-                    flex: 1,
-                  }}
-                >
-                  {session.title}
-                </span>
-                <span
-                  style={{
-                    ...sd.system.typography.label.small_compact,
-                    color: sd.system.color.component.onSurfaceVariant,
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {formatRelativeTime(session.updatedAt)}
-                </span>
-              </button>
+              />
             ))
           )}
         </div>
