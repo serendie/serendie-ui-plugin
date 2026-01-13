@@ -5,11 +5,13 @@ import { SerendieSymbol } from '@serendie/symbols'
 const { sd } = tokens
 
 interface ChatHeaderProps {
+  title?: string
   onNewChat: () => void
   onOpenHistory: () => void
 }
 
 export default function ChatHeader({
+  title,
   onNewChat,
   onOpenHistory,
 }: ChatHeaderProps) {
@@ -18,7 +20,8 @@ export default function ChatHeader({
       style={{
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'flex-end',
+        justifyContent: 'space-between',
+        gap: sd.system.dimension.spacing.extraSmall,
         padding: `${sd.system.dimension.spacing.extraSmall} ${sd.system.dimension.spacing.twoExtraSmall}`,
         paddingLeft: sd.system.dimension.spacing.medium,
         backgroundColor: sd.system.color.component.surface,
@@ -26,22 +29,37 @@ export default function ChatHeader({
         borderBottom: `${sd.system.dimension.border.medium} solid ${sd.system.color.component.outlineBright}`,
       }}
     >
-      <Button
-        styleType='ghost'
-        size='small'
-        leftIcon={<SerendieSymbol name='chat-circle' />}
-        onClick={onNewChat}
+      <span
+        style={{
+          ...sd.system.typography.label.medium_expanded,
+          color: sd.system.color.component.onSurface,
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          flex: 1,
+          minWidth: 0,
+        }}
       >
-        新規相談
-      </Button>
-      <Button
-        styleType='ghost'
-        size='small'
-        leftIcon={<SerendieSymbol name='history' />}
-        onClick={onOpenHistory}
-      >
-        履歴
-      </Button>
+        {title}
+      </span>
+      <div style={{ display: 'flex', flexShrink: 0 }}>
+        <Button
+          styleType='ghost'
+          size='small'
+          leftIcon={<SerendieSymbol name='chat-circle' />}
+          onClick={onNewChat}
+        >
+          新規相談
+        </Button>
+        <Button
+          styleType='ghost'
+          size='small'
+          leftIcon={<SerendieSymbol name='history' />}
+          onClick={onOpenHistory}
+        >
+          履歴
+        </Button>
+      </div>
     </div>
   )
 }

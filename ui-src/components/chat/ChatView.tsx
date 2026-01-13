@@ -36,8 +36,18 @@ export default function ChatView({ isActive }: { isActive: boolean }) {
     return { ...mcpTools, ...baseTools }
   }, [mcpTools, docsSearchTools, linterTool])
 
-  const { sessions, saveSession, loadSession, startNewSession } =
-    useChatSessions()
+  const {
+    sessions,
+    currentSessionId,
+    saveSession,
+    loadSession,
+    startNewSession,
+  } = useChatSessions()
+
+  const currentSessionTitle = useMemo(() => {
+    if (!currentSessionId) return undefined
+    return sessions.find(s => s.id === currentSessionId)?.title
+  }, [sessions, currentSessionId])
 
   const {
     message,
@@ -134,6 +144,7 @@ export default function ChatView({ isActive }: { isActive: boolean }) {
       }}
     >
       <ChatHeader
+        title={currentSessionTitle}
         onNewChat={handleNewChat}
         onOpenHistory={() => setHistoryOpen(true)}
       />

@@ -8,7 +8,7 @@ import buildNodeStructure from './utils/buildNodeStructure'
 import { NodeStructure } from '../shared-src/models/PluginMessage'
 
 figma.showUI(__html__, {
-  width: 320,
+  width: 360,
   height: 800,
   title: 'Serendie Design Linter',
 })
