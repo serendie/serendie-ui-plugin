@@ -44,7 +44,7 @@ export function useChat({
   tools: Record<string, Tool> | undefined
 }) {
   const [message, setMessage] = useState('')
-  const [chatHistory, setChatHistory] = useState<ModelMessage[]>([])
+  const [messages, setMessages] = useState<ModelMessage[]>([])
   const [imageMetas, setImageMetas] = useState<ImageMetas>({})
   const abortControllerRef = useRef<AbortController | null>(null)
 
@@ -52,7 +52,7 @@ export function useChat({
     if (abortControllerRef.current) {
       abortControllerRef.current.abort()
     }
-    setChatHistory([])
+    setMessages([])
     setImageMetas({})
     setMessage('')
   }, [])
@@ -90,8 +90,8 @@ export function useChat({
           systemPromptWithContext = `${systemPrompt}\n\n# 現在選択中のノード\n${nodeInfo}`
         }
 
-        const nextMessageIndex = chatHistory.length
-        setChatHistory(prev => [
+        const nextMessageIndex = messages.length
+        setMessages(prev => [
           ...prev,
           { role: 'user', content: userContent },
         ])
@@ -116,7 +116,7 @@ export function useChat({
               role: 'system' as const,
               content: systemPromptWithContext,
             },
-            ...chatHistory,
+            ...messages,
             { role: 'user' as const, content: userContent },
           ],
         })
@@ -124,7 +124,7 @@ export function useChat({
         for await (const part of streamResult.fullStream) {
           if (part.type === 'text-delta') {
             assistantMessage += part.text
-            setChatHistory(prev => {
+            setMessages(prev => {
               const newHistory = [...prev]
               const lastMessage = newHistory[newHistory.length - 1]
               if (lastMessage && lastMessage.role === 'assistant') {
@@ -159,7 +159,7 @@ export function useChat({
             })
           } else if (part.type === 'tool-call') {
             console.log(part.toolName, part.input)
-            setChatHistory(prev => {
+            setMessages(prev => {
               const newHistory = [...prev]
               const lastMessage = newHistory[newHistory.length - 1]
               if (lastMessage && lastMessage.role === 'assistant') {
@@ -192,7 +192,7 @@ export function useChat({
             })
           } else if (part.type === 'tool-result') {
             console.log(part.toolName, part.output)
-            setChatHistory(prev => [
+            setMessages(prev => [
               ...prev,
               {
                 role: 'tool' as const,
@@ -221,14 +221,14 @@ export function useChat({
         abortControllerRef.current = null
       }
     },
-    [apiKey, message, chatHistory, tools]
+    [apiKey, message, messages, tools]
   )
 
   return {
     message,
     setMessage,
-    chatHistory,
-    setChatHistory,
+    messages,
+    setMessages,
     imageMetas,
     clearChat,
     request,
