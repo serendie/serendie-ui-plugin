@@ -1,6 +1,7 @@
 import tokens from '@serendie/design-token'
 import { useState } from 'react'
 import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 const { sd } = tokens
 
@@ -55,6 +56,7 @@ export default function MarkdownRenderer({
       }}
     >
       <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
         components={{
           h1: ({ children }) => (
             <h1
@@ -166,6 +168,66 @@ export default function MarkdownRenderer({
           ),
           a: ({ href, children }) => (
             <MarkdownLink href={href}>{children}</MarkdownLink>
+          ),
+          table: ({ children }) => (
+            <div
+              style={{
+                overflowX: 'auto',
+                marginBottom: sd.system.dimension.spacing.small,
+              }}
+            >
+              <table
+                style={{
+                  width: '100%',
+                  borderCollapse: 'collapse',
+                  ...sd.system.typography.body.small_expanded,
+                }}
+              >
+                {children}
+              </table>
+            </div>
+          ),
+          thead: ({ children }) => (
+            <thead
+              style={{
+                backgroundColor: sd.system.color.impression.secondaryContainer,
+              }}
+            >
+              {children}
+            </thead>
+          ),
+          tbody: ({ children }) => <tbody>{children}</tbody>,
+          tr: ({ children }) => (
+            <tr
+              style={{
+                borderBottom: `${sd.system.dimension.border.medium} solid ${sd.system.color.component.outline}`,
+              }}
+            >
+              {children}
+            </tr>
+          ),
+          th: ({ children }) => (
+            <th
+              style={{
+                padding: sd.system.dimension.spacing.extraSmall,
+                textAlign: 'left',
+                fontWeight: sd.reference.typography.fontWeight.bold,
+                color: sd.system.color.impression.onSecondaryContainer,
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {children}
+            </th>
+          ),
+          td: ({ children }) => (
+            <td
+              style={{
+                padding: sd.system.dimension.spacing.extraSmall,
+                color: sd.system.color.component.onSurface,
+              }}
+            >
+              {children}
+            </td>
           ),
         }}
       >
