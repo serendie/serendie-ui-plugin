@@ -42,7 +42,7 @@ export default function ChatView({ isActive }: { isActive: boolean }) {
     saveSession,
     loadSession,
     startNewSession,
-  } = useChatSessions()
+  } = useChatSessions(apiKey)
 
   const currentSessionTitle = useMemo(() => {
     if (!currentSessionId) return undefined
