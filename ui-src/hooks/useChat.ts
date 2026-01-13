@@ -48,20 +48,25 @@ export function useChat({
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState<ModelMessage[]>([])
   const [imageMetas, setImageMetas] = useState<ImageMetas>({})
+  const [isStreaming, setIsStreaming] = useState(false)
   const abortControllerRef = useRef<AbortController | null>(null)
   const messagesRef = useRef(messages)
   const imageMetasRef = useRef(imageMetas)
   messagesRef.current = messages
   imageMetasRef.current = imageMetas
 
-  const clearChat = useCallback(() => {
+  const abort = useCallback(() => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort()
     }
+  }, [])
+
+  const clearChat = useCallback(() => {
+    abort()
     setMessages([])
     setImageMetas({})
     setMessage('')
-  }, [])
+  }, [abort])
 
   const request = useCallback(
     async (customMessage?: string, imageItems?: SelectionImageItem[]) => {
@@ -72,6 +77,7 @@ export function useChat({
 
         const abortController = new AbortController()
         abortControllerRef.current = abortController
+        setIsStreaming(true)
 
         const messageToSend = customMessage ?? message
         setMessage('')
@@ -226,6 +232,7 @@ export function useChat({
         }
       } finally {
         abortControllerRef.current = null
+        setIsStreaming(false)
       }
     },
     [apiKey, message, messages, tools, onComplete]
@@ -240,5 +247,7 @@ export function useChat({
     setImageMetas,
     clearChat,
     request,
+    abort,
+    isStreaming,
   }
 }

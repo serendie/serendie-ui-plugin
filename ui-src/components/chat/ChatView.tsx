@@ -51,6 +51,8 @@ export default function ChatView({ isActive }: { isActive: boolean }) {
     setImageMetas,
     clearChat,
     request,
+    abort,
+    isStreaming,
   } = useChat({
     apiKey,
     tools,
@@ -152,8 +154,10 @@ export default function ChatView({ isActive }: { isActive: boolean }) {
           message={message}
           onMessageChange={setMessage}
           onSend={() => handleSend()}
+          onStop={abort}
           selectionNames={selections.map(s => s.name)}
           isSending={isSending}
+          isStreaming={isStreaming}
         />
       </div>
       <ChatHistoryModal
