@@ -128,11 +128,19 @@ figma.ui.onmessage = async msg => {
     })
   }
   if (msg.type === 'set-storage') {
-    await figma.clientStorage.setAsync(msg.key, msg.value)
-    figma.ui.postMessage({
-      type: 'storage-saved',
-      key: msg.key,
-    })
+    try {
+      await figma.clientStorage.setAsync(msg.key, msg.value)
+      figma.ui.postMessage({
+        type: 'storage-saved',
+        key: msg.key,
+      })
+    } catch (error) {
+      figma.ui.postMessage({
+        type: 'storage-save-failed',
+        key: msg.key,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      })
+    }
   }
   if (msg.type === 'get-selection-images') {
     const nodeIds: string[] = msg.nodeIds ?? []

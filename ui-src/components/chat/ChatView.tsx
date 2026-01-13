@@ -7,12 +7,14 @@ import { useDocsSearchTools } from '../../hooks/useDocsSearchTools'
 import { useLinterTool } from '../../hooks/useLinterTool'
 import { useSelectionImages } from '../../hooks/useSelectionImages'
 import { useChat } from '../../hooks/useChat'
+import { useChatSessions } from '../../hooks/useChatSessions'
 import { useSelection } from '../../hooks/useSelection'
 import { useQuestions } from '../../hooks/useQuestions'
 import { postPluginMessage } from '../../hooks/usePluginMessage'
 import ChatMessageList from './ChatMessageList'
 import ChatInputArea from './ChatInputArea'
 import ChatHeader from './ChatHeader'
+import ChatHistoryModal from './ChatHistoryModal'
 import SuggestedQuestions from './SuggestedQuestions'
 
 const { sd } = tokens
@@ -24,6 +26,7 @@ export default function ChatView({ isActive }: { isActive: boolean }) {
   const docsSearchTools = useDocsSearchTools()
   const { getSelectionImages } = useSelectionImages()
   const [isSending, setIsSending] = useState(false)
+  const [historyOpen, setHistoryOpen] = useState(false)
   const linterTool = useLinterTool()
 
   const tools = useMemo(() => {
@@ -32,11 +35,26 @@ export default function ChatView({ isActive }: { isActive: boolean }) {
     return { ...mcpTools, ...baseTools }
   }, [mcpTools, docsSearchTools, linterTool])
 
-  const { message, setMessage, messages, imageMetas, clearChat, request } =
-    useChat({
-      apiKey,
-      tools,
-    })
+  const {
+    message,
+    setMessage,
+    messages,
+    setMessages,
+    imageMetas,
+    setImageMetas,
+    clearChat,
+    request,
+  } = useChat({
+    apiKey,
+    tools,
+  })
+
+  const {
+    sessions,
+    saveSession,
+    loadSession,
+    startNewSession,
+  } = useChatSessions()
 
   const hasChat = messages.length > 0
 
@@ -72,6 +90,28 @@ export default function ChatView({ isActive }: { isActive: boolean }) {
     [message, selections, getSelectionImages, request]
   )
 
+  const handleSelectSession = useCallback(
+    async (sessionId: string) => {
+      const session = await loadSession(sessionId)
+      if (session) {
+        setMessages(session.messages)
+        setImageMetas(session.imageMetas)
+        clearQuestions()
+      }
+    },
+    [loadSession, setMessages, setImageMetas, clearQuestions]
+  )
+
+  const handleNewChat = useCallback(() => {
+    // 現在のチャットを保存してから新規開始
+    if (messages.length > 0) {
+      saveSession(messages, imageMetas)
+    }
+    startNewSession()
+    clearChat()
+    clearQuestions()
+  }, [messages, imageMetas, saveSession, startNewSession, clearChat, clearQuestions])
+
   return (
     <div
       style={{
@@ -83,10 +123,8 @@ export default function ChatView({ isActive }: { isActive: boolean }) {
       }}
     >
       <ChatHeader
-        onNewChat={() => {
-          clearChat()
-          clearQuestions()
-        }}
+        onNewChat={handleNewChat}
+        onOpenHistory={() => setHistoryOpen(true)}
       />
       <ChatMessageList messages={messages} imageMetas={imageMetas} />
       <div
@@ -117,6 +155,12 @@ export default function ChatView({ isActive }: { isActive: boolean }) {
           isSending={isSending}
         />
       </div>
+      <ChatHistoryModal
+        open={historyOpen}
+        onClose={() => setHistoryOpen(false)}
+        sessions={sessions}
+        onSelectSession={handleSelectSession}
+      />
     </div>
   )
 }

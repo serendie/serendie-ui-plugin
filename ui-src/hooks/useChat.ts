@@ -230,6 +230,7 @@ export function useChat({
     messages,
     setMessages,
     imageMetas,
+    setImageMetas,
     clearChat,
     request,
   }
