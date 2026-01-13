@@ -73,23 +73,28 @@ async function buildNodeStructureRecursive(
   }> => {
     if (node.type !== 'INSTANCE') return {}
 
-    const mainComponent = await node.getMainComponentAsync()
-    // バリアントコンポーネントの場合、親のコンポーネントセット名を使用
-    const componentName =
-      mainComponent?.parent?.type === 'COMPONENT_SET'
-        ? mainComponent.parent.name
-        : mainComponent?.name
-
+    let componentName: string | undefined
     const componentProperties: ComponentProperty[] = []
-    const props = node.componentProperties
-    if (props) {
-      for (const [name, prop] of Object.entries(props)) {
-        componentProperties.push({
-          name,
-          type: prop.type,
-          value: prop.value,
-        })
+    try {
+      // NOTE: メインコンポーネントにアクセスできないとき、getMainComponentAsyncやcomponentPropertiesはエラーになる
+      const mainComponent = await node.getMainComponentAsync()
+      // NOTE: バリアントコンポーネントの場合、親のコンポーネントセット名を使用
+      componentName =
+        mainComponent?.parent?.type === 'COMPONENT_SET'
+          ? mainComponent.parent.name
+          : mainComponent?.name
+      const props = node.componentProperties
+      if (props) {
+        for (const [name, prop] of Object.entries(props)) {
+          componentProperties.push({
+            name,
+            type: prop.type,
+            value: prop.value,
+          })
+        }
       }
+    } catch {
+      console.error('コンポーネントの情報取得に失敗しました。')
     }
 
     return {
