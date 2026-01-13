@@ -3,27 +3,16 @@ import { ModelMessage } from 'ai'
 import ClientStorage from '../../shared-src/models/ClientStorage'
 import { ChatSession } from '../models/ChatSession'
 import { ImageMetas } from '../utils/getImageMetaKey'
+import {
+  generateChatTitle,
+  DEFAULT_CHAT_TITLE,
+} from '../utils/generateChatTitle'
 
 const MAX_SESSIONS = 20
 const MAX_IMAGE_SIZE_BYTES = 2 * 1024 * 1024 // 1セッションあたりの画像最大2MB
 
 function generateId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
-}
-
-function generateTitle(messages: ModelMessage[]): string {
-  const firstUserMessage = messages.find(m => m.role === 'user')
-  if (!firstUserMessage) return '新しい相談'
-
-  const content = firstUserMessage.content
-  const text =
-    typeof content === 'string'
-      ? content
-      : Array.isArray(content)
-        ? content.find(p => p.type === 'text')?.text || ''
-        : ''
-
-  return text.slice(0, 30) + (text.length > 30 ? '...' : '') || '新しい相談'
 }
 
 // imageMetasのサイズを計算（バイト単位）
@@ -71,7 +60,7 @@ function trimOldestSessionImages(sessions: ChatSession[]): ChatSession[] {
   return result.slice(0, -1)
 }
 
-export function useChatSessions() {
+export function useChatSessions(apiKey: string) {
   const [sessions, setSessions] = useState<ChatSession[]>([])
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -160,20 +149,25 @@ export function useChatSessions() {
       let session: ChatSession
 
       if (currentSessionId) {
+        // 既存セッション: タイトルは維持
         const existing = sessions.find(s => s.id === currentSessionId)
         session = {
           id: currentSessionId,
-          title: generateTitle(messages),
+          title: existing?.title ?? DEFAULT_CHAT_TITLE,
           messages,
           imageMetas: trimmedImageMetas,
           createdAt: existing?.createdAt ?? now,
           updatedAt: now,
         }
       } else {
+        // 新規セッション: AIでタイトル生成
         const newId = generateId()
+        const title = apiKey
+          ? await generateChatTitle(apiKey, messages)
+          : DEFAULT_CHAT_TITLE
         session = {
           id: newId,
-          title: generateTitle(messages),
+          title,
           messages,
           imageMetas: trimmedImageMetas,
           createdAt: now,
@@ -208,7 +202,7 @@ export function useChatSessions() {
 
       return session.id
     },
-    [sessions, currentSessionId]
+    [apiKey, sessions, currentSessionId]
   )
 
   // セッションを読み込み
