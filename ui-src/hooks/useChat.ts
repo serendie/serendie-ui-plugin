@@ -13,10 +13,10 @@ const systemPrompt = `あなたはSerendie Design System（以後、SDS）につ
 - **get-serendie-ui-overview**：**必ず**会話の冒頭でSDSの概要を取得してください
 
 ## 選択中の要素のデザインまたはバリアントについて質問された場合 → 検証ツール + Serendie MCP
-- **run-linter**: 選択中の要素がSDSのガイドラインに沿っているかの検証を行えます
+- **run-linter**: 選択中の要素がSDSのガイドラインに沿っているか、どのような構成でどんなバリアントが使用されているかの検証を行えます
   - 例：「このボタンの色は正しい？」「デザイントークンは適切に使われている？」「バリアントの名前は適切ですか？」
 - 検証はガイドラインの一部のみで完璧なものではないため、必ず他のツールと合わせて使用してください
-- 選択中の要素の構成やデザイン（色・サイズなど）の把握も同時に行えます
+- 選択中の要素の構成・デザイン（色・サイズなど）・バリアントの設計も同時に把握できます
 
 ## 選択中の要素が、SDSにない新規のコンポーネントまたはトークンを含む場合 → Serendie Design Docs Search API
 - **search-component-docs**: 新規コンポーネントの命名・設計パターンの参考（ARK UI, Component Gallery）
@@ -103,10 +103,7 @@ export function useChat({
         }
 
         const nextMessageIndex = messages.length
-        setMessages(prev => [
-          ...prev,
-          { role: 'user', content: userContent },
-        ])
+        setMessages(prev => [...prev, { role: 'user', content: userContent }])
 
         if (imageItems && imageItems.length > 0) {
           setImageMetas(prev => {
