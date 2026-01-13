@@ -9,16 +9,20 @@ interface ChatInputAreaProps {
   message: string
   onMessageChange: (value: string) => void
   onSend: () => void
+  onStop?: () => void
   selectionNames?: string[]
   isSending?: boolean
+  isStreaming?: boolean
 }
 
 export default function ChatInputArea({
   message,
   onMessageChange,
   onSend,
+  onStop,
   selectionNames = [],
   isSending = false,
+  isStreaming = false,
 }: ChatInputAreaProps) {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
@@ -117,14 +121,24 @@ export default function ChatInputArea({
             </>
           )}
         </div>
-        <IconButton
-          shape='rectangle'
-          size='small'
-          styleType='filled'
-          disabled={message.trim() === '' || isSending}
-          onClick={handleSend}
-          icon={<SerendieSymbol name='send' />}
-        />
+        {isStreaming ? (
+          <IconButton
+            shape='circle'
+            size='small'
+            styleType='outlined'
+            onClick={onStop}
+            icon={<SerendieSymbol name='stop' />}
+          />
+        ) : (
+          <IconButton
+            shape='rectangle'
+            size='small'
+            styleType='filled'
+            disabled={message.trim() === '' || isSending}
+            onClick={handleSend}
+            icon={<SerendieSymbol name='send' />}
+          />
+        )}
       </div>
     </div>
   )
