@@ -32,13 +32,13 @@ export default function ChatView({ isActive }: { isActive: boolean }) {
     return { ...mcpTools, ...baseTools }
   }, [mcpTools, docsSearchTools, linterTool])
 
-  const { message, setMessage, chatHistory, imageMetas, clearChat, request } =
+  const { message, setMessage, messages, imageMetas, clearChat, request } =
     useChat({
       apiKey,
       tools,
     })
 
-  const hasChat = chatHistory.length > 0
+  const hasChat = messages.length > 0
 
   const {
     questions,
@@ -88,7 +88,7 @@ export default function ChatView({ isActive }: { isActive: boolean }) {
           clearQuestions()
         }}
       />
-      <ChatMessageList chatHistory={chatHistory} imageMetas={imageMetas} />
+      <ChatMessageList messages={messages} imageMetas={imageMetas} />
       <div
         style={{
           position: 'relative',

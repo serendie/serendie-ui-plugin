@@ -9,15 +9,15 @@ import { getImageMetaKey, ImageMetas } from '../../utils/getImageMetaKey'
 const { sd } = tokens
 
 interface ChatMessageListProps {
-  chatHistory: ModelMessage[]
+  messages: ModelMessage[]
   imageMetas: ImageMetas
 }
 
 export default function ChatMessageList({
-  chatHistory,
+  messages,
   imageMetas,
 }: ChatMessageListProps) {
-  const scrollContainerRef = useAutoScroll(chatHistory)
+  const scrollContainerRef = useAutoScroll(messages)
 
   return (
     <div
@@ -28,7 +28,7 @@ export default function ChatMessageList({
         padding: `${sd.system.dimension.spacing.extraLarge} ${sd.system.dimension.spacing.extraLarge} 8rem`,
       }}
     >
-      {chatHistory
+      {messages
         .filter(
           ({ role }) =>
             role === 'user' || role === 'assistant' || role === 'tool'
