@@ -120,9 +120,11 @@ export default function ChatHistoryModal({
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
         zIndex: sd.system.elevation.zIndex.modal,
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'center',
-        padding: sd.system.dimension.spacing.large,
+        paddingTop: 160,
+        paddingLeft: sd.system.dimension.spacing.large,
+        paddingRight: sd.system.dimension.spacing.large,
       }}
       onClick={onClose}
     >
@@ -150,9 +152,7 @@ export default function ChatHistoryModal({
         </div>
         <div
           style={{
-            flex: 1,
             overflow: 'auto',
-            minHeight: 0,
             maxHeight: 336,
             padding: sd.system.dimension.spacing.extraSmall,
             borderStyle: 'solid',
