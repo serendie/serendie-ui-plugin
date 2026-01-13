@@ -9,7 +9,7 @@ const systemPrompt = `あなたはSerendie Design System（以後、SDS）につ
 
 # 利用可能なツール（複数同時に使うことも可）
 
-## チャットの冒頭（重要）
+## チャットの冒頭（最重要）
 - **get-serendie-ui-overview**：**必ず**会話の冒頭でSDSの概要を取得してください
 
 ## 選択中の要素のデザインまたはバリアントについて質問された場合 → 検証ツール + Serendie MCP
