@@ -39,14 +39,20 @@ const systemPrompt = `あなたはSerendie Design System（以後、SDS）につ
 export function useChat({
   apiKey,
   tools,
+  onComplete,
 }: {
   apiKey: string
   tools: Record<string, Tool> | undefined
+  onComplete?: (messages: ModelMessage[], imageMetas: ImageMetas) => void
 }) {
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState<ModelMessage[]>([])
   const [imageMetas, setImageMetas] = useState<ImageMetas>({})
   const abortControllerRef = useRef<AbortController | null>(null)
+  const messagesRef = useRef(messages)
+  const imageMetasRef = useRef(imageMetas)
+  messagesRef.current = messages
+  imageMetasRef.current = imageMetas
 
   const clearChat = useCallback(() => {
     if (abortControllerRef.current) {
@@ -211,6 +217,7 @@ export function useChat({
             ])
           }
         }
+        onComplete?.(messagesRef.current, imageMetasRef.current)
       } catch (error) {
         if (error instanceof Error && error.name === 'AbortError') {
           console.log('リクエストがキャンセルされました')
@@ -221,7 +228,7 @@ export function useChat({
         abortControllerRef.current = null
       }
     },
-    [apiKey, message, messages, tools]
+    [apiKey, message, messages, tools, onComplete]
   )
 
   return {
