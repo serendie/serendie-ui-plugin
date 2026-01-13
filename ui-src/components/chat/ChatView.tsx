@@ -36,6 +36,13 @@ export default function ChatView({ isActive }: { isActive: boolean }) {
   }, [mcpTools, docsSearchTools, linterTool])
 
   const {
+    sessions,
+    saveSession,
+    loadSession,
+    startNewSession,
+  } = useChatSessions()
+
+  const {
     message,
     setMessage,
     messages,
@@ -47,14 +54,8 @@ export default function ChatView({ isActive }: { isActive: boolean }) {
   } = useChat({
     apiKey,
     tools,
+    onComplete: saveSession,
   })
-
-  const {
-    sessions,
-    saveSession,
-    loadSession,
-    startNewSession,
-  } = useChatSessions()
 
   const hasChat = messages.length > 0
 
