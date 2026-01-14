@@ -122,8 +122,8 @@ ${SDS_COMPONENT_NAMES.join(', ')}
               nodeName: node.nodeName,
               nodeType: node.nodeType,
               severity: 'warning',
-              message: `「${candidate.suggestedComponent}」を未使用`,
-              suggestion: `「${candidate.suggestedComponent}」コンポーネントを使用できる可能性があります。`,
+              message: `「${candidate.suggestedComponent}」を使えます`,
+              suggestion: `${candidate.suggestedComponent}コンポーネントを使うとSerendie UIとして一貫性が出せます。`,
               source: 'component',
             })
           }

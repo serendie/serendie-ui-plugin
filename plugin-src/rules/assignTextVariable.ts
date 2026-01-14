@@ -10,7 +10,7 @@ export default function validate(textColor: string | null): IssueDetail | null {
   if (!textRole) {
     return {
       severity: 'warning',
-      message: 'テキスト色がバリアブル以外',
+      message: 'テキスト色にシステムトークンを未使用',
       suggestion: '塗りにデザインシステムのバリアブルを設定してください。',
     }
   }

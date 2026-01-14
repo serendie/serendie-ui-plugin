@@ -236,7 +236,7 @@ export default function LintView({ isActive }: LintViewProps) {
                               color: sd.system.color.component.onSurfaceVariant,
                             }}
                           >
-                            Serendie UIを適用できる可能性を検証しています
+                            Serendie UIを適用できるか検証しています
                           </span>
                         </div>
                       ) : (

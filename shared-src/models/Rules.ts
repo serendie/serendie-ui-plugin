@@ -128,7 +128,7 @@ export const COLOR_ROLES: string[] = Array.from(
 export type IssueDetail = {
   severity: 'error' | 'warning'
   message: string
-  suggestion: string
+  suggestion: string | null
 }
 
 export type IssueSource = 'design-token' | 'component'
