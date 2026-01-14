@@ -99,15 +99,17 @@ export default function IssueListItem({
         >
           {issue.message}
         </p>
-        <p
-          style={{
-            ...sd.system.typography.label.small_expanded,
-            color: sd.system.color.component.onSurfaceVariant,
-            marginBottom: sd.system.dimension.spacing.twoExtraSmall,
-          }}
-        >
-          {issue.suggestion}
-        </p>
+        {issue.suggestion && (
+          <p
+            style={{
+              ...sd.system.typography.label.small_expanded,
+              color: sd.system.color.component.onSurfaceVariant,
+              marginBottom: sd.system.dimension.spacing.twoExtraSmall,
+            }}
+          >
+            {issue.suggestion}
+          </p>
+        )}
       </div>
     </div>
   )

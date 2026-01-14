@@ -12,7 +12,7 @@ export default function validate(
   if (!backgroundRole) {
     return {
       severity: 'warning',
-      message: '背景色がバリアブル以外',
+      message: '背景色にシステムトークンを未使用',
       suggestion: '塗りにデザインシステムのバリアブルを設定してください。',
     }
   }
