@@ -1,5 +1,5 @@
 import tokens from '@serendie/design-token'
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useApiKey } from '../../hooks/useApiKey'
 import { useMCPTools } from '../../hooks/useMCPTools'
@@ -19,7 +19,15 @@ import SuggestedQuestions from './SuggestedQuestions'
 
 const { sd } = tokens
 
-export default function ChatView({ isActive }: { isActive: boolean }) {
+interface ChatViewProps {
+  isActive: boolean
+  onStreamingChange?: (isStreaming: boolean) => void
+}
+
+export default function ChatView({
+  isActive,
+  onStreamingChange,
+}: ChatViewProps) {
   const { apiKey } = useApiKey()
   const { selections } = useSelection()
   const mcpTools = useMCPTools()
@@ -67,6 +75,19 @@ export default function ChatView({ isActive }: { isActive: boolean }) {
   })
 
   const hasChat = messages.length > 0
+
+  const prevIsStreamingRef = useRef(false)
+  useEffect(() => {
+    onStreamingChange?.(isStreaming)
+    // ストリーミング完了時に通知（他のタブを開いているときのみ）
+    if (prevIsStreamingRef.current && !isStreaming && !isActive) {
+      postPluginMessage({
+        type: 'notify',
+        message: 'チャットの生成が完了しました',
+      })
+    }
+    prevIsStreamingRef.current = isStreaming
+  }, [isStreaming, onStreamingChange, isActive])
 
   const {
     questions,
