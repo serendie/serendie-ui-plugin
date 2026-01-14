@@ -72,6 +72,7 @@ export type UIToPluginMessage =
   | { type: 'request-selection' }
   | { type: 'get-selection-images'; nodeIds: string[] }
   | { type: 'clear-selection' }
+  | { type: 'notify'; message: string }
 
 // 全メッセージ型
 export type PluginMessage = PluginToUIMessage | UIToPluginMessage

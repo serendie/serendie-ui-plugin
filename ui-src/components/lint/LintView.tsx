@@ -24,9 +24,13 @@ type LintPhase = 'selecting' | 'results'
 
 interface LintViewProps {
   isActive: boolean
+  onAnalyzingChange?: (isAnalyzing: boolean) => void
 }
 
-export default function LintView({ isActive }: LintViewProps) {
+export default function LintView({
+  isActive,
+  onAnalyzingChange,
+}: LintViewProps) {
   const [phase, setPhase] = useState<LintPhase>('selecting')
   const [selections, setSelections] = useState<SelectionInfo[]>([])
   const [results, setResults] = useState<Result[]>([])
@@ -47,6 +51,20 @@ export default function LintView({ isActive }: LintViewProps) {
   const allImagesLoaded =
     selections.length > 0 &&
     selections.every(selection => loadedImages[selection.id])
+
+  const prevAnalyzingRef = useRef(false)
+  useEffect(() => {
+    const isAnalyzing = componentValidationState === 'analyzing'
+    onAnalyzingChange?.(isAnalyzing)
+    // 検証完了時に通知（他のタブを開いているときのみ）
+    if (prevAnalyzingRef.current && !isAnalyzing && !isActive) {
+      postPluginMessage({
+        type: 'notify',
+        message: 'コンポーネントの検証が完了しました',
+      })
+    }
+    prevAnalyzingRef.current = isAnalyzing
+  }, [componentValidationState, onAnalyzingChange, isActive])
 
   const handleMessage = useCallback(
     (message: PluginMessage) => {

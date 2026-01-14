@@ -163,6 +163,9 @@ figma.ui.onmessage = async msg => {
   if (msg.type === 'clear-selection') {
     figma.currentPage.selection = []
   }
+  if (msg.type === 'notify') {
+    figma.notify(msg.message)
+  }
   if (msg.type === 'close') {
     figma.closePlugin()
   }
