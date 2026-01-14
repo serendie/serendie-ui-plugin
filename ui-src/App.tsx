@@ -9,9 +9,18 @@ import SettingsDialog from './components/SettingsDialog'
 
 const { sd } = tokens
 
+const blinkKeyframes = `
+@keyframes tabBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+`
+
 export default function App() {
   const [currentView, setCurrentView] = useState<'chat' | 'lint'>('chat')
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [isChatStreaming, setIsChatStreaming] = useState(false)
+  const [isLintAnalyzing, setIsLintAnalyzing] = useState(false)
 
   return (
     <div
@@ -24,6 +33,7 @@ export default function App() {
         overflow: 'hidden',
       }}
     >
+      <style>{blinkKeyframes}</style>
       <div
         style={{
           display: 'flex',
@@ -40,8 +50,24 @@ export default function App() {
             setCurrentView(details.value as 'chat' | 'lint')
           }
         >
-          <TabItem title='相談する' value='chat' />
-          <TabItem title='検証する' value='lint' />
+          <TabItem
+            title='相談する'
+            value='chat'
+            style={
+              isChatStreaming
+                ? { animation: 'tabBlink 2s ease-in-out infinite' }
+                : undefined
+            }
+          />
+          <TabItem
+            title='検証する'
+            value='lint'
+            style={
+              isLintAnalyzing
+                ? { animation: 'tabBlink 2s ease-in-out infinite' }
+                : undefined
+            }
+          />
         </Tabs>
         <IconButton
           icon={<SerendieSymbol name='gear' />}
@@ -59,7 +85,10 @@ export default function App() {
           flexDirection: 'column',
         }}
       >
-        <ChatView isActive={currentView === 'chat'} />
+        <ChatView
+          isActive={currentView === 'chat'}
+          onStreamingChange={setIsChatStreaming}
+        />
       </div>
       <div
         style={{
@@ -69,7 +98,10 @@ export default function App() {
           flexDirection: 'column',
         }}
       >
-        <LintView isActive={currentView === 'lint'} />
+        <LintView
+          isActive={currentView === 'lint'}
+          onAnalyzingChange={setIsLintAnalyzing}
+        />
       </div>
       <SettingsDialog
         open={settingsOpen}

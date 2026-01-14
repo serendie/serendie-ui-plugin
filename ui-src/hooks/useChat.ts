@@ -9,14 +9,14 @@ const systemPrompt = `あなたはSerendie Design System（以後、SDS）につ
 
 # 利用可能なツール（複数同時に使うことも可）
 
-## チャットの冒頭（重要）
+## チャットの冒頭（最重要）
 - **get-serendie-ui-overview**：**必ず**会話の冒頭でSDSの概要を取得してください
 
 ## 選択中の要素のデザインまたはバリアントについて質問された場合 → 検証ツール + Serendie MCP
-- **run-linter**: 選択中の要素がSDSのガイドラインに沿っているかの検証を行えます
+- **run-linter**: 選択中の要素がSDSのガイドラインに沿っているか、どのような構成でどんなバリアントが使用されているかの検証を行えます
   - 例：「このボタンの色は正しい？」「デザイントークンは適切に使われている？」「バリアントの名前は適切ですか？」
 - 検証はガイドラインの一部のみで完璧なものではないため、必ず他のツールと合わせて使用してください
-- 選択中の要素の構成やデザイン（色・サイズなど）の把握も同時に行えます
+- 選択中の要素の構成・デザイン（色・サイズなど）・バリアントの設計も同時に把握できます
 
 ## 選択中の要素が、SDSにない新規のコンポーネントまたはトークンを含む場合 → Serendie Design Docs Search API
 - **search-component-docs**: 新規コンポーネントの命名・設計パターンの参考（ARK UI, Component Gallery）
@@ -39,23 +39,34 @@ const systemPrompt = `あなたはSerendie Design System（以後、SDS）につ
 export function useChat({
   apiKey,
   tools,
+  onComplete,
 }: {
   apiKey: string
   tools: Record<string, Tool> | undefined
+  onComplete?: (messages: ModelMessage[], imageMetas: ImageMetas) => void
 }) {
   const [message, setMessage] = useState('')
-  const [chatHistory, setChatHistory] = useState<ModelMessage[]>([])
+  const [messages, setMessages] = useState<ModelMessage[]>([])
   const [imageMetas, setImageMetas] = useState<ImageMetas>({})
+  const [isStreaming, setIsStreaming] = useState(false)
   const abortControllerRef = useRef<AbortController | null>(null)
+  const messagesRef = useRef(messages)
+  const imageMetasRef = useRef(imageMetas)
+  messagesRef.current = messages
+  imageMetasRef.current = imageMetas
 
-  const clearChat = useCallback(() => {
+  const abort = useCallback(() => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort()
     }
-    setChatHistory([])
+  }, [])
+
+  const clearChat = useCallback(() => {
+    abort()
+    setMessages([])
     setImageMetas({})
     setMessage('')
-  }, [])
+  }, [abort])
 
   const request = useCallback(
     async (customMessage?: string, imageItems?: SelectionImageItem[]) => {
@@ -66,6 +77,7 @@ export function useChat({
 
         const abortController = new AbortController()
         abortControllerRef.current = abortController
+        setIsStreaming(true)
 
         const messageToSend = customMessage ?? message
         setMessage('')
@@ -90,11 +102,8 @@ export function useChat({
           systemPromptWithContext = `${systemPrompt}\n\n# 現在選択中のノード\n${nodeInfo}`
         }
 
-        const nextMessageIndex = chatHistory.length
-        setChatHistory(prev => [
-          ...prev,
-          { role: 'user', content: userContent },
-        ])
+        const nextMessageIndex = messages.length
+        setMessages(prev => [...prev, { role: 'user', content: userContent }])
 
         if (imageItems && imageItems.length > 0) {
           setImageMetas(prev => {
@@ -116,7 +125,7 @@ export function useChat({
               role: 'system' as const,
               content: systemPromptWithContext,
             },
-            ...chatHistory,
+            ...messages,
             { role: 'user' as const, content: userContent },
           ],
         })
@@ -124,7 +133,7 @@ export function useChat({
         for await (const part of streamResult.fullStream) {
           if (part.type === 'text-delta') {
             assistantMessage += part.text
-            setChatHistory(prev => {
+            setMessages(prev => {
               const newHistory = [...prev]
               const lastMessage = newHistory[newHistory.length - 1]
               if (lastMessage && lastMessage.role === 'assistant') {
@@ -159,7 +168,7 @@ export function useChat({
             })
           } else if (part.type === 'tool-call') {
             console.log(part.toolName, part.input)
-            setChatHistory(prev => {
+            setMessages(prev => {
               const newHistory = [...prev]
               const lastMessage = newHistory[newHistory.length - 1]
               if (lastMessage && lastMessage.role === 'assistant') {
@@ -192,7 +201,7 @@ export function useChat({
             })
           } else if (part.type === 'tool-result') {
             console.log(part.toolName, part.output)
-            setChatHistory(prev => [
+            setMessages(prev => [
               ...prev,
               {
                 role: 'tool' as const,
@@ -211,6 +220,7 @@ export function useChat({
             ])
           }
         }
+        onComplete?.(messagesRef.current, imageMetasRef.current)
       } catch (error) {
         if (error instanceof Error && error.name === 'AbortError') {
           console.log('リクエストがキャンセルされました')
@@ -219,18 +229,22 @@ export function useChat({
         }
       } finally {
         abortControllerRef.current = null
+        setIsStreaming(false)
       }
     },
-    [apiKey, message, chatHistory, tools]
+    [apiKey, message, messages, tools, onComplete]
   )
 
   return {
     message,
     setMessage,
-    chatHistory,
-    setChatHistory,
+    messages,
+    setMessages,
     imageMetas,
+    setImageMetas,
     clearChat,
     request,
+    abort,
+    isStreaming,
   }
 }
