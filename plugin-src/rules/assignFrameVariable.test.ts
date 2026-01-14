@@ -41,7 +41,7 @@ describe('assignFrameVariable', () => {
     it('任意の文字列の場合', () => {
       const result = validate('customColor')
       expect(result).not.toBeNull()
-      expect(result?.message).toBe('背景色がバリアブル以外')
+      expect(result?.message).toBe('背景色にシステムトークンを未使用')
     })
 
     it('背景色がない場合', () => {

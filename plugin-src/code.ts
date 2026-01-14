@@ -8,7 +8,7 @@ import buildNodeStructure from './utils/buildNodeStructure'
 import { NodeStructure } from '../shared-src/models/PluginMessage'
 
 figma.showUI(__html__, {
-  width: 320,
+  width: 360,
   height: 800,
   title: 'Serendie Design Linter',
 })
@@ -128,11 +128,19 @@ figma.ui.onmessage = async msg => {
     })
   }
   if (msg.type === 'set-storage') {
-    await figma.clientStorage.setAsync(msg.key, msg.value)
-    figma.ui.postMessage({
-      type: 'storage-saved',
-      key: msg.key,
-    })
+    try {
+      await figma.clientStorage.setAsync(msg.key, msg.value)
+      figma.ui.postMessage({
+        type: 'storage-saved',
+        key: msg.key,
+      })
+    } catch (error) {
+      figma.ui.postMessage({
+        type: 'storage-save-failed',
+        key: msg.key,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      })
+    }
   }
   if (msg.type === 'get-selection-images') {
     const nodeIds: string[] = msg.nodeIds ?? []
@@ -154,6 +162,9 @@ figma.ui.onmessage = async msg => {
   }
   if (msg.type === 'clear-selection') {
     figma.currentPage.selection = []
+  }
+  if (msg.type === 'notify') {
+    figma.notify(msg.message)
   }
   if (msg.type === 'close') {
     figma.closePlugin()

@@ -63,7 +63,7 @@ describe('assignTextVariable', () => {
     it('任意の文字列の場合', () => {
       const result = validate('customColor')
       expect(result).not.toBeNull()
-      expect(result?.message).toBe('テキスト色がバリアブル以外')
+      expect(result?.message).toBe('テキスト色にシステムトークンを未使用')
     })
 
     it('テキストカラーがない場合', () => {
