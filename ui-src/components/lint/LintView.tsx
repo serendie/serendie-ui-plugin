@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
-import { Button, ProgressIndicator } from '@serendie/ui'
+import { Button, ProgressIndicatorIndeterminate } from '@serendie/ui'
 import tokens from '@serendie/design-token'
 import IssuesList from './IssuesList'
 import SelectionCard from './SelectionCard'
@@ -247,7 +247,10 @@ export default function LintView({
                             borderRadius: sd.system.dimension.radius.medium,
                           }}
                         >
-                          <ProgressIndicator size='small' />
+                          <ProgressIndicatorIndeterminate
+                            size='small'
+                            type='circular'
+                          />
                           <span
                             style={{
                               ...sd.system.typography.body.extraSmall_expanded,
