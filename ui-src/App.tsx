@@ -1,5 +1,10 @@
 import { useState } from 'react'
-import { IconButton, TabItem, Tabs } from '@serendie/ui'
+import {
+  IconButton,
+  ProgressIndicatorIndeterminate,
+  TabItem,
+  Tabs,
+} from '@serendie/ui'
 import tokens from '@serendie/design-token'
 import { SerendieSymbol } from '@serendie/symbols'
 
@@ -8,13 +13,6 @@ import ChatView from './components/chat/ChatView'
 import SettingsDialog from './components/SettingsDialog'
 
 const { sd } = tokens
-
-const blinkKeyframes = `
-@keyframes tabBlink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.25; }
-}
-`
 
 export default function App() {
   const [currentView, setCurrentView] = useState<'chat' | 'lint'>('chat')
@@ -33,7 +31,18 @@ export default function App() {
         overflow: 'hidden',
       }}
     >
-      <style>{blinkKeyframes}</style>
+      <div
+        style={{
+          margin: `0 -${sd.system.dimension.spacing.twoExtraSmall}`,
+          width: `calc(100% + ${sd.system.dimension.spacing.twoExtraSmall} * 2)`,
+          height: 1,
+          overflow: 'hidden',
+        }}
+      >
+        {(isChatStreaming || isLintAnalyzing) && (
+          <ProgressIndicatorIndeterminate size='small' type='linear' />
+        )}
+      </div>
       <div
         style={{
           display: 'flex',
@@ -50,24 +59,8 @@ export default function App() {
             setCurrentView(details.value as 'chat' | 'lint')
           }
         >
-          <TabItem
-            title='相談する'
-            value='chat'
-            style={
-              isChatStreaming
-                ? { animation: 'tabBlink 2s ease-in-out infinite' }
-                : undefined
-            }
-          />
-          <TabItem
-            title='検証する'
-            value='lint'
-            style={
-              isLintAnalyzing
-                ? { animation: 'tabBlink 2s ease-in-out infinite' }
-                : undefined
-            }
-          />
+          <TabItem title='相談する' value='chat' />
+          <TabItem title='検証する' value='lint' />
         </Tabs>
         <IconButton
           icon={<SerendieSymbol name='gear' />}
