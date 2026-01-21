@@ -2,6 +2,7 @@ import { useState } from 'react'
 import tokens from '@serendie/design-token'
 import { SerendieSymbol } from '@serendie/symbols'
 import MarkdownRenderer from './MarkdownRenderer'
+import { IMAGE_REMOVED_PLACEHOLDER } from '../../hooks/useChatSessions'
 
 const { sd } = tokens
 
@@ -120,6 +121,49 @@ function Image({ image, label }: { image: string; label: string | null }) {
   )
 }
 
+function RemovedImagePlaceholder({ label }: { label: string | null }) {
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-end',
+        gap: sd.system.dimension.spacing.twoExtraSmall,
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: sd.system.dimension.spacing.extraSmall,
+          padding: sd.system.dimension.spacing.small,
+          backgroundColor: sd.system.color.component.surface,
+          borderRadius: sd.system.dimension.radius.small,
+          color: sd.system.color.component.onSurfaceVariant,
+          ...sd.system.typography.label.small_expanded,
+        }}
+      >
+        <SerendieSymbol name='image' style={{ fontSize: '16px' }} />
+        <span>容量制限のため画像を削除しました</span>
+      </div>
+      {label && (
+        <p
+          style={{
+            ...sd.system.typography.label.small_expanded,
+            color: sd.system.color.component.onSurfaceVariant,
+            maxWidth: '100%',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {label}
+        </p>
+      )}
+    </div>
+  )
+}
+
 export default function ChatMessage({
   role,
   content,
@@ -145,9 +189,13 @@ export default function ChatMessage({
       }}
     >
       {images &&
-        images.map((image, index) => (
-          <Image key={index} image={image} label={imageLabels?.[index]} />
-        ))}
+        images.map((image, index) =>
+          image === IMAGE_REMOVED_PLACEHOLDER ? (
+            <RemovedImagePlaceholder key={index} label={imageLabels?.[index] ?? null} />
+          ) : (
+            <Image key={index} image={image} label={imageLabels?.[index] ?? null} />
+          )
+        )}
       {content && (
         <div
           style={{
