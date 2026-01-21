@@ -2,6 +2,7 @@ import { createOpenAI } from '@ai-sdk/openai'
 import { ModelMessage, streamText, stepCountIs, Tool } from 'ai'
 import { useCallback, useRef, useState } from 'react'
 import { getImageMetaKey, ImageMetas } from '../utils/getImageMetaKey'
+import { FIGMA_NODE_SCHEME } from '../components/chat/MarkdownRenderer'
 import { SelectionImageItem } from './useSelectionImages'
 
 const systemPrompt = `あなたはSerendie Design System（以後、SDS）についてよく知るAIアシスタントです。
@@ -34,7 +35,14 @@ const systemPrompt = `あなたはSerendie Design System（以後、SDS）につ
 - もし情報ソースがある場合は、参考リンクを必ず提供してください
 - 逆に情報ソースがない場合は、参考リンクなしでよいので、絶対に捏造しないでください
 - アドバイスは必ずツールから取得した情報に基づいてください
-- エンジニア向けの情報は提供しないでください`
+- エンジニア向けの情報は提供しないでください
+
+# Figma要素へのリンク
+デザイン要素について言及する際、ユーザーがその要素に素早くジャンプできるよう、以下の形式でリンクを張ってください：
+- 形式: \`[要素名](${FIGMA_NODE_SCHEME}ノードID)\`
+- 例: \`[メインボタン](${FIGMA_NODE_SCHEME}123:456)\`のカラーを確認してください
+- ノードIDは、検証結果の構造情報（例: [123:456] Button）から取得できます
+- すべての要素にリンクを張る必要はありません。指摘や提案の対象となる要素にのみリンクを張ってください`
 
 export function useChat({
   apiKey,
