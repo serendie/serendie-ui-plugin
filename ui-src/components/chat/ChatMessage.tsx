@@ -20,7 +20,13 @@ function UserMessage({ content }: { content: string }) {
   )
 }
 
-function AssistantMessage({ content }: { content: string }) {
+function AssistantMessage({
+  content,
+  isStreaming,
+}: {
+  content: string
+  isStreaming?: boolean
+}) {
   const [copied, setCopied] = useState(false)
 
   const handleCopy = async () => {
@@ -49,34 +55,36 @@ function AssistantMessage({ content }: { content: string }) {
       }}
     >
       <MarkdownRenderer>{content}</MarkdownRenderer>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          marginTop: sd.system.dimension.spacing.extraSmall,
-        }}
-      >
-        <button
-          onClick={handleCopy}
+      {!isStreaming && (
+        <div
           style={{
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            padding: sd.system.dimension.spacing.twoExtraSmall,
-            borderRadius: sd.system.dimension.radius.small,
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: sd.system.color.component.onSurfaceVariant,
+            justifyContent: 'flex-end',
+            marginTop: sd.system.dimension.spacing.extraSmall,
           }}
-          type='button'
         >
-          <SerendieSymbol
-            name={copied ? 'check' : 'copy'}
-            style={{ fontSize: '20px' }}
-          />
-        </button>
-      </div>
+          <button
+            onClick={handleCopy}
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: sd.system.dimension.spacing.twoExtraSmall,
+              borderRadius: sd.system.dimension.radius.small,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: sd.system.color.component.onSurfaceVariant,
+            }}
+            type='button'
+          >
+            <SerendieSymbol
+              name={copied ? 'check' : 'copy'}
+              style={{ fontSize: '20px' }}
+            />
+          </button>
+        </div>
+      )}
     </div>
   )
 }
@@ -169,11 +177,13 @@ export default function ChatMessage({
   content,
   images,
   imageLabels,
+  isStreaming,
 }: {
   role: 'user' | 'assistant'
   content: string
   images?: string[]
   imageLabels?: string[]
+  isStreaming?: boolean
 }) {
   return (
     <div
@@ -216,7 +226,7 @@ export default function ChatMessage({
           {role === 'user' ? (
             <UserMessage content={content} />
           ) : (
-            <AssistantMessage content={content} />
+            <AssistantMessage content={content} isStreaming={isStreaming} />
           )}
         </div>
       )}
