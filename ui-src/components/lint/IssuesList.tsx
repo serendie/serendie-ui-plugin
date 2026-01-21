@@ -9,11 +9,9 @@ const { sd } = tokens
 export default function IssuesList({
   issues,
   totalItems,
-  title,
 }: {
   issues: Issue[]
   totalItems: number
-  title?: string
 }) {
   return (
     <div>
