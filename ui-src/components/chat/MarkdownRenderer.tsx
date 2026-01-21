@@ -5,6 +5,8 @@ import remarkGfm from 'remark-gfm'
 
 const { sd } = tokens
 
+export const FIGMA_NODE_SCHEME = 'figma://node/'
+
 function MarkdownLink({
   href,
   children,
@@ -13,10 +15,23 @@ function MarkdownLink({
   children: React.ReactNode
 }) {
   const [isHovered, setIsHovered] = useState(false)
-
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault()
-    if (href) {
+    if (!href) return
+
+    if (href.startsWith(FIGMA_NODE_SCHEME)) {
+      const nodeId = href.replace(FIGMA_NODE_SCHEME, '')
+      console.log('Figma link clicked:', { href, nodeId })
+      parent.postMessage(
+        {
+          pluginMessage: {
+            type: 'select-node',
+            nodeId,
+          },
+        },
+        '*'
+      )
+    } else {
       window.open(href, '_blank')
     }
   }
@@ -57,6 +72,12 @@ export default function MarkdownRenderer({
     >
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
+        urlTransform={url => {
+          if (url.startsWith(FIGMA_NODE_SCHEME)) {
+            return url
+          }
+          return url
+        }}
         components={{
           h1: ({ children }) => (
             <h1
