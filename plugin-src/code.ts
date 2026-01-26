@@ -6,6 +6,7 @@ import validateAssignTextVariable from './utils/validateAssignTextVariable'
 import getImage, { canGetImage } from '../shared-src/utils/getImage'
 import buildNodeStructure from './utils/buildNodeStructure'
 import { NodeStructure } from '../shared-src/models/PluginMessage'
+import { applyComponents } from './utils/applyComponent'
 
 figma.showUI(__html__, {
   width: 360,
@@ -165,6 +166,31 @@ figma.ui.onmessage = async msg => {
   }
   if (msg.type === 'notify') {
     figma.notify(msg.message)
+  }
+  if (msg.type === 'apply-components') {
+    try {
+      const result = await applyComponents(msg.items)
+      const messages: string[] = []
+      if (result.success > 0) {
+        messages.push(`${result.success}個適用`)
+      }
+      if (result.skipped > 0) {
+        messages.push(`${result.skipped}個スキップ`)
+      }
+      if (messages.length > 0) {
+        figma.notify(messages.join('、'))
+      }
+      if (result.failed > 0) {
+        figma.notify(`${result.failed}個の適用に失敗しました`, {
+          error: true,
+        })
+      }
+    } catch (error) {
+      figma.notify(
+        error instanceof Error ? error.message : 'コンポーネントの適用に失敗しました',
+        { error: true }
+      )
+    }
   }
   if (msg.type === 'close') {
     figma.closePlugin()

@@ -10,6 +10,7 @@ import {
   postPluginMessage,
 } from '../../hooks/usePluginMessage'
 import {
+  ApplyComponentItem,
   LintResult,
   PluginMessage,
   SelectionInfo,
@@ -157,6 +158,30 @@ export default function LintView({
     setLoadedImages(prev => ({ ...prev, [nodeId]: true }))
   }, [])
 
+  // コンポーネントの「全て適用」ハンドラ
+  const handleApplyAllComponents = useCallback(() => {
+    const items: ApplyComponentItem[] = []
+    for (const result of results) {
+      const componentIssues = result.issues.filter(
+        issue => issue.source === 'component' && issue.suggestion
+      )
+      for (const issue of componentIssues) {
+        // suggestion から推奨コンポーネント名を抽出
+        // 例: "Buttonコンポーネントを使うと..." → "Button"
+        const match = issue.message.match(/「(.+?)」/)
+        if (match) {
+          items.push({
+            nodeId: issue.nodeId,
+            componentName: match[1],
+          })
+        }
+      }
+    }
+    if (items.length > 0) {
+      postPluginMessage({ type: 'apply-components', items })
+    }
+  }, [results])
+
   return (
     <div
       style={{
@@ -235,7 +260,26 @@ export default function LintView({
                 <>
                   {apiKey && (
                     <div>
-                      <IssueTitle title='コンポーネント' />
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <IssueTitle title='コンポーネント' />
+                        {componentValidationState === 'done' &&
+                          result.issues.filter(i => i.source === 'component')
+                            .length > 0 && (
+                            <Button
+                              size='small'
+                              styleType='ghost'
+                              onClick={handleApplyAllComponents}
+                            >
+                              全て適用
+                            </Button>
+                          )}
+                      </div>
                       {componentValidationState === 'analyzing' ? (
                         <div
                           style={{
