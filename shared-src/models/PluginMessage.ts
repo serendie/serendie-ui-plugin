@@ -66,6 +66,12 @@ export type PluginToUIMessage =
   | ImageMessage
   | ErrorMessage
 
+// コンポーネント適用アイテム
+export type ApplyComponentItem = {
+  nodeId: string
+  componentName: string
+}
+
 // UI → Plugin
 export type UIToPluginMessage =
   | { type: 'run-linter'; nodeIds: string[]; source: Source }
@@ -73,6 +79,8 @@ export type UIToPluginMessage =
   | { type: 'get-selection-images'; nodeIds: string[] }
   | { type: 'clear-selection' }
   | { type: 'notify'; message: string }
+  | { type: 'apply-components'; items: ApplyComponentItem[] }
+  | { type: 'select-node'; nodeId: string }
 
 // 全メッセージ型
 export type PluginMessage = PluginToUIMessage | UIToPluginMessage
