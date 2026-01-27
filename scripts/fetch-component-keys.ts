@@ -22,9 +22,8 @@ import type {
   ComponentKeysMap,
 } from '../shared-src/models/ComponentKeys'
 
-// .env.localを優先的に読み込み、なければ.envを読み込む
+// .env.localを読み込み
 config({ path: '.env.local' })
-config({ path: '.env' })
 
 const fileKey = process.env.FIGMA_SERENDIE_UI_KIT_FILE_KEY
 const accessToken = process.env.FIGMA_PERSONAL_ACCESS_TOKEN
@@ -72,7 +71,6 @@ interface FigmaNodesResponse {
     }
   >
 }
-
 
 async function fetchFigmaAPI<T>(endpoint: string): Promise<T> {
   return new Promise((resolve, reject) => {
@@ -198,7 +196,10 @@ async function main(): Promise<void> {
                 type: 'TEXT',
                 defaultValue: propDef.defaultValue,
               })
-            } else if (propDef.type === 'INSTANCE_SWAP' && propDef.preferredValues) {
+            } else if (
+              propDef.type === 'INSTANCE_SWAP' &&
+              propDef.preferredValues
+            ) {
               // preferredValuesのキーをComponent Set名に変換
               const preferredComponentSets: string[] = []
               for (const pv of propDef.preferredValues) {
@@ -223,7 +224,8 @@ async function main(): Promise<void> {
           }
 
           if (componentProperties.length > 0) {
-            componentKeys[componentName].componentProperties = componentProperties
+            componentKeys[componentName].componentProperties =
+              componentProperties
           }
         }
       }
