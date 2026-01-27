@@ -10,23 +10,19 @@ import {
 } from './componentValidationSchema'
 import componentsManifest from '../../shared-src/assets/components_manifest.json'
 import componentKeys from '../../assets/component-keys.json'
+import { ComponentKeysMap } from '../../shared-src/models/ComponentKeys'
 
 // SDSコンポーネント名のリスト
 const SDS_COMPONENT_NAMES = componentsManifest.map(c => c.name)
+const componentKeysMap = componentKeys as ComponentKeysMap
 
-// component-keys.jsonの型
-type ComponentKeyInfo = {
-  key: string
-  name: string
-  description: string
-  nodeId: string
-  type: 'COMPONENT' | 'COMPONENT_SET'
-  variantProperties?: { name: string; options: string[] }[]
+type ValidationState = 'idle' | 'analyzing' | 'done' | 'error'
+
+export type ComponentValidationResult = {
+  candidates: ComponentCandidate[]
+  issues: Issue[]
 }
 
-const componentKeysMap = componentKeys as Record<string, ComponentKeyInfo>
-
-// バリアント情報を生成
 function generateVariantInfo(): string {
   const lines: string[] = []
   for (const [name, info] of Object.entries(componentKeysMap)) {
@@ -40,14 +36,6 @@ function generateVariantInfo(): string {
   return lines.join('\n')
 }
 
-type ValidationState = 'idle' | 'analyzing' | 'done' | 'error'
-
-export type ComponentValidationResult = {
-  candidates: ComponentCandidate[]
-  issues: Issue[]
-}
-
-// ノード構造をフラット化してnodeIdでアクセスできるようにする
 function flattenNodes(node: NodeStructure): Map<string, NodeStructure> {
   const map = new Map<string, NodeStructure>()
   const traverse = (n: NodeStructure) => {
@@ -56,6 +44,40 @@ function flattenNodes(node: NodeStructure): Map<string, NodeStructure> {
   }
   traverse(node)
   return map
+}
+
+export function createIssuesFromCandidates(
+  candidates: ComponentCandidate[],
+  nodeMap: Map<string, NodeStructure>
+): Issue[] {
+  const issues: Issue[] = []
+
+  for (const candidate of candidates) {
+    if (!candidate.suggestedComponent) continue
+
+    const node = nodeMap.get(candidate.nodeId)
+    if (!node) continue
+
+    // 推奨されたコンポーネントを既に使用しているかチェック
+    const isUsingSuggestedComponent =
+      node.componentName === candidate.suggestedComponent ||
+      node.componentName?.startsWith(`${candidate.suggestedComponent}/`)
+
+    if (!isUsingSuggestedComponent) {
+      issues.push({
+        nodeId: candidate.nodeId,
+        nodeName: node.nodeName,
+        nodeType: node.nodeType,
+        severity: 'warning',
+        message: `「${candidate.suggestedComponent}」を使えます`,
+        suggestion: `${candidate.suggestedComponent}コンポーネントを使うとSerendie UIとして一貫性が出せます。`,
+        source: 'component',
+        variantProperties: candidate.variantProperties,
+      })
+    }
+  }
+
+  return issues
 }
 
 export function useComponentValidation({ apiKey }: { apiKey: string }) {
@@ -136,33 +158,7 @@ ${variantInfo}
         console.log('=== Component Validation Results ===')
         console.log('Candidates:', candidates)
 
-        // 検証：候補と実際のコンポーネントを比較してIssueを生成
-        const issues: Issue[] = []
-        for (const candidate of candidates) {
-          if (!candidate.suggestedComponent) continue
-
-          const node = nodeMap.get(candidate.nodeId)
-          if (!node) continue
-
-          // 推奨されたコンポーネントを既に使用しているかチェック
-          const isUsingSuggestedComponent =
-            node.componentName === candidate.suggestedComponent ||
-            node.componentName?.startsWith(`${candidate.suggestedComponent}/`)
-
-          if (!isUsingSuggestedComponent) {
-            issues.push({
-              nodeId: candidate.nodeId,
-              nodeName: node.nodeName,
-              nodeType: node.nodeType,
-              severity: 'warning',
-              message: `「${candidate.suggestedComponent}」を使えます`,
-              suggestion: `${candidate.suggestedComponent}コンポーネントを使うとSerendie UIとして一貫性が出せます。`,
-              source: 'component',
-              variantProperties: candidate.variantProperties,
-            })
-          }
-        }
-
+        const issues = createIssuesFromCandidates(candidates, nodeMap)
         const validationResult = { candidates, issues }
         console.log('Issues:', issues)
         console.log('=== End Component Validation ===')
