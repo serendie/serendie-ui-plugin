@@ -5,9 +5,40 @@
     "description": "日付入力用のコンポーネントです。Calendarと組み合わせて使うことを想定しており、単一指定と期間指定に対応しています。",
     "nodeId": "22421:4315",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
+      {
+        "name": "StartDate#23357:2",
+        "type": "TEXT",
+        "defaultValue": "2025/12/17"
+      },
+      {
+        "name": "EndDate#23362:17",
+        "type": "TEXT",
+        "defaultValue": "2025/12/30"
+      },
+      {
+        "name": "Date#23362:31",
+        "type": "TEXT",
+        "defaultValue": "2025/12/17"
+      },
+      {
+        "name": "Placeholder StartDate#26692:0",
+        "type": "TEXT",
+        "defaultValue": "開始日"
+      },
+      {
+        "name": "Placeholder EndDate#26692:13",
+        "type": "TEXT",
+        "defaultValue": "終了日"
+      },
+      {
+        "name": "Placeholder Date#26692:26",
+        "type": "TEXT",
+        "defaultValue": "日付を選択"
+      },
       {
         "name": "Type",
+        "type": "VARIANT",
         "options": [
           "Range",
           "Single"
@@ -15,6 +46,7 @@
       },
       {
         "name": "States",
+        "type": "VARIANT",
         "options": [
           "Enabled",
           "Focused",
@@ -32,9 +64,15 @@
     "description": "アクションをトリガーするためのクリック可能なコンポーネントです。",
     "nodeId": "3066:14086",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
+      {
+        "name": "Label#6311:6",
+        "type": "TEXT",
+        "defaultValue": "ラベル"
+      },
       {
         "name": "Icon",
+        "type": "VARIANT",
         "options": [
           "None",
           "Left",
@@ -43,6 +81,7 @@
       },
       {
         "name": "Size",
+        "type": "VARIANT",
         "options": [
           "Small",
           "Medium"
@@ -50,6 +89,7 @@
       },
       {
         "name": "Type",
+        "type": "VARIANT",
         "options": [
           "Filled",
           "Outlined",
@@ -59,6 +99,7 @@
       },
       {
         "name": "State",
+        "type": "VARIANT",
         "options": [
           "Enabled",
           "Hovered",
@@ -75,9 +116,10 @@
     "description": "",
     "nodeId": "17879:8712",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
       {
         "name": "Size",
+        "type": "VARIANT",
         "options": [
           "Large",
           "Medium",
@@ -86,6 +128,7 @@
       },
       {
         "name": "State",
+        "type": "VARIANT",
         "options": [
           "Default",
           "Hovered",
@@ -100,9 +143,15 @@
     "description": "凡例のサンプルです",
     "nodeId": "18026:16543",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
+      {
+        "name": "LineChart#18026:1",
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
       {
         "name": "ColorScheme",
+        "type": "VARIANT",
         "options": [
           "Primary",
           "Multi"
@@ -110,6 +159,7 @@
       },
       {
         "name": "Type",
+        "type": "VARIANT",
         "options": [
           "Text",
           "Color+Text"
@@ -117,6 +167,7 @@
       },
       {
         "name": "Direction",
+        "type": "VARIANT",
         "options": [
           "Horizontal",
           "Vertical"
@@ -130,9 +181,15 @@
     "description": "",
     "nodeId": "20276:13553",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
+      {
+        "name": "Label#20298:0",
+        "type": "TEXT",
+        "defaultValue": "凡例"
+      },
       {
         "name": "Position",
+        "type": "VARIANT",
         "options": [
           "BottomCenter",
           "TopLeft",
@@ -152,9 +209,10 @@
     "description": "",
     "nodeId": "12957:26277",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
       {
         "name": "Type",
+        "type": "VARIANT",
         "options": [
           "filled",
           "outlined"
@@ -168,9 +226,45 @@
     "description": "複数行のテキストを入力するためのコンポーネントです。Buttonなどと合わせてフォームを構成します。",
     "nodeId": "1406:17592",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
+      {
+        "name": "Label#6408:139",
+        "type": "TEXT",
+        "defaultValue": "ラベル"
+      },
+      {
+        "name": "Placeholder#6408:145",
+        "type": "TEXT",
+        "defaultValue": "プレースホルダー"
+      },
+      {
+        "name": "Description#6408:157",
+        "type": "TEXT",
+        "defaultValue": "補足テキスト"
+      },
+      {
+        "name": "InvalidMessage#6408:163",
+        "type": "TEXT",
+        "defaultValue": "入力の誤りに関するテキスト"
+      },
+      {
+        "name": "TextValue#8613:0",
+        "type": "TEXT",
+        "defaultValue": "入力テキスト"
+      },
+      {
+        "name": "RequiredLabel#26692:56",
+        "type": "TEXT",
+        "defaultValue": "必須"
+      },
+      {
+        "name": "Required#26692:62",
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
       {
         "name": "State",
+        "type": "VARIANT",
         "options": [
           "Enabled",
           "Disabled",
@@ -187,9 +281,10 @@
     "description": "",
     "nodeId": "17652:342",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
       {
         "name": "State",
+        "type": "VARIANT",
         "options": [
           "Enabled",
           "Filled"
@@ -197,6 +292,7 @@
       },
       {
         "name": "showPassword",
+        "type": "VARIANT",
         "options": [
           "True",
           "False"
@@ -210,9 +306,10 @@
     "description": "視覚的に区切るためのコンポーネントです。コンテナ内でコンテンツをグループ化する際にも使用します。",
     "nodeId": "3122:30141",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
       {
         "name": "Color",
+        "type": "VARIANT",
         "options": [
           "Normal",
           "Light",
@@ -227,9 +324,15 @@
     "description": "複数のアクションを格納するためのコンポーネントです。メニュー内のアクションは、クリック時にイベントをトリガーします。アクションではなく、選択肢を表示する場合は、Selectを使用してください。",
     "nodeId": "6375:6010",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
+      {
+        "name": "Title#6410:571",
+        "type": "TEXT",
+        "defaultValue": "メニュータイトル"
+      },
       {
         "name": "Type",
+        "type": "VARIANT",
         "options": [
           "IconButton",
           "TextButton"
@@ -237,6 +340,7 @@
       },
       {
         "name": "State",
+        "type": "VARIANT",
         "options": [
           "Activated",
           "Disabled",
@@ -253,9 +357,25 @@
     "description": "関連する項目を縦に並べて、メニューや一覧を構成するためのコンポーネントです。",
     "nodeId": "3442:9387",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
+      {
+        "name": "Title#6408:220",
+        "type": "TEXT",
+        "defaultValue": "リストタイトル"
+      },
+      {
+        "name": "Description#6408:261",
+        "type": "TEXT",
+        "defaultValue": "補足テキスト補足テキスト補足テキスト補足テキスト"
+      },
+      {
+        "name": "SubDescription#6408:302",
+        "type": "TEXT",
+        "defaultValue": "タイムスタンプなど"
+      },
       {
         "name": "Heading Elements",
+        "type": "VARIANT",
         "options": [
           "IconLarge",
           "None",
@@ -264,6 +384,7 @@
       },
       {
         "name": "Lines",
+        "type": "VARIANT",
         "options": [
           "Multiple Lines",
           "Single Line"
@@ -271,6 +392,7 @@
       },
       {
         "name": "Trailing Elements",
+        "type": "VARIANT",
         "options": [
           "Icon",
           "None",
@@ -279,6 +401,7 @@
       },
       {
         "name": "State",
+        "type": "VARIANT",
         "options": [
           "Disabled",
           "Enabled",
@@ -295,9 +418,20 @@
     "description": "アプリケーションを覆うレイヤー上にダイアログを表示するコンポーネントです。Modal Dialogが表示されている間は、ユーザーはその他の操作ができなくなることに注意が必要です。",
     "nodeId": "3311:28000",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
+      {
+        "name": "Title#6410:424",
+        "type": "TEXT",
+        "defaultValue": "タイトル"
+      },
+      {
+        "name": "Description#6410:427",
+        "type": "TEXT",
+        "defaultValue": "詳細内容テキストがはいります詳細内容テキストがはいります詳細内容テキストがはいります詳細内容テキストがはいります詳細内容テキストがはいります"
+      },
       {
         "name": "Layout",
+        "type": "VARIANT",
         "options": [
           "Compact",
           "Expanded"
@@ -311,9 +445,30 @@
     "description": "複数の選択肢を格納し、ユーザーは1つの選択肢を選ぶコンポーネントです。選択肢ではなくアクションを表示する場合は、DropdownMenuを使用してください。",
     "nodeId": "3154:26212",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
+      {
+        "name": "Label#6408:169",
+        "type": "TEXT",
+        "defaultValue": "ラベル"
+      },
+      {
+        "name": "Placeholder#6408:180",
+        "type": "TEXT",
+        "defaultValue": "選択してください"
+      },
+      {
+        "name": "InvalidMessage#6408:191",
+        "type": "TEXT",
+        "defaultValue": "入力の誤りに関するテキスト"
+      },
+      {
+        "name": "RequiredLabel#26692:39",
+        "type": "TEXT",
+        "defaultValue": "必須"
+      },
       {
         "name": "State",
+        "type": "VARIANT",
         "options": [
           "Disabled",
           "Enabled",
@@ -324,6 +479,7 @@
       },
       {
         "name": "Size",
+        "type": "VARIANT",
         "options": [
           "Medium",
           "Small"
@@ -337,9 +493,20 @@
     "description": "関連するコンテンツを列挙し、ユーザーが展開・折りたたむことができるコンポーネントです。表示スペースを節約しながら、ユーザーが詳細な情報を得る手段を提供します。",
     "nodeId": "4728:44779",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
+      {
+        "name": "Title#6410:537",
+        "type": "TEXT",
+        "defaultValue": "タイトル"
+      },
+      {
+        "name": "Description#6410:554",
+        "type": "TEXT",
+        "defaultValue": "詳細内容テキストがはいります詳細内容テキストがはいります詳細内容テキストがはいります詳細内容テキストがはいります詳細内容テキストがはいります"
+      },
       {
         "name": "Icon",
+        "type": "VARIANT",
         "options": [
           "Left",
           "Right"
@@ -347,6 +514,7 @@
       },
       {
         "name": "State",
+        "type": "VARIANT",
         "options": [
           "Enabled",
           "Expanded",
@@ -362,9 +530,20 @@
     "description": "エラーや警告など重要なメッセージを目立つように表示し、ユーザーの注意を喚起するコンポーネントです。",
     "nodeId": "4546:10391",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
+      {
+        "name": "Title#6410:529",
+        "type": "TEXT",
+        "defaultValue": "バナータイトル"
+      },
+      {
+        "name": "Description#6410:533",
+        "type": "TEXT",
+        "defaultValue": "補足テキスト補足テキスト補足テキスト補足テキスト"
+      },
       {
         "name": "Type",
+        "type": "VARIANT",
         "options": [
           "Error",
           "Information",
@@ -379,9 +558,15 @@
     "description": "画面下部に配置するモバイルやタブレット向けのグローバルなタブナビゲーションです。",
     "nodeId": "1001:20737",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
+      {
+        "name": "Label#992:3",
+        "type": "TEXT",
+        "defaultValue": "ホーム"
+      },
       {
         "name": "Type",
+        "type": "VARIANT",
         "options": [
           "Normal",
           "Badge with number",
@@ -390,6 +575,7 @@
       },
       {
         "name": "State",
+        "type": "VARIANT",
         "options": [
           "Enabled",
           "Selected"
@@ -403,9 +589,10 @@
     "description": "",
     "nodeId": "13249:66960",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
       {
         "name": "Name",
+        "type": "VARIANT",
         "options": [
           "activity",
           "airplay",
@@ -722,9 +909,10 @@
     "description": "棒グラフ(横)のサンプルです。ガイドラインを見ながらデータの種類に応じてカラースキームを使い分けてください。",
     "nodeId": "17799:17341",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
       {
         "name": "ColorScheme",
+        "type": "VARIANT",
         "options": [
           "Primary",
           "Multi"
@@ -738,9 +926,10 @@
     "description": "メニューやナビゲーションを格納するコンポーネントです。主に表示領域が限られるモバイルやタブレットにおいて使用されます。",
     "nodeId": "3223:28928",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
       {
         "name": "Type",
+        "type": "VARIANT",
         "options": [
           "Full"
         ]
@@ -753,9 +942,20 @@
     "description": "オン/オフの2つの状態を切り替えるためのコンポーネントです。設定画面などでその状態を視覚的に伝えることができます。",
     "nodeId": "3311:28493",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
+      {
+        "name": "Label#6410:397",
+        "type": "TEXT",
+        "defaultValue": "スイッチラベル"
+      },
+      {
+        "name": "HelperText#6410:408",
+        "type": "TEXT",
+        "defaultValue": "補足テキスト補足テキスト補足テキスト補足テキスト"
+      },
       {
         "name": "Line",
+        "type": "VARIANT",
         "options": [
           "Multiple",
           "Single"
@@ -763,6 +963,7 @@
       },
       {
         "name": "State",
+        "type": "VARIANT",
         "options": [
           "Selected",
           "Disabled",
@@ -779,9 +980,20 @@
     "description": "",
     "nodeId": "17879:8659",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
+      {
+        "name": "Text#17879:8",
+        "type": "TEXT",
+        "defaultValue": "Head"
+      },
+      {
+        "name": "Icon#17879:9",
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
       {
         "name": "Size",
+        "type": "VARIANT",
         "options": [
           "Large",
           "Medium",
@@ -790,6 +1002,7 @@
       },
       {
         "name": "State",
+        "type": "VARIANT",
         "options": [
           "Enabled",
           "Hovered"
@@ -803,9 +1016,10 @@
     "description": "",
     "nodeId": "20412:440",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
       {
         "name": "Type",
+        "type": "VARIANT",
         "options": [
           "Linear",
           "Circular"
@@ -813,6 +1027,7 @@
       },
       {
         "name": "Size",
+        "type": "VARIANT",
         "options": [
           "Small",
           "Medium",
@@ -821,6 +1036,7 @@
       },
       {
         "name": "Color",
+        "type": "VARIANT",
         "options": [
           "CircularSubtle",
           "CircularPrimary",
@@ -835,9 +1051,10 @@
     "description": "線グラフのサンプルです。ガイドラインを見ながらデータの種類に応じてカラースキームを使い分けてください。",
     "nodeId": "18036:8379",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
       {
         "name": "ColorScheme",
+        "type": "VARIANT",
         "options": [
           "Primary",
           "Multi"
@@ -851,9 +1068,10 @@
     "description": "プロセスの手順や進行状況を段階的に示すコンポーネントです。\n現在のステップと次のアクションを明確に示し、ユーザーの操作をサポートします。",
     "nodeId": "25102:557",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
       {
         "name": "Item Count",
+        "type": "VARIANT",
         "options": [
           "3",
           "4",
@@ -862,6 +1080,7 @@
       },
       {
         "name": "Type",
+        "type": "VARIANT",
         "options": [
           "Default",
           "Subtle"
@@ -869,6 +1088,7 @@
       },
       {
         "name": "Direction",
+        "type": "VARIANT",
         "options": [
           "Horizontal",
           "Vertical"
@@ -882,9 +1102,35 @@
     "description": "ツマミをドラッグして値を調整できるコンポーネントです。音量や明るさなど、即時フィードバックが重要な場面で使用します。",
     "nodeId": "27512:45",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
+      {
+        "name": "Show Label#25710:0",
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      {
+        "name": "Marks#25710:73",
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      {
+        "name": "Tooltip#26112:0",
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      {
+        "name": "StartLabel#27641:0",
+        "type": "TEXT",
+        "defaultValue": "Start Label"
+      },
+      {
+        "name": "EndLabel#27641:26",
+        "type": "TEXT",
+        "defaultValue": "End Label"
+      },
       {
         "name": "Size",
+        "type": "VARIANT",
         "options": [
           "Medium",
           "Large"
@@ -892,6 +1138,7 @@
       },
       {
         "name": "State",
+        "type": "VARIANT",
         "options": [
           "Enabled",
           "Hovered",
@@ -901,6 +1148,7 @@
       },
       {
         "name": "Progress",
+        "type": "VARIANT",
         "options": [
           "0",
           "50",
@@ -915,9 +1163,15 @@
     "description": "未読の通知や新着情報をユーザーに知らせるためのコンポーネントです。",
     "nodeId": "1262:28909",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
+      {
+        "name": "Count#1262:5",
+        "type": "TEXT",
+        "defaultValue": "5"
+      },
       {
         "name": "Type",
+        "type": "VARIANT",
         "options": [
           "Non-number",
           "With-number"
@@ -925,6 +1179,7 @@
       },
       {
         "name": "Size",
+        "type": "VARIANT",
         "options": [
           "Medium",
           "Small"
@@ -932,6 +1187,7 @@
       },
       {
         "name": "Color",
+        "type": "VARIANT",
         "options": [
           "Secondary",
           "Primary"
@@ -945,9 +1201,10 @@
     "description": "",
     "nodeId": "17879:8686",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
       {
         "name": "Size",
+        "type": "VARIANT",
         "options": [
           "Large",
           "Medium",
@@ -956,6 +1213,7 @@
       },
       {
         "name": "State",
+        "type": "VARIANT",
         "options": [
           "Enabled",
           "Hovered",
@@ -970,9 +1228,20 @@
     "description": "",
     "nodeId": "17879:8658",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
+      {
+        "name": "Value#17879:6",
+        "type": "TEXT",
+        "defaultValue": "Cell"
+      },
+      {
+        "name": "Text#17879:7",
+        "type": "TEXT",
+        "defaultValue": "Cell"
+      },
       {
         "name": "Size",
+        "type": "VARIANT",
         "options": [
           "Large",
           "Medium",
@@ -981,6 +1250,7 @@
       },
       {
         "name": "Type",
+        "type": "VARIANT",
         "options": [
           "Default",
           "Error",
@@ -990,6 +1260,7 @@
       },
       {
         "name": "State",
+        "type": "VARIANT",
         "options": [
           "Enabled",
           "Hovered",
@@ -1004,9 +1275,10 @@
     "description": "棒グラフ(縦)のサンプルです。ガイドラインを見ながらデータの種類に応じてカラースキームを使い分けてください。",
     "nodeId": "17792:14261",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
       {
         "name": "ColorScheme",
+        "type": "VARIANT",
         "options": [
           "Primary",
           "Multi"
@@ -1020,9 +1292,15 @@
     "description": "Chartと組み合わせる想定のツールチップです。ホバーやクリック時にデータの値を表示します。",
     "nodeId": "18074:7030",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
+      {
+        "name": "Label#7068:2",
+        "type": "TEXT",
+        "defaultValue": "凡例"
+      },
       {
         "name": "Direction",
+        "type": "VARIANT",
         "options": [
           "TopCenter",
           "BottomCenter",
@@ -1042,9 +1320,10 @@
     "description": "DatePickerと組み合わせて使うことを想定したCalendarコンポーネントです。日付指定方法は単一と範囲の2つに対応しています。",
     "nodeId": "17871:5058",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
       {
         "name": "State",
+        "type": "VARIANT",
         "options": [
           "Enabled",
           "Hovered - Single",
@@ -1061,9 +1340,10 @@
     "description": "視覚的に区切るためのコンポーネントです。コンテナ内でコンテンツをグループ化する際にも使用します。",
     "nodeId": "3122:30116",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
       {
         "name": "Color",
+        "type": "VARIANT",
         "options": [
           "Light",
           "Normal",
@@ -1078,9 +1358,10 @@
     "description": "CheckBoxとRadioButtonからラベルを除いたコンポーネントです。カードやリストと併用して使用できます。",
     "nodeId": "6816:45671",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
       {
         "name": "Type",
+        "type": "VARIANT",
         "options": [
           "Checkbox",
           "Radio"
@@ -1088,6 +1369,7 @@
       },
       {
         "name": "State",
+        "type": "VARIANT",
         "options": [
           "Disabled-Enabled",
           "Disabled-Selected",
@@ -1105,9 +1387,10 @@
     "description": "",
     "nodeId": "13249:67611",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
       {
         "name": "Name",
+        "type": "VARIANT",
         "options": [
           "activity",
           "airplay",
@@ -1424,9 +1707,10 @@
     "description": "円グラフのサンプルです。ガイドラインを見ながらデータの種類に応じてカラースキームを使い分けてください。",
     "nodeId": "17792:14082",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
       {
         "name": "ColorScheme",
+        "type": "VARIANT",
         "options": [
           "Primary",
           "Multi"
@@ -1434,6 +1718,7 @@
       },
       {
         "name": "Type",
+        "type": "VARIANT",
         "options": [
           "Donut",
           "Hole"
@@ -1447,9 +1732,10 @@
     "description": "積み上げグラフのサンプルです。ガイドラインを見ながらデータの種類に応じてカラースキームを使い分けてください。",
     "nodeId": "18036:7361",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
       {
         "name": "ColorScheme",
+        "type": "VARIANT",
         "options": [
           "Primary",
           "Multi"
@@ -1463,9 +1749,10 @@
     "description": "",
     "nodeId": "20412:438",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
       {
         "name": "Type",
+        "type": "VARIANT",
         "options": [
           "Linear",
           "Circular"
@@ -1473,6 +1760,7 @@
       },
       {
         "name": "Size",
+        "type": "VARIANT",
         "options": [
           "Small",
           "Medium",
@@ -1481,6 +1769,7 @@
       },
       {
         "name": "Progress",
+        "type": "VARIANT",
         "options": [
           "0",
           "20",
@@ -1498,9 +1787,20 @@
     "description": "ステータス、カテゴリなどを表すコンポーネントです。情報を簡潔に表示し、ユーザーの注意を引きつけます。",
     "nodeId": "3285:27625",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
+      {
+        "name": "Label#1262:5",
+        "type": "TEXT",
+        "defaultValue": "Label"
+      },
+      {
+        "name": "ShowCloseButton#8933:0",
+        "type": "BOOLEAN",
+        "defaultValue": false
+      },
       {
         "name": "Color",
+        "type": "VARIANT",
         "options": [
           "Gray",
           "Gray-subtle",
@@ -1518,6 +1818,7 @@
       },
       {
         "name": "Size",
+        "type": "VARIANT",
         "options": [
           "Small",
           "Medium",
@@ -1532,9 +1833,15 @@
     "description": "ユーザーについて視覚的に表現するコンポーネントです。",
     "nodeId": "3661:24552",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
+      {
+        "name": "Text#6836:72",
+        "type": "TEXT",
+        "defaultValue": "MH"
+      },
       {
         "name": "Type",
+        "type": "VARIANT",
         "options": [
           "Image",
           "Text",
@@ -1543,6 +1850,7 @@
       },
       {
         "name": "Size",
+        "type": "VARIANT",
         "options": [
           "Large",
           "Medium",
@@ -1557,15 +1865,47 @@
     "description": "ダッシュボード画面で使うことを想定したコンポーネントです。データをサマライズして表示する際に使用します。",
     "nodeId": "3359:9200",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
+      {
+        "name": "Title#6410:430",
+        "type": "TEXT",
+        "defaultValue": "タイトル"
+      },
+      {
+        "name": "SubTitle#6410:434",
+        "type": "TEXT",
+        "defaultValue": "ラベル"
+      },
+      {
+        "name": "WidgetLabel#6410:438",
+        "type": "TEXT",
+        "defaultValue": "ラベル"
+      },
+      {
+        "name": "UnitLabel#6410:442",
+        "type": "TEXT",
+        "defaultValue": "ラベル"
+      },
+      {
+        "name": "WidgetLabel2#6410:446",
+        "type": "TEXT",
+        "defaultValue": "ラベル"
+      },
+      {
+        "name": "UnitLabel2#6410:450",
+        "type": "TEXT",
+        "defaultValue": "ラベル"
+      },
       {
         "name": "Kind",
+        "type": "VARIANT",
         "options": [
           "Chart"
         ]
       },
       {
         "name": "Values",
+        "type": "VARIANT",
         "options": [
           "No Value",
           "Single Value",
@@ -1580,9 +1920,15 @@
     "description": "画面上に一時的に表示される短い通知メッセージです。アクションの結果やエラーメッセージなどをユーザーに伝えるために使用します。",
     "nodeId": "3256:16094",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
+      {
+        "name": "Title#6410:419",
+        "type": "TEXT",
+        "defaultValue": "テキストテキストテキスト"
+      },
       {
         "name": "Type",
+        "type": "VARIANT",
         "options": [
           "Default",
           "Success",
@@ -1597,9 +1943,20 @@
     "description": "検索用途に特化した入力コンポーネントです。検索キーワードを入力した際に候補をサジェストする機能も持ちます。",
     "nodeId": "3311:28188",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
+      {
+        "name": "Placeholder#6408:202",
+        "type": "TEXT",
+        "defaultValue": "検索"
+      },
+      {
+        "name": "SearchValue#6408:211",
+        "type": "TEXT",
+        "defaultValue": "入力テキスト"
+      },
       {
         "name": "State",
+        "type": "VARIANT",
         "options": [
           "Disabled",
           "Enabled",
@@ -1609,6 +1966,7 @@
       },
       {
         "name": "Size",
+        "type": "VARIANT",
         "options": [
           "Medium",
           "Small"
@@ -1622,9 +1980,20 @@
     "description": "ChoiceBoxにラベルを付けたコンポーネントです。複数の選択肢から、1つ以上を選択する際に使用します。",
     "nodeId": "5129:40889",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
+      {
+        "name": "Label#6410:343",
+        "type": "TEXT",
+        "defaultValue": "タイトル"
+      },
+      {
+        "name": "HelperText#6410:354",
+        "type": "TEXT",
+        "defaultValue": "補足テキスト補足テキスト補足テキスト補足テキスト"
+      },
       {
         "name": "Lines",
+        "type": "VARIANT",
         "options": [
           "Multiple Lines",
           "Single Line"
@@ -1632,6 +2001,7 @@
       },
       {
         "name": "State",
+        "type": "VARIANT",
         "options": [
           "Disabled-Enabled",
           "Enabled",
@@ -1648,9 +2018,15 @@
     "description": "データ表示 (read-only) 用途のテーブルコンポーネントです。Figma上では行単位でAutoLayout化して扱うことを想定しています。Type Headerは見出しとして使います。",
     "nodeId": "17879:8713",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
+      {
+        "name": "Checkbox#18128:0",
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
       {
         "name": "Type",
+        "type": "VARIANT",
         "options": [
           "Body",
           "Header"
@@ -1658,6 +2034,7 @@
       },
       {
         "name": "Size",
+        "type": "VARIANT",
         "options": [
           "Large",
           "Medium",
@@ -1666,6 +2043,7 @@
       },
       {
         "name": "State",
+        "type": "VARIANT",
         "options": [
           "Enabled",
           "Selected",
@@ -1680,9 +2058,10 @@
     "description": "アクションをトリガーするためのクリック可能なコンポーネントです。アイコンを使用してアクションの内容を視覚的に伝えます。",
     "nodeId": "3107:13402",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
       {
         "name": "Shape",
+        "type": "VARIANT",
         "options": [
           "Circle",
           "Rectangle"
@@ -1690,6 +2069,7 @@
       },
       {
         "name": "Size",
+        "type": "VARIANT",
         "options": [
           "Small",
           "Medium",
@@ -1698,6 +2078,7 @@
       },
       {
         "name": "Type",
+        "type": "VARIANT",
         "options": [
           "Filled",
           "Outlined",
@@ -1706,6 +2087,7 @@
       },
       {
         "name": "State",
+        "type": "VARIANT",
         "options": [
           "Enabled",
           "Hovered",
@@ -1721,9 +2103,15 @@
     "description": "複数のビューを切り替えるためのコンポーネントです。TopAppBarやBottomNavigationはグローバルなナビゲーションとして使用しますが、Tabsはローカルなナビゲーションであることに注意してください。",
     "nodeId": "3430:26917",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
+      {
+        "name": "Title#1262:10",
+        "type": "TEXT",
+        "defaultValue": "ラベル"
+      },
       {
         "name": "Selected",
+        "type": "VARIANT",
         "options": [
           "True",
           "False"
@@ -1731,6 +2119,7 @@
       },
       {
         "name": "State",
+        "type": "VARIANT",
         "options": [
           "Hovered",
           "Enabled",
@@ -1740,6 +2129,7 @@
       },
       {
         "name": "Notification",
+        "type": "VARIANT",
         "options": [
           "None",
           "Dot",
@@ -1754,9 +2144,50 @@
     "description": "画面上部に配置するモバイルやタブレット向けのグローバルなナビゲーションです。",
     "nodeId": "1353:14085",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
+      {
+        "name": "Title#7284:0",
+        "type": "TEXT",
+        "defaultValue": "ページタイトル"
+      },
+      {
+        "name": "ShowTrailingIcon5#8780:0",
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      {
+        "name": "ShowTrailingIcon4#8780:6",
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      {
+        "name": "ShowTrailingIcon3#8780:12",
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      {
+        "name": "ShowTrailingIcon2#8780:18",
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      {
+        "name": "ShowTrailingIcon1#8780:24",
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      {
+        "name": "ShowHeadingIcon#8781:0",
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      {
+        "name": "ShowNotificationBadge#8855:18",
+        "type": "BOOLEAN",
+        "defaultValue": false
+      },
       {
         "name": "Type",
+        "type": "VARIANT",
         "options": [
           "Navbar",
           "TitleWithIcons",
@@ -1765,6 +2196,7 @@
       },
       {
         "name": "Navbar",
+        "type": "VARIANT",
         "options": [
           "True",
           "False"
@@ -1778,9 +2210,20 @@
     "description": "ChoiceBoxにラベルを付けたコンポーネントです。複数の選択肢から、一つを排他的に選択する際に使用します。",
     "nodeId": "3354:7943",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
+      {
+        "name": "Label#6410:365",
+        "type": "TEXT",
+        "defaultValue": "タイトル"
+      },
+      {
+        "name": "HelperText#6410:381",
+        "type": "TEXT",
+        "defaultValue": "補足テキスト補足テキスト補足テキスト補足テキスト"
+      },
       {
         "name": "Lines",
+        "type": "VARIANT",
         "options": [
           "Multiple Lines",
           "Single Line"
@@ -1788,6 +2231,7 @@
       },
       {
         "name": "State",
+        "type": "VARIANT",
         "options": [
           "Disabled-Enabled",
           "Disabled-Selected",
@@ -1804,9 +2248,50 @@
     "description": "1行のテキストを入力するためのコンポーネントです。Buttonなどと合わせてフォームを構成します。複数行にはTextAreaを使用してください。",
     "nodeId": "5113:4273",
     "type": "COMPONENT_SET",
-    "variantProperties": [
+    "componentProperties": [
+      {
+        "name": "Label#6390:0",
+        "type": "TEXT",
+        "defaultValue": "ラベル"
+      },
+      {
+        "name": "Placeholder#6390:6",
+        "type": "TEXT",
+        "defaultValue": "プレースホルダー"
+      },
+      {
+        "name": "Description#6390:12",
+        "type": "TEXT",
+        "defaultValue": "入力方法などに関するヘルプテキスト"
+      },
+      {
+        "name": "InvalidMessage#6390:18",
+        "type": "TEXT",
+        "defaultValue": "入力の誤りに関するテキスト"
+      },
+      {
+        "name": "TextValue#6408:133",
+        "type": "TEXT",
+        "defaultValue": "入力テキスト"
+      },
+      {
+        "name": "Required#8855:0",
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      {
+        "name": "ShowDescription#8855:6",
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      {
+        "name": "RequiredLabel#26692:50",
+        "type": "TEXT",
+        "defaultValue": "必須"
+      },
       {
         "name": "State",
+        "type": "VARIANT",
         "options": [
           "Disabled",
           "Error",

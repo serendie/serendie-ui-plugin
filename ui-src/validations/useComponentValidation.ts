@@ -23,12 +23,21 @@ export type ComponentValidationResult = {
   issues: Issue[]
 }
 
-function generateVariantInfo(): string {
+function generateComponentPropertiesInfo(): string {
   const lines: string[] = []
   for (const [name, info] of Object.entries(componentKeysMap)) {
-    if (info.type === 'COMPONENT_SET' && info.variantProperties?.length) {
-      const props = info.variantProperties
-        .map(p => `${p.name}: [${p.options.join(', ')}]`)
+    if (info.type === 'COMPONENT_SET' && info.componentProperties?.length) {
+      const props = info.componentProperties
+        .map(p => {
+          if (p.type === 'VARIANT' && p.options) {
+            return `${p.name}: [${p.options.join(', ')}]`
+          } else if (p.type === 'BOOLEAN') {
+            return `${p.name}: boolean (default: ${p.defaultValue})`
+          } else if (p.type === 'TEXT') {
+            return `${p.name}: text`
+          }
+          return `${p.name}: unknown`
+        })
         .join(', ')
       lines.push(`- ${name}: ${props}`)
     }
@@ -74,7 +83,7 @@ export function createIssuesFromCandidates(
         source: 'component',
         suggestion: {
           componentName: candidate.suggestedComponent,
-          variantProperties: candidate.variantProperties,
+          properties: candidate.properties,
         },
       })
     }
@@ -108,16 +117,16 @@ export function useComponentValidation({ apiKey }: { apiKey: string }) {
         const openai = createOpenAI({ apiKey })
         const serializedStructure = serializeNodeStructure(structure)
 
-        const variantInfo = generateVariantInfo()
+        const componentPropertiesInfo = generateComponentPropertiesInfo()
         const systemPrompt = `あなたはSerendie Design System（SDS）の専門家です。
 与えられたFigmaノード構造と画像を分析し、各ノードがSDSのどのコンポーネントとして実装されるべきかを判断してください。
 
 # SDSで利用可能なコンポーネント
 ${SDS_COMPONENT_NAMES.join(', ')}
 
-# コンポーネントのバリアント
-以下のコンポーネントにはバリアントがあります。適切なバリアントを指定してください:
-${variantInfo}
+# コンポーネントのプロパティ
+以下のコンポーネントにはプロパティがあります。適切なプロパティを指定してください:
+${componentPropertiesInfo}
 
 # 判断基準
 - ノードの視覚的な特徴（サイズ、形状、色）
@@ -129,7 +138,7 @@ ${variantInfo}
 - SDSコンポーネントに該当しないノード（単純なFrame、装飾的な要素など）はsuggestedComponentをnullにしてください
 - INSTANCEノードで既にcomponentNameがある場合、それがSDSコンポーネントかどうかも考慮してください
 - 最上位のノードだけでなく、子ノードも含めて全て分析してください
-- コンポーネントを提案する際、バリアントがあるコンポーネントの場合はvariantPropertiesも指定してください
+- コンポーネントを提案する際、プロパティがあるコンポーネントの場合はpropertiesも指定してください
 
 # 重要: nodeIdについて
 - nodeIdは必ずノード構造に記載されている正確なID（例: "1234:5678"）を使用してください

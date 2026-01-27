@@ -141,33 +141,46 @@ export async function applyComponents(
         )
         instance = componentSet.defaultVariant.createInstance()
 
-        // バリアント指定がある場合はsetProperties()で変更
-        if (
-          item.variantProperties &&
-          Object.keys(item.variantProperties).length > 0
-        ) {
+        // プロパティ指定がある場合はsetProperties()で変更
+        if (item.properties && Object.keys(item.properties).length > 0) {
           try {
             // AIが返した値を正しいオプション値に正規化（大文字小文字を無視してマッチング）
-            const normalizedProps: Record<string, string> = {}
-            for (const [key, value] of Object.entries(item.variantProperties)) {
-              const propDef = componentInfo.variantProperties?.find(
-                p => p.name.toLowerCase() === key.toLowerCase()
+            const normalizedProps: Record<string, string | boolean> = {}
+            for (const [key, value] of Object.entries(item.properties)) {
+              const propDef = componentInfo.componentProperties?.find(
+                (p): p is typeof p & { type: 'VARIANT'; options: string[] } =>
+                  p.name.toLowerCase() === key.toLowerCase() &&
+                  p.type === 'VARIANT'
               )
               if (propDef) {
+                // VARIANTの場合、オプションから大文字小文字を無視してマッチング
                 const matched = propDef.options.find(
-                  opt => opt.toLowerCase() === value.toLowerCase()
+                  opt => opt.toLowerCase() === String(value).toLowerCase()
                 )
-                normalizedProps[propDef.name] = matched ?? value
+                normalizedProps[propDef.name] = matched ?? String(value)
               } else {
-                normalizedProps[key] = value
+                // BOOLEAN/TEXTの場合はそのまま
+                const booleanOrTextProp = componentInfo.componentProperties?.find(
+                  p =>
+                    p.name.toLowerCase() === key.toLowerCase() &&
+                    (p.type === 'BOOLEAN' || p.type === 'TEXT')
+                )
+                if (booleanOrTextProp) {
+                  normalizedProps[booleanOrTextProp.name] =
+                    booleanOrTextProp.type === 'BOOLEAN'
+                      ? value === true || value === 'true' || value === 'True'
+                      : String(value)
+                } else {
+                  normalizedProps[key] = value
+                }
               }
             }
             instance.setProperties(normalizedProps)
           } catch (e) {
-            // 無効なバリアント指定の場合はデフォルトのまま続行
+            // 無効なプロパティ指定の場合はデフォルトのまま続行
             console.warn(
-              `Invalid variant properties for ${item.componentName}:`,
-              item.variantProperties,
+              `Invalid properties for ${item.componentName}:`,
+              item.properties,
               e
             )
           }

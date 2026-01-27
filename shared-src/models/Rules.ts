@@ -150,7 +150,7 @@ export type DesignTokenIssue = BaseIssue & {
 
 export type ComponentSuggestion = {
   componentName: string
-  variantProperties?: Record<string, string>
+  properties?: Record<string, string | boolean>
 }
 
 export type ComponentIssue = BaseIssue & {
