@@ -7,7 +7,7 @@ export const componentCandidateSchema = z.object({
     .string()
     .describe('推奨されるSDSコンポーネント名'),
   properties: z
-    .record(z.union([z.string(), z.boolean()]))
+    .record(z.union([z.string(), z.boolean(), z.number()]))
     .optional()
     .describe(
       '推奨されるコンポーネントプロパティ（例: { "size": "medium", "ShowIcon": true }）'

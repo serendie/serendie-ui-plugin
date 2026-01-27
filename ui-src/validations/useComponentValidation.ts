@@ -11,6 +11,7 @@ import {
 import componentsManifest from '../../shared-src/assets/components_manifest.json'
 import componentKeys from '../../assets/component-keys.json'
 import { ComponentKeysMap } from '../../shared-src/models/ComponentKeys'
+import { getBasePropName } from '../../shared-src/utils/getBasePropName'
 
 // SDSコンポーネント名のリスト
 const SDS_COMPONENT_NAMES = componentsManifest.map(c => c.name)
@@ -29,15 +30,16 @@ function generateComponentPropertiesInfo(): string {
     if (info.type === 'COMPONENT_SET' && info.componentProperties?.length) {
       const props = info.componentProperties
         .map(p => {
+          const propName = getBasePropName(p.name)
           switch (p.type) {
             case 'VARIANT':
-              return `${p.name}: [${p.options.join(', ')}]`
+              return `${propName}: [${p.options.join(', ')}]`
             case 'BOOLEAN':
-              return `${p.name}: boolean (default: ${p.defaultValue})`
+              return `${propName}: boolean (default: ${p.defaultValue})`
             case 'TEXT':
-              return `${p.name}: text`
+              return `${propName}: text`
             case 'INSTANCE_SWAP':
-              return `${p.name}: instance swap (${p.preferredComponentSets.join(' | ')})`
+              return `${propName}: instance swap (${p.preferredComponentSets.join(' | ')})`
           }
         })
         .join(', ')
@@ -64,7 +66,6 @@ export function createIssuesFromCandidates(
   const issues: Issue[] = []
 
   for (const candidate of candidates) {
-    // confidenceがhighのもののみissueに変換
     if (candidate.confidence === 'low') continue
 
     const node = nodeMap.get(candidate.nodeId)

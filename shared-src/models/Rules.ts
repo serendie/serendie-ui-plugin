@@ -150,7 +150,7 @@ export type DesignTokenIssue = BaseIssue & {
 
 export type ComponentSuggestion = {
   componentName: string
-  properties?: Record<string, string | boolean>
+  properties?: Record<string, string | boolean | number>
 }
 
 export type ComponentIssue = BaseIssue & {

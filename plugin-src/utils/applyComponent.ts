@@ -1,5 +1,6 @@
 import { ApplyComponentItem } from '../../shared-src/models/PluginMessage'
 import { ComponentKeysMap } from '../../shared-src/models/ComponentKeys'
+import { getBasePropName } from '../../shared-src/utils/getBasePropName'
 import componentKeys from '../../assets/component-keys.json'
 
 const componentKeysMap = componentKeys as ComponentKeysMap
@@ -62,7 +63,7 @@ function findDescendantByName(
  */
 function applyNestedProperties(
   instance: InstanceNode,
-  nestedProps: Record<string, string | boolean>
+  nestedProps: Record<string, string | boolean | number>
 ): void {
   for (const [key, value] of Object.entries(nestedProps)) {
     const parsed = parseNestedProperty(key)
@@ -240,7 +241,7 @@ export async function applyComponents(
             // INSTANCE_SWAPは後で別途処理
             const instanceSwapProps: Array<{ propName: string; componentKey: string }> = []
             // ネストしたプロパティは後で別途処理
-            const nestedProps: Record<string, string | boolean> = {}
+            const nestedProps: Record<string, string | boolean | number> = {}
 
             for (const [key, value] of Object.entries(item.properties)) {
               // ネストしたプロパティ（Path/To/Instance.Property形式）は別途処理
@@ -249,21 +250,56 @@ export async function applyComponents(
                 continue
               }
 
+              // プロパティ名のマッチング（#以降のIDを無視して比較）
+              // 例: "Show Label#25710:0" は "Show Label" としてマッチ
               const propDef = componentInfo.componentProperties?.find(
-                p => p.name.toLowerCase() === key.toLowerCase()
+                p => getBasePropName(p.name).toLowerCase() === key.toLowerCase()
               )
               if (!propDef) {
-                normalizedProps[key] = value
+                // 定義されていないプロパティはスキップ（AIが存在しないプロパティを提案した場合）
+                console.warn(
+                  `Skipping unknown property for ${item.componentName}: ${key}`
+                )
                 continue
               }
 
               switch (propDef.type) {
                 case 'VARIANT': {
                   // VARIANTの場合、オプションから大文字小文字を無視してマッチング
-                  const matched = propDef.options.find(
-                    opt => opt.toLowerCase() === String(value).toLowerCase()
+                  const strValue = String(value)
+                  let matched = propDef.options.find(
+                    opt => opt.toLowerCase() === strValue.toLowerCase()
                   )
-                  normalizedProps[propDef.name] = matched ?? String(value)
+
+                  // 完全一致しない場合、数値オプションなら最も近い値にフォールバック
+                  if (!matched) {
+                    const numValue = Number(value)
+                    if (!isNaN(numValue)) {
+                      const numericOptions = propDef.options
+                        .map(opt => ({ opt, num: Number(opt) }))
+                        .filter(x => !isNaN(x.num))
+                      if (numericOptions.length > 0) {
+                        const closest = numericOptions.reduce((a, b) =>
+                          Math.abs(b.num - numValue) < Math.abs(a.num - numValue)
+                            ? b
+                            : a
+                        )
+                        matched = closest.opt
+                        console.log(
+                          `Variant value ${value} not found, using closest: ${matched}`
+                        )
+                      }
+                    }
+                  }
+
+                  // マッチしない場合はスキップ（存在しないバリアントでエラーになるため）
+                  if (matched) {
+                    normalizedProps[propDef.name] = matched
+                  } else {
+                    console.warn(
+                      `Skipping invalid variant value for ${propDef.name}: ${value}`
+                    )
+                  }
                   break
                 }
                 case 'BOOLEAN':
