@@ -79,7 +79,11 @@ export type UIToPluginMessage =
   | { type: 'get-selection-images'; nodeIds: string[] }
   | { type: 'clear-selection' }
   | { type: 'notify'; message: string }
-  | { type: 'apply-components'; items: ApplyComponentItem[] }
+  | {
+      type: 'apply-components'
+      rootNodeId: string // コピー元のルートノードID
+      items: ApplyComponentItem[]
+    }
   | { type: 'select-node'; nodeId: string }
 
 // 全メッセージ型
