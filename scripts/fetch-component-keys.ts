@@ -17,6 +17,10 @@ import * as https from 'https'
 import * as fs from 'fs'
 import * as path from 'path'
 import { config } from 'dotenv'
+import type {
+  ComponentPropertyDef,
+  ComponentKeysMap,
+} from '../shared-src/models/ComponentKeys'
 
 // .env.localを優先的に読み込み、なければ.envを読み込む
 config({ path: '.env.local' })
@@ -45,12 +49,12 @@ interface FigmaComponentSetsResponse {
   }
 }
 
-// ノード詳細レスポンスの型定義
-interface ComponentPropertyDefinition {
-  type: 'VARIANT' | 'BOOLEAN' | 'TEXT' | 'INSTANCE_SWAP'
-  variantOptions?: string[]
-  defaultValue?: string | boolean
-}
+// ノード詳細レスポンスの型定義（Figma API）
+type ComponentPropertyDefinition =
+  | { type: 'VARIANT'; variantOptions: string[] }
+  | { type: 'BOOLEAN'; defaultValue: boolean }
+  | { type: 'TEXT'; defaultValue: string }
+  | { type: 'INSTANCE_SWAP' }
 
 interface FigmaNodeDocument {
   componentPropertyDefinitions?: Record<string, ComponentPropertyDefinition>
@@ -65,23 +69,6 @@ interface FigmaNodesResponse {
   >
 }
 
-// バリアントプロパティの型
-interface VariantProperty {
-  name: string
-  options: string[]
-}
-
-// 出力するコンポーネントキーの型
-interface ComponentKeyInfo {
-  key: string
-  name: string
-  description: string
-  nodeId: string
-  type: 'COMPONENT' | 'COMPONENT_SET'
-  variantProperties?: VariantProperty[]
-}
-
-type ComponentKeysMap = Record<string, ComponentKeyInfo>
 
 async function fetchFigmaAPI<T>(endpoint: string): Promise<T> {
   return new Promise((resolve, reject) => {
@@ -185,19 +172,32 @@ async function main(): Promise<void> {
           if (!componentEntry) continue
 
           const [componentName] = componentEntry
-          const variantProperties: VariantProperty[] = []
+          const componentProperties: ComponentPropertyDef[] = []
 
           for (const [propName, propDef] of Object.entries(propDefs)) {
             if (propDef.type === 'VARIANT' && propDef.variantOptions) {
-              variantProperties.push({
+              componentProperties.push({
                 name: propName,
+                type: 'VARIANT',
                 options: propDef.variantOptions,
+              })
+            } else if (propDef.type === 'BOOLEAN') {
+              componentProperties.push({
+                name: propName,
+                type: 'BOOLEAN',
+                defaultValue: propDef.defaultValue,
+              })
+            } else if (propDef.type === 'TEXT') {
+              componentProperties.push({
+                name: propName,
+                type: 'TEXT',
+                defaultValue: propDef.defaultValue,
               })
             }
           }
 
-          if (variantProperties.length > 0) {
-            componentKeys[componentName].variantProperties = variantProperties
+          if (componentProperties.length > 0) {
+            componentKeys[componentName].componentProperties = componentProperties
           }
         }
       }

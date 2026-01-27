@@ -8,11 +8,11 @@ export const componentCandidateSchema = z.object({
     .nullable()
     .transform(val => (val === 'null' ? null : val))
     .describe('推奨されるSDSコンポーネント名（該当なしの場合はnull）'),
-  variantProperties: z
-    .record(z.coerce.string())
+  properties: z
+    .record(z.union([z.string(), z.boolean()]))
     .optional()
     .describe(
-      '推奨されるバリアントプロパティ（例: { "size": "medium", "styleType": "filled" }）'
+      '推奨されるコンポーネントプロパティ（例: { "size": "medium", "ShowIcon": true }）'
     ),
   confidence: z
     .enum(['high', 'medium', 'low'])
