@@ -138,7 +138,8 @@ async function main(): Promise<void> {
     const componentSetNodeIds: string[] = []
     if (componentSetsResponse.meta?.component_sets) {
       for (const componentSet of componentSetsResponse.meta.component_sets) {
-        const name = componentSet.name
+        // Figma側でコンポーネント名に余分なスペースが含まれている場合があるため除去
+        const name = componentSet.name.trim()
         componentKeys[name] = {
           key: componentSet.key,
           name: name,
@@ -232,8 +233,8 @@ async function main(): Promise<void> {
     if (componentsResponse.meta?.components) {
       for (const component of componentsResponse.meta.components) {
         // コンポーネントセットの子（バリアント）は含めない
-        // 名前に "/" が含まれる場合はバリアントの可能性が高い
-        const name = component.name
+        // 名前に "/" が含まれる場合はバリアントの可能性がある
+        const name = component.name.trim()
         if (!name.includes('/') && !componentKeys[name]) {
           componentKeys[name] = {
             key: component.key,

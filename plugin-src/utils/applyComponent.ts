@@ -1,76 +1,12 @@
 import { ApplyComponentItem } from '../../shared-src/models/PluginMessage'
 import { ComponentKeysMap } from '../../shared-src/models/ComponentKeys'
-import { getBasePropName } from '../../shared-src/utils/getBasePropName'
-import { findDescendantByName } from './findDescendantByName'
 import { detachAllInstances } from './detachAllInstances'
+import { setInstanceProperties } from './setInstanceProperties'
 import componentKeys from '../../assets/component-keys.json'
 
 const componentKeysMap = componentKeys as ComponentKeysMap
 
 const COPY_GAP = 20 // コピー配置時のギャップ（px）
-
-/**
- * ネストしたプロパティかどうかを判定
- * 形式: "Path/To/Instance.PropertyName"
- */
-function isNestedProperty(key: string): boolean {
-  return key.includes('/') && key.includes('.')
-}
-
-/**
- * ネストしたプロパティをパース
- */
-function parseNestedProperty(
-  key: string
-): { path: string[]; propName: string } | null {
-  const dotIndex = key.lastIndexOf('.')
-  if (dotIndex === -1) return null
-  const pathPart = key.slice(0, dotIndex)
-  const propName = key.slice(dotIndex + 1)
-  return { path: pathPart.split('/'), propName }
-}
-
-/**
- * ネストしたプロパティを適用
- * パスを厳密にたどってターゲットインスタンスを見つけ、プロパティを設定する
- */
-function applyNestedProperties(
-  instance: InstanceNode,
-  nestedProps: Record<string, string | boolean | number>
-): void {
-  for (const [key, value] of Object.entries(nestedProps)) {
-    const parsed = parseNestedProperty(key)
-    if (!parsed) continue
-
-    // パスの各要素を順番に再帰的に探索
-    let current: SceneNode = instance
-    let found = true
-
-    for (const name of parsed.path) {
-      const child = findDescendantByName(current, name)
-      if (!child) {
-        console.warn(`Nested property path not found: ${key} (looking for ${name})`)
-        found = false
-        break
-      }
-      current = child
-    }
-
-    if (!found) continue
-
-    // ターゲットがINSTANCEの場合、プロパティを変更
-    if (current.type === 'INSTANCE') {
-      try {
-        current.setProperties({ [parsed.propName]: String(value) })
-      } catch (e) {
-        console.warn(`Failed to set nested property: ${key}`, e)
-      }
-    } else {
-      console.warn(`Nested property target is not an INSTANCE: ${key} (type: ${current.type})`)
-    }
-  }
-}
-
 
 /**
  * 選択要素をコピーし、コピー内でSerendie UIコンポーネントに置き換える
@@ -185,147 +121,16 @@ export async function applyComponents(
         )
         instance = componentSet.defaultVariant.createInstance()
 
-        // プロパティ指定がある場合はsetProperties()で変更
+        // プロパティ指定がある場合は適用
         if (item.properties && Object.keys(item.properties).length > 0) {
           try {
-            // AIが返した値を正しいオプション値に正規化（大文字小文字を無視してマッチング）
-            const normalizedProps: Record<string, string | boolean> = {}
-            // INSTANCE_SWAPは後で別途処理
-            const instanceSwapProps: Array<{ propName: string; componentKey: string }> = []
-            // ネストしたプロパティは後で別途処理
-            const nestedProps: Record<string, string | boolean | number> = {}
-
-            for (const [key, value] of Object.entries(item.properties)) {
-              // ネストしたプロパティ（Path/To/Instance.Property形式）は別途処理
-              if (isNestedProperty(key)) {
-                nestedProps[key] = value
-                continue
-              }
-
-              // プロパティ名のマッチング（#以降のIDを無視して比較）
-              // 例: "Show Label#25710:0" は "Show Label" としてマッチ
-              const propDef = componentInfo.componentProperties?.find(
-                p => getBasePropName(p.name).toLowerCase() === key.toLowerCase()
-              )
-              if (!propDef) {
-                // 定義されていないプロパティはスキップ（AIが存在しないプロパティを提案した場合）
-                console.warn(
-                  `Skipping unknown property for ${item.componentName}: ${key}`
-                )
-                continue
-              }
-
-              switch (propDef.type) {
-                case 'VARIANT': {
-                  // VARIANTの場合、オプションから大文字小文字を無視してマッチング
-                  const strValue = String(value)
-                  let matched = propDef.options.find(
-                    opt => opt.toLowerCase() === strValue.toLowerCase()
-                  )
-
-                  // 完全一致しない場合、数値オプションなら最も近い値にフォールバック
-                  if (!matched) {
-                    const numValue = Number(value)
-                    if (!isNaN(numValue)) {
-                      const numericOptions = propDef.options
-                        .map(opt => ({ opt, num: Number(opt) }))
-                        .filter(x => !isNaN(x.num))
-                      if (numericOptions.length > 0) {
-                        const closest = numericOptions.reduce((a, b) =>
-                          Math.abs(b.num - numValue) < Math.abs(a.num - numValue)
-                            ? b
-                            : a
-                        )
-                        matched = closest.opt
-                        console.log(
-                          `Variant value ${value} not found, using closest: ${matched}`
-                        )
-                      }
-                    }
-                  }
-
-                  // マッチしない場合はスキップ（存在しないバリアントでエラーになるため）
-                  if (matched) {
-                    normalizedProps[propDef.name] = matched
-                  } else {
-                    console.warn(
-                      `Skipping invalid variant value for ${propDef.name}: ${value}`
-                    )
-                  }
-                  break
-                }
-                case 'BOOLEAN':
-                  normalizedProps[propDef.name] =
-                    value === true || value === 'true' || value === 'True'
-                  break
-                case 'TEXT':
-                  normalizedProps[propDef.name] = String(value)
-                  break
-                case 'INSTANCE_SWAP': {
-                  // "ComponentSetName/VariantValue" 形式をパース
-                  const strValue = String(value)
-                  const slashIndex = strValue.indexOf('/')
-                  if (slashIndex === -1) continue
-
-                  const componentSetName = strValue.slice(0, slashIndex)
-                  const variantValue = strValue.slice(slashIndex + 1)
-
-                  // Component Setのキーを取得
-                  const targetComponentSet = componentKeysMap[componentSetName]
-                  if (
-                    !targetComponentSet ||
-                    targetComponentSet.type !== 'COMPONENT_SET'
-                  )
-                    continue
-
-                  // Component Setをインポートしてバリアントを取得
-                  const importedSet = await figma.importComponentSetByKeyAsync(
-                    targetComponentSet.key
-                  )
-                  // バリアント名でマッチング（例: "Name=arrow_back"）
-                  const variantComponent = importedSet.children.find(child => {
-                    if (child.type !== 'COMPONENT') return false
-                    // バリアント名は "Name=value" または "Prop1=val1, Prop2=val2" 形式
-                    return child.name
-                      .split(', ')
-                      .some(
-                        part =>
-                          part.toLowerCase() ===
-                          `name=${variantValue.toLowerCase()}`
-                      )
-                  }) as ComponentNode | undefined
-
-                  if (variantComponent) {
-                    instanceSwapProps.push({
-                      propName: propDef.name,
-                      componentKey: variantComponent.key,
-                    })
-                  }
-                  break
-                }
-              }
-            }
-
-            // VARIANT/BOOLEAN/TEXTを適用
-            if (Object.keys(normalizedProps).length > 0) {
-              instance.setProperties(normalizedProps)
-            }
-
-            // INSTANCE_SWAPを適用（コンポーネントキーを使用）
-            for (const { propName, componentKey } of instanceSwapProps) {
-              const swappedComponent =
-                await figma.importComponentByKeyAsync(componentKey)
-              instance.setProperties({
-                [propName]: swappedComponent.id,
-              })
-            }
-
-            // ネストしたプロパティを適用
-            if (Object.keys(nestedProps).length > 0) {
-              applyNestedProperties(instance, nestedProps)
-            }
+            await setInstanceProperties(
+              instance,
+              item.properties,
+              componentInfo,
+              item.componentName
+            )
           } catch (e) {
-            // 無効なプロパティ指定の場合はデフォルトのまま続行
             console.warn(
               `Invalid properties for ${item.componentName}:`,
               item.properties,
