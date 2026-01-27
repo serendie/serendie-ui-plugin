@@ -142,6 +142,10 @@ ${componentPropertiesInfo}
 - 最上位のノードだけでなく、子ノードも含めて全て分析してください
 - コンポーネントを提案する際、プロパティがあるコンポーネントの場合はpropertiesも指定してください
 - instance swapプロパティは「ComponentSetName/VariantValue」形式で指定してください（例: "OutlinedSerendieSymbols/arrow_back"）
+- TopAppBarなどのコンポーネントでは、ネストしたインスタンスのプロパティを変更できます
+  - 形式: "親インスタンス名/子インスタンス名.プロパティ名"
+  - 例: "HeadingIconButton/SerendieSymbols.Name": "arrow_back"（ヘッダーアイコンを戻るボタンに変更）
+  - 例: "TrailingIcon1/OutlinedSerendieSymbols.Name": "settings"（右端のアイコンを設定に変更）
 
 # 重要: nodeIdについて
 - nodeIdは必ずノード構造に記載されている正確なID（例: "1234:5678"）を使用してください

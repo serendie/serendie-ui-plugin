@@ -7,6 +7,83 @@ const componentKeysMap = componentKeys as ComponentKeysMap
 const COPY_GAP = 20 // コピー配置時のギャップ（px）
 
 /**
+ * ネストしたプロパティかどうかを判定
+ * 形式: "Path/To/Instance.PropertyName"
+ */
+function isNestedProperty(key: string): boolean {
+  return key.includes('/') && key.includes('.')
+}
+
+/**
+ * ネストしたプロパティをパース
+ */
+function parseNestedProperty(
+  key: string
+): { path: string[]; propName: string } | null {
+  const dotIndex = key.lastIndexOf('.')
+  if (dotIndex === -1) return null
+  const pathPart = key.slice(0, dotIndex)
+  const propName = key.slice(dotIndex + 1)
+  return { path: pathPart.split('/'), propName }
+}
+
+/**
+ * 再帰的に子ノードを探索
+ */
+function findChildByName(
+  node: SceneNode,
+  name: string
+): SceneNode | undefined {
+  if (!('children' in node)) return undefined
+
+  // まず直接の子を探す
+  const direct = (node as FrameNode | InstanceNode).children.find(
+    c => c.name === name
+  )
+  if (direct) return direct
+
+  // 見つからなければ子を再帰的に探索
+  for (const child of (node as FrameNode | InstanceNode).children) {
+    const found = findChildByName(child, name)
+    if (found) return found
+  }
+  return undefined
+}
+
+/**
+ * ネストしたプロパティを適用
+ */
+function applyNestedProperties(
+  instance: InstanceNode,
+  nestedProps: Record<string, string | boolean>
+): void {
+  for (const [key, value] of Object.entries(nestedProps)) {
+    const parsed = parseNestedProperty(key)
+    if (!parsed) continue
+
+    // パスをたどってターゲットインスタンスを見つける
+    let current: SceneNode = instance
+    for (const name of parsed.path) {
+      const child = findChildByName(current, name)
+      if (!child) {
+        console.warn(`Nested property path not found: ${key} (at ${name})`)
+        break
+      }
+      current = child
+    }
+
+    // ターゲットがINSTANCEの場合、プロパティを変更
+    if (current.type === 'INSTANCE') {
+      try {
+        current.setProperties({ [parsed.propName]: String(value) })
+      } catch (e) {
+        console.warn(`Failed to set nested property: ${key}`, e)
+      }
+    }
+  }
+}
+
+/**
  * コピー内のすべてのインスタンスを再帰的に解体
  */
 function detachAllInstances(node: SceneNode): SceneNode {
@@ -148,8 +225,16 @@ export async function applyComponents(
             const normalizedProps: Record<string, string | boolean> = {}
             // INSTANCE_SWAPは後で別途処理
             const instanceSwapProps: Array<{ propName: string; componentKey: string }> = []
+            // ネストしたプロパティは後で別途処理
+            const nestedProps: Record<string, string | boolean> = {}
 
             for (const [key, value] of Object.entries(item.properties)) {
+              // ネストしたプロパティ（Path/To/Instance.Property形式）は別途処理
+              if (isNestedProperty(key)) {
+                nestedProps[key] = value
+                continue
+              }
+
               const propDef = componentInfo.componentProperties?.find(
                 p => p.name.toLowerCase() === key.toLowerCase()
               )
@@ -231,6 +316,11 @@ export async function applyComponents(
               instance.setProperties({
                 [propName]: swappedComponent.id,
               })
+            }
+
+            // ネストしたプロパティを適用
+            if (Object.keys(nestedProps).length > 0) {
+              applyNestedProperties(instance, nestedProps)
             }
           } catch (e) {
             // 無効なプロパティ指定の場合はデフォルトのまま続行
