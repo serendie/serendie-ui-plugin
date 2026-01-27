@@ -1,4 +1,4 @@
-import { Issue } from '../../shared-src/models/Rules'
+import { Issue, FRAME_TYPES } from '../../shared-src/models/Rules'
 import { ColorInfo } from './extractColorInfo'
 import validate from '../rules/assignFrameVariable'
 
@@ -7,11 +7,10 @@ export default function validateAssignFrameVariable(nodes: ColorInfo[]): {
 } {
   const issues: Issue[] = []
 
-  const frameTypes = ['FRAME', 'RECTANGLE', 'COMPONENT', 'INSTANCE']
-
   for (const node of nodes) {
     // フレーム系ノードのみチェック
-    if (!frameTypes.includes(node.nodeType)) continue
+    if (!FRAME_TYPES.includes(node.nodeType as (typeof FRAME_TYPES)[number]))
+      continue
 
     // 背景色がNone（色なし）の場合はスキップ
     if (node.backgroundColor === 'None') continue

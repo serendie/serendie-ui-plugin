@@ -1,4 +1,4 @@
-import { UNEXPECTED } from '../../shared-src/models/Rules'
+import { UNEXPECTED, FRAME_TYPES } from '../../shared-src/models/Rules'
 import extractVariableKey from './extractVariableKey'
 import getVariableMap from './getVariableMap'
 import traceBackgroundColor from './traceFillDefinition'
@@ -52,9 +52,7 @@ export default async function extractColorInfo(
       textColor: textColor || UNEXPECTED,
       backgroundColor: backgroundColor || UNEXPECTED,
     })
-  } else if (
-    ['FRAME', 'RECTANGLE', 'COMPONENT', 'INSTANCE'].includes(node.type)
-  ) {
+  } else if (FRAME_TYPES.includes(node.type as (typeof FRAME_TYPES)[number])) {
     let backgroundColor: string | null = null
     let hasColor = false
     if ('fills' in node && Array.isArray(node.fills) && node.fills.length > 0) {
