@@ -65,7 +65,7 @@ export function createIssuesFromCandidates(
 
   for (const candidate of candidates) {
     // confidenceがhighのもののみissueに変換
-    if (candidate.confidence !== 'high') continue
+    if (candidate.confidence === 'low') continue
 
     const node = nodeMap.get(candidate.nodeId)
     if (!node) continue
@@ -116,6 +116,8 @@ export function useComponentValidation({ apiKey }: { apiKey: string }) {
       setState('analyzing')
       setError(null)
 
+      const startTime = performance.now()
+
       try {
         const openai = createOpenAI({ apiKey })
         const serializedStructure = serializeNodeStructure(structure)
@@ -164,7 +166,7 @@ ${componentPropertiesInfo}
           : `以下のノード構造を分析してください:\n\n${serializedStructure}`
 
         const response = await generateObject({
-          model: openai('gpt-4.1'),
+          model: openai('gpt-5.2-codex'),
           schema: componentValidationResponseSchema,
           messages: [
             { role: 'system', content: systemPrompt },
@@ -176,7 +178,8 @@ ${componentPropertiesInfo}
         const candidates = response.object.candidates
         const nodeMap = flattenNodes(structure)
 
-        console.log('=== Component Validation Results ===')
+        const elapsedTime = ((performance.now() - startTime) / 1000).toFixed(2)
+        console.log(`=== Component Validation Results (${elapsedTime}s) ===`)
         console.log('Candidates:', candidates)
 
         const issues = createIssuesFromCandidates(candidates, nodeMap)

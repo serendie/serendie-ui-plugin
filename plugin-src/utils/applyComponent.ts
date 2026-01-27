@@ -27,24 +27,30 @@ function parseNestedProperty(
   return { path: pathPart.split('/'), propName }
 }
 
+// SerendieSymbols系のフォールバック候補（互換性があるため）
+const SYMBOL_FALLBACKS: Record<string, string[]> = {
+  OutlinedSerendieSymbols: ['FilledSerendieSymbols', 'SerendieSymbols'],
+  FilledSerendieSymbols: ['OutlinedSerendieSymbols', 'SerendieSymbols'],
+  SerendieSymbols: ['OutlinedSerendieSymbols', 'FilledSerendieSymbols'],
+}
+
 /**
- * 再帰的に子ノードを探索
+ * 指定した名前のノードを再帰的に探索（最初に見つかったものを返す）
+ * SerendieSymbols系のコンポーネントは互換性があるため、フォールバックを試みる
  */
-function findChildByName(
+function findDescendantByName(
   node: SceneNode,
   name: string
 ): SceneNode | undefined {
   if (!('children' in node)) return undefined
 
-  // まず直接の子を探す
-  const direct = (node as FrameNode | InstanceNode).children.find(
-    c => c.name === name
-  )
-  if (direct) return direct
+  // 検索する名前のリストを作成（元の名前 + フォールバック）
+  const namesToSearch = [name, ...(SYMBOL_FALLBACKS[name] || [])]
 
-  // 見つからなければ子を再帰的に探索
   for (const child of (node as FrameNode | InstanceNode).children) {
-    const found = findChildByName(child, name)
+    // フォールバック含めてマッチするかチェック
+    if (namesToSearch.includes(child.name)) return child
+    const found = findDescendantByName(child, name)
     if (found) return found
   }
   return undefined
@@ -52,6 +58,7 @@ function findChildByName(
 
 /**
  * ネストしたプロパティを適用
+ * パスを厳密にたどってターゲットインスタンスを見つけ、プロパティを設定する
  */
 function applyNestedProperties(
   instance: InstanceNode,
@@ -61,16 +68,21 @@ function applyNestedProperties(
     const parsed = parseNestedProperty(key)
     if (!parsed) continue
 
-    // パスをたどってターゲットインスタンスを見つける
+    // パスの各要素を順番に再帰的に探索
     let current: SceneNode = instance
+    let found = true
+
     for (const name of parsed.path) {
-      const child = findChildByName(current, name)
+      const child = findDescendantByName(current, name)
       if (!child) {
-        console.warn(`Nested property path not found: ${key} (at ${name})`)
+        console.warn(`Nested property path not found: ${key} (looking for ${name})`)
+        found = false
         break
       }
       current = child
     }
+
+    if (!found) continue
 
     // ターゲットがINSTANCEの場合、プロパティを変更
     if (current.type === 'INSTANCE') {
@@ -79,6 +91,8 @@ function applyNestedProperties(
       } catch (e) {
         console.warn(`Failed to set nested property: ${key}`, e)
       }
+    } else {
+      console.warn(`Nested property target is not an INSTANCE: ${key} (type: ${current.type})`)
     }
   }
 }
