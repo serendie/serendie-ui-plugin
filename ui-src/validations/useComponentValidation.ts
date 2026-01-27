@@ -148,6 +148,7 @@ ${componentPropertiesInfo}
 - 最上位のノードだけでなく、子ノードも含めて全て分析してください
 - コンポーネントを提案する際、プロパティがあるコンポーネントの場合はpropertiesも指定してください
 - instance swapプロパティは「ComponentSetName/VariantValue」形式で指定してください（例: "OutlinedSerendieSymbols/arrow_back"）
+- TEXTプロパティにはノード構造に含まれるテキスト内容（text: "..."）をそのまま使用してください。絶対に変更しないでください
 ${PROMPT_TO_NEST_PROPERTY}
 
 # 重要: nodeIdについて
