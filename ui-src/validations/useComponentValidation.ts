@@ -154,6 +154,9 @@ ${componentPropertiesInfo}
 - コンポーネントを提案する際、プロパティがあるコンポーネントの場合はpropertiesも指定してください
 - instance swapプロパティは「ComponentSetName/VariantValue」形式で指定してください（例: "OutlinedSerendieSymbols/arrow_back"）
 - TEXTプロパティにはノード構造に含まれるテキスト内容（text: "..."）をそのまま使用してください。絶対に変更しないでください
+- プロパティは省略せず、必要なVARIANT・BOOLEAN・TEXTプロパティを全て明示的に指定してください
+- INSTANCE_SWAPプロパティ（leftContent、rightContent、IconInstanceなど）は、元のデザインに該当するアイコンや要素が実際に表示されている場合のみ指定してください。placeholderや空のアイコンは指定しないでください
+- あるノードをコンポーネントとして提案する場合、その子ノードは別途提案しないでください（例：TextFieldを提案する場合、その中のBadgeやアイコンは提案不要）
 ${PROMPT_TO_NEST_PROPERTY}
 
 # 重要: nodeIdについて
