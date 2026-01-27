@@ -1,6 +1,8 @@
 import { ApplyComponentItem } from '../../shared-src/models/PluginMessage'
 import { ComponentKeysMap } from '../../shared-src/models/ComponentKeys'
 import { getBasePropName } from '../../shared-src/utils/getBasePropName'
+import { findDescendantByName } from './findDescendantByName'
+import { detachAllInstances } from './detachAllInstances'
 import componentKeys from '../../assets/component-keys.json'
 
 const componentKeysMap = componentKeys as ComponentKeysMap
@@ -26,35 +28,6 @@ function parseNestedProperty(
   const pathPart = key.slice(0, dotIndex)
   const propName = key.slice(dotIndex + 1)
   return { path: pathPart.split('/'), propName }
-}
-
-// SerendieSymbols系のフォールバック候補（互換性があるため）
-const SYMBOL_FALLBACKS: Record<string, string[]> = {
-  OutlinedSerendieSymbols: ['FilledSerendieSymbols', 'SerendieSymbols'],
-  FilledSerendieSymbols: ['OutlinedSerendieSymbols', 'SerendieSymbols'],
-  SerendieSymbols: ['OutlinedSerendieSymbols', 'FilledSerendieSymbols'],
-}
-
-/**
- * 指定した名前のノードを再帰的に探索（最初に見つかったものを返す）
- * SerendieSymbols系のコンポーネントは互換性があるため、フォールバックを試みる
- */
-function findDescendantByName(
-  node: SceneNode,
-  name: string
-): SceneNode | undefined {
-  if (!('children' in node)) return undefined
-
-  // 検索する名前のリストを作成（元の名前 + フォールバック）
-  const namesToSearch = [name, ...(SYMBOL_FALLBACKS[name] || [])]
-
-  for (const child of (node as FrameNode | InstanceNode).children) {
-    // フォールバック含めてマッチするかチェック
-    if (namesToSearch.includes(child.name)) return child
-    const found = findDescendantByName(child, name)
-    if (found) return found
-  }
-  return undefined
 }
 
 /**
@@ -98,27 +71,6 @@ function applyNestedProperties(
   }
 }
 
-/**
- * コピー内のすべてのインスタンスを再帰的に解体
- */
-function detachAllInstances(node: SceneNode): SceneNode {
-  if (node.type === 'INSTANCE') {
-    const detached = node.detachInstance()
-    // 解体後のFrameの子も再帰的に処理
-    if ('children' in detached) {
-      for (let i = 0; i < detached.children.length; i++) {
-        detachAllInstances(detached.children[i])
-      }
-    }
-    return detached
-  }
-  if ('children' in node) {
-    for (let i = 0; i < node.children.length; i++) {
-      detachAllInstances(node.children[i])
-    }
-  }
-  return node
-}
 
 /**
  * 選択要素をコピーし、コピー内でSerendie UIコンポーネントに置き換える
