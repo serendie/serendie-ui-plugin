@@ -2,6 +2,8 @@ import { ApplyComponentItem } from '../../shared-src/models/PluginMessage'
 import { ComponentKeysMap } from '../../shared-src/models/ComponentKeys'
 import { detachAllInstances } from './detachAllInstances'
 import { setInstanceProperties } from './setInstanceProperties'
+import getTreePath, { getNodeByTreePath } from './getTreePath'
+import { sortByDepthDescending } from './sortByDepth'
 import componentKeys from '../../assets/component-keys.json'
 
 const componentKeysMap = componentKeys as ComponentKeysMap
@@ -39,40 +41,7 @@ export async function applyComponents(
   // Step 3: コピー内のインスタンスをすべて解体
   detachAllInstances(cloned)
 
-  // Step 4: ノードのツリーパスを計算する関数
-  // ルートからのインデックスパスを返す（例: [0, 2, 1]）
-  function getTreePath(node: BaseNode, root: BaseNode): number[] | null {
-    const path: number[] = []
-    let current: BaseNode | null = node
-    while (current && current !== root) {
-      const parentNode: BaseNode | null = current.parent
-      if (!parentNode || !('children' in parentNode)) return null
-      const index = (parentNode.children as readonly SceneNode[]).indexOf(
-        current as SceneNode
-      )
-      if (index === -1) return null
-      path.unshift(index)
-      current = parentNode
-    }
-    return current === root ? path : null
-  }
-
-  // Step 5: ツリーパスからノードを取得する関数
-  function getNodeByTreePath(
-    root: SceneNode,
-    path: number[]
-  ): SceneNode | null {
-    let current: SceneNode = root
-    for (const index of path) {
-      if (!('children' in current)) return null
-      const children = current.children as readonly SceneNode[]
-      if (index >= children.length) return null
-      current = children[index]
-    }
-    return current
-  }
-
-  // Step 6: 元のノードからツリーパスを計算し、コピー内の対応ノードを取得
+  // Step 4: 元のノードからツリーパスを計算し、コピー内の対応ノードを取得
   async function findClonedNode(
     originalNodeId: string
   ): Promise<SceneNode | null> {
@@ -85,29 +54,11 @@ export async function applyComponents(
     return getNodeByTreePath(cloned, treePath)
   }
 
-  // Step 7: 各アイテムをコピー内で置き換え
+  // Step 5: 各アイテムをコピー内で置き換え
   // 親を先に置き換えると子が消えてエラーが発生するため、深い階層から処理する
-
-  // ノードの深さを取得する関数
-  async function getNodeDepth(nodeId: string): Promise<number> {
-    let depth = 0
-    let node = await figma.getNodeByIdAsync(nodeId)
-    while (node && node.parent) {
-      depth++
-      node = node.parent
-    }
-    return depth
-  }
-
-  // itemsを深さ順にソート（深い順 = 子から親へ）
-  const itemsWithDepth = await Promise.all(
-    items.map(async item => ({
-      item,
-      depth: await getNodeDepth(item.nodeId),
-    }))
+  const sortedItems = await sortByDepthDescending(items, item =>
+    figma.getNodeByIdAsync(item.nodeId)
   )
-  itemsWithDepth.sort((a, b) => b.depth - a.depth)
-  const sortedItems = itemsWithDepth.map(x => x.item)
 
   for (const item of sortedItems) {
     try {
