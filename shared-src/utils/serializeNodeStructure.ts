@@ -20,6 +20,10 @@ export function serializeNodeStructure(
     details.push(`textStyle: ${node.textStyle}`)
   }
 
+  if (node.textContent) {
+    details.push(`text: "${node.textContent}"`)
+  }
+
   if (node.componentName) {
     details.push(`component: ${node.componentName}`)
   }

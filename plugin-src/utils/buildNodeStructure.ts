@@ -37,6 +37,11 @@ async function buildNodeStructureRecursive(
     return undefined
   }
 
+  const extractTextContent = (node: SceneNode): string | undefined => {
+    if (node.type !== 'TEXT') return undefined
+    return node.characters
+  }
+
   const extractInstanceInfo = async (
     node: SceneNode
   ): Promise<{
@@ -103,6 +108,7 @@ async function buildNodeStructureRecursive(
     height: 'height' in node ? Math.round(node.height) : 0,
     children,
     textStyle: await extractTextStyle(node),
+    textContent: extractTextContent(node),
     ...instanceInfo,
   }
 }
