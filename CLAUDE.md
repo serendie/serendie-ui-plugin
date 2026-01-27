@@ -2,6 +2,23 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## セットアップ
+
+1. `npm install`
+2. `.env.local` を作成（`.env.example` を参照）
+3. `npm run build`
+4. Figma Desktop App → Plugins → Development → Import plugin from manifest → `manifest.json` を選択
+
+### 環境変数（.env.local）
+
+- `DOCS_SEARCH_API_KEY`: チャット機能でSerendieドキュメントを検索するためのAPI
+- `FIGMA_PERSONAL_ACCESS_TOKEN`: ビルド時にSerendie UI Kitのコンポーネント情報を取得（library_content:readスコープ必須）
+- `FIGMA_SERENDIE_UI_KIT_FILE_KEY`: Serendie UI KitのFigmaファイルキー
+
+### ユーザー入力（プラグインUI）
+
+- OpenAI APIキー: AIによるコンポーネント提案機能で使用
+
 ## プロジェクト概要
 
 Spread System Linterは、Figmaデザイン内でSerendie Design Systemの規約に準拠しているかを検証するFigma Pluginです。
