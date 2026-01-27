@@ -138,6 +138,7 @@ export type Issue = {
   nodeName: string
   nodeType: string
   source?: IssueSource
+  variantProperties?: Record<string, string>
 } & IssueDetail
 
 export function serializeIssues(issue: Issue): string {

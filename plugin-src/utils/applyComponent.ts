@@ -7,6 +7,7 @@ type ComponentKeyInfo = {
   description: string
   nodeId: string
   type: 'COMPONENT' | 'COMPONENT_SET'
+  variantProperties?: { name: string; options: string[] }[]
 }
 
 const componentKeysMap = componentKeys as Record<string, ComponentKeyInfo>
@@ -147,6 +148,38 @@ export async function applyComponents(
           componentInfo.key
         )
         instance = componentSet.defaultVariant.createInstance()
+
+        // バリアント指定がある場合はsetProperties()で変更
+        if (
+          item.variantProperties &&
+          Object.keys(item.variantProperties).length > 0
+        ) {
+          try {
+            // AIが返した値を正しいオプション値に正規化（大文字小文字を無視してマッチング）
+            const normalizedProps: Record<string, string> = {}
+            for (const [key, value] of Object.entries(item.variantProperties)) {
+              const propDef = componentInfo.variantProperties?.find(
+                p => p.name.toLowerCase() === key.toLowerCase()
+              )
+              if (propDef) {
+                const matched = propDef.options.find(
+                  opt => opt.toLowerCase() === value.toLowerCase()
+                )
+                normalizedProps[propDef.name] = matched ?? value
+              } else {
+                normalizedProps[key] = value
+              }
+            }
+            instance.setProperties(normalizedProps)
+          } catch (e) {
+            // 無効なバリアント指定の場合はデフォルトのまま続行
+            console.warn(
+              `Invalid variant properties for ${item.componentName}:`,
+              item.variantProperties,
+              e
+            )
+          }
+        }
       } else {
         const component = await figma.importComponentByKeyAsync(
           componentInfo.key

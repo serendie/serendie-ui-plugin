@@ -45,6 +45,32 @@ interface FigmaComponentSetsResponse {
   }
 }
 
+// ノード詳細レスポンスの型定義
+interface ComponentPropertyDefinition {
+  type: 'VARIANT' | 'BOOLEAN' | 'TEXT' | 'INSTANCE_SWAP'
+  variantOptions?: string[]
+  defaultValue?: string | boolean
+}
+
+interface FigmaNodeDocument {
+  componentPropertyDefinitions?: Record<string, ComponentPropertyDefinition>
+}
+
+interface FigmaNodesResponse {
+  nodes: Record<
+    string,
+    {
+      document?: FigmaNodeDocument
+    }
+  >
+}
+
+// バリアントプロパティの型
+interface VariantProperty {
+  name: string
+  options: string[]
+}
+
 // 出力するコンポーネントキーの型
 interface ComponentKeyInfo {
   key: string
@@ -52,6 +78,7 @@ interface ComponentKeyInfo {
   description: string
   nodeId: string
   type: 'COMPONENT' | 'COMPONENT_SET'
+  variantProperties?: VariantProperty[]
 }
 
 type ComponentKeysMap = Record<string, ComponentKeyInfo>
@@ -117,6 +144,7 @@ async function main(): Promise<void> {
     const componentKeys: ComponentKeysMap = {}
 
     // コンポーネントセット（バリアント付き）を処理
+    const componentSetNodeIds: string[] = []
     if (componentSetsResponse.meta?.component_sets) {
       for (const componentSet of componentSetsResponse.meta.component_sets) {
         const name = componentSet.name
@@ -126,6 +154,51 @@ async function main(): Promise<void> {
           description: componentSet.description || '',
           nodeId: componentSet.node_id,
           type: 'COMPONENT_SET',
+        }
+        componentSetNodeIds.push(componentSet.node_id)
+      }
+    }
+
+    // コンポーネントセットのバリアント情報を取得
+    if (componentSetNodeIds.length > 0) {
+      console.log('バリアント情報を取得中...')
+
+      // Figma APIは一度に多くのノードを取得できるが、URLの長さ制限があるため分割
+      const BATCH_SIZE = 50
+      for (let i = 0; i < componentSetNodeIds.length; i += BATCH_SIZE) {
+        const batchIds = componentSetNodeIds.slice(i, i + BATCH_SIZE)
+        const idsParam = batchIds.join(',')
+
+        const nodesResponse = await fetchFigmaAPI<FigmaNodesResponse>(
+          `/v1/files/${fileKey}/nodes?ids=${encodeURIComponent(idsParam)}`
+        )
+
+        // 各ノードからバリアントプロパティを抽出
+        for (const [nodeId, nodeData] of Object.entries(nodesResponse.nodes)) {
+          const propDefs = nodeData.document?.componentPropertyDefinitions
+          if (!propDefs) continue
+
+          // このnodeIdに対応するコンポーネント名を探す
+          const componentEntry = Object.entries(componentKeys).find(
+            ([, info]) => info.nodeId === nodeId
+          )
+          if (!componentEntry) continue
+
+          const [componentName] = componentEntry
+          const variantProperties: VariantProperty[] = []
+
+          for (const [propName, propDef] of Object.entries(propDefs)) {
+            if (propDef.type === 'VARIANT' && propDef.variantOptions) {
+              variantProperties.push({
+                name: propName,
+                options: propDef.variantOptions,
+              })
+            }
+          }
+
+          if (variantProperties.length > 0) {
+            componentKeys[componentName].variantProperties = variantProperties
+          }
         }
       }
     }

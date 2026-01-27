@@ -70,6 +70,7 @@ export type PluginToUIMessage =
 export type ApplyComponentItem = {
   nodeId: string
   componentName: string
+  variantProperties?: Record<string, string>
 }
 
 // UI → Plugin
