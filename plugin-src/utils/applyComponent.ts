@@ -1,16 +1,8 @@
 import { ApplyComponentItem } from '../../shared-src/models/PluginMessage'
+import { ComponentKeysMap } from '../../shared-src/models/ComponentKeys'
 import componentKeys from '../../assets/component-keys.json'
 
-type ComponentKeyInfo = {
-  key: string
-  name: string
-  description: string
-  nodeId: string
-  type: 'COMPONENT' | 'COMPONENT_SET'
-  variantProperties?: { name: string; options: string[] }[]
-}
-
-const componentKeysMap = componentKeys as Record<string, ComponentKeyInfo>
+const componentKeysMap = componentKeys as ComponentKeysMap
 
 const COPY_GAP = 20 // コピー配置時のギャップ（px）
 
