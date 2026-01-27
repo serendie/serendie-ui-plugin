@@ -70,9 +70,12 @@ export function createIssuesFromCandidates(
         nodeType: node.nodeType,
         severity: 'warning',
         message: `「${candidate.suggestedComponent}」を使えます`,
-        suggestion: `${candidate.suggestedComponent}コンポーネントを使うとSerendie UIとして一貫性が出せます。`,
+        messageDetails: `${candidate.suggestedComponent}コンポーネントを使うとSerendie UIとして一貫性が出せます。`,
         source: 'component',
-        variantProperties: candidate.variantProperties,
+        suggestion: {
+          componentName: candidate.suggestedComponent,
+          variantProperties: candidate.variantProperties,
+        },
       })
     }
   }

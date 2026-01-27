@@ -167,19 +167,13 @@ export default function LintView({
 
       const items: ApplyComponentItem[] = []
       const componentIssues = result.issues.filter(
-        issue => issue.source === 'component' && issue.suggestion
+        issue => issue.source === 'component'
       )
       for (const issue of componentIssues) {
-        // message から推奨コンポーネント名を抽出
-        // 例: "「Button」を使えます" → "Button"
-        const match = issue.message.match(/「(.+?)」/)
-        if (match) {
-          items.push({
-            nodeId: issue.nodeId,
-            componentName: match[1],
-            variantProperties: issue.variantProperties,
-          })
-        }
+        items.push({
+          nodeId: issue.nodeId,
+          ...issue.suggestion,
+        })
       }
       if (items.length > 0) {
         postPluginMessage({ type: 'apply-components', rootNodeId, items })

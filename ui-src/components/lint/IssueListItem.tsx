@@ -99,7 +99,7 @@ export default function IssueListItem({
         >
           {issue.message}
         </p>
-        {issue.suggestion && (
+        {issue.messageDetails && (
           <p
             style={{
               ...sd.system.typography.label.small_expanded,
@@ -107,7 +107,7 @@ export default function IssueListItem({
               marginBottom: sd.system.dimension.spacing.twoExtraSmall,
             }}
           >
-            {issue.suggestion}
+            {issue.messageDetails}
           </p>
         )}
       </div>

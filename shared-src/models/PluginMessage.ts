@@ -1,4 +1,4 @@
-import { Issue } from './Rules'
+import { Issue, ComponentSuggestion } from './Rules'
 
 // インスタンスのコンポーネントプロパティ
 export type ComponentProperty = {
@@ -69,9 +69,7 @@ export type PluginToUIMessage =
 // コンポーネント適用アイテム
 export type ApplyComponentItem = {
   nodeId: string
-  componentName: string
-  variantProperties?: Record<string, string>
-}
+} & ComponentSuggestion
 
 // UI → Plugin
 export type UIToPluginMessage =
