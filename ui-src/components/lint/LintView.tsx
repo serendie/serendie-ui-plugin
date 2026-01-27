@@ -158,16 +158,19 @@ export default function LintView({
     setLoadedImages(prev => ({ ...prev, [nodeId]: true }))
   }, [])
 
-  // コンポーネントの「全て適用」ハンドラ
-  const handleApplyAllComponents = useCallback(() => {
-    const items: ApplyComponentItem[] = []
-    for (const result of results) {
+  // コンポーネントの「コピーして適用」ハンドラ
+  const handleApplyComponents = useCallback(
+    (rootNodeId: string) => {
+      const result = results.find(r => r.id === rootNodeId)
+      if (!result) return
+
+      const items: ApplyComponentItem[] = []
       const componentIssues = result.issues.filter(
         issue => issue.source === 'component' && issue.suggestion
       )
       for (const issue of componentIssues) {
-        // suggestion から推奨コンポーネント名を抽出
-        // 例: "Buttonコンポーネントを使うと..." → "Button"
+        // message から推奨コンポーネント名を抽出
+        // 例: "「Button」を使えます" → "Button"
         const match = issue.message.match(/「(.+?)」/)
         if (match) {
           items.push({
@@ -176,11 +179,12 @@ export default function LintView({
           })
         }
       }
-    }
-    if (items.length > 0) {
-      postPluginMessage({ type: 'apply-components', items })
-    }
-  }, [results])
+      if (items.length > 0) {
+        postPluginMessage({ type: 'apply-components', rootNodeId, items })
+      }
+    },
+    [results]
+  )
 
   return (
     <div
@@ -274,9 +278,9 @@ export default function LintView({
                             <Button
                               size='small'
                               styleType='ghost'
-                              onClick={handleApplyAllComponents}
+                              onClick={() => handleApplyComponents(result.id)}
                             >
-                              全て適用
+                              コピーして適用
                             </Button>
                           )}
                       </div>

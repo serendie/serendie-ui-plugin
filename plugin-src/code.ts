@@ -169,7 +169,7 @@ figma.ui.onmessage = async msg => {
   }
   if (msg.type === 'apply-components') {
     try {
-      const result = await applyComponents(msg.items)
+      const result = await applyComponents(msg.rootNodeId, msg.items)
       const messages: string[] = []
       if (result.success > 0) {
         messages.push(`${result.success}個適用`)
