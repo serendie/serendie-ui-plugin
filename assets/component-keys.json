@@ -374,6 +374,27 @@
         "defaultValue": "タイムスタンプなど"
       },
       {
+        "name": "LeftIconInstance#13249:299",
+        "type": "INSTANCE_SWAP",
+        "preferredComponentSets": [
+          "OutlinedSerendieSymbols"
+        ]
+      },
+      {
+        "name": "LeftLargeIconInstance#13249:340",
+        "type": "INSTANCE_SWAP",
+        "preferredComponentSets": [
+          "OutlinedSerendieSymbols"
+        ]
+      },
+      {
+        "name": "RightIconInstance#13249:381",
+        "type": "INSTANCE_SWAP",
+        "preferredComponentSets": [
+          "OutlinedSerendieSymbols"
+        ]
+      },
+      {
         "name": "Heading Elements",
         "type": "VARIANT",
         "options": [
@@ -563,6 +584,13 @@
         "name": "Label#992:3",
         "type": "TEXT",
         "defaultValue": "ホーム"
+      },
+      {
+        "name": "IconInstance#13249:422",
+        "type": "INSTANCE_SWAP",
+        "preferredComponentSets": [
+          "OutlinedSerendieSymbols"
+        ]
       },
       {
         "name": "Type",
@@ -1897,6 +1925,17 @@
         "defaultValue": "ラベル"
       },
       {
+        "name": "ChartArea#18323:0",
+        "type": "INSTANCE_SWAP",
+        "preferredComponentSets": [
+          "PiledChart",
+          "PieChart",
+          "LineChart",
+          "VerticalBarChart",
+          "HorizontalBarChart"
+        ]
+      },
+      {
         "name": "Kind",
         "type": "VARIANT",
         "options": [
@@ -1917,7 +1956,7 @@
   "Toast": {
     "key": "aa0214ce80cd794ab6f4ab76b44ec43fd85f9c37",
     "name": "Toast",
-    "description": "画面上に一時的に表示される短い通知メッセージです。アクションの結果やエラーメッセージなどをユーザーに伝えるために使用します。",
+    "description": "画面上に一時的に表示される短い通知メッセージです。アクションの結��やエラーメッセージなどをユーザーに伝えるために使用します。",
     "nodeId": "3256:16094",
     "type": "COMPONENT_SET",
     "componentProperties": [
@@ -2059,6 +2098,13 @@
     "nodeId": "3107:13402",
     "type": "COMPONENT_SET",
     "componentProperties": [
+      {
+        "name": "IconInstance#13249:242",
+        "type": "INSTANCE_SWAP",
+        "preferredComponentSets": [
+          "OutlinedSerendieSymbols"
+        ]
+      },
       {
         "name": "Shape",
         "type": "VARIANT",
@@ -2283,6 +2329,20 @@
         "name": "ShowDescription#8855:6",
         "type": "BOOLEAN",
         "defaultValue": true
+      },
+      {
+        "name": "leftContent#17424:0",
+        "type": "INSTANCE_SWAP",
+        "preferredComponentSets": [
+          "OutlinedSerendieSymbols"
+        ]
+      },
+      {
+        "name": "rightContent#17424:6",
+        "type": "INSTANCE_SWAP",
+        "preferredComponentSets": [
+          "OutlinedSerendieSymbols"
+        ]
       },
       {
         "name": "RequiredLabel#26692:50",

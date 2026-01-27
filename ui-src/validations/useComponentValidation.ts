@@ -29,14 +29,16 @@ function generateComponentPropertiesInfo(): string {
     if (info.type === 'COMPONENT_SET' && info.componentProperties?.length) {
       const props = info.componentProperties
         .map(p => {
-          if (p.type === 'VARIANT' && p.options) {
-            return `${p.name}: [${p.options.join(', ')}]`
-          } else if (p.type === 'BOOLEAN') {
-            return `${p.name}: boolean (default: ${p.defaultValue})`
-          } else if (p.type === 'TEXT') {
-            return `${p.name}: text`
+          switch (p.type) {
+            case 'VARIANT':
+              return `${p.name}: [${p.options.join(', ')}]`
+            case 'BOOLEAN':
+              return `${p.name}: boolean (default: ${p.defaultValue})`
+            case 'TEXT':
+              return `${p.name}: text`
+            case 'INSTANCE_SWAP':
+              return `${p.name}: instance swap (${p.preferredComponentSets.join(' | ')})`
           }
-          return `${p.name}: unknown`
         })
         .join(', ')
       lines.push(`- ${name}: ${props}`)
@@ -139,6 +141,7 @@ ${componentPropertiesInfo}
 - INSTANCEノードで既にcomponentNameがある場合、それがSDSコンポーネントかどうかも考慮してください
 - 最上位のノードだけでなく、子ノードも含めて全て分析してください
 - コンポーネントを提案する際、プロパティがあるコンポーネントの場合はpropertiesも指定してください
+- instance swapプロパティは「ComponentSetName/VariantValue」形式で指定してください（例: "OutlinedSerendieSymbols/arrow_back"）
 
 # 重要: nodeIdについて
 - nodeIdは必ずノード構造に記載されている正確なID（例: "1234:5678"）を使用してください

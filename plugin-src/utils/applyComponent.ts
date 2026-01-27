@@ -146,36 +146,92 @@ export async function applyComponents(
           try {
             // AIが返した値を正しいオプション値に正規化（大文字小文字を無視してマッチング）
             const normalizedProps: Record<string, string | boolean> = {}
+            // INSTANCE_SWAPは後で別途処理
+            const instanceSwapProps: Array<{ propName: string; componentKey: string }> = []
+
             for (const [key, value] of Object.entries(item.properties)) {
               const propDef = componentInfo.componentProperties?.find(
-                (p): p is typeof p & { type: 'VARIANT'; options: string[] } =>
-                  p.name.toLowerCase() === key.toLowerCase() &&
-                  p.type === 'VARIANT'
+                p => p.name.toLowerCase() === key.toLowerCase()
               )
-              if (propDef) {
-                // VARIANTの場合、オプションから大文字小文字を無視してマッチング
-                const matched = propDef.options.find(
-                  opt => opt.toLowerCase() === String(value).toLowerCase()
-                )
-                normalizedProps[propDef.name] = matched ?? String(value)
-              } else {
-                // BOOLEAN/TEXTの場合はそのまま
-                const booleanOrTextProp = componentInfo.componentProperties?.find(
-                  p =>
-                    p.name.toLowerCase() === key.toLowerCase() &&
-                    (p.type === 'BOOLEAN' || p.type === 'TEXT')
-                )
-                if (booleanOrTextProp) {
-                  normalizedProps[booleanOrTextProp.name] =
-                    booleanOrTextProp.type === 'BOOLEAN'
-                      ? value === true || value === 'true' || value === 'True'
-                      : String(value)
-                } else {
-                  normalizedProps[key] = value
+              if (!propDef) {
+                normalizedProps[key] = value
+                continue
+              }
+
+              switch (propDef.type) {
+                case 'VARIANT': {
+                  // VARIANTの場合、オプションから大文字小文字を無視してマッチング
+                  const matched = propDef.options.find(
+                    opt => opt.toLowerCase() === String(value).toLowerCase()
+                  )
+                  normalizedProps[propDef.name] = matched ?? String(value)
+                  break
+                }
+                case 'BOOLEAN':
+                  normalizedProps[propDef.name] =
+                    value === true || value === 'true' || value === 'True'
+                  break
+                case 'TEXT':
+                  normalizedProps[propDef.name] = String(value)
+                  break
+                case 'INSTANCE_SWAP': {
+                  // "ComponentSetName/VariantValue" 形式をパース
+                  const strValue = String(value)
+                  const slashIndex = strValue.indexOf('/')
+                  if (slashIndex === -1) continue
+
+                  const componentSetName = strValue.slice(0, slashIndex)
+                  const variantValue = strValue.slice(slashIndex + 1)
+
+                  // Component Setのキーを取得
+                  const targetComponentSet = componentKeysMap[componentSetName]
+                  if (
+                    !targetComponentSet ||
+                    targetComponentSet.type !== 'COMPONENT_SET'
+                  )
+                    continue
+
+                  // Component Setをインポートしてバリアントを取得
+                  const importedSet = await figma.importComponentSetByKeyAsync(
+                    targetComponentSet.key
+                  )
+                  // バリアント名でマッチング（例: "Name=arrow_back"）
+                  const variantComponent = importedSet.children.find(child => {
+                    if (child.type !== 'COMPONENT') return false
+                    // バリアント名は "Name=value" または "Prop1=val1, Prop2=val2" 形式
+                    return child.name
+                      .split(', ')
+                      .some(
+                        part =>
+                          part.toLowerCase() ===
+                          `name=${variantValue.toLowerCase()}`
+                      )
+                  }) as ComponentNode | undefined
+
+                  if (variantComponent) {
+                    instanceSwapProps.push({
+                      propName: propDef.name,
+                      componentKey: variantComponent.key,
+                    })
+                  }
+                  break
                 }
               }
             }
-            instance.setProperties(normalizedProps)
+
+            // VARIANT/BOOLEAN/TEXTを適用
+            if (Object.keys(normalizedProps).length > 0) {
+              instance.setProperties(normalizedProps)
+            }
+
+            // INSTANCE_SWAPを適用（コンポーネントキーを使用）
+            for (const { propName, componentKey } of instanceSwapProps) {
+              const swappedComponent =
+                await figma.importComponentByKeyAsync(componentKey)
+              instance.setProperties({
+                [propName]: swappedComponent.id,
+              })
+            }
           } catch (e) {
             // 無効なプロパティ指定の場合はデフォルトのまま続行
             console.warn(
