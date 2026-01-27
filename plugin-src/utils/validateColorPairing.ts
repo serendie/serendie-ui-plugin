@@ -13,6 +13,7 @@ export default function validateColorPairing(colorInfoList: ColorInfo[]): {
         nodeId: colorInfo.nodeId,
         nodeName: colorInfo.nodeName,
         nodeType: colorInfo.nodeType,
+        source: 'design-token',
         ...issueDetail,
       })
     }

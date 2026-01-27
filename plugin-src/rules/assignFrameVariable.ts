@@ -13,7 +13,7 @@ export default function validate(
     return {
       severity: 'warning',
       message: '背景色にシステムトークンを未使用',
-      suggestion: '塗りにデザインシステムのバリアブルを設定してください。',
+      messageDetails: '塗りにデザインシステムのバリアブルを設定してください。',
     }
   }
 
@@ -21,7 +21,7 @@ export default function validate(
     return {
       severity: 'error',
       message: '背景色が不適切',
-      suggestion:
+      messageDetails:
         '塗りには"on"という名前が含まれるバリアブルを設定しないでください。',
     }
   }

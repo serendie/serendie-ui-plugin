@@ -16,6 +16,7 @@ export default function validateAssignTextVariable(
         nodeId: colorInfo.nodeId,
         nodeName: colorInfo.nodeName,
         nodeType: colorInfo.nodeType,
+        source: 'design-token',
         ...issueDetail,
       })
     }

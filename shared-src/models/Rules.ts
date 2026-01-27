@@ -128,22 +128,34 @@ export const COLOR_ROLES: string[] = Array.from(
 export type IssueDetail = {
   severity: 'error' | 'warning'
   message: string
-  suggestion: string | null
+  messageDetails: string | null
 }
 
-export type IssueSource = 'design-token' | 'component'
-
-export type Issue = {
+type BaseIssue = {
   nodeId: string
   nodeName: string
   nodeType: string
-  source?: IssueSource
-  variantProperties?: Record<string, string>
 } & IssueDetail
+
+export type DesignTokenIssue = BaseIssue & {
+  source: 'design-token'
+}
+
+export type ComponentSuggestion = {
+  componentName: string
+  variantProperties?: Record<string, string>
+}
+
+export type ComponentIssue = BaseIssue & {
+  source: 'component'
+  suggestion: ComponentSuggestion
+}
+
+export type Issue = DesignTokenIssue | ComponentIssue
 
 export function serializeIssues(issue: Issue): string {
   return (
-    [`${issue.severity}: ${issue.message}`, `提案: ${issue.suggestion}`].join(
+    [`${issue.severity}: ${issue.message}`, `提案: ${issue.messageDetails}`].join(
       '\n'
     ) + '\n'
   )

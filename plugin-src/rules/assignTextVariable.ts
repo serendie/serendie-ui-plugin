@@ -11,7 +11,7 @@ export default function validate(textColor: string | null): IssueDetail | null {
     return {
       severity: 'warning',
       message: 'テキスト色にシステムトークンを未使用',
-      suggestion: '塗りにデザインシステムのバリアブルを設定してください。',
+      messageDetails: '塗りにデザインシステムのバリアブルを設定してください。',
     }
   }
 
@@ -32,7 +32,7 @@ export default function validate(textColor: string | null): IssueDetail | null {
     return {
       severity: 'error',
       message: 'テキスト色が不適切',
-      suggestion:
+      messageDetails:
         '塗りには"on"という名前が含まれるデザインシステムのバリアブルを設定してください。',
     }
   }
