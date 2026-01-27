@@ -54,7 +54,11 @@ type ComponentPropertyDefinition =
   | { type: 'VARIANT'; variantOptions: string[] }
   | { type: 'BOOLEAN'; defaultValue: boolean }
   | { type: 'TEXT'; defaultValue: string }
-  | { type: 'INSTANCE_SWAP' }
+  | {
+      type: 'INSTANCE_SWAP'
+      defaultValue: string
+      preferredValues?: Array<{ type: string; key: string }>
+    }
 
 interface FigmaNodeDocument {
   componentPropertyDefinitions?: Record<string, ComponentPropertyDefinition>
@@ -193,6 +197,27 @@ async function main(): Promise<void> {
                 type: 'TEXT',
                 defaultValue: propDef.defaultValue,
               })
+            } else if (propDef.type === 'INSTANCE_SWAP' && propDef.preferredValues) {
+              // preferredValuesのキーをComponent Set名に変換
+              const preferredComponentSets: string[] = []
+              for (const pv of propDef.preferredValues) {
+                if (pv.type === 'COMPONENT_SET') {
+                  // キーからコンポーネント名を検索
+                  const matchedEntry = Object.entries(componentKeys).find(
+                    ([, info]) => info.key === pv.key
+                  )
+                  if (matchedEntry) {
+                    preferredComponentSets.push(matchedEntry[0])
+                  }
+                }
+              }
+              if (preferredComponentSets.length > 0) {
+                componentProperties.push({
+                  name: propName,
+                  type: 'INSTANCE_SWAP',
+                  preferredComponentSets,
+                })
+              }
             }
           }
 

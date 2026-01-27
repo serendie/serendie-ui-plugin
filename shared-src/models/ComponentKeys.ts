@@ -19,10 +19,17 @@ export type TextPropertyDef = {
   defaultValue: string
 }
 
+export type InstanceSwapPropertyDef = {
+  name: string
+  type: 'INSTANCE_SWAP'
+  preferredComponentSets: string[] // 使用可能なComponent Set名のリスト
+}
+
 export type ComponentPropertyDef =
   | VariantPropertyDef
   | BooleanPropertyDef
   | TextPropertyDef
+  | InstanceSwapPropertyDef
 
 export type ComponentKeyInfo = {
   key: string
