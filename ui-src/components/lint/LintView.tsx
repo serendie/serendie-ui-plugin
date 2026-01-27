@@ -176,6 +176,7 @@ export default function LintView({
           items.push({
             nodeId: issue.nodeId,
             componentName: match[1],
+            variantProperties: issue.variantProperties,
           })
         }
       }

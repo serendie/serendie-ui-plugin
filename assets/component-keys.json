@@ -4,343 +4,1818 @@
     "name": "DatePicker ",
     "description": "日付入力用のコンポーネントです。Calendarと組み合わせて使うことを想定しており、単一指定と期間指定に対応しています。",
     "nodeId": "22421:4315",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Type",
+        "options": [
+          "Range",
+          "Single"
+        ]
+      },
+      {
+        "name": "States",
+        "options": [
+          "Enabled",
+          "Focused",
+          "Focused - Filled",
+          "Filled",
+          "Disabled",
+          "Disabled - Filled"
+        ]
+      }
+    ]
   },
   "Button": {
     "key": "f91482850c7ade11d6f2a811330df40a7f57c2df",
     "name": "Button",
     "description": "アクションをトリガーするためのクリック可能なコンポーネントです。",
     "nodeId": "3066:14086",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Icon",
+        "options": [
+          "None",
+          "Left",
+          "Right"
+        ]
+      },
+      {
+        "name": "Size",
+        "options": [
+          "Small",
+          "Medium"
+        ]
+      },
+      {
+        "name": "Type",
+        "options": [
+          "Filled",
+          "Outlined",
+          "Ghost",
+          "Rectangle"
+        ]
+      },
+      {
+        "name": "State",
+        "options": [
+          "Enabled",
+          "Hovered",
+          "Focused",
+          "Disabled",
+          "Loading"
+        ]
+      }
+    ]
   },
   "HeaderCheckbox": {
     "key": "ad05f5bfddc5c57dbc886b5bf25b9664c4508e33",
     "name": "HeaderCheckbox",
     "description": "",
     "nodeId": "17879:8712",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Size",
+        "options": [
+          "Large",
+          "Medium",
+          "Small"
+        ]
+      },
+      {
+        "name": "State",
+        "options": [
+          "Default",
+          "Hovered",
+          "Selected"
+        ]
+      }
+    ]
   },
   "ChartElement/Note": {
     "key": "e44f5884a2bc9b3ebd2659df0b31899fbd43404e",
     "name": "ChartElement/Note",
     "description": "凡例のサンプルです",
     "nodeId": "18026:16543",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "ColorScheme",
+        "options": [
+          "Primary",
+          "Multi"
+        ]
+      },
+      {
+        "name": "Type",
+        "options": [
+          "Text",
+          "Color+Text"
+        ]
+      },
+      {
+        "name": "Direction",
+        "options": [
+          "Horizontal",
+          "Vertical"
+        ]
+      }
+    ]
   },
   "Tooltip": {
     "key": "9888196501ddf393e5b1b8e307efe78b30ab2391",
     "name": "Tooltip",
     "description": "",
     "nodeId": "20276:13553",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Position",
+        "options": [
+          "BottomCenter",
+          "TopLeft",
+          "TopRight",
+          "Left",
+          "TopCenter",
+          "BottomLeft",
+          "BottomRight",
+          "Right"
+        ]
+      }
+    ]
   },
   "SerendieSymbols": {
     "key": "2b0c64edeae0e3eb45583fcaeb36509eb9f8db1c",
     "name": "SerendieSymbols",
     "description": "",
     "nodeId": "12957:26277",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Type",
+        "options": [
+          "filled",
+          "outlined"
+        ]
+      }
+    ]
   },
   "TextArea": {
     "key": "dc341d9fc9fa92873d52dbfd4125a7cc235f8a25",
     "name": "TextArea",
     "description": "複数行のテキストを入力するためのコンポーネントです。Buttonなどと合わせてフォームを構成します。",
     "nodeId": "1406:17592",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "State",
+        "options": [
+          "Enabled",
+          "Disabled",
+          "Error",
+          "Filled",
+          "Focused"
+        ]
+      }
+    ]
   },
   "PasswordField": {
     "key": "234950dcc8bdf458bb40ac4dd6436ecd0f9deaca",
     "name": "PasswordField",
     "description": "",
     "nodeId": "17652:342",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "State",
+        "options": [
+          "Enabled",
+          "Filled"
+        ]
+      },
+      {
+        "name": "showPassword",
+        "options": [
+          "True",
+          "False"
+        ]
+      }
+    ]
   },
   "VerticalDivider": {
     "key": "49a4596a4508aaeae6d1f18df5e9a2d915a118b0",
     "name": "VerticalDivider",
     "description": "視覚的に区切るためのコンポーネントです。コンテナ内でコンテンツをグループ化する際にも使用します。",
     "nodeId": "3122:30141",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Color",
+        "options": [
+          "Normal",
+          "Light",
+          "Dark"
+        ]
+      }
+    ]
   },
   "DropdownMenu": {
     "key": "3028e77f1b9c39389b99ddeed0633c47339f86a3",
     "name": "DropdownMenu",
     "description": "複数のアクションを格納するためのコンポーネントです。メニュー内のアクションは、クリック時にイベントをトリガーします。アクションではなく、選択肢を表示する場合は、Selectを使用してください。",
     "nodeId": "6375:6010",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Type",
+        "options": [
+          "IconButton",
+          "TextButton"
+        ]
+      },
+      {
+        "name": "State",
+        "options": [
+          "Activated",
+          "Disabled",
+          "Enabled",
+          "Focused",
+          "Hovered"
+        ]
+      }
+    ]
   },
   "ListItem": {
     "key": "3a40851062d6c80589afe3e44a04ae7307875cb1",
     "name": "ListItem",
     "description": "関連する項目を縦に並べて、メニューや一覧を構成するためのコンポーネントです。",
     "nodeId": "3442:9387",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Heading Elements",
+        "options": [
+          "IconLarge",
+          "None",
+          "IconMedium"
+        ]
+      },
+      {
+        "name": "Lines",
+        "options": [
+          "Multiple Lines",
+          "Single Line"
+        ]
+      },
+      {
+        "name": "Trailing Elements",
+        "options": [
+          "Icon",
+          "None",
+          "Badge"
+        ]
+      },
+      {
+        "name": "State",
+        "options": [
+          "Disabled",
+          "Enabled",
+          "Focused",
+          "Hovered",
+          "Selected"
+        ]
+      }
+    ]
   },
   "ModalDialog": {
     "key": "93e8651d1250824d34ab8cabc325c7e9f0778937",
     "name": "ModalDialog",
     "description": "アプリケーションを覆うレイヤー上にダイアログを表示するコンポーネントです。Modal Dialogが表示されている間は、ユーザーはその他の操作ができなくなることに注意が必要です。",
     "nodeId": "3311:28000",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Layout",
+        "options": [
+          "Compact",
+          "Expanded"
+        ]
+      }
+    ]
   },
   "Select": {
     "key": "1363375d92b896fda3c56997ec59af65034b9974",
     "name": "Select",
     "description": "複数の選択肢を格納し、ユーザーは1つの選択肢を選ぶコンポーネントです。選択肢ではなくアクションを表示する場合は、DropdownMenuを使用してください。",
     "nodeId": "3154:26212",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "State",
+        "options": [
+          "Disabled",
+          "Enabled",
+          "Error",
+          "Focused",
+          "Hovered"
+        ]
+      },
+      {
+        "name": "Size",
+        "options": [
+          "Medium",
+          "Small"
+        ]
+      }
+    ]
   },
   "Accordion": {
     "key": "26ab9027998a29235e0cd0bf74d3678081773e4a",
     "name": "Accordion",
     "description": "関連するコンテンツを列挙し、ユーザーが展開・折りたたむことができるコンポーネントです。表示スペースを節約しながら、ユーザーが詳細な情報を得る手段を提供します。",
     "nodeId": "4728:44779",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Icon",
+        "options": [
+          "Left",
+          "Right"
+        ]
+      },
+      {
+        "name": "State",
+        "options": [
+          "Enabled",
+          "Expanded",
+          "Focused",
+          "Hovered"
+        ]
+      }
+    ]
   },
   "Banner": {
     "key": "288d2441454dcc5f163b7891ffb0ad041a520376",
     "name": "Banner",
     "description": "エラーや警告など重要なメッセージを目立つように表示し、ユーザーの注意を喚起するコンポーネントです。",
     "nodeId": "4546:10391",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Type",
+        "options": [
+          "Error",
+          "Information",
+          "Warning"
+        ]
+      }
+    ]
   },
   "BottomNavigation/Items": {
     "key": "01c65ad0fece066713a6223097564dae1641b5ad",
     "name": "BottomNavigation/Items",
     "description": "画面下部に配置するモバイルやタブレット向けのグローバルなタブナビゲーションです。",
     "nodeId": "1001:20737",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Type",
+        "options": [
+          "Normal",
+          "Badge with number",
+          "Badge"
+        ]
+      },
+      {
+        "name": "State",
+        "options": [
+          "Enabled",
+          "Selected"
+        ]
+      }
+    ]
   },
   "OutlinedSerendieSymbols": {
     "key": "aefb4121178695c0d712735bef9f0dc4415307f4",
     "name": "OutlinedSerendieSymbols",
     "description": "",
     "nodeId": "13249:66960",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Name",
+        "options": [
+          "activity",
+          "airplay",
+          "alert-circle",
+          "alert-octagon",
+          "alert-triangle",
+          "align-center",
+          "align-justify",
+          "align-left",
+          "align-right",
+          "anchor",
+          "apps-circle",
+          "apps-square",
+          "archive",
+          "arrow-down",
+          "arrow-down-circle",
+          "arrow-down-left",
+          "arrow-down-right",
+          "arrow-left",
+          "arrow-left-circle",
+          "arrow-right",
+          "arrow-right-circle",
+          "arrow-turn-down",
+          "arrow-turn-left",
+          "arrow-turn-right",
+          "arrow-turn-up",
+          "arrow-up",
+          "arrow-up-circle",
+          "arrow-up-left",
+          "arrow-up-right",
+          "article",
+          "at-symbol",
+          "attachment",
+          "award",
+          "battery",
+          "battery-charging",
+          "bed",
+          "bell",
+          "bell-off",
+          "bicycle",
+          "bike",
+          "bluetooth",
+          "bold",
+          "book",
+          "book-open",
+          "bookmark",
+          "briefcase",
+          "bug",
+          "bus",
+          "calendar",
+          "camera",
+          "camera-off",
+          "car",
+          "cast",
+          "chat-circle",
+          "chat-rectangle",
+          "check",
+          "check-circle",
+          "check-shield",
+          "check-square",
+          "chevron-double-down",
+          "chevron-double-left",
+          "chevron-double-right",
+          "chevron-double-up",
+          "chevron-down",
+          "chevron-left",
+          "chevron-left-right",
+          "chevron-right",
+          "chevron-up",
+          "chevron-up-down",
+          "circle",
+          "clipboard",
+          "clock",
+          "close",
+          "close-circle",
+          "close-octagon",
+          "close-square",
+          "cloud",
+          "cloud-off",
+          "coffee",
+          "collapse-diagonal",
+          "collapse-diagonal-alt",
+          "collapse-horizontal",
+          "collapse-left",
+          "collapse-right",
+          "collapse-vertical",
+          "command",
+          "compass",
+          "compose",
+          "contract-left-right",
+          "contract-up-down",
+          "copy",
+          "corner-down-left",
+          "corner-down-right",
+          "corner-left-down",
+          "corner-left-up",
+          "corner-right-down",
+          "corner-right-up",
+          "corner-up-left",
+          "corner-up-right",
+          "cpu",
+          "credit-card",
+          "crop",
+          "cube",
+          "cursor",
+          "cycling",
+          "data",
+          "delete",
+          "disc",
+          "divide",
+          "dollar-sign",
+          "download",
+          "download-cloud",
+          "drag-move",
+          "edit",
+          "eject",
+          "expand-diagonal",
+          "expand-diagonal-alt",
+          "expand-diagonal-linked",
+          "expand-diagonal-linked-alt",
+          "expand-horizontal",
+          "expand-horizontal-linked",
+          "expand-left",
+          "expand-right",
+          "expand-vertical",
+          "expand-vertical-linked",
+          "external-link",
+          "eye",
+          "eye-hidden",
+          "file",
+          "file-add",
+          "file-download",
+          "file-text",
+          "file-upload",
+          "film",
+          "filter",
+          "flag",
+          "folder",
+          "folder-add",
+          "forward",
+          "forward-10",
+          "forward-15",
+          "forward-5",
+          "forward-end",
+          "frown",
+          "funnel",
+          "gear",
+          "gift",
+          "globe",
+          "group",
+          "hard-drive",
+          "hash",
+          "headphone",
+          "heart",
+          "hexagon",
+          "history",
+          "home",
+          "image",
+          "inbox",
+          "information",
+          "italic",
+          "key",
+          "laptop",
+          "layer",
+          "layout",
+          "layout-alt",
+          "layout-bottom",
+          "layout-column",
+          "layout-grid",
+          "layout-grid-alt",
+          "layout-left",
+          "layout-right",
+          "layout-row",
+          "layout-sidebar",
+          "layout-sidebar-alt",
+          "layout-top",
+          "life-buoy",
+          "lightning",
+          "link",
+          "list-bullet",
+          "list-dash",
+          "list-number",
+          "loader",
+          "lock",
+          "lock-unlocked",
+          "login",
+          "logout",
+          "magnifying-glass",
+          "mail",
+          "map",
+          "maximize",
+          "media",
+          "menu",
+          "mic",
+          "mic-muted",
+          "minimize",
+          "minus",
+          "minus-square",
+          "monitor",
+          "moon",
+          "more-horizontal",
+          "more-vertical",
+          "music",
+          "music-alt",
+          "navigation",
+          "octagon",
+          "package",
+          "pause",
+          "pause-circle",
+          "pen",
+          "pencil",
+          "percent",
+          "phone",
+          "phone-off",
+          "pie-chart",
+          "pin",
+          "placeholder",
+          "plane",
+          "play",
+          "play-circle",
+          "plus",
+          "plus-square",
+          "printer",
+          "question",
+          "radio",
+          "record-circle",
+          "refresh",
+          "repeat",
+          "rewind",
+          "rewind-10",
+          "rewind-15",
+          "rewind-5",
+          "rewind-start",
+          "rss",
+          "run",
+          "sailboat",
+          "save",
+          "seal",
+          "send",
+          "server",
+          "share",
+          "share-alt",
+          "shield",
+          "shield-off",
+          "ship",
+          "shopping-bag",
+          "shopping-cart",
+          "shuffle",
+          "skip-back",
+          "skip-down",
+          "skip-forward",
+          "skip-left",
+          "skip-right",
+          "skip-up",
+          "slash",
+          "slider-horizontal",
+          "slider-vertical",
+          "smartphone",
+          "smile",
+          "speaker",
+          "square",
+          "star",
+          "sticky-note",
+          "stop",
+          "stop-circle",
+          "sun",
+          "tablet",
+          "tag",
+          "target",
+          "taxi",
+          "terminal",
+          "thumb-down",
+          "thumb-up",
+          "tool",
+          "train",
+          "trash",
+          "trending-down",
+          "trending-up",
+          "triangle",
+          "truck",
+          "tv",
+          "type",
+          "umbrella",
+          "underline",
+          "upload-cloud",
+          "user",
+          "user-check",
+          "user-circle",
+          "user-minus",
+          "user-plus",
+          "user-x",
+          "users",
+          "verified-badge",
+          "video",
+          "video-off",
+          "voicemail",
+          "volume-high",
+          "volume-low",
+          "volume-muted",
+          "volume-none",
+          "walk",
+          "watch",
+          "wifi",
+          "wifi-off",
+          "zoom-in",
+          "zoom-out"
+        ]
+      }
+    ]
   },
   "HorizontalBarChart": {
     "key": "bde8063da185738b2c2aed11c06fa20cd7079865",
     "name": "HorizontalBarChart",
     "description": "棒グラフ(横)のサンプルです。ガイドラインを見ながらデータの種類に応じてカラースキームを使い分けてください。",
     "nodeId": "17799:17341",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "ColorScheme",
+        "options": [
+          "Primary",
+          "Multi"
+        ]
+      }
+    ]
   },
   "Drawer": {
     "key": "d5a61cf25ce5a554c71981b022b6ee950015e9fe",
     "name": "Drawer",
     "description": "メニューやナビゲーションを格納するコンポーネントです。主に表示領域が限られるモバイルやタブレットにおいて使用されます。",
     "nodeId": "3223:28928",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Type",
+        "options": [
+          "Full"
+        ]
+      }
+    ]
   },
   "Switch": {
     "key": "0f803b015bfe70ffe855cab4b5b0993238ba0081",
     "name": "Switch",
     "description": "オン/オフの2つの状態を切り替えるためのコンポーネントです。設定画面などでその状態を視覚的に伝えることができます。",
     "nodeId": "3311:28493",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Line",
+        "options": [
+          "Multiple",
+          "Single"
+        ]
+      },
+      {
+        "name": "State",
+        "options": [
+          "Selected",
+          "Disabled",
+          "Disabled-Selected",
+          "Enabled",
+          "Focused"
+        ]
+      }
+    ]
   },
   "HeaderCell": {
     "key": "650e5b0c3202b41748268a60445685f69f11a271",
     "name": "HeaderCell",
     "description": "",
     "nodeId": "17879:8659",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Size",
+        "options": [
+          "Large",
+          "Medium",
+          "Small"
+        ]
+      },
+      {
+        "name": "State",
+        "options": [
+          "Enabled",
+          "Hovered"
+        ]
+      }
+    ]
   },
   "ProgressIndicatorIndeterminate": {
     "key": "d5f36662987038ae463d68afa956819f853f78fa",
     "name": "ProgressIndicatorIndeterminate",
     "description": "",
     "nodeId": "20412:440",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Type",
+        "options": [
+          "Linear",
+          "Circular"
+        ]
+      },
+      {
+        "name": "Size",
+        "options": [
+          "Small",
+          "Medium",
+          "Large"
+        ]
+      },
+      {
+        "name": "Color",
+        "options": [
+          "CircularSubtle",
+          "CircularPrimary",
+          "LinearPrimary"
+        ]
+      }
+    ]
   },
   "LineChart": {
     "key": "47c63de47f570d9b3565f367f25cf3be1a6f40d4",
     "name": "LineChart",
     "description": "線グラフのサンプルです。ガイドラインを見ながらデータの種類に応じてカラースキームを使い分けてください。",
     "nodeId": "18036:8379",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "ColorScheme",
+        "options": [
+          "Primary",
+          "Multi"
+        ]
+      }
+    ]
   },
   "Steps": {
     "key": "28af497bc960444c8179646289ec5bd4a3b49106",
     "name": "Steps",
     "description": "プロセスの手順や進行状況を段階的に示すコンポーネントです。\n現在のステップと次のアクションを明確に示し、ユーザーの操作をサポートします。",
     "nodeId": "25102:557",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Item Count",
+        "options": [
+          "3",
+          "4",
+          "5"
+        ]
+      },
+      {
+        "name": "Type",
+        "options": [
+          "Default",
+          "Subtle"
+        ]
+      },
+      {
+        "name": "Direction",
+        "options": [
+          "Horizontal",
+          "Vertical"
+        ]
+      }
+    ]
   },
   "Slider": {
     "key": "537fccb27eb2efbf5c3c057b567ee507ee1626c7",
     "name": "Slider",
     "description": "ツマミをドラッグして値を調整できるコンポーネントです。音量や明るさなど、即時フィードバックが重要な場面で使用します。",
     "nodeId": "27512:45",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Size",
+        "options": [
+          "Medium",
+          "Large"
+        ]
+      },
+      {
+        "name": "State",
+        "options": [
+          "Enabled",
+          "Hovered",
+          "Focused",
+          "Disabled"
+        ]
+      },
+      {
+        "name": "Progress",
+        "options": [
+          "0",
+          "50",
+          "100"
+        ]
+      }
+    ]
   },
   "NotificationBadge": {
     "key": "3c423e03e4de7c1c32e5ed5e00f08a134857a278",
     "name": "NotificationBadge",
     "description": "未読の通知や新着情報をユーザーに知らせるためのコンポーネントです。",
     "nodeId": "1262:28909",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Type",
+        "options": [
+          "Non-number",
+          "With-number"
+        ]
+      },
+      {
+        "name": "Size",
+        "options": [
+          "Medium",
+          "Small"
+        ]
+      },
+      {
+        "name": "Color",
+        "options": [
+          "Secondary",
+          "Primary"
+        ]
+      }
+    ]
   },
   "BodyCheckbox": {
     "key": "451f6406183e2b37ec1d369d179d63ca5b92e5d8",
     "name": "BodyCheckbox",
     "description": "",
     "nodeId": "17879:8686",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Size",
+        "options": [
+          "Large",
+          "Medium",
+          "Small"
+        ]
+      },
+      {
+        "name": "State",
+        "options": [
+          "Enabled",
+          "Hovered",
+          "Selected"
+        ]
+      }
+    ]
   },
   "BodyCell": {
     "key": "2fe905089c2533158663cc8d46c868a75b8b9d94",
     "name": "BodyCell",
     "description": "",
     "nodeId": "17879:8658",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Size",
+        "options": [
+          "Large",
+          "Medium",
+          "Small"
+        ]
+      },
+      {
+        "name": "Type",
+        "options": [
+          "Default",
+          "Error",
+          "Notice",
+          "Success"
+        ]
+      },
+      {
+        "name": "State",
+        "options": [
+          "Enabled",
+          "Hovered",
+          "Selected"
+        ]
+      }
+    ]
   },
   "VerticalBarChart": {
     "key": "c33e3819b08f4b4db5645fe53f261fc829048963",
     "name": "VerticalBarChart",
     "description": "棒グラフ(縦)のサンプルです。ガイドラインを見ながらデータの種類に応じてカラースキームを使い分けてください。",
     "nodeId": "17792:14261",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "ColorScheme",
+        "options": [
+          "Primary",
+          "Multi"
+        ]
+      }
+    ]
   },
   "ChartElement/Tooltip": {
     "key": "c558e88f1bbc793ab332b3dbdfc76eaa995465fc",
     "name": "ChartElement/Tooltip",
     "description": "Chartと組み合わせる想定のツールチップです。ホバーやクリック時にデータの値を表示します。",
     "nodeId": "18074:7030",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Direction",
+        "options": [
+          "TopCenter",
+          "BottomCenter",
+          "BottomLeft",
+          "BottomRight",
+          "TopLeft",
+          "TopRight",
+          "Right",
+          "Left"
+        ]
+      }
+    ]
   },
   "Calendar": {
     "key": "9cf9c1f149ece9c63fe13bae0a031a562ad83566",
     "name": "Calendar",
     "description": "DatePickerと組み合わせて使うことを想定したCalendarコンポーネントです。日付指定方法は単一と範囲の2つに対応しています。",
     "nodeId": "17871:5058",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "State",
+        "options": [
+          "Enabled",
+          "Hovered - Single",
+          "Hovered - Range",
+          "Selected - Range",
+          "Selected - Single"
+        ]
+      }
+    ]
   },
   "HorizontalDivider": {
     "key": "65c1c5bd05839dcc47d45de486dcc8b96b9e962f",
     "name": "HorizontalDivider",
     "description": "視覚的に区切るためのコンポーネントです。コンテナ内でコンテンツをグループ化する際にも使用します。",
     "nodeId": "3122:30116",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Color",
+        "options": [
+          "Light",
+          "Normal",
+          "Dark"
+        ]
+      }
+    ]
   },
   "ChoiceBox": {
     "key": "d7b060d63bc7ac1c64c2f771f516831c1016b989",
     "name": "ChoiceBox",
     "description": "CheckBoxとRadioButtonからラベルを除いたコンポーネントです。カードやリストと併用して使用できます。",
     "nodeId": "6816:45671",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Type",
+        "options": [
+          "Checkbox",
+          "Radio"
+        ]
+      },
+      {
+        "name": "State",
+        "options": [
+          "Disabled-Enabled",
+          "Disabled-Selected",
+          "Enabled",
+          "Focused",
+          "Selected",
+          "Indeterminate"
+        ]
+      }
+    ]
   },
   "FilledSerendieSymbols": {
     "key": "ef8e17510442de4918a1489199fe6bed3cde06b6",
     "name": "FilledSerendieSymbols",
     "description": "",
     "nodeId": "13249:67611",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Name",
+        "options": [
+          "activity",
+          "airplay",
+          "alert-circle",
+          "alert-octagon",
+          "alert-triangle",
+          "align-center",
+          "align-justify",
+          "align-left",
+          "align-right",
+          "anchor",
+          "apps-circle",
+          "apps-square",
+          "archive",
+          "arrow-down",
+          "arrow-down-circle",
+          "arrow-down-left",
+          "arrow-down-right",
+          "arrow-left",
+          "arrow-left-circle",
+          "arrow-right",
+          "arrow-right-circle",
+          "arrow-turn-down",
+          "arrow-turn-left",
+          "arrow-turn-right",
+          "arrow-turn-up",
+          "arrow-up",
+          "arrow-up-circle",
+          "arrow-up-left",
+          "arrow-up-right",
+          "article",
+          "at-symbol",
+          "attachment",
+          "award",
+          "battery",
+          "battery-charging",
+          "bed",
+          "bell",
+          "bell-off",
+          "bicycle",
+          "bike",
+          "bluetooth",
+          "bold",
+          "book",
+          "book-open",
+          "bookmark",
+          "square",
+          "briefcase",
+          "bug",
+          "bus",
+          "calendar",
+          "camera",
+          "camera-off",
+          "car",
+          "cast",
+          "chat-circle",
+          "chat-rectangle",
+          "check",
+          "check-circle",
+          "check-shield",
+          "check-square",
+          "chevron-double-down",
+          "chevron-double-left",
+          "chevron-double-right",
+          "chevron-double-up",
+          "chevron-down",
+          "chevron-left",
+          "chevron-left-right",
+          "chevron-right",
+          "chevron-up",
+          "chevron-up-down",
+          "circle",
+          "clipboard",
+          "clock",
+          "close",
+          "close-circle",
+          "close-octagon",
+          "close-square",
+          "cloud",
+          "cloud-off",
+          "coffee",
+          "collapse-diagonal",
+          "collapse-diagonal-alt",
+          "collapse-horizontal",
+          "collapse-left",
+          "collapse-right",
+          "collapse-vertical",
+          "command",
+          "compass",
+          "compose",
+          "contract-left-right",
+          "contract-up-down",
+          "copy",
+          "corner-down-left",
+          "corner-down-right",
+          "corner-left-down",
+          "corner-left-up",
+          "corner-right-down",
+          "corner-right-up",
+          "corner-up-left",
+          "corner-up-right",
+          "cpu",
+          "credit-card",
+          "crop",
+          "cube",
+          "cursor",
+          "cycling",
+          "data",
+          "delete",
+          "disc",
+          "divide",
+          "dollar-sign",
+          "download",
+          "download-cloud",
+          "drag-move",
+          "edit",
+          "eject",
+          "expand-diagonal",
+          "expand-diagonal-alt",
+          "expand-diagonal-linked",
+          "expand-diagonal-linked-alt",
+          "expand-horizontal",
+          "expand-horizontal-linked",
+          "expand-left",
+          "expand-right",
+          "expand-vertical",
+          "expand-vertical-linked",
+          "external-link",
+          "eye",
+          "eye-hidden",
+          "file",
+          "file-add",
+          "file-download",
+          "file-text",
+          "file-upload",
+          "film",
+          "filter",
+          "flag",
+          "folder",
+          "folder-add",
+          "forward",
+          "forward-10",
+          "forward-15",
+          "forward-5",
+          "forward-end",
+          "frown",
+          "funnel",
+          "gear",
+          "gift",
+          "globe",
+          "group",
+          "hard-drive",
+          "hash",
+          "headphone",
+          "heart",
+          "hexagon",
+          "history",
+          "home",
+          "image",
+          "inbox",
+          "information",
+          "italic",
+          "key",
+          "laptop",
+          "layer",
+          "layout",
+          "layout-alt",
+          "layout-bottom",
+          "layout-column",
+          "layout-grid",
+          "layout-grid-alt",
+          "layout-left",
+          "layout-right",
+          "layout-row",
+          "layout-sidebar",
+          "layout-sidebar-alt",
+          "layout-top",
+          "life-buoy",
+          "lightning",
+          "link",
+          "list-bullet",
+          "list-dash",
+          "list-number",
+          "loader",
+          "lock",
+          "lock-unlocked",
+          "login",
+          "logout",
+          "magnifying-glass",
+          "mail",
+          "map",
+          "maximize",
+          "media",
+          "menu",
+          "mic",
+          "mic-muted",
+          "minimize",
+          "minus",
+          "minus-square",
+          "monitor",
+          "moon",
+          "more-horizontal",
+          "more-vertical",
+          "music",
+          "music-alt",
+          "navigation",
+          "octagon",
+          "package",
+          "pause",
+          "pause-circle",
+          "pen",
+          "pencil",
+          "percent",
+          "phone",
+          "phone-off",
+          "pie-chart",
+          "pin",
+          "placeholder",
+          "plane",
+          "play",
+          "play-circle",
+          "plus",
+          "plus-square",
+          "printer",
+          "question",
+          "radio",
+          "record-circle",
+          "refresh",
+          "repeat",
+          "rewind",
+          "rewind-10",
+          "rewind-15",
+          "rewind-5",
+          "rewind-start",
+          "rss",
+          "run",
+          "sailboat",
+          "save",
+          "seal",
+          "send",
+          "server",
+          "share",
+          "share-alt",
+          "shield",
+          "shield-off",
+          "ship",
+          "shopping-bag",
+          "shopping-cart",
+          "shuffle",
+          "skip-back",
+          "skip-down",
+          "skip-forward",
+          "skip-left",
+          "skip-right",
+          "skip-up",
+          "slash",
+          "slider-horizontal",
+          "slider-vertical",
+          "smartphone",
+          "smile",
+          "speaker",
+          "star",
+          "sticky-note",
+          "stop",
+          "stop-circle",
+          "sun",
+          "tablet",
+          "tag",
+          "target",
+          "taxi",
+          "terminal",
+          "thumb-down",
+          "thumb-up",
+          "tool",
+          "train",
+          "trash",
+          "trending-down",
+          "trending-up",
+          "triangle",
+          "truck",
+          "tv",
+          "type",
+          "umbrella",
+          "underline",
+          "upload-cloud",
+          "user",
+          "user-check",
+          "user-circle",
+          "user-minus",
+          "user-plus",
+          "user-x",
+          "users",
+          "verified-badge",
+          "video",
+          "video-off",
+          "voicemail",
+          "volume-high",
+          "volume-low",
+          "volume-muted",
+          "volume-none",
+          "walk",
+          "watch",
+          "wifi",
+          "wifi-off",
+          "zoom-in",
+          "zoom-out"
+        ]
+      }
+    ]
   },
   "PieChart": {
     "key": "6eef4634480482655049794a8c4ca5c4565f8ec2",
     "name": "PieChart",
     "description": "円グラフのサンプルです。ガイドラインを見ながらデータの種類に応じてカラースキームを使い分けてください。",
     "nodeId": "17792:14082",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "ColorScheme",
+        "options": [
+          "Primary",
+          "Multi"
+        ]
+      },
+      {
+        "name": "Type",
+        "options": [
+          "Donut",
+          "Hole"
+        ]
+      }
+    ]
   },
   "PiledChart": {
     "key": "7abb7a8e334cdfebc191f5af2552e3819e886566",
     "name": "PiledChart",
     "description": "積み上げグラフのサンプルです。ガイドラインを見ながらデータの種類に応じてカラースキームを使い分けてください。",
     "nodeId": "18036:7361",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "ColorScheme",
+        "options": [
+          "Primary",
+          "Multi"
+        ]
+      }
+    ]
   },
   "ProgressIndicator": {
     "key": "5ea70e52e343ee530efe3d72419027f3fd79985b",
     "name": "ProgressIndicator",
     "description": "",
     "nodeId": "20412:438",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Type",
+        "options": [
+          "Linear",
+          "Circular"
+        ]
+      },
+      {
+        "name": "Size",
+        "options": [
+          "Small",
+          "Medium",
+          "Large"
+        ]
+      },
+      {
+        "name": "Progress",
+        "options": [
+          "0",
+          "20",
+          "40",
+          "60",
+          "80",
+          "100"
+        ]
+      }
+    ]
   },
   "Badge": {
     "key": "0257226be8b7dd243f188af2d00b4336deed2588",
     "name": "Badge",
     "description": "ステータス、カテゴリなどを表すコンポーネントです。情報を簡潔に表示し、ユーザーの注意を引きつけます。",
     "nodeId": "3285:27625",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Color",
+        "options": [
+          "Gray",
+          "Gray-subtle",
+          "Blue",
+          "Blue-subtle",
+          "Green",
+          "Green-subtle",
+          "Yellow",
+          "Yellow-subtle",
+          "Orange",
+          "Orange-subtle",
+          "Red",
+          "Red-subtle"
+        ]
+      },
+      {
+        "name": "Size",
+        "options": [
+          "Small",
+          "Medium",
+          "Large"
+        ]
+      }
+    ]
   },
   "Avatar": {
     "key": "4b56e89488fc09286e724bef47617283989e23d1",
     "name": "Avatar",
     "description": "ユーザーについて視覚的に表現するコンポーネントです。",
     "nodeId": "3661:24552",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Type",
+        "options": [
+          "Image",
+          "Text",
+          "Icon"
+        ]
+      },
+      {
+        "name": "Size",
+        "options": [
+          "Large",
+          "Medium",
+          "Small"
+        ]
+      }
+    ]
   },
   "DashboardWidget": {
     "key": "90688949555197ab4ad2ecf82b93b52ab1354e7e",
     "name": "DashboardWidget",
     "description": "ダッシュボード画面で使うことを想定したコンポーネントです。データをサマライズして表示する際に使用します。",
     "nodeId": "3359:9200",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Kind",
+        "options": [
+          "Chart"
+        ]
+      },
+      {
+        "name": "Values",
+        "options": [
+          "No Value",
+          "Single Value",
+          "Two Values"
+        ]
+      }
+    ]
   },
   "Toast": {
     "key": "aa0214ce80cd794ab6f4ab76b44ec43fd85f9c37",
     "name": "Toast",
-    "description": "画面上に一時的に表示される短い通知メッセージです。アクションの結��やエラーメッセージなどをユーザーに伝えるために使用します。",
+    "description": "画面上に一時的に表示される短い通知メッセージです。アクションの結果やエラーメッセージなどをユーザーに伝えるために使用します。",
     "nodeId": "3256:16094",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Type",
+        "options": [
+          "Default",
+          "Success",
+          "Error"
+        ]
+      }
+    ]
   },
   "Search": {
     "key": "c9252495d7ffccf061899d60f0dfdde551aba1d2",
     "name": "Search",
     "description": "検索用途に特化した入力コンポーネントです。検索キーワードを入力した際に候補をサジェストする機能も持ちます。",
     "nodeId": "3311:28188",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "State",
+        "options": [
+          "Disabled",
+          "Enabled",
+          "Filled",
+          "Focused"
+        ]
+      },
+      {
+        "name": "Size",
+        "options": [
+          "Medium",
+          "Small"
+        ]
+      }
+    ]
   },
   "CheckBox": {
     "key": "297bbfed2e72cfbd659dc1bb264433b202b33b23",
     "name": "CheckBox",
     "description": "ChoiceBoxにラベルを付けたコンポーネントです。複数の選択肢から、1つ以上を選択する際に使用します。",
     "nodeId": "5129:40889",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Lines",
+        "options": [
+          "Multiple Lines",
+          "Single Line"
+        ]
+      },
+      {
+        "name": "State",
+        "options": [
+          "Disabled-Enabled",
+          "Enabled",
+          "Selected",
+          "Disabled-Selected",
+          "Focused"
+        ]
+      }
+    ]
   },
   "DataTableRow": {
     "key": "1ba9f5ad1d6c4735aad8f549353d8c9953575a8c",
     "name": "DataTableRow",
     "description": "データ表示 (read-only) 用途のテーブルコンポーネントです。Figma上では行単位でAutoLayout化して扱うことを想定しています。Type Headerは見出しとして使います。",
     "nodeId": "17879:8713",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Type",
+        "options": [
+          "Body",
+          "Header"
+        ]
+      },
+      {
+        "name": "Size",
+        "options": [
+          "Large",
+          "Medium",
+          "Small"
+        ]
+      },
+      {
+        "name": "State",
+        "options": [
+          "Enabled",
+          "Selected",
+          "Focused (Body Only)"
+        ]
+      }
+    ]
   },
   "IconButton": {
     "key": "2d222a01220a14d5c10ffffcb9f8974b12d49a49",
     "name": "IconButton",
     "description": "アクションをトリガーするためのクリック可能なコンポーネントです。アイコンを使用してアクションの内容を視覚的に伝えます。",
     "nodeId": "3107:13402",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Shape",
+        "options": [
+          "Circle",
+          "Rectangle"
+        ]
+      },
+      {
+        "name": "Size",
+        "options": [
+          "Small",
+          "Medium",
+          "Large"
+        ]
+      },
+      {
+        "name": "Type",
+        "options": [
+          "Filled",
+          "Outlined",
+          "Ghost"
+        ]
+      },
+      {
+        "name": "State",
+        "options": [
+          "Enabled",
+          "Hovered",
+          "Focused",
+          "Disabled"
+        ]
+      }
+    ]
   },
   "TabItem": {
     "key": "55c79ceaaad5fa5104b99850c43c83d958810d7c",
     "name": "TabItem",
     "description": "複数のビューを切り替えるためのコンポーネントです。TopAppBarやBottomNavigationはグローバルなナビゲーションとして使用しますが、Tabsはローカルなナビゲーションであることに注意してください。",
     "nodeId": "3430:26917",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Selected",
+        "options": [
+          "True",
+          "False"
+        ]
+      },
+      {
+        "name": "State",
+        "options": [
+          "Hovered",
+          "Enabled",
+          "Focused",
+          "Disabled"
+        ]
+      },
+      {
+        "name": "Notification",
+        "options": [
+          "None",
+          "Dot",
+          "Number"
+        ]
+      }
+    ]
   },
   "TopAppBar": {
     "key": "60bb8be1804fbf40b6c4946ea05919de585a7651",
     "name": "TopAppBar",
     "description": "画面上部に配置するモバイルやタブレット向けのグローバルなナビゲーションです。",
     "nodeId": "1353:14085",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Type",
+        "options": [
+          "Navbar",
+          "TitleWithIcons",
+          "TitleOnly"
+        ]
+      },
+      {
+        "name": "Navbar",
+        "options": [
+          "True",
+          "False"
+        ]
+      }
+    ]
   },
   "RadioButton": {
     "key": "c9555f72d42306cf6f461222fa9891a384ebfee0",
     "name": "RadioButton",
     "description": "ChoiceBoxにラベルを付けたコンポーネントです。複数の選択肢から、一つを排他的に選択する際に使用します。",
     "nodeId": "3354:7943",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "Lines",
+        "options": [
+          "Multiple Lines",
+          "Single Line"
+        ]
+      },
+      {
+        "name": "State",
+        "options": [
+          "Disabled-Enabled",
+          "Disabled-Selected",
+          "Enabled",
+          "Selected",
+          "Focused"
+        ]
+      }
+    ]
   },
   "TextField": {
     "key": "e292eb1a27d435490f6ae79af972fa3198a5c81b",
     "name": "TextField",
     "description": "1行のテキストを入力するためのコンポーネントです。Buttonなどと合わせてフォームを構成します。複数行にはTextAreaを使用してください。",
     "nodeId": "5113:4273",
-    "type": "COMPONENT_SET"
+    "type": "COMPONENT_SET",
+    "variantProperties": [
+      {
+        "name": "State",
+        "options": [
+          "Disabled",
+          "Error",
+          "Filled",
+          "Focused",
+          "Enabled"
+        ]
+      }
+    ]
   },
   "Name=save": {
     "key": "00773bfdd9571baeabf417fa7ec5556b1b9b3e47",

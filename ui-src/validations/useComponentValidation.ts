@@ -9,9 +9,36 @@ import {
   ComponentCandidate,
 } from './componentValidationSchema'
 import componentsManifest from '../../shared-src/assets/components_manifest.json'
+import componentKeys from '../../assets/component-keys.json'
 
 // SDSコンポーネント名のリスト
 const SDS_COMPONENT_NAMES = componentsManifest.map(c => c.name)
+
+// component-keys.jsonの型
+type ComponentKeyInfo = {
+  key: string
+  name: string
+  description: string
+  nodeId: string
+  type: 'COMPONENT' | 'COMPONENT_SET'
+  variantProperties?: { name: string; options: string[] }[]
+}
+
+const componentKeysMap = componentKeys as Record<string, ComponentKeyInfo>
+
+// バリアント情報を生成
+function generateVariantInfo(): string {
+  const lines: string[] = []
+  for (const [name, info] of Object.entries(componentKeysMap)) {
+    if (info.type === 'COMPONENT_SET' && info.variantProperties?.length) {
+      const props = info.variantProperties
+        .map(p => `${p.name}: [${p.options.join(', ')}]`)
+        .join(', ')
+      lines.push(`- ${name}: ${props}`)
+    }
+  }
+  return lines.join('\n')
+}
 
 type ValidationState = 'idle' | 'analyzing' | 'done' | 'error'
 
@@ -56,11 +83,16 @@ export function useComponentValidation({ apiKey }: { apiKey: string }) {
         const openai = createOpenAI({ apiKey })
         const serializedStructure = serializeNodeStructure(structure)
 
+        const variantInfo = generateVariantInfo()
         const systemPrompt = `あなたはSerendie Design System（SDS）の専門家です。
 与えられたFigmaノード構造と画像を分析し、各ノードがSDSのどのコンポーネントとして実装されるべきかを判断してください。
 
 # SDSで利用可能なコンポーネント
 ${SDS_COMPONENT_NAMES.join(', ')}
+
+# コンポーネントのバリアント
+以下のコンポーネントにはバリアントがあります。適切なバリアントを指定してください:
+${variantInfo}
 
 # 判断基準
 - ノードの視覚的な特徴（サイズ、形状、色）
@@ -72,6 +104,7 @@ ${SDS_COMPONENT_NAMES.join(', ')}
 - SDSコンポーネントに該当しないノード（単純なFrame、装飾的な要素など）はsuggestedComponentをnullにしてください
 - INSTANCEノードで既にcomponentNameがある場合、それがSDSコンポーネントかどうかも考慮してください
 - 最上位のノードだけでなく、子ノードも含めて全て分析してください
+- コンポーネントを提案する際、バリアントがあるコンポーネントの場合はvariantPropertiesも指定してください
 
 # 重要: nodeIdについて
 - nodeIdは必ずノード構造に記載されている正確なID（例: "1234:5678"）を使用してください
@@ -125,6 +158,7 @@ ${SDS_COMPONENT_NAMES.join(', ')}
               message: `「${candidate.suggestedComponent}」を使えます`,
               suggestion: `${candidate.suggestedComponent}コンポーネントを使うとSerendie UIとして一貫性が出せます。`,
               source: 'component',
+              variantProperties: candidate.variantProperties,
             })
           }
         }
