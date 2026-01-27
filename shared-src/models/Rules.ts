@@ -8,6 +8,13 @@ export const COLLECTION_NAME_LIST = [
   'typography-system',
 ]
 export const UNEXPECTED = 'Unexpected'
+export const FRAME_TYPES = [
+  'FRAME',
+  'RECTANGLE',
+  'COMPONENT',
+  'INSTANCE',
+] as const
+export type FrameType = (typeof FRAME_TYPES)[number]
 const surfaceSeries = [
   'surface',
   'surfaceContainerLowest',
