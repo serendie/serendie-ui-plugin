@@ -2,7 +2,7 @@ import {
   NodeStructure,
   ComponentProperty,
 } from '../../shared-src/models/PluginMessage'
-import extractVariableKey from './extractVariableKey'
+import extractColorVariables from './extractColorVariables'
 import getVariableMap from './getVariableMap'
 
 async function buildNodeStructureRecursive(
@@ -10,45 +10,17 @@ async function buildNodeStructureRecursive(
   variableMap: Map<string, string>
 ): Promise<NodeStructure> {
   const extractFills = (node: SceneNode): string[] => {
-    const fills: string[] = []
-    if ('fills' in node && Array.isArray(node.fills)) {
-      for (const fill of node.fills) {
-        if (fill.type === 'SOLID' && fill.visible !== false) {
-          if ('boundVariables' in fill && fill.boundVariables?.color) {
-            const variableId = extractVariableKey(fill.boundVariables.color.id)
-            if (variableId) {
-              const tokenName = variableMap?.get(variableId)
-              if (tokenName) {
-                fills.push(tokenName)
-              }
-            }
-          }
-        }
-      }
+    if ('fills' in node) {
+      return extractColorVariables(node.fills, variableMap)
     }
-    return fills
+    return []
   }
 
   const extractStrokes = (node: SceneNode): string[] => {
-    const strokes: string[] = []
-    if ('strokes' in node && Array.isArray(node.strokes)) {
-      for (const stroke of node.strokes) {
-        if (stroke.type === 'SOLID' && stroke.visible !== false) {
-          if ('boundVariables' in stroke && stroke.boundVariables?.color) {
-            const variableId = extractVariableKey(
-              stroke.boundVariables.color.id
-            )
-            if (variableId) {
-              const tokenName = variableMap?.get(variableId)
-              if (tokenName) {
-                strokes.push(tokenName)
-              }
-            }
-          }
-        }
-      }
+    if ('strokes' in node) {
+      return extractColorVariables(node.strokes, variableMap)
     }
-    return strokes
+    return []
   }
 
   const extractTextStyle = async (
