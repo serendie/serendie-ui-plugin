@@ -8,7 +8,7 @@ export default function IssueTitle({ title }: { title: string }) {
       style={{
         ...sd.system.typography.label.medium_expanded,
         color: sd.system.color.component.onSurfaceVariant,
-        marginBottom: sd.system.dimension.spacing.extraSmall,
+        margin: `${sd.system.dimension.spacing.small} 0`,
       }}
     >
       {title}
