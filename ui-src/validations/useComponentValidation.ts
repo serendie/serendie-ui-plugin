@@ -64,7 +64,8 @@ export function createIssuesFromCandidates(
   const issues: Issue[] = []
 
   for (const candidate of candidates) {
-    if (!candidate.suggestedComponent) continue
+    // confidenceがhighのもののみissueに変換
+    if (candidate.confidence !== 'high') continue
 
     const node = nodeMap.get(candidate.nodeId)
     if (!node) continue
@@ -137,7 +138,8 @@ ${componentPropertiesInfo}
 - SDSコンポーネントの典型的な使用パターン
 
 # 注意事項
-- SDSコンポーネントに該当しないノード（単純なFrame、装飾的な要素など）はsuggestedComponentをnullにしてください
+- SDSコンポーネントに該当しないノード（単純なFrame、装飾的な要素など）はcandidatesに含めないでください
+- SDSコンポーネントとして置き換え可能なノードのみを返してください
 - INSTANCEノードで既にcomponentNameがある場合、それがSDSコンポーネントかどうかも考慮してください
 - 最上位のノードだけでなく、子ノードも含めて全て分析してください
 - コンポーネントを提案する際、プロパティがあるコンポーネントの場合はpropertiesも指定してください

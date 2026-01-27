@@ -5,9 +5,7 @@ export const componentCandidateSchema = z.object({
   nodeId: z.string().describe('対象ノードのID'),
   suggestedComponent: z
     .string()
-    .nullable()
-    .transform(val => (val === 'null' ? null : val))
-    .describe('推奨されるSDSコンポーネント名（該当なしの場合はnull）'),
+    .describe('推奨されるSDSコンポーネント名'),
   properties: z
     .record(z.union([z.string(), z.boolean()]))
     .optional()
