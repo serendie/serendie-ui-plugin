@@ -253,7 +253,7 @@ export default function LintView({
               style={{
                 display: 'flex',
                 flexDirection: 'column',
-                gap: sd.system.dimension.spacing.large,
+                gap: sd.system.dimension.spacing.medium,
               }}
             >
               <SelectionCard
