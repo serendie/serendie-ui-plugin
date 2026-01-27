@@ -14,9 +14,13 @@ import componentKeys from '../../assets/component-keys.json'
 import { ComponentKeysMap } from '../../shared-src/models/ComponentKeys'
 import { getBasePropName } from '../../shared-src/utils/getBasePropName'
 
-// SDSコンポーネント名のリスト
-const SDS_COMPONENT_NAMES = componentsManifest.map(c => c.name)
 const componentKeysMap = componentKeys as ComponentKeysMap
+
+function generateComponentList(): string {
+  return componentsManifest
+    .map(c => (c.description ? `- ${c.name}: ${c.description}` : `- ${c.name}`))
+    .join('\n')
+}
 
 type ValidationState = 'idle' | 'analyzing' | 'done' | 'error'
 
@@ -125,11 +129,12 @@ export function useComponentValidation({ apiKey }: { apiKey: string }) {
         const serializedStructure = serializeNodeStructure(structure)
 
         const componentPropertiesInfo = generateComponentPropertiesInfo()
+        const componentList = generateComponentList()
         const systemPrompt = `あなたはSerendie Design System（SDS）の専門家です。
 与えられたFigmaノード構造と画像を分析し、各ノードがSDSのどのコンポーネントとして実装されるべきかを判断してください。
 
 # SDSで利用可能なコンポーネント
-${SDS_COMPONENT_NAMES.join(', ')}
+${componentList}
 
 # コンポーネントのプロパティ
 以下のコンポーネントにはプロパティがあります。適切なプロパティを指定してください:
