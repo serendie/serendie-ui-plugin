@@ -180,6 +180,7 @@ ${PROMPT_TO_NEST_PROPERTY}
             { role: 'system', content: systemPrompt },
             { role: 'user', content: userContent },
           ],
+          temperature: 0,
           abortSignal: abortController.signal,
         })
 
