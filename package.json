@@ -25,7 +25,6 @@
   "devDependencies": {
     "@figma/eslint-plugin-figma-plugins": "*",
     "@figma/plugin-typings": "*",
-    "@figma/widget-typings": "*",
     "@pandacss/dev": "^1.2.0",
     "@types/jest": "^30.0.0",
     "@types/react-dom": "^18.3.0",
@@ -57,7 +56,6 @@
       "dist/**",
       "build/**",
       "scripts/**",
-      "widget-src/**",
       "styled-system/**",
       "panda.config.ts",
       "*.config.js"
