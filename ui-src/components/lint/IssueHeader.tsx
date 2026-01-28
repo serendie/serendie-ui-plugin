@@ -12,45 +12,76 @@ export default function IssueHeader({
   issues: Issue[]
   totalItems: number
 }) {
-  const errorCount = issues.filter(issue => issue.severity === 'error').length
-  const warningCount = issues.filter(
+  // デザイントークン関連のissueのみカウント
+  const tokenIssues = issues.filter(issue => issue.source === 'design-token')
+  const tokenErrorCount = tokenIssues.filter(
+    issue => issue.severity === 'error'
+  ).length
+  const tokenWarningCount = tokenIssues.filter(
     issue => issue.severity === 'warning'
+  ).length
+
+  // コンポーネント提案のカウント
+  const componentCount = issues.filter(
+    issue => issue.source === 'component'
   ).length
 
   return (
     <>
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: sd.system.dimension.spacing.medium,
-          marginBottom: sd.system.dimension.spacing.extraSmall,
-          padding: sd.system.dimension.spacing.small,
-          backgroundColor: sd.system.color.component.surface,
-          borderRadius: sd.system.dimension.radius.medium,
-          border: `1px solid ${sd.system.color.component.outline}`,
-        }}
-      >
-        <StatLabel
-          symbolName='check-circle'
-          targetNodes={totalItems - issues.length}
-          totalNodes={totalItems}
-        />
-        {errorCount > 0 && (
+      {tokenIssues.length > 0 && (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: sd.system.dimension.spacing.medium,
+            marginBottom: sd.system.dimension.spacing.extraSmall,
+            padding: sd.system.dimension.spacing.small,
+            backgroundColor: sd.system.color.component.surface,
+            borderRadius: sd.system.dimension.radius.medium,
+            border: `1px solid ${sd.system.color.component.outline}`,
+          }}
+        >
           <StatLabel
-            symbolName='alert-circle'
-            targetNodes={errorCount}
+            symbolName='check-circle'
+            targetNodes={totalItems - tokenIssues.length}
             totalNodes={totalItems}
           />
-        )}
-        {warningCount > 0 && (
+          {tokenErrorCount > 0 && (
+            <StatLabel
+              symbolName='alert-circle'
+              targetNodes={tokenErrorCount}
+              totalNodes={totalItems}
+            />
+          )}
+          {tokenWarningCount > 0 && (
+            <StatLabel
+              symbolName='alert-triangle'
+              targetNodes={tokenWarningCount}
+              totalNodes={totalItems}
+            />
+          )}
+        </div>
+      )}
+      {componentCount > 0 && (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: sd.system.dimension.spacing.medium,
+            marginBottom: sd.system.dimension.spacing.extraSmall,
+            padding: sd.system.dimension.spacing.small,
+            backgroundColor: sd.system.color.component.surface,
+            borderRadius: sd.system.dimension.radius.medium,
+            border: `1px solid ${sd.system.color.component.outline}`,
+          }}
+        >
           <StatLabel
             symbolName='alert-triangle'
-            targetNodes={warningCount}
-            totalNodes={totalItems}
+            targetNodes={componentCount}
+            label='個のコンポーネントで利用可能'
           />
-        )}
-      </div>
+        </div>
+      )}
     </>
   )
 }
