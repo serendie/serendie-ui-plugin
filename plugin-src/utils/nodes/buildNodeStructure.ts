@@ -73,9 +73,10 @@ async function buildNodeStructureRecursive(
           : mainComponent?.name
 
       // SDSコンポーネントかどうかをkeyで判定
-      const componentKey = mainComponent?.parent?.type === 'COMPONENT_SET'
-        ? mainComponent.parent.key
-        : mainComponent?.key
+      const componentKey =
+        mainComponent?.parent?.type === 'COMPONENT_SET'
+          ? mainComponent.parent.key
+          : mainComponent?.key
       isSDSComponent = componentKey ? sdsComponentKeys.has(componentKey) : false
 
       const props = node.componentProperties
@@ -89,7 +90,7 @@ async function buildNodeStructureRecursive(
         }
       }
     } catch {
-      console.error('コンポーネントの情報取得に失敗しました。')
+      console.warn('メインコンポーネントの情報取得に失敗しました。')
     }
 
     return {
