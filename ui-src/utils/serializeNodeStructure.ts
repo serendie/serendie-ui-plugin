@@ -1,4 +1,4 @@
-import { NodeStructure } from '../models/PluginMessage'
+import { NodeStructure } from '../../shared-src/models/PluginMessage'
 
 export function serializeNodeStructure(
   node: NodeStructure,

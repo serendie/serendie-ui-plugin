@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { z } from 'zod'
 import { LintResult, PluginMessage } from '../../shared-src/models/PluginMessage'
 import { serializeIssues } from '../../shared-src/models/Rules'
-import { serializeNodeStructure } from '../../shared-src/utils/serializeNodeStructure'
+import { serializeNodeStructure } from '../utils/serializeNodeStructure'
 import { postPluginMessage } from './usePluginMessage'
 
 const runLinterParams = z.object({

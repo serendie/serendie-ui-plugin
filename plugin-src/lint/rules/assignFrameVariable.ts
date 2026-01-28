@@ -1,4 +1,4 @@
-import { IssueDetail } from '../../shared-src/models/Rules'
+import { IssueDetail } from '../../../shared-src/models/Rules'
 import extractColorRole from '../core/extractColorRole'
 
 export default function validate(

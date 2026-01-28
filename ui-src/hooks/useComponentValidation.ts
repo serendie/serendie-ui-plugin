@@ -3,14 +3,14 @@ import { generateObject } from 'ai'
 import { useCallback, useRef, useState } from 'react'
 import { NodeStructure } from '../../shared-src/models/PluginMessage'
 import { Issue } from '../../shared-src/models/Rules'
-import { serializeNodeStructure } from '../../shared-src/utils/serializeNodeStructure'
+import { serializeNodeStructure } from '../utils/serializeNodeStructure'
 import { PROMPT_TO_NEST_PROPERTY } from '../../shared-src/utils/nestProperty'
 import {
   componentValidationResponseSchema,
   ComponentCandidate,
-} from './componentValidationSchema'
+} from '../models/componentValidationSchema'
 import componentsManifest from '../../shared-src/assets/components_manifest.json'
-import componentKeys from '../../assets/component-keys.json'
+import componentKeys from '../../shared-src/assets/component-keys.json'
 import { ComponentKeysMap } from '../../shared-src/models/ComponentKeys'
 import { getBasePropName } from '../../shared-src/utils/getBasePropName'
 

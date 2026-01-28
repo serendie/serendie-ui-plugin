@@ -1,8 +1,8 @@
 import {
   COLLECTION_NAME_LIST,
   LIBRARY_NAME,
-} from '../../shared-src/models/Rules'
-import notify from './notify'
+} from '../../../shared-src/models/Rules'
+import notify from '../../utils/nodes/notify'
 import extractVariableKey from './extractVariableKey'
 
 export type VariableMap = Map<string, string>

@@ -1,12 +1,12 @@
-import extractColorInfo from './utils/extractColorInfo'
+import extractColorInfo from './lint/extractors/extractColorInfo'
 import { Issue } from '../shared-src/models/Rules'
-import validateColorPairing from './utils/validateColorPairing'
-import validateAssignFrameVariable from './utils/validateAssignFrameVariable'
-import validateAssignTextVariable from './utils/validateAssignTextVariable'
+import validateColorPairing from './lint/validators/validateColorPairing'
+import validateAssignFrameVariable from './lint/validators/validateAssignFrameVariable'
+import validateAssignTextVariable from './lint/validators/validateAssignTextVariable'
 import getImage, { canGetImage } from '../shared-src/utils/getImage'
-import buildNodeStructure from './utils/buildNodeStructure'
+import buildNodeStructure from './utils/nodes/buildNodeStructure'
 import { NodeStructure } from '../shared-src/models/PluginMessage'
-import { applyComponents } from './utils/applyComponent'
+import { applyComponents } from './utils/components/applyComponent'
 
 figma.showUI(__html__, {
   width: 360,

@@ -1,5 +1,5 @@
-import { Issue } from '../../shared-src/models/Rules'
-import { ColorInfo } from '../utils/extractColorInfo'
+import { Issue } from '../../../shared-src/models/Rules'
+import { ColorInfo } from '../extractors/extractColorInfo'
 import validate from '../rules/assignTextVariable'
 
 export default function validateAssignTextVariable(

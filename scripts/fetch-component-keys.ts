@@ -2,7 +2,7 @@
 
 /**
  * Figma REST APIを使用してSerendie UIライブラリのコンポーネントキーを取得し、
- * assets/component-keys.json に保存するスクリプト
+ * shared-src/assets/component-keys.json に保存するスクリプト
  *
  * 環境変数:
  * - FIGMA_FILE_KEY: Serendie UIライブラリのFigma File Key
@@ -250,7 +250,7 @@ async function main(): Promise<void> {
     }
 
     // 出力ディレクトリ確認
-    const outputDir = path.resolve(__dirname, '../assets')
+    const outputDir = path.resolve(__dirname, '../shared-src/assets')
     if (!fs.existsSync(outputDir)) {
       fs.mkdirSync(outputDir, { recursive: true })
     }

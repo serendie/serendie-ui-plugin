@@ -1,4 +1,4 @@
-import { UNEXPECTED, FRAME_TYPES } from '../../shared-src/models/Rules'
+import { UNEXPECTED, FRAME_TYPES } from '../../../shared-src/models/Rules'
 import extractVariableKey from './extractVariableKey'
 import getVariableMap from './getVariableMap'
 import traceBackgroundColor from './traceFillDefinition'

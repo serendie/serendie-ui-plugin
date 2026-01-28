@@ -1,17 +1,17 @@
 import {
   ComponentKeysMap,
   ComponentKeyInfo,
-} from '../../shared-src/models/ComponentKeys'
-import { findClosestNumericOption } from '../../shared-src/utils/findClosestNumericOption'
-import { getBasePropName } from '../../shared-src/utils/getBasePropName'
+} from '../../../shared-src/models/ComponentKeys'
+import { findClosestNumericOption } from '../../../shared-src/utils/findClosestNumericOption'
+import { getBasePropName } from '../../../shared-src/utils/getBasePropName'
 import {
   isNestedProperty,
   parseNestedProperty,
-} from '../../shared-src/utils/nestProperty'
-import { parseInstanceSwapValue } from '../../shared-src/utils/parseInstanceSwapValue'
+} from '../../../shared-src/utils/nestProperty'
+import { parseInstanceSwapValue } from '../../../shared-src/utils/parseInstanceSwapValue'
 import { applyFigmaSpecificDefaults } from './applyFigmaSpecificDefaults'
-import { findDescendantByName } from './findDescendantByName'
-import componentKeys from '../../assets/component-keys.json'
+import { findDescendantByName } from '../nodes/findDescendantByName'
+import componentKeys from '../../../shared-src/assets/component-keys.json'
 
 const componentKeysMap = componentKeys as ComponentKeysMap
 

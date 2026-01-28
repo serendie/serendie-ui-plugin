@@ -1,5 +1,5 @@
-import { Issue, FRAME_TYPES } from '../../shared-src/models/Rules'
-import { ColorInfo } from './extractColorInfo'
+import { Issue, FRAME_TYPES } from '../../../shared-src/models/Rules'
+import { ColorInfo } from '../extractors/extractColorInfo'
 import validate from '../rules/assignFrameVariable'
 
 export default function validateAssignFrameVariable(nodes: ColorInfo[]): {

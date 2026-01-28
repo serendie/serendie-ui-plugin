@@ -3,7 +3,7 @@ import {
   BACKGROUND_COLOR_PAIRS,
   IssueDetail,
   UNEXPECTED,
-} from '../../shared-src/models/Rules'
+} from '../../../shared-src/models/Rules'
 import extractColorRole from '../core/extractColorRole'
 
 function formatRoles(roles: string | string[] | undefined): string {
