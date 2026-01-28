@@ -171,9 +171,13 @@ export async function setInstanceProperties(
     }
   }
 
-  // Step 1: VARIANTを先に適用（構造が変わるため）
-  if (Object.keys(variantProps).length > 0) {
-    instance.setProperties(variantProps)
+  // Step 1: VARIANTを1つずつ適用（組み合わせが無効な場合にスキップするため）
+  for (const [propName, value] of Object.entries(variantProps)) {
+    try {
+      instance.setProperties({ [propName]: value })
+    } catch (e) {
+      console.warn(`Skipping invalid variant: ${propName}=${value}`, e)
+    }
   }
 
   // Step 2: TEXT/BOOLEANを適用
