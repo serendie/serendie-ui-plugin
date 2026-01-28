@@ -22,6 +22,7 @@ export type NodeStructure = {
   // インスタンス固有の情報
   componentName?: string
   componentProperties?: ComponentProperty[]
+  isSDSComponent?: boolean
 }
 
 // Lint結果の型（ui-src/models/Result.tsと同じ構造）

@@ -4,6 +4,15 @@ import {
 } from '../../../shared-src/models/PluginMessage'
 import extractColorVariables from '../../lint/extractors/extractColorVariables'
 import getVariableMap from '../../lint/extractors/getVariableMap'
+import componentKeys from '../../../shared-src/assets/component-keys.json'
+import { ComponentKeysMap } from '../../../shared-src/models/ComponentKeys'
+
+const componentKeysMap = componentKeys as ComponentKeysMap
+
+// SDSコンポーネントのkeyセットを作成
+const sdsComponentKeys = new Set(
+  Object.values(componentKeysMap).map(c => c.key)
+)
 
 async function buildNodeStructureRecursive(
   node: SceneNode,
@@ -47,10 +56,12 @@ async function buildNodeStructureRecursive(
   ): Promise<{
     componentName?: string
     componentProperties?: ComponentProperty[]
+    isSDSComponent?: boolean
   }> => {
     if (node.type !== 'INSTANCE') return {}
 
     let componentName: string | undefined
+    let isSDSComponent = false
     const componentProperties: ComponentProperty[] = []
     try {
       // NOTE: メインコンポーネントにアクセスできないとき、getMainComponentAsyncやcomponentPropertiesはエラーになる
@@ -60,6 +71,13 @@ async function buildNodeStructureRecursive(
         mainComponent?.parent?.type === 'COMPONENT_SET'
           ? mainComponent.parent.name
           : mainComponent?.name
+
+      // SDSコンポーネントかどうかをkeyで判定
+      const componentKey = mainComponent?.parent?.type === 'COMPONENT_SET'
+        ? mainComponent.parent.key
+        : mainComponent?.key
+      isSDSComponent = componentKey ? sdsComponentKeys.has(componentKey) : false
+
       const props = node.componentProperties
       if (props) {
         for (const [name, prop] of Object.entries(props)) {
@@ -78,6 +96,7 @@ async function buildNodeStructureRecursive(
       componentName,
       componentProperties:
         componentProperties.length > 0 ? componentProperties : undefined,
+      isSDSComponent,
     }
   }
 

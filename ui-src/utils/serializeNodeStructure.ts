@@ -26,6 +26,9 @@ export function serializeNodeStructure(
 
   if (node.componentName) {
     details.push(`component: ${node.componentName}`)
+    if (node.isSDSComponent) {
+      details.push(`isSDSComponent: true`)
+    }
   }
 
   if (node.componentProperties && node.componentProperties.length > 0) {
