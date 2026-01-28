@@ -149,7 +149,8 @@ ${componentPropertiesInfo}
 # 注意事項
 - SDSコンポーネントに該当しないノード（単純なFrame、装飾的な要素など）はcandidatesに含めないでください
 - SDSコンポーネントとして置き換え可能なノードのみを返してください
-- INSTANCEノードで既にcomponentNameがある場合、それがSDSコンポーネントかどうかも考慮してください
+- isSDSComponent: trueのノードは既にSerendie UIを使用しているため、候補に含めないでください
+- isSDSComponent: falseまたは未設定のINSTANCEノードで、対応するSDSコンポーネントがあれば候補として返してください
 - 最上位のノードだけでなく、子ノードも含めて全て分析してください
 - コンポーネントを提案する際、プロパティがあるコンポーネントの場合はpropertiesも指定してください
 - instance swapプロパティは「ComponentSetName/VariantValue」形式で指定してください（例: "OutlinedSerendieSymbols/arrow_back"）
