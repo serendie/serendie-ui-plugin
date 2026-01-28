@@ -1,4 +1,4 @@
-import { COLOR_ROLES } from '../../shared-src/models/Rules'
+import { COLOR_ROLES } from '../../../shared-src/models/Rules'
 
 export default function extractColorRole(variableName: string): string | null {
   const parts = variableName.split('/')

@@ -1,9 +1,9 @@
 import {
   NodeStructure,
   ComponentProperty,
-} from '../../shared-src/models/PluginMessage'
-import extractColorVariables from './extractColorVariables'
-import getVariableMap from './getVariableMap'
+} from '../../../shared-src/models/PluginMessage'
+import extractColorVariables from '../../lint/extractors/extractColorVariables'
+import getVariableMap from '../../lint/extractors/getVariableMap'
 
 async function buildNodeStructureRecursive(
   node: SceneNode,

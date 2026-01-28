@@ -17,7 +17,7 @@ import {
   SelectionInfo,
 } from '../../../shared-src/models/PluginMessage'
 import { useApiKey } from '../../hooks/useApiKey'
-import { useComponentValidation } from '../../validations/useComponentValidation'
+import { useComponentValidation } from '../../hooks/useComponentValidation'
 import IssueTitle from './IssueTitle'
 
 const { sd } = tokens

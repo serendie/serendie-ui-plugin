@@ -1,10 +1,10 @@
-import { ApplyComponentItem } from '../../shared-src/models/PluginMessage'
-import { ComponentKeysMap } from '../../shared-src/models/ComponentKeys'
+import { ApplyComponentItem } from '../../../shared-src/models/PluginMessage'
+import { ComponentKeysMap } from '../../../shared-src/models/ComponentKeys'
 import { detachAllInstances } from './detachAllInstances'
 import { setInstanceProperties } from './setInstanceProperties'
-import getTreePath, { getNodeByTreePath } from './getTreePath'
-import { sortByDepthDescending } from './sortByDepth'
-import componentKeys from '../../assets/component-keys.json'
+import getTreePath, { getNodeByTreePath } from '../nodes/getTreePath'
+import { sortByDepthDescending } from '../nodes/sortByDepth'
+import componentKeys from '../../../shared-src/assets/component-keys.json'
 
 const componentKeysMap = componentKeys as ComponentKeysMap
 
