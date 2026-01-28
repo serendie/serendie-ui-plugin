@@ -9,15 +9,20 @@ import {
   componentValidationResponseSchema,
   ComponentCandidate,
 } from '../models/componentValidationSchema'
-import componentsManifest from '../../shared-src/assets/components_manifest.json'
 import componentKeys from '../../shared-src/assets/component-keys.json'
+import componentsManifest from '../../shared-src/assets/components_manifest.json'
 import { ComponentKeysMap } from '../../shared-src/models/ComponentKeys'
 import { getBasePropName } from '../../shared-src/utils/getBasePropName'
 
 const componentKeysMap = componentKeys as ComponentKeysMap
 
+// component-keys.jsonに存在するコンポーネント名のセット
+const validComponentNames = new Set(Object.keys(componentKeysMap))
+
 function generateComponentList(): string {
+  // component-keys.jsonに存在するコンポーネントのみ、manifestの説明付きで出力
   return componentsManifest
+    .filter(c => validComponentNames.has(c.name))
     .map(c => (c.description ? `- ${c.name}: ${c.description}` : `- ${c.name}`))
     .join('\n')
 }
