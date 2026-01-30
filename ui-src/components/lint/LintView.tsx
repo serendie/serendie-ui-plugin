@@ -288,6 +288,7 @@ export default function LintView({
                             issue => issue.source === 'component'
                           )}
                           totalItems={result.totalComponents ?? 0}
+                          type='component'
                         />
                       )}
                     </div>
@@ -299,6 +300,7 @@ export default function LintView({
                         issue => issue.source !== 'component'
                       )}
                       totalItems={result.totalNodes}
+                      type='token'
                     />
                   </div>
                 </>
