@@ -2,20 +2,27 @@ import tokens from '@serendie/design-token'
 
 import { Issue } from '../../../shared-src/models/Rules'
 import IssueListItem from './IssueListItem'
-import IssueHeader from './IssueHeader'
+import TokenIssueHeader from './TokenIssueHeader'
+import ComponentIssueHeader from './ComponentIssueHeader'
 
 const { sd } = tokens
 
 export default function IssuesList({
   issues,
   totalItems,
+  type,
 }: {
   issues: Issue[]
   totalItems: number
+  type: 'token' | 'component'
 }) {
   return (
     <div>
-      <IssueHeader issues={issues} totalItems={totalItems} />
+      {type === 'token' ? (
+        <TokenIssueHeader issues={issues} totalItems={totalItems} />
+      ) : (
+        <ComponentIssueHeader count={issues.length} />
+      )}
       {issues.length > 0 && (
         <div
           style={{

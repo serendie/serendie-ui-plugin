@@ -1,4 +1,4 @@
-import { Issue } from './Rules'
+import { Issue, ComponentSuggestion } from './Rules'
 
 // インスタンスのコンポーネントプロパティ
 export type ComponentProperty = {
@@ -15,12 +15,14 @@ export type NodeStructure = {
   fills: string[]
   strokes: string[]
   textStyle?: string
+  textContent?: string
   width: number
   height: number
   children: NodeStructure[]
   // インスタンス固有の情報
   componentName?: string
   componentProperties?: ComponentProperty[]
+  isSDSComponent?: boolean
 }
 
 // Lint結果の型（ui-src/models/Result.tsと同じ構造）
@@ -66,6 +68,11 @@ export type PluginToUIMessage =
   | ImageMessage
   | ErrorMessage
 
+// コンポーネント適用アイテム
+export type ApplyComponentItem = {
+  nodeId: string
+} & ComponentSuggestion
+
 // UI → Plugin
 export type UIToPluginMessage =
   | { type: 'run-linter'; nodeIds: string[]; source: Source }
@@ -73,6 +80,12 @@ export type UIToPluginMessage =
   | { type: 'get-selection-images'; nodeIds: string[] }
   | { type: 'clear-selection' }
   | { type: 'notify'; message: string }
+  | {
+      type: 'apply-components'
+      rootNodeId: string // コピー元のルートノードID
+      items: ApplyComponentItem[]
+    }
+  | { type: 'select-node'; nodeId: string }
 
 // 全メッセージ型
 export type PluginMessage = PluginToUIMessage | UIToPluginMessage
