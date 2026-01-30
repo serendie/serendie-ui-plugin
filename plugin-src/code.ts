@@ -1,11 +1,12 @@
-import extractColorInfo from './utils/extractColorInfo'
+import extractColorInfo from './lint/extractors/extractColorInfo'
 import { Issue } from '../shared-src/models/Rules'
-import validateColorPairing from './utils/validateColorPairing'
-import validateAssignFrameVariable from './utils/validateAssignFrameVariable'
-import validateAssignTextVariable from './utils/validateAssignTextVariable'
+import validateColorPairing from './lint/validators/validateColorPairing'
+import validateAssignFrameVariable from './lint/validators/validateAssignFrameVariable'
+import validateAssignTextVariable from './lint/validators/validateAssignTextVariable'
 import getImage, { canGetImage } from '../shared-src/utils/getImage'
-import buildNodeStructure from './utils/buildNodeStructure'
+import buildNodeStructure from './utils/nodes/buildNodeStructure'
 import { NodeStructure } from '../shared-src/models/PluginMessage'
+import { applyComponents } from './utils/components/applyComponent'
 
 figma.showUI(__html__, {
   width: 360,
@@ -165,6 +166,31 @@ figma.ui.onmessage = async msg => {
   }
   if (msg.type === 'notify') {
     figma.notify(msg.message)
+  }
+  if (msg.type === 'apply-components') {
+    try {
+      const result = await applyComponents(msg.rootNodeId, msg.items)
+      const messages: string[] = []
+      if (result.success > 0) {
+        messages.push(`${result.success}個適用`)
+      }
+      if (result.skipped > 0) {
+        messages.push(`${result.skipped}個スキップ`)
+      }
+      if (messages.length > 0) {
+        figma.notify(messages.join('、'))
+      }
+      if (result.failed > 0) {
+        figma.notify(`${result.failed}個の適用に失敗しました`, {
+          error: true,
+        })
+      }
+    } catch (error) {
+      figma.notify(
+        error instanceof Error ? error.message : 'コンポーネントの適用に失敗しました',
+        { error: true }
+      )
+    }
   }
   if (msg.type === 'close') {
     figma.closePlugin()

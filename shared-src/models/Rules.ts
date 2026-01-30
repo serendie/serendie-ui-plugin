@@ -8,6 +8,13 @@ export const COLLECTION_NAME_LIST = [
   'typography-system',
 ]
 export const UNEXPECTED = 'Unexpected'
+export const FRAME_TYPES = [
+  'FRAME',
+  'RECTANGLE',
+  'COMPONENT',
+  'INSTANCE',
+] as const
+export type FrameType = (typeof FRAME_TYPES)[number]
 const surfaceSeries = [
   'surface',
   'surfaceContainerLowest',
@@ -128,21 +135,34 @@ export const COLOR_ROLES: string[] = Array.from(
 export type IssueDetail = {
   severity: 'error' | 'warning'
   message: string
-  suggestion: string | null
+  messageDetails: string | null
 }
 
-export type IssueSource = 'design-token' | 'component'
-
-export type Issue = {
+type BaseIssue = {
   nodeId: string
   nodeName: string
   nodeType: string
-  source?: IssueSource
 } & IssueDetail
+
+export type DesignTokenIssue = BaseIssue & {
+  source: 'design-token'
+}
+
+export type ComponentSuggestion = {
+  componentName: string
+  properties?: Record<string, string | boolean | number>
+}
+
+export type ComponentIssue = BaseIssue & {
+  source: 'component'
+  suggestion: ComponentSuggestion
+}
+
+export type Issue = DesignTokenIssue | ComponentIssue
 
 export function serializeIssues(issue: Issue): string {
   return (
-    [`${issue.severity}: ${issue.message}`, `提案: ${issue.suggestion}`].join(
+    [`${issue.severity}: ${issue.message}`, `提案: ${issue.messageDetails}`].join(
       '\n'
     ) + '\n'
   )

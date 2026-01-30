@@ -1,8 +1,9 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
-import { Button, ProgressIndicatorIndeterminate } from '@serendie/ui'
+import { Button } from '@serendie/ui'
 import tokens from '@serendie/design-token'
 import IssuesList from './IssuesList'
 import SelectionCard from './SelectionCard'
+import ComponentValidationStatus from './ComponentValidationStatus'
 import { SerendieSymbol } from '@serendie/symbols'
 import { Result } from '../../models/Result'
 import {
@@ -10,12 +11,13 @@ import {
   postPluginMessage,
 } from '../../hooks/usePluginMessage'
 import {
+  ApplyComponentItem,
   LintResult,
   PluginMessage,
   SelectionInfo,
 } from '../../../shared-src/models/PluginMessage'
 import { useApiKey } from '../../hooks/useApiKey'
-import { useComponentValidation } from '../../validations/useComponentValidation'
+import { useComponentValidation } from '../../hooks/useComponentValidation'
 import IssueTitle from './IssueTitle'
 
 const { sd } = tokens
@@ -157,6 +159,29 @@ export default function LintView({
     setLoadedImages(prev => ({ ...prev, [nodeId]: true }))
   }, [])
 
+  // コンポーネントの「コピーして適用」ハンドラ
+  const handleApplyComponents = useCallback(
+    (rootNodeId: string) => {
+      const result = results.find(r => r.id === rootNodeId)
+      if (!result) return
+
+      const items: ApplyComponentItem[] = []
+      const componentIssues = result.issues.filter(
+        issue => issue.source === 'component'
+      )
+      for (const issue of componentIssues) {
+        items.push({
+          nodeId: issue.nodeId,
+          ...issue.suggestion,
+        })
+      }
+      if (items.length > 0) {
+        postPluginMessage({ type: 'apply-components', rootNodeId, items })
+      }
+    },
+    [results]
+  )
+
   return (
     <div
       style={{
@@ -223,7 +248,7 @@ export default function LintView({
               style={{
                 display: 'flex',
                 flexDirection: 'column',
-                gap: sd.system.dimension.spacing.large,
+                gap: sd.system.dimension.spacing.medium,
               }}
             >
               <SelectionCard
@@ -235,37 +260,35 @@ export default function LintView({
                 <>
                   {apiKey && (
                     <div>
-                      <IssueTitle title='コンポーネント' />
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <IssueTitle title='コンポーネント' />
+                        {componentValidationState === 'done' &&
+                          result.issues.filter(i => i.source === 'component')
+                            .length > 0 && (
+                            <Button
+                              size='small'
+                              styleType='ghost'
+                              onClick={() => handleApplyComponents(result.id)}
+                            >
+                              コピーして適用
+                            </Button>
+                          )}
+                      </div>
                       {componentValidationState === 'analyzing' ? (
-                        <div
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: sd.system.dimension.spacing.small,
-                            padding: sd.system.dimension.spacing.small,
-                            backgroundColor: sd.system.color.component.surface,
-                            borderRadius: sd.system.dimension.radius.medium,
-                          }}
-                        >
-                          <ProgressIndicatorIndeterminate
-                            size='small'
-                            type='circular'
-                          />
-                          <span
-                            style={{
-                              ...sd.system.typography.body.extraSmall_expanded,
-                              color: sd.system.color.component.onSurfaceVariant,
-                            }}
-                          >
-                            Serendie UIを適用できるか検証しています
-                          </span>
-                        </div>
+                        <ComponentValidationStatus />
                       ) : (
                         <IssuesList
                           issues={result.issues.filter(
                             issue => issue.source === 'component'
                           )}
                           totalItems={result.totalComponents ?? 0}
+                          type='component'
                         />
                       )}
                     </div>
@@ -277,6 +300,7 @@ export default function LintView({
                         issue => issue.source !== 'component'
                       )}
                       totalItems={result.totalNodes}
+                      type='token'
                     />
                   </div>
                 </>
