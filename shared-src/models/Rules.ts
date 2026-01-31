@@ -148,7 +148,7 @@ type BaseIssue = {
 } & IssueDetail
 
 export type DesignTokenSuggestion = {
-  targetRole: string
+  targetRoles: string[]
   targetProperty: 'textColor' | 'backgroundColor'
 }
 

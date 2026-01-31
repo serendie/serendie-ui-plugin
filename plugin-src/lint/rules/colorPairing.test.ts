@@ -40,17 +40,17 @@ describe('colorPairing', () => {
     it('背景色からsuggestionが付く', () => {
       const result = validate('onSecondary', 'primary')
       expect(result?.suggestion).toEqual({
-        targetRole: 'onPrimary',
+        targetRoles: ['onPrimary'],
         targetProperty: 'textColor',
       })
     })
 
-    it('背景色が配列候補の場合は先頭を提案', () => {
+    it('背景色が配列候補の場合は全候補を提案', () => {
       const result = validate('onPrimary', 'surface')
-      expect(result?.suggestion).toEqual({
-        targetRole: 'onSurface',
-        targetProperty: 'textColor',
-      })
+      expect(result?.suggestion?.targetRoles).toContain('onSurface')
+      expect(result?.suggestion?.targetRoles).toContain('onSurfaceVariant')
+      expect(result?.suggestion?.targetRoles).toContain('primary')
+      expect(result?.suggestion?.targetProperty).toBe('textColor')
     })
   })
 

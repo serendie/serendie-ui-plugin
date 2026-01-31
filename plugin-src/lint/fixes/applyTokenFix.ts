@@ -1,8 +1,6 @@
 import { DesignTokenSuggestion } from '../../../shared-src/models/Rules'
-import {
-  getReverseVariableMap,
-  ReverseVariableMap,
-} from '../extractors/getVariableMap'
+import { getReverseVariableMap } from '../extractors/getVariableMap'
+import { pickBestVariable } from './pickBestVariable'
 
 export type ApplyTokenItem = {
   nodeId: string
@@ -12,19 +10,7 @@ export type ApplyTokenItem = {
 export type ApplyTokenResult = {
   nodeId: string
   status: 'success' | 'failed'
-}
-
-function findVariableNameByRole(
-  reverseMap: ReverseVariableMap,
-  targetRole: string
-): string | undefined {
-  const suffix = `/${targetRole}`
-  for (const name of reverseMap.keys()) {
-    if (name.endsWith(suffix)) {
-      return name
-    }
-  }
-  return undefined
+  appliedRole?: string
 }
 
 function applyVariableToFills(node: SceneNode, variable: Variable) {
@@ -63,25 +49,22 @@ export async function applyTokenFixes(
       }
       const node = baseNode as SceneNode
 
-      const variableName = findVariableNameByRole(
-        reverseMap,
-        item.suggestion.targetRole
+      const picked = await pickBestVariable(
+        node,
+        item.suggestion.targetRoles,
+        reverseMap
       )
-      if (!variableName) {
+      if (!picked) {
         results.push({ nodeId: item.nodeId, status: 'failed' })
         continue
       }
 
-      const fullKey = reverseMap.get(variableName)
-      if (!fullKey) {
-        results.push({ nodeId: item.nodeId, status: 'failed' })
-        continue
-      }
-
-      const variable =
-        await figma.variables.importVariableByKeyAsync(fullKey)
-      applyVariableToFills(node, variable)
-      results.push({ nodeId: item.nodeId, status: 'success' })
+      applyVariableToFills(node, picked.variable)
+      results.push({
+        nodeId: item.nodeId,
+        status: 'success',
+        appliedRole: picked.role,
+      })
     } catch {
       results.push({ nodeId: item.nodeId, status: 'failed' })
     }

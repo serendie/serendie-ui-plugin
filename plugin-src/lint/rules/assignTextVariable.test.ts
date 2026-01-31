@@ -59,7 +59,7 @@ describe('assignTextVariable', () => {
       const result = validate('primaryContainer', 'primary')
       expect(result?.severity).toBe('error')
       expect(result?.suggestion).toEqual({
-        targetRole: 'onPrimary',
+        targetRoles: ['onPrimary'],
         targetProperty: 'textColor',
       })
     })
@@ -108,34 +108,33 @@ describe('assignTextVariable', () => {
       expect(result?.severity).toBe('warning')
       expect(result?.message).toBe('テキスト色にシステムトークンを未使用')
       expect(result?.suggestion).toEqual({
-        targetRole: 'onPrimary',
+        targetRoles: ['onPrimary'],
         targetProperty: 'textColor',
       })
     })
 
-    it('surface背景 → 先頭候補onSurfaceを提案', () => {
+    it('surface背景 → 全候補を提案', () => {
       const result = validate('customColor', 'surface')
       expect(result?.severity).toBe('warning')
-      expect(result?.suggestion).toEqual({
-        targetRole: 'onSurface',
-        targetProperty: 'textColor',
-      })
+      expect(result?.suggestion?.targetRoles).toContain('onSurface')
+      expect(result?.suggestion?.targetRoles).toContain('onSurfaceVariant')
+      expect(result?.suggestion?.targetRoles).toContain('primary')
+      expect(result?.suggestion?.targetProperty).toBe('textColor')
     })
 
-    it('surfaceContainerHigh背景 → onSurfaceを提案', () => {
+    it('surfaceContainerHigh背景 → onSurface等を含む候補を提案', () => {
       const result = validate('customColor', 'surfaceContainerHigh')
       expect(result?.severity).toBe('warning')
-      expect(result?.suggestion).toEqual({
-        targetRole: 'onSurface',
-        targetProperty: 'textColor',
-      })
+      expect(result?.suggestion?.targetRoles).toContain('onSurface')
+      expect(result?.suggestion?.targetRoles).toContain('onSurfaceVariant')
+      expect(result?.suggestion?.targetProperty).toBe('textColor')
     })
 
     it('primaryContainer背景 → onPrimaryContainerを提案', () => {
       const result = validate('customColor', 'primaryContainer')
       expect(result?.severity).toBe('warning')
       expect(result?.suggestion).toEqual({
-        targetRole: 'onPrimaryContainer',
+        targetRoles: ['onPrimaryContainer'],
         targetProperty: 'textColor',
       })
     })
