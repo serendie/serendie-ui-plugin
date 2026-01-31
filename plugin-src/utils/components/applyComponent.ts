@@ -117,9 +117,9 @@ export async function applyComponents(
       instance.x = sceneNode.x
       instance.y = sceneNode.y
 
-      // サイズを元のノードに合わせる（リサイズ可能な場合）
+      // 横幅を元のノードに合わせる（リサイズ可能な場合）
       try {
-        instance.resize(sceneNode.width, sceneNode.height)
+        instance.resize(sceneNode.width, instance.height)
       } catch {
         // リサイズできない場合は無視（固定サイズのコンポーネントなど）
       }
