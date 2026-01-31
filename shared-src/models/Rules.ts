@@ -31,6 +31,9 @@ const impressionBasicColors = [
   'negative',
   'positive',
 ]
+const markLabelSeries = ['01', '02', '03', '04', '05', '06', '07', '08', '09']
+const onMarkLabelSeries = ['onMarkLabel', 'inverseOnMarkLabel']
+
 export const TEXT_COLOR_PAIRS: Record<string, string | string[]> = {
   primary: surfaceSeries,
   onPrimary: 'primary',
@@ -56,8 +59,8 @@ export const TEXT_COLOR_PAIRS: Record<string, string | string[]> = {
   onSurface: surfaceSeries,
   inverseOnSurface: 'inverseSurface',
   onChartSurface: 'chartSurface',
-  onMarkLabel: ['01', '02', '03', '04', '05', '06', '07', '08', '09'],
-  inverseOnMarkLabel: ['01', '02', '03', '04', '05', '06', '07', '08', '09'],
+  onMarkLabel: markLabelSeries,
+  inverseOnMarkLabel: markLabelSeries,
 }
 
 export const BACKGROUND_COLOR_PAIRS: Record<string, string | string[]> = {
@@ -76,39 +79,39 @@ export const BACKGROUND_COLOR_PAIRS: Record<string, string | string[]> = {
   positive: 'onPositive',
   positiveContainer: 'onPositiveContainer',
   positiveContainerVariant: 'onPositiveContainerVariant',
-  surface: [...impressionBasicColors, 'onSurface', 'onSurfaceVariant'],
-  inverseSurface: [...impressionBasicColors, 'inverseOnSurface'],
+  surface: ['onSurface', 'onSurfaceVariant', ...impressionBasicColors],
+  inverseSurface: ['inverseOnSurface', ...impressionBasicColors],
   surfaceContainerLowest: [
-    ...impressionBasicColors,
     'onSurface',
     'onSurfaceVariant',
+    ...impressionBasicColors,
   ],
   surfaceContainerLow: [
-    ...impressionBasicColors,
     'onSurface',
     'onSurfaceVariant',
+    ...impressionBasicColors,
   ],
-  surfaceContainer: [...impressionBasicColors, 'onSurface', 'onSurfaceVariant'],
+  surfaceContainer: ['onSurface', 'onSurfaceVariant', ...impressionBasicColors],
   surfaceContainerHigh: [
-    ...impressionBasicColors,
     'onSurface',
     'onSurfaceVariant',
+    ...impressionBasicColors,
   ],
   surfaceContainerHighest: [
-    ...impressionBasicColors,
     'onSurface',
     'onSurfaceVariant',
+    ...impressionBasicColors,
   ],
   chartSurface: 'onChartSurface',
-  '01': ['onMarkLabel', 'inverseOnMarkLabel'],
-  '02': ['onMarkLabel', 'inverseOnMarkLabel'],
-  '03': ['onMarkLabel', 'inverseOnMarkLabel'],
-  '04': ['onMarkLabel', 'inverseOnMarkLabel'],
-  '05': ['onMarkLabel', 'inverseOnMarkLabel'],
-  '06': ['onMarkLabel', 'inverseOnMarkLabel'],
-  '07': ['onMarkLabel', 'inverseOnMarkLabel'],
-  '08': ['onMarkLabel', 'inverseOnMarkLabel'],
-  '09': ['onMarkLabel', 'inverseOnMarkLabel'],
+  '01': onMarkLabelSeries,
+  '02': onMarkLabelSeries,
+  '03': onMarkLabelSeries,
+  '04': onMarkLabelSeries,
+  '05': onMarkLabelSeries,
+  '06': onMarkLabelSeries,
+  '07': onMarkLabelSeries,
+  '08': onMarkLabelSeries,
+  '09': onMarkLabelSeries,
 }
 
 export const COLOR_ROLES: string[] = Array.from(
@@ -147,6 +150,10 @@ type BaseIssue = {
 export type DesignTokenSuggestion = {
   targetRole: string
   targetProperty: 'textColor' | 'backgroundColor'
+}
+
+export type RuleResult = IssueDetail & {
+  suggestion?: DesignTokenSuggestion
 }
 
 export type DesignTokenIssue = BaseIssue & {

@@ -36,6 +36,22 @@ describe('colorPairing', () => {
       expect(result).not.toBeNull()
       expect(result?.message).toBe('テキスト色または背景色が不適切')
     })
+
+    it('背景色からsuggestionが付く', () => {
+      const result = validate('onSecondary', 'primary')
+      expect(result?.suggestion).toEqual({
+        targetRole: 'onPrimary',
+        targetProperty: 'textColor',
+      })
+    })
+
+    it('背景色が配列候補の場合は先頭を提案', () => {
+      const result = validate('onPrimary', 'surface')
+      expect(result?.suggestion).toEqual({
+        targetRole: 'onSurface',
+        targetProperty: 'textColor',
+      })
+    })
   })
 
   describe('impressionの基本色の例外的な組み合わせ', () => {
