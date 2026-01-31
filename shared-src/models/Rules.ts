@@ -1,4 +1,4 @@
-export const LIBRARY_NAME = '🛠️ Serendie UI Kit'
+export const LIBRARY_NAME = 'Serendie UI Kit'
 export const COLLECTION_NAME_LIST = [
   'color-reference',
   'dimension-reference',
@@ -162,8 +162,9 @@ export type Issue = DesignTokenIssue | ComponentIssue
 
 export function serializeIssues(issue: Issue): string {
   return (
-    [`${issue.severity}: ${issue.message}`, `提案: ${issue.messageDetails}`].join(
-      '\n'
-    ) + '\n'
+    [
+      `${issue.severity}: ${issue.message}`,
+      `提案: ${issue.messageDetails}`,
+    ].join('\n') + '\n'
   )
 }
