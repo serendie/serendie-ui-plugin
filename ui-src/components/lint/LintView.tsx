@@ -16,6 +16,7 @@ import {
   PluginMessage,
   SelectionInfo,
 } from '../../../shared-src/models/PluginMessage'
+import { ComponentIssue } from '../../../shared-src/models/Rules'
 import { useApiKey } from '../../hooks/useApiKey'
 import { useComponentValidation } from '../../hooks/useComponentValidation'
 import IssueTitle from './IssueTitle'
@@ -93,6 +94,28 @@ export default function LintView({
           return next
         })
       }
+      if (message.type === 'apply-components-result') {
+        setResults(prev =>
+          prev.map(result => {
+            if (result.id !== message.rootNodeId) return result
+            const updatedIssues = result.issues.map(issue => {
+              if (issue.source !== 'component') return issue
+              const applied = message.results.find(
+                r => r.oldNodeId === issue.nodeId
+              )
+              if (!applied || applied.status !== 'success') return issue
+              return {
+                ...issue,
+                severity: 'resolved' as const,
+                nodeId: applied.newNodeId,
+                message: `${issue.suggestion.componentName}を適用しました`,
+                messageDetails: null,
+              }
+            })
+            return { ...result, issues: updatedIssues }
+          })
+        )
+      }
       if (message.type === 'lint-result' && message.source === 'lint-view') {
         // デザイントークン検証完了、まず結果を表示
         setIsLoading(false)
@@ -167,7 +190,8 @@ export default function LintView({
 
       const items: ApplyComponentItem[] = []
       const componentIssues = result.issues.filter(
-        issue => issue.source === 'component'
+        (issue): issue is ComponentIssue =>
+          issue.source === 'component' && issue.severity !== 'resolved'
       )
       for (const issue of componentIssues) {
         items.push({
@@ -269,8 +293,11 @@ export default function LintView({
                       >
                         <IssueTitle title='コンポーネント' />
                         {componentValidationState === 'done' &&
-                          result.issues.filter(i => i.source === 'component')
-                            .length > 0 && (
+                          result.issues.filter(
+                            i =>
+                              i.source === 'component' &&
+                              i.severity !== 'resolved'
+                          ).length > 0 && (
                             <Button
                               size='small'
                               styleType='ghost'

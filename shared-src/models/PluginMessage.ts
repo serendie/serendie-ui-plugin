@@ -61,17 +61,32 @@ export type ImageMessage =
 // エラーメッセージ
 export type ErrorMessage = { type: 'error'; message: string }
 
+// コンポーネント適用結果メッセージ
+export type ApplyComponentsResultMessage = {
+  type: 'apply-components-result'
+  rootNodeId: string
+  results: ApplyComponentResult[]
+}
+
 // Plugin → UI
 export type PluginToUIMessage =
   | LintMessage
   | SelectionMessage
   | ImageMessage
   | ErrorMessage
+  | ApplyComponentsResultMessage
 
 // コンポーネント適用アイテム
 export type ApplyComponentItem = {
   nodeId: string
 } & ComponentSuggestion
+
+// コンポーネント適用結果（個別ノード）
+export type ApplyComponentResult = {
+  oldNodeId: string
+  newNodeId: string
+  status: 'success' | 'failed' | 'skipped'
+}
 
 // UI → Plugin
 export type UIToPluginMessage =

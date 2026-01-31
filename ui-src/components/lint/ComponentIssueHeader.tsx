@@ -4,7 +4,14 @@ import StatLabel from './StatLabel'
 
 const { sd } = tokens
 
-export default function ComponentIssueHeader({ count }: { count: number }) {
+export default function ComponentIssueHeader({
+  count,
+  resolvedCount = 0,
+}: {
+  count: number
+  resolvedCount?: number
+}) {
+  const unresolvedCount = count - resolvedCount
   return (
     <div
       style={{
@@ -19,11 +26,22 @@ export default function ComponentIssueHeader({ count }: { count: number }) {
       }}
     >
       {count > 0 ? (
-        <StatLabel
-          symbolName='alert-triangle'
-          targetNodes={count}
-          label='個のコンポーネントで利用可能'
-        />
+        <>
+          {resolvedCount > 0 && (
+            <StatLabel
+              symbolName='check-circle'
+              targetNodes={resolvedCount}
+              label='個適用済み'
+            />
+          )}
+          {unresolvedCount > 0 && (
+            <StatLabel
+              symbolName='alert-triangle'
+              targetNodes={unresolvedCount}
+              label='個のコンポーネントで利用可能'
+            />
+          )}
+        </>
       ) : (
         <span
           style={{
