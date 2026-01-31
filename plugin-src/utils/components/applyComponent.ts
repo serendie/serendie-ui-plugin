@@ -1,4 +1,7 @@
-import { ApplyComponentItem } from '../../../shared-src/models/PluginMessage'
+import {
+  ApplyComponentItem,
+  ApplyComponentResult,
+} from '../../../shared-src/models/PluginMessage'
 import { ComponentKeysMap } from '../../../shared-src/models/ComponentKeys'
 import { setInstanceProperties } from './setInstanceProperties'
 import { detachAncestorInstances } from './detachAncestorInstances'
@@ -15,19 +18,18 @@ export async function applyComponents(
   rootNodeId: string,
   items: ApplyComponentItem[]
 ): Promise<{
-  success: number
-  failed: number
-  skipped: number
+  results: ApplyComponentResult[]
   detached: number
 }> {
-  let success = 0
-  let failed = 0
-  let skipped = 0
+  const results: ApplyComponentResult[] = []
 
   const rootNode = await figma.getNodeByIdAsync(rootNodeId)
   if (!rootNode) {
     console.error(`Root node not found: ${rootNodeId}`)
-    return { success: 0, failed: items.length, skipped: 0, detached: 0 }
+    for (const item of items) {
+      results.push({ oldNodeId: item.nodeId, newNodeId: '', status: 'failed' })
+    }
+    return { results, detached: 0 }
   }
 
   // Step 1: 解体前にツリーパスを記録
@@ -68,7 +70,11 @@ export async function applyComponents(
         console.log(
           `Skipping: component not in Figma library: ${item.componentName}`
         )
-        skipped++
+        results.push({
+          oldNodeId: item.nodeId,
+          newNodeId: '',
+          status: 'skipped',
+        })
         continue
       }
 
@@ -76,7 +82,11 @@ export async function applyComponents(
       const targetNode = findNodeByTreePath(item.nodeId)
       if (!targetNode || !('parent' in targetNode)) {
         console.warn(`Node not found for: ${item.nodeId}`)
-        failed++
+        results.push({
+          oldNodeId: item.nodeId,
+          newNodeId: '',
+          status: 'failed',
+        })
         continue
       }
 
@@ -153,12 +163,20 @@ export async function applyComponents(
         sceneNode.remove()
       }
 
-      success++
+      results.push({
+        oldNodeId: item.nodeId,
+        newNodeId: instance.id,
+        status: 'success',
+      })
     } catch (error) {
       console.error(`Failed to apply component: ${item.componentName}`, error)
-      failed++
+      results.push({
+        oldNodeId: item.nodeId,
+        newNodeId: '',
+        status: 'failed',
+      })
     }
   }
 
-  return { success, failed, skipped, detached }
+  return { results, detached }
 }

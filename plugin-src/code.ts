@@ -170,27 +170,46 @@ figma.ui.onmessage = async msg => {
   if (msg.type === 'apply-components') {
     try {
       const result = await applyComponents(msg.rootNodeId, msg.items)
+      const successCount = result.results.filter(
+        r => r.status === 'success'
+      ).length
+      const failedCount = result.results.filter(
+        r => r.status === 'failed'
+      ).length
+      const skippedCount = result.results.filter(
+        r => r.status === 'skipped'
+      ).length
+
       const messages: string[] = []
       if (result.detached > 0) {
         messages.push(`${result.detached}個インスタンス解除`)
       }
-      if (result.success > 0) {
-        messages.push(`${result.success}個適用`)
+      if (successCount > 0) {
+        messages.push(`${successCount}個適用`)
       }
-      if (result.skipped > 0) {
-        messages.push(`${result.skipped}個スキップ`)
+      if (skippedCount > 0) {
+        messages.push(`${skippedCount}個スキップ`)
       }
       if (messages.length > 0) {
         figma.notify(messages.join('、'))
       }
-      if (result.failed > 0) {
-        figma.notify(`${result.failed}個の適用に失敗しました`, {
+      if (failedCount > 0) {
+        figma.notify(`${failedCount}個の適用に失敗しました`, {
           error: true,
         })
       }
+
+      // UIに適用結果を送信
+      figma.ui.postMessage({
+        type: 'apply-components-result',
+        rootNodeId: msg.rootNodeId,
+        results: result.results,
+      })
     } catch (error) {
       figma.notify(
-        error instanceof Error ? error.message : 'コンポーネントの適用に失敗しました',
+        error instanceof Error
+          ? error.message
+          : 'コンポーネントの適用に失敗しました',
         { error: true }
       )
     }
