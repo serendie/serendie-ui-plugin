@@ -1,4 +1,4 @@
-import { filterValidCandidates } from './useComponentValidation'
+import { filterValidCandidates } from '../models/componentValidationSchema'
 
 const validCandidate = {
   nodeId: '1600:6545',

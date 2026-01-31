@@ -27,3 +27,18 @@ export type ComponentCandidate = z.infer<typeof componentCandidateSchema>
 export type ComponentValidationResponse = z.infer<
   typeof componentValidationResponseSchema
 >
+
+export function filterValidCandidates(
+  rawCandidates: unknown[]
+): ComponentCandidate[] {
+  const valid: ComponentCandidate[] = []
+  for (const item of rawCandidates) {
+    const result = componentCandidateSchema.safeParse(item)
+    if (result.success) {
+      valid.push(result.data)
+    } else {
+      console.warn('Invalid candidate filtered out:', item)
+    }
+  }
+  return valid
+}

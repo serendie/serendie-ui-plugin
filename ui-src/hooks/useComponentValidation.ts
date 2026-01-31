@@ -7,8 +7,8 @@ import { serializeNodeStructure } from '../utils/serializeNodeStructure'
 import { PROMPT_TO_NEST_PROPERTY } from '../../shared-src/utils/nestProperty'
 import {
   componentValidationResponseSchema,
-  componentCandidateSchema,
   ComponentCandidate,
+  filterValidCandidates,
 } from '../models/componentValidationSchema'
 import componentKeys from '../../shared-src/assets/component-keys.json'
 import componentsManifest from '../../shared-src/assets/components_manifest.json'
@@ -105,21 +105,6 @@ export function createIssuesFromCandidates(
   }
 
   return issues
-}
-
-export function filterValidCandidates(
-  rawCandidates: unknown[]
-): ComponentCandidate[] {
-  const valid: ComponentCandidate[] = []
-  for (const item of rawCandidates) {
-    const result = componentCandidateSchema.safeParse(item)
-    if (result.success) {
-      valid.push(result.data)
-    } else {
-      console.warn('Invalid candidate filtered out:', item)
-    }
-  }
-  return valid
 }
 
 export function useComponentValidation({ apiKey }: { apiKey: string }) {
