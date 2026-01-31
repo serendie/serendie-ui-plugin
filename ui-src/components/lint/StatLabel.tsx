@@ -9,7 +9,7 @@ export default function StatLabel({
   totalNodes,
   label,
 }: {
-  symbolName: 'alert-circle' | 'alert-triangle' | 'check-circle'
+  symbolName?: 'alert-circle' | 'alert-triangle' | 'check-circle'
   targetNodes: number
   totalNodes?: number
   label?: string
@@ -22,19 +22,21 @@ export default function StatLabel({
         gap: sd.system.dimension.spacing.twoExtraSmall,
       }}
     >
-      <SerendieSymbol
-        name={symbolName}
-        variant='outlined'
-        size={18}
-        style={{
-          color:
-            symbolName === 'alert-circle'
-              ? sd.system.color.impression.negative
-              : symbolName === 'alert-triangle'
-                ? sd.system.color.impression.notice
-                : sd.system.color.impression.positive,
-        }}
-      />
+      {symbolName && (
+        <SerendieSymbol
+          name={symbolName}
+          variant='outlined'
+          size={18}
+          style={{
+            color:
+              symbolName === 'alert-circle'
+                ? sd.system.color.impression.negative
+                : symbolName === 'alert-triangle'
+                  ? sd.system.color.impression.notice
+                  : sd.system.color.impression.positive,
+          }}
+        />
+      )}
       <p
         style={{
           ...sd.system.typography.body.small_expanded,

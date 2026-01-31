@@ -40,11 +40,7 @@ export default function TokenIssueHeader({
         totalNodes={totalItems}
       />
       {resolvedCount > 0 && (
-        <StatLabel
-          symbolName='check-circle'
-          targetNodes={resolvedCount}
-          label='個修正済み'
-        />
+        <StatLabel targetNodes={resolvedCount} label='個修正済み' />
       )}
       {errorCount > 0 && (
         <StatLabel
