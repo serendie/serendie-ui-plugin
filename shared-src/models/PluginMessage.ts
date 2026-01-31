@@ -40,7 +40,7 @@ export type SelectionInfo = {
   name: string
 }
 
-type Source = 'chat-view' | 'lint-view'
+type Source = 'chat-view' | 'lint-view' | 'component-validation'
 
 // Lint関連メッセージ
 export type LintMessage =
