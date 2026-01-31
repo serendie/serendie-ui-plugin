@@ -14,8 +14,8 @@ export default async function getVariableMap(): Promise<VariableMap> {
   try {
     const allCollections =
       await figma.teamLibrary.getAvailableLibraryVariableCollectionsAsync()
-    const collections = allCollections.filter(
-      collection => collection.libraryName === LIBRARY_NAME
+    const collections = allCollections.filter(collection =>
+      collection.libraryName.includes(LIBRARY_NAME)
     )
     if (collections.length == 0) {
       const success = await getLocalVariableMap()
