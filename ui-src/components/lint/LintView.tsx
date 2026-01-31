@@ -240,14 +240,12 @@ export default function LintView({
       const result = results.find(r => r.id === rootNodeId)
       if (!result) return
 
-      // error + suggestion付きのdesign-token issueを収集（同一nodeId重複排除）
+      // suggestion付きのdesign-token issueを収集（同一nodeId重複排除）
       const seen = new Set<string>()
       const items: ApplyTokenItem[] = []
       const tokenIssues = result.issues.filter(
         (issue): issue is DesignTokenIssue =>
-          issue.source === 'design-token' &&
-          issue.severity === 'error' &&
-          !!issue.suggestion
+          issue.source === 'design-token' && !!issue.suggestion
       )
       for (const issue of tokenIssues) {
         if (seen.has(issue.nodeId)) continue
@@ -390,7 +388,6 @@ export default function LintView({
                       {result.issues.filter(
                         i =>
                           i.source === 'design-token' &&
-                          i.severity === 'error' &&
                           !!(i as DesignTokenIssue).suggestion
                       ).length > 0 && (
                         <Button

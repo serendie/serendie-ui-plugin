@@ -1,7 +1,8 @@
 import {
   TEXT_COLOR_PAIRS,
   BACKGROUND_COLOR_PAIRS,
-  IssueDetail,
+  RuleResult,
+  DesignTokenSuggestion,
   UNEXPECTED,
 } from '../../../shared-src/models/Rules'
 import extractColorRole from '../core/extractColorRole'
@@ -25,10 +26,21 @@ function isValid(
   return expected.includes(actual)
 }
 
+function computeSuggestion(
+  backgroundColor: string
+): DesignTokenSuggestion | undefined {
+  const bgRole = extractColorRole(backgroundColor)
+  if (!bgRole || !(bgRole in BACKGROUND_COLOR_PAIRS)) return undefined
+  const candidates = BACKGROUND_COLOR_PAIRS[bgRole]
+  const targetRole = typeof candidates === 'string' ? candidates : candidates[0]
+  if (!targetRole) return undefined
+  return { targetRole, targetProperty: 'textColor' }
+}
+
 export default function validate(
   textColor: string | null,
   backgroundColor: string | null
-): IssueDetail | null {
+): RuleResult | null {
   if (
     !textColor ||
     !backgroundColor ||
@@ -58,6 +70,7 @@ export default function validate(
       severity: 'error',
       message: 'テキスト色または背景色が不適切',
       messageDetails: `テキスト色を${formatRoles(BACKGROUND_COLOR_PAIRS[bgRole])}に変更、または背景色を${formatRoles(TEXT_COLOR_PAIRS[textRole])}に変更してください。`,
+      suggestion: computeSuggestion(backgroundColor),
     }
   }
 
