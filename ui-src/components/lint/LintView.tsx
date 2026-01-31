@@ -13,11 +13,10 @@ import {
 import {
   ApplyComponentItem,
   ApplyTokenItem,
-  LintResult,
   PluginMessage,
   SelectionInfo,
 } from '../../../shared-src/models/PluginMessage'
-import { ComponentIssue, DesignTokenIssue } from '../../../shared-src/models/Rules'
+import { ComponentIssue, DesignTokenIssue, Issue } from '../../../shared-src/models/Rules'
 import { useApiKey } from '../../hooks/useApiKey'
 import { useComponentValidation } from '../../hooks/useComponentValidation'
 import IssueTitle from './IssueTitle'
@@ -43,8 +42,6 @@ export default function LintView({
   const [selectionImages, setSelectionImages] = useState<
     Record<string, string>
   >({})
-  const pendingLintResultsRef = useRef<LintResult[] | null>(null)
-
   const { apiKey } = useApiKey()
   const {
     state: componentValidationState,
@@ -152,9 +149,11 @@ export default function LintView({
 
         // APIキーがあればコンポーネント検証を裏で実行
         if (apiKey) {
-          pendingLintResultsRef.current = message.results
           const runComponentValidation = async () => {
-            const updatedResults: Result[] = []
+            const componentResultMap = new Map<
+              string,
+              { issues: Issue[]; totalComponents: number }
+            >()
             for (const result of message.results) {
               const image = selectionImages[result.id]
               const componentResult = await validateComponents(
@@ -165,17 +164,26 @@ export default function LintView({
               if (componentResult === null) {
                 return
               }
-              updatedResults.push({
-                ...result,
-                issues: [...result.issues, ...(componentResult?.issues || [])],
+              componentResultMap.set(result.id, {
+                issues: componentResult?.issues || [],
                 totalComponents:
                   componentResult?.candidates.filter(
                     c => c.suggestedComponent !== null
                   ).length ?? 0,
               })
             }
-            // コンポーネント検証完了後に結果を更新
-            setResults(updatedResults)
+            // prevベースでマージ（apply-tokens等の更新を保持）
+            setResults(prev =>
+              prev.map(result => {
+                const comp = componentResultMap.get(result.id)
+                if (!comp) return result
+                return {
+                  ...result,
+                  issues: [...result.issues, ...comp.issues],
+                  totalComponents: comp.totalComponents,
+                }
+              })
+            )
           }
           runComponentValidation()
         }
