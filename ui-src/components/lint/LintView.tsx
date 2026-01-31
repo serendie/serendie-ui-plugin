@@ -159,7 +159,7 @@ export default function LintView({
     setLoadedImages(prev => ({ ...prev, [nodeId]: true }))
   }, [])
 
-  // コンポーネントの「コピーして適用」ハンドラ
+  // コンポーネントの適用ハンドラ
   const handleApplyComponents = useCallback(
     (rootNodeId: string) => {
       const result = results.find(r => r.id === rootNodeId)
@@ -276,7 +276,7 @@ export default function LintView({
                               styleType='ghost'
                               onClick={() => handleApplyComponents(result.id)}
                             >
-                              コピーして適用
+                              適用する
                             </Button>
                           )}
                       </div>
