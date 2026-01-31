@@ -7,6 +7,7 @@ import getImage, { canGetImage } from '../shared-src/utils/getImage'
 import buildNodeStructure from './utils/nodes/buildNodeStructure'
 import { NodeStructure } from '../shared-src/models/PluginMessage'
 import { applyComponents } from './utils/components/applyComponent'
+import { applyTokenFixes } from './lint/fixes/applyTokenFix'
 
 figma.showUI(__html__, {
   width: 360,
@@ -210,6 +211,37 @@ figma.ui.onmessage = async msg => {
         error instanceof Error
           ? error.message
           : 'コンポーネントの適用に失敗しました',
+        { error: true }
+      )
+    }
+  }
+  if (msg.type === 'apply-tokens') {
+    try {
+      const results = await applyTokenFixes(msg.items)
+      const successCount = results.filter(r => r.status === 'success').length
+      const failedCount = results.filter(r => r.status === 'failed').length
+
+      const messages: string[] = []
+      if (successCount > 0) {
+        messages.push(`${successCount}個修正`)
+      }
+      if (messages.length > 0) {
+        figma.notify(messages.join('、'))
+      }
+      if (failedCount > 0) {
+        figma.notify(`${failedCount}個の修正に失敗しました`, { error: true })
+      }
+
+      figma.ui.postMessage({
+        type: 'apply-tokens-result',
+        rootNodeId: msg.rootNodeId,
+        results,
+      })
+    } catch (error) {
+      figma.notify(
+        error instanceof Error
+          ? error.message
+          : 'トークンの修正に失敗しました',
         { error: true }
       )
     }
