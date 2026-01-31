@@ -173,6 +173,14 @@ export type ComponentIssue = BaseIssue & {
 
 export type Issue = DesignTokenIssue | ComponentIssue
 
+export function formatRoles(roles: string | string[] | undefined): string {
+  if (!roles) return UNEXPECTED
+  if (typeof roles === 'string') return roles
+  if (roles.length === 1) return `「roles[0]」`
+  if (roles.length === 2) return `「${roles[0]}」または「${roles[1]}」`
+  return `${roles.map(role => `「${role}」`).join('')}のいずれか`
+}
+
 export function serializeIssues(issue: Issue): string {
   return (
     [

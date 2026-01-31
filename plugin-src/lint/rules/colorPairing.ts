@@ -4,16 +4,9 @@ import {
   RuleResult,
   DesignTokenSuggestion,
   UNEXPECTED,
+  formatRoles,
 } from '../../../shared-src/models/Rules'
 import extractColorRole from '../core/extractColorRole'
-
-function formatRoles(roles: string | string[] | undefined): string {
-  if (!roles) return UNEXPECTED
-  if (typeof roles === 'string') return roles
-  if (roles.length === 1) return roles[0]
-  if (roles.length === 2) return `${roles[0]}または${roles[1]}`
-  return roles.slice(0, -1).join('、') + `または${roles[roles.length - 1]}`
-}
 
 function isValid(
   expected: string | string[] | undefined,
