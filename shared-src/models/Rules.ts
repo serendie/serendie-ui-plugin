@@ -144,8 +144,14 @@ type BaseIssue = {
   nodeType: string
 } & IssueDetail
 
+export type DesignTokenSuggestion = {
+  targetRole: string
+  targetProperty: 'textColor' | 'backgroundColor'
+}
+
 export type DesignTokenIssue = BaseIssue & {
   source: 'design-token'
+  suggestion?: DesignTokenSuggestion
 }
 
 export type ComponentSuggestion = {

@@ -12,11 +12,12 @@ import {
 } from '../../hooks/usePluginMessage'
 import {
   ApplyComponentItem,
+  ApplyTokenItem,
   LintResult,
   PluginMessage,
   SelectionInfo,
 } from '../../../shared-src/models/PluginMessage'
-import { ComponentIssue } from '../../../shared-src/models/Rules'
+import { ComponentIssue, DesignTokenIssue } from '../../../shared-src/models/Rules'
 import { useApiKey } from '../../hooks/useApiKey'
 import { useComponentValidation } from '../../hooks/useComponentValidation'
 import IssueTitle from './IssueTitle'
@@ -116,6 +117,33 @@ export default function LintView({
           })
         )
       }
+      if (message.type === 'apply-tokens-result') {
+        setResults(prev =>
+          prev.map(result => {
+            if (result.id !== message.rootNodeId) return result
+            const successNodeIds = new Set(
+              message.results
+                .filter(r => r.status === 'success')
+                .map(r => r.nodeId)
+            )
+            const updatedIssues = result.issues.map(issue => {
+              if (issue.source !== 'design-token') return issue
+              if (!successNodeIds.has(issue.nodeId)) return issue
+              // 同一nodeIdのdesign-token issueをすべてresolvedに
+              const suggestion = (issue as DesignTokenIssue).suggestion
+              return {
+                ...issue,
+                severity: 'resolved' as const,
+                message: suggestion
+                  ? `${suggestion.targetRole}を適用しました`
+                  : '修正しました',
+                messageDetails: null,
+              }
+            })
+            return { ...result, issues: updatedIssues }
+          })
+        )
+      }
       if (message.type === 'lint-result' && message.source === 'lint-view') {
         // デザイントークン検証完了、まず結果を表示
         setIsLoading(false)
@@ -201,6 +229,36 @@ export default function LintView({
       }
       if (items.length > 0) {
         postPluginMessage({ type: 'apply-components', rootNodeId, items })
+      }
+    },
+    [results]
+  )
+
+  // デザイントークンの修正ハンドラ
+  const handleApplyTokens = useCallback(
+    (rootNodeId: string) => {
+      const result = results.find(r => r.id === rootNodeId)
+      if (!result) return
+
+      // error + suggestion付きのdesign-token issueを収集（同一nodeId重複排除）
+      const seen = new Set<string>()
+      const items: ApplyTokenItem[] = []
+      const tokenIssues = result.issues.filter(
+        (issue): issue is DesignTokenIssue =>
+          issue.source === 'design-token' &&
+          issue.severity === 'error' &&
+          !!issue.suggestion
+      )
+      for (const issue of tokenIssues) {
+        if (seen.has(issue.nodeId)) continue
+        seen.add(issue.nodeId)
+        items.push({
+          nodeId: issue.nodeId,
+          suggestion: issue.suggestion!,
+        })
+      }
+      if (items.length > 0) {
+        postPluginMessage({ type: 'apply-tokens', rootNodeId, items })
       }
     },
     [results]
@@ -321,7 +379,29 @@ export default function LintView({
                     </div>
                   )}
                   <div>
-                    <IssueTitle title='デザイントークン' />
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <IssueTitle title='デザイントークン' />
+                      {result.issues.filter(
+                        i =>
+                          i.source === 'design-token' &&
+                          i.severity === 'error' &&
+                          !!(i as DesignTokenIssue).suggestion
+                      ).length > 0 && (
+                        <Button
+                          size='small'
+                          styleType='ghost'
+                          onClick={() => handleApplyTokens(result.id)}
+                        >
+                          修正する
+                        </Button>
+                      )}
+                    </div>
                     <IssuesList
                       issues={result.issues.filter(
                         issue => issue.source !== 'component'
