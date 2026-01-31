@@ -113,6 +113,16 @@ export default function LintView({
             return { ...result, issues: updatedIssues }
           })
         )
+
+        // 成功した適用がある場合、デザイントークン検証を再実施
+        const hasSuccess = message.results.some(r => r.status === 'success')
+        if (hasSuccess) {
+          postPluginMessage({
+            type: 'run-linter',
+            nodeIds: selections.map(s => s.id),
+            source: 'component-validation',
+          })
+        }
       }
       if (message.type === 'apply-tokens-result') {
         const appliedRoleMap = new Map(
@@ -138,6 +148,26 @@ export default function LintView({
               }
             })
             return { ...result, issues: updatedIssues }
+          })
+        )
+      }
+      if (
+        message.type === 'lint-result' &&
+        message.source === 'component-validation'
+      ) {
+        // コンポーネント適用後の再検証: デザイントークンissueのみ置換
+        setResults(prev =>
+          prev.map(result => {
+            const newResult = message.results.find(r => r.id === result.id)
+            if (!newResult) return result
+            const componentIssues = result.issues.filter(
+              i => i.source === 'component'
+            )
+            return {
+              ...result,
+              issues: [...componentIssues, ...newResult.issues],
+              totalNodes: newResult.totalNodes,
+            }
           })
         )
       }
