@@ -37,7 +37,7 @@ describe('assignFrameVariable', () => {
       const result = validate('onPrimary', 'onPrimary')
       expect(result?.severity).toBe('error')
       expect(result?.suggestion).toEqual({
-        targetRole: 'primary',
+        targetRoles: ['primary'],
         targetProperty: 'backgroundColor',
       })
     })
@@ -86,36 +86,35 @@ describe('assignFrameVariable', () => {
       expect(result?.severity).toBe('warning')
       expect(result?.message).toBe('背景色にシステムトークンを未使用')
       expect(result?.suggestion).toEqual({
-        targetRole: 'primary',
+        targetRoles: ['primary'],
         targetProperty: 'backgroundColor',
       })
     })
 
-    it('onSurfaceテキスト → 先頭候補surfaceを提案', () => {
+    it('onSurfaceテキスト → 全候補を提案', () => {
       const result = validate('customColor', 'onSurface')
       expect(result?.severity).toBe('warning')
-      expect(result?.suggestion).toEqual({
-        targetRole: 'surface',
-        targetProperty: 'backgroundColor',
-      })
+      expect(result?.suggestion?.targetRoles).toContain('surface')
+      expect(result?.suggestion?.targetRoles).toContain('surfaceContainerLowest')
+      expect(result?.suggestion?.targetRoles).toContain('surfaceContainerHighest')
+      expect(result?.suggestion?.targetProperty).toBe('backgroundColor')
     })
 
     it('onSecondaryテキスト → secondaryを提案', () => {
       const result = validate('customColor', 'onSecondary')
       expect(result?.severity).toBe('warning')
       expect(result?.suggestion).toEqual({
-        targetRole: 'secondary',
+        targetRoles: ['secondary'],
         targetProperty: 'backgroundColor',
       })
     })
 
-    it('primaryテキスト（impression基本色）→ surfaceを提案', () => {
+    it('primaryテキスト（impression基本色）→ surface系全候補を提案', () => {
       const result = validate('customColor', 'primary')
       expect(result?.severity).toBe('warning')
-      expect(result?.suggestion).toEqual({
-        targetRole: 'surface',
-        targetProperty: 'backgroundColor',
-      })
+      expect(result?.suggestion?.targetRoles).toContain('surface')
+      expect(result?.suggestion?.targetRoles).toContain('surfaceContainerLowest')
+      expect(result?.suggestion?.targetProperty).toBe('backgroundColor')
     })
   })
 })

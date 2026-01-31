@@ -118,24 +118,24 @@ export default function LintView({
         )
       }
       if (message.type === 'apply-tokens-result') {
+        const appliedRoleMap = new Map(
+          message.results
+            .filter(r => r.status === 'success' && r.appliedRole)
+            .map(r => [r.nodeId, r.appliedRole!])
+        )
         setResults(prev =>
           prev.map(result => {
             if (result.id !== message.rootNodeId) return result
-            const successNodeIds = new Set(
-              message.results
-                .filter(r => r.status === 'success')
-                .map(r => r.nodeId)
-            )
             const updatedIssues = result.issues.map(issue => {
               if (issue.source !== 'design-token') return issue
-              if (!successNodeIds.has(issue.nodeId)) return issue
+              if (!appliedRoleMap.has(issue.nodeId)) return issue
               // 同一nodeIdのdesign-token issueをすべてresolvedに
-              const suggestion = (issue as DesignTokenIssue).suggestion
+              const appliedRole = appliedRoleMap.get(issue.nodeId)
               return {
                 ...issue,
                 severity: 'resolved' as const,
-                message: suggestion
-                  ? `${suggestion.targetRole}を適用しました`
+                message: appliedRole
+                  ? `${appliedRole}を適用しました`
                   : '修正しました',
                 messageDetails: null,
               }

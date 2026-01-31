@@ -78,6 +78,7 @@ export type ApplyTokenItem = {
 export type ApplyTokenResult = {
   nodeId: string
   status: 'success' | 'failed'
+  appliedRole?: string
 }
 
 // トークン修正結果メッセージ

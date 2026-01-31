@@ -6,18 +6,15 @@ import {
 } from '../../../shared-src/models/Rules'
 import extractColorRole from '../core/extractColorRole'
 
-function computeSuggestion(backgroundColor: string):
-  | { suggestion: DesignTokenSuggestion; candidates: string | string[] }
-  | undefined {
+function computeSuggestion(
+  backgroundColor: string
+): DesignTokenSuggestion | undefined {
   const bgRole = extractColorRole(backgroundColor)
   if (!bgRole || !(bgRole in BACKGROUND_COLOR_PAIRS)) return undefined
   const candidates = BACKGROUND_COLOR_PAIRS[bgRole]
-  const targetRole = typeof candidates === 'string' ? candidates : candidates[0]
-  if (!targetRole) return undefined
-  return {
-    suggestion: { targetRole, targetProperty: 'textColor' },
-    candidates,
-  }
+  const targetRoles = typeof candidates === 'string' ? [candidates] : candidates
+  if (targetRoles.length === 0) return undefined
+  return { targetRoles, targetProperty: 'textColor' }
 }
 
 export default function validate(
@@ -30,16 +27,16 @@ export default function validate(
 
   const textRole = extractColorRole(textColor)
   if (!textRole) {
-    const computed = backgroundColor
+    const suggestion = backgroundColor
       ? computeSuggestion(backgroundColor)
       : undefined
     return {
       severity: 'warning',
       message: 'テキスト色にシステムトークンを未使用',
-      messageDetails: computed
-        ? `塗りを${formatRoles(computed.candidates)}に変更してください。`
+      messageDetails: suggestion
+        ? `塗りを${formatRoles(suggestion.targetRoles)}に変更してください。`
         : '塗りにデザインシステムのバリアブルを設定してください。',
-      suggestion: computed?.suggestion,
+      suggestion,
     }
   }
 
@@ -57,16 +54,16 @@ export default function validate(
   }
 
   if (!textRole.match(/^on/) && !textRole.match(/^\w+On[A-Z]/)) {
-    const computed = backgroundColor
+    const suggestion = backgroundColor
       ? computeSuggestion(backgroundColor)
       : undefined
     return {
       severity: 'error',
       message: 'テキスト色が不適切',
-      messageDetails: computed
-        ? `塗りを${formatRoles(computed.candidates)}に変更してください。`
+      messageDetails: suggestion
+        ? `塗りを${formatRoles(suggestion.targetRoles)}に変更してください。`
         : '塗りには"on"という名前が含まれるデザインシステムのバリアブルを設定してください。',
-      suggestion: computed?.suggestion,
+      suggestion,
     }
   }
 

@@ -25,9 +25,9 @@ function computeSuggestion(
   const bgRole = extractColorRole(backgroundColor)
   if (!bgRole || !(bgRole in BACKGROUND_COLOR_PAIRS)) return undefined
   const candidates = BACKGROUND_COLOR_PAIRS[bgRole]
-  const targetRole = typeof candidates === 'string' ? candidates : candidates[0]
-  if (!targetRole) return undefined
-  return { targetRole, targetProperty: 'textColor' }
+  const targetRoles = typeof candidates === 'string' ? [candidates] : candidates
+  if (targetRoles.length === 0) return undefined
+  return { targetRoles, targetProperty: 'textColor' }
 }
 
 export default function validate(
