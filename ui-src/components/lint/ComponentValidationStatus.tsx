@@ -22,7 +22,7 @@ export default function ComponentValidationStatus() {
           color: sd.system.color.component.onSurfaceVariant,
         }}
       >
-        Serendie UIを適用できるか検証しています
+        Serendie UIを適用できるかAIが検証中
       </span>
     </div>
   )

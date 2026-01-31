@@ -171,6 +171,9 @@ figma.ui.onmessage = async msg => {
     try {
       const result = await applyComponents(msg.rootNodeId, msg.items)
       const messages: string[] = []
+      if (result.detached > 0) {
+        messages.push(`${result.detached}個インスタンス解除`)
+      }
       if (result.success > 0) {
         messages.push(`${result.success}個適用`)
       }
