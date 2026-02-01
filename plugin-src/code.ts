@@ -1,4 +1,5 @@
 import extractColorInfo from './lint/extractors/extractColorInfo'
+import extractBorderInfo from './lint/extractors/extractBorderInfo'
 import { runLint } from './lint/validators/runLint'
 import getImage, { canGetImage } from '../shared-src/utils/getImage'
 import buildNodeStructure from './utils/nodes/buildNodeStructure'
@@ -77,7 +78,8 @@ figma.ui.onmessage = async msg => {
       const results: LintResult[] = []
       for (const selection of selections) {
         const colorInfoList = await extractColorInfo(selection)
-        const issues = runLint(colorInfoList)
+        const borderInfoList = await extractBorderInfo(selection)
+        const issues = runLint(colorInfoList, borderInfoList)
 
         const structure =
           msg.source === 'component-validation'
