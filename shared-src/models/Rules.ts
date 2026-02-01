@@ -80,7 +80,7 @@ export const BACKGROUND_COLOR_PAIRS: Record<string, string | string[]> = {
   positiveContainer: 'onPositiveContainer',
   positiveContainerVariant: 'onPositiveContainerVariant',
   surface: ['onSurface', 'onSurfaceVariant', ...impressionBasicColors],
-  inverseSurface: ['inverseOnSurface', ...impressionBasicColors],
+  inverseSurface: 'inverseOnSurface',
   surfaceContainerLowest: [
     'onSurface',
     'onSurfaceVariant',
