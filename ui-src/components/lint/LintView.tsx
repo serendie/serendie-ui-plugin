@@ -9,7 +9,10 @@ import {
   usePluginMessage,
   postPluginMessage,
 } from '../../hooks/usePluginMessage'
-import { PluginMessage, SelectionInfo } from '../../../shared-src/models/PluginMessage'
+import {
+  PluginMessage,
+  SelectionInfo,
+} from '../../../shared-src/models/PluginMessage'
 import { useLintResults } from '../../hooks/useLintResults'
 import IssueTitle from './IssueTitle'
 
@@ -212,7 +215,7 @@ export default function LintView({
                               styleType='ghost'
                               onClick={() => handleApplyComponents(result.id)}
                             >
-                              適用する
+                              すべて適用
                             </Button>
                           )}
                       </div>
@@ -248,7 +251,7 @@ export default function LintView({
                           styleType='ghost'
                           onClick={() => handleApplyTokens(result.id)}
                         >
-                          修正する
+                          すべて修正
                         </Button>
                       )}
                     </div>
