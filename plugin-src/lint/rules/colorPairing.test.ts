@@ -81,6 +81,41 @@ describe('colorPairing', () => {
     })
   })
 
+  describe('ペアリングテーブルの双方向整合性', () => {
+    it('背景色から許可されたテキスト色の組み合わせがすべて正常と判定される', () => {
+      const { BACKGROUND_COLOR_PAIRS } = require('../../../shared-src/models/Rules')
+      for (const [bgRole, textRoles] of Object.entries(BACKGROUND_COLOR_PAIRS)) {
+        const roles =
+          typeof textRoles === 'string' ? [textRoles] : (textRoles as string[])
+        for (const textRole of roles) {
+          expect({
+            pair: `text=${textRole}, bg=${bgRole}`,
+            result: validate(textRole, bgRole),
+          }).toEqual({
+            pair: `text=${textRole}, bg=${bgRole}`,
+            result: null,
+          })
+        }
+      }
+    })
+    it('テキスト色から許可された背景色の組み合わせがすべて正常と判定される', () => {
+      const { TEXT_COLOR_PAIRS } = require('../../../shared-src/models/Rules')
+      for (const [textRole, bgRoles] of Object.entries(TEXT_COLOR_PAIRS)) {
+        const roles =
+          typeof bgRoles === 'string' ? [bgRoles] : (bgRoles as string[])
+        for (const bgRole of roles) {
+          expect({
+            pair: `text=${textRole}, bg=${bgRole}`,
+            result: validate(textRole, bgRole),
+          }).toEqual({
+            pair: `text=${textRole}, bg=${bgRole}`,
+            result: null,
+          })
+        }
+      }
+    })
+  })
+
   describe('onSurfaceVariantの特例', () => {
     it('テキスト色がonSurfaceVariantのとき、背景色は任意', () => {
       const result = validate('onSurfaceVariant', 'randomColor')
