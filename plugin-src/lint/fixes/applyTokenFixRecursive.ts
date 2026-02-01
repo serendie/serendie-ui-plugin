@@ -17,11 +17,19 @@ function buildItemsFromIssues(
   for (const issue of issues) {
     if (seen.has(issue.nodeId)) continue
     seen.add(issue.nodeId)
+    const targetProperty =
+      issue.nodeType === 'TEXT' ? 'textColor' : 'backgroundColor'
+    // suggestionのtargetPropertyとノードのtargetPropertyが一致しない場合は
+    // suggestionを無視してフォールバック候補を使う
+    const suggestion =
+      issue.suggestion &&
+      issue.suggestion.targetProperty === targetProperty
+        ? issue.suggestion
+        : undefined
     items.push({
       nodeId: issue.nodeId,
-      ...(issue.suggestion && { suggestion: issue.suggestion }),
-      targetProperty:
-        issue.nodeType === 'TEXT' ? 'textColor' : 'backgroundColor',
+      ...(suggestion && { suggestion }),
+      targetProperty,
     })
   }
   return items
