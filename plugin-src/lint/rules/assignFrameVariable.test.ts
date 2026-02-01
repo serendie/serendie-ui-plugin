@@ -69,7 +69,7 @@ describe('assignFrameVariable', () => {
     it('テキスト色なし → warning', () => {
       const result = validate('customColor')
       expect(result?.severity).toBe('warning')
-      expect(result?.message).toBe('背景色にシステムトークンを未使用')
+      expect(result?.message).toBe('背景色にデザイントークンを使えます')
       expect(result?.suggestion).toBeUndefined()
     })
 
@@ -84,7 +84,7 @@ describe('assignFrameVariable', () => {
     it('テキスト色がシステムトークンで候補がある場合 → warning + suggestion', () => {
       const result = validate('customColor', 'onPrimary')
       expect(result?.severity).toBe('warning')
-      expect(result?.message).toBe('背景色にシステムトークンを未使用')
+      expect(result?.message).toBe('背景色にデザイントークンを使えます')
       expect(result?.suggestion).toEqual({
         targetRoles: ['primary'],
         targetProperty: 'backgroundColor',
@@ -95,8 +95,12 @@ describe('assignFrameVariable', () => {
       const result = validate('customColor', 'onSurface')
       expect(result?.severity).toBe('warning')
       expect(result?.suggestion?.targetRoles).toContain('surface')
-      expect(result?.suggestion?.targetRoles).toContain('surfaceContainerLowest')
-      expect(result?.suggestion?.targetRoles).toContain('surfaceContainerHighest')
+      expect(result?.suggestion?.targetRoles).toContain(
+        'surfaceContainerLowest'
+      )
+      expect(result?.suggestion?.targetRoles).toContain(
+        'surfaceContainerHighest'
+      )
       expect(result?.suggestion?.targetProperty).toBe('backgroundColor')
     })
 
@@ -113,7 +117,9 @@ describe('assignFrameVariable', () => {
       const result = validate('customColor', 'primary')
       expect(result?.severity).toBe('warning')
       expect(result?.suggestion?.targetRoles).toContain('surface')
-      expect(result?.suggestion?.targetRoles).toContain('surfaceContainerLowest')
+      expect(result?.suggestion?.targetRoles).toContain(
+        'surfaceContainerLowest'
+      )
       expect(result?.suggestion?.targetProperty).toBe('backgroundColor')
     })
   })

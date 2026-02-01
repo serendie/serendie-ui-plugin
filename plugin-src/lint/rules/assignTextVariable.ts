@@ -31,7 +31,7 @@ export default function validate(
       : undefined
     return {
       severity: 'warning',
-      message: 'テキスト色にシステムトークンを未使用',
+      message: 'テキスト色にデザイントークンを使えます',
       messageDetails: suggestion
         ? `塗りを${formatRoles(suggestion.targetRoles)}に変更してください。`
         : '塗りにデザインシステムのバリアブルを設定してください。',

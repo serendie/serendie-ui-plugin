@@ -54,7 +54,7 @@ export default function validate(
   ) {
     return {
       severity: 'error',
-      message: 'テキスト色または背景色が不適切',
+      message: '色の組み合わせが不適切',
       messageDetails: `テキスト色を${formatRoles(BACKGROUND_COLOR_PAIRS[bgRole])}に変更、または背景色を${formatRoles(TEXT_COLOR_PAIRS[textRole])}に変更してください。`,
       suggestion: computeSuggestion(backgroundColor),
     }
