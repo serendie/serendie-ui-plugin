@@ -8,14 +8,8 @@ import {
 } from '../../../shared-src/models/Rules'
 import extractColorRole from '../core/extractColorRole'
 
-function isValid(
-  expected: string | string[] | undefined,
-  actual: string
-): boolean {
+function isValid(expected: string[] | undefined, actual: string): boolean {
   if (!expected) return false
-  if (typeof expected === 'string') {
-    return actual === expected
-  }
   return expected.includes(actual)
 }
 
@@ -24,8 +18,7 @@ function computeSuggestion(
 ): DesignTokenSuggestion | undefined {
   const bgRole = extractColorRole(backgroundColor)
   if (!bgRole || !(bgRole in BACKGROUND_COLOR_PAIRS)) return undefined
-  const candidates = BACKGROUND_COLOR_PAIRS[bgRole]
-  const targetRoles = typeof candidates === 'string' ? [candidates] : candidates
+  const targetRoles = BACKGROUND_COLOR_PAIRS[bgRole]
   if (targetRoles.length === 0) return undefined
   return { targetRoles, targetProperty: 'textColor' }
 }

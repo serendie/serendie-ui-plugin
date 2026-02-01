@@ -34,53 +34,53 @@ const impressionBasicColors = [
 const markLabelSeries = ['01', '02', '03', '04', '05', '06', '07', '08', '09']
 const onMarkLabelSeries = ['onMarkLabel', 'inverseOnMarkLabel']
 
-export const TEXT_COLOR_PAIRS: Record<string, string | string[]> = {
+export const TEXT_COLOR_PAIRS: Record<string, string[]> = {
   primary: surfaceSeries,
-  onPrimary: 'primary',
-  onPrimaryContainer: 'primaryContainer',
+  onPrimary: ['primary'],
+  onPrimaryContainer: ['primaryContainer'],
   secondary: surfaceSeries,
-  onSecondary: 'secondary',
-  onSecondaryContainer: 'secondaryContainer',
+  onSecondary: ['secondary'],
+  onSecondaryContainer: ['secondaryContainer'],
   tertiary: surfaceSeries,
-  onTertiary: 'tertiary',
-  onTertiaryContainer: 'tertiaryContainer',
+  onTertiary: ['tertiary'],
+  onTertiaryContainer: ['tertiaryContainer'],
   notice: surfaceSeries,
-  onNotice: 'notice',
-  onNoticeContainer: 'noticeContainer',
-  onNoticeContainerVariant: 'noticeContainerVariant',
+  onNotice: ['notice'],
+  onNoticeContainer: ['noticeContainer'],
+  onNoticeContainerVariant: ['noticeContainerVariant'],
   negative: surfaceSeries,
-  onNegative: 'negative',
-  onNegativeContainer: 'negativeContainer',
-  onNegativeContainerVariant: 'negativeContainerVariant',
+  onNegative: ['negative'],
+  onNegativeContainer: ['negativeContainer'],
+  onNegativeContainerVariant: ['negativeContainerVariant'],
   positive: surfaceSeries,
-  onPositive: 'positive',
-  onPositiveContainer: 'positiveContainer',
-  onPositiveContainerVariant: 'positiveContainerVariant',
+  onPositive: ['positive'],
+  onPositiveContainer: ['positiveContainer'],
+  onPositiveContainerVariant: ['positiveContainerVariant'],
   onSurface: surfaceSeries,
-  inverseOnSurface: 'inverseSurface',
-  onChartSurface: 'chartSurface',
+  inverseOnSurface: ['inverseSurface'],
+  onChartSurface: ['chartSurface'],
   onMarkLabel: markLabelSeries,
   inverseOnMarkLabel: markLabelSeries,
 }
 
-export const BACKGROUND_COLOR_PAIRS: Record<string, string | string[]> = {
+export const BACKGROUND_COLOR_PAIRS: Record<string, string[]> = {
   primary: ['onPrimary'],
-  primaryContainer: 'onPrimaryContainer',
-  secondary: 'onSecondary',
-  secondaryContainer: 'onSecondaryContainer',
-  tertiary: 'onTertiary',
-  tertiaryContainer: 'onTertiaryContainer',
-  notice: 'onNotice',
-  noticeContainer: 'onNoticeContainer',
-  noticeContainerVariant: 'onNoticeContainerVariant',
-  negative: 'onNegative',
-  negativeContainer: 'onNegativeContainer',
-  negativeContainerVariant: 'onNegativeContainerVariant',
-  positive: 'onPositive',
-  positiveContainer: 'onPositiveContainer',
-  positiveContainerVariant: 'onPositiveContainerVariant',
+  primaryContainer: ['onPrimaryContainer'],
+  secondary: ['onSecondary'],
+  secondaryContainer: ['onSecondaryContainer'],
+  tertiary: ['onTertiary'],
+  tertiaryContainer: ['onTertiaryContainer'],
+  notice: ['onNotice'],
+  noticeContainer: ['onNoticeContainer'],
+  noticeContainerVariant: ['onNoticeContainerVariant'],
+  negative: ['onNegative'],
+  negativeContainer: ['onNegativeContainer'],
+  negativeContainerVariant: ['onNegativeContainerVariant'],
+  positive: ['onPositive'],
+  positiveContainer: ['onPositiveContainer'],
+  positiveContainerVariant: ['onPositiveContainerVariant'],
   surface: ['onSurface', 'onSurfaceVariant', ...impressionBasicColors],
-  inverseSurface: 'inverseOnSurface',
+  inverseSurface: ['inverseOnSurface'],
   surfaceContainerLowest: [
     'onSurface',
     'onSurfaceVariant',
@@ -102,7 +102,7 @@ export const BACKGROUND_COLOR_PAIRS: Record<string, string | string[]> = {
     'onSurfaceVariant',
     ...impressionBasicColors,
   ],
-  chartSurface: 'onChartSurface',
+  chartSurface: ['onChartSurface'],
   '01': onMarkLabelSeries,
   '02': onMarkLabelSeries,
   '03': onMarkLabelSeries,
@@ -173,9 +173,8 @@ export type ComponentIssue = BaseIssue & {
 
 export type Issue = DesignTokenIssue | ComponentIssue
 
-export function formatRoles(roles: string | string[] | undefined): string {
+export function formatRoles(roles: string[] | undefined): string {
   if (!roles) return UNEXPECTED
-  if (typeof roles === 'string') return roles
   if (roles.length === 1) return `「${roles[0]}」`
   if (roles.length === 2) return `「${roles[0]}」または「${roles[1]}」`
   return `${roles.map(role => `「${role}」`).join('')}のいずれか`

@@ -11,8 +11,7 @@ function computeSuggestion(
 ): DesignTokenSuggestion | undefined {
   const textRole = extractColorRole(textColor)
   if (!textRole || !(textRole in TEXT_COLOR_PAIRS)) return undefined
-  const candidates = TEXT_COLOR_PAIRS[textRole]
-  const targetRoles = typeof candidates === 'string' ? [candidates] : candidates
+  const targetRoles = TEXT_COLOR_PAIRS[textRole]
   if (targetRoles.length === 0) return undefined
   return { targetRoles, targetProperty: 'backgroundColor' }
 }
