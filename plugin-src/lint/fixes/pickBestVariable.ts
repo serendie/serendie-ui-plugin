@@ -1,6 +1,8 @@
 import { ReverseVariableMap } from '../extractors/getVariableMap'
 import { colorDistance } from '../core/colorDistance'
 
+const CONTAINER_SIZE_THRESHOLD = 10000 // 100x100px の面積
+
 function findVariableNameByRole(
   reverseMap: ReverseVariableMap,
   targetRole: string
@@ -48,6 +50,21 @@ export async function pickBestVariable(
     const dist = colorDistance(currentColor, resolvedColor)
     if (!best || dist < best.distance) {
       best = { variable, role, distance: dist }
+    } else if (dist === best.distance) {
+      // 同じ色距離のContainer/無印ペアがある場合、ノードサイズで判定
+      const isContainer = role.includes('Container')
+      const bestIsContainer = best.role.includes('Container')
+      if (isContainer !== bestIsContainer) {
+        const area =
+          'width' in node && 'height' in node
+            ? (node as { width: number; height: number }).width *
+              (node as { width: number; height: number }).height
+            : 0
+        const preferContainer = area >= CONTAINER_SIZE_THRESHOLD
+        if (isContainer === preferContainer) {
+          best = { variable, role, distance: dist }
+        }
+      }
     }
   }
 

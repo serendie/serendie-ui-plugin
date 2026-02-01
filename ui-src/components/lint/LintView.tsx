@@ -10,7 +10,6 @@ import {
   postPluginMessage,
 } from '../../hooks/usePluginMessage'
 import { PluginMessage, SelectionInfo } from '../../../shared-src/models/PluginMessage'
-import { DesignTokenIssue } from '../../../shared-src/models/Rules'
 import { useLintResults } from '../../hooks/useLintResults'
 import IssueTitle from './IssueTitle'
 
@@ -242,7 +241,7 @@ export default function LintView({
                       {result.issues.filter(
                         i =>
                           i.source === 'design-token' &&
-                          !!(i as DesignTokenIssue).suggestion
+                          i.severity !== 'resolved'
                       ).length > 0 && (
                         <Button
                           size='small'

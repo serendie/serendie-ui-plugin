@@ -68,26 +68,34 @@ export function useLintResults({
         }
       }
       if (message.type === 'apply-tokens-result') {
-        const appliedRoleMap = new Map(
+        const appliedResultMap = new Map(
           message.results
-            .filter(r => r.status === 'success' && r.appliedRole)
-            .map(r => [r.nodeId, r.appliedRole!])
+            .filter(r => r.status === 'success')
+            .map(r => [r.nodeId, r])
         )
         setResults(prev =>
           prev.map(result => {
             if (result.id !== message.rootNodeId) return result
             const updatedIssues = result.issues.map(issue => {
               if (issue.source !== 'design-token') return issue
-              if (!appliedRoleMap.has(issue.nodeId)) return issue
+              const applied = appliedResultMap.get(issue.nodeId)
+              if (!applied) return issue
               // 同一nodeIdのdesign-token issueをすべてresolvedに
-              const appliedRole = appliedRoleMap.get(issue.nodeId)
+              const baseMessage =
+                applied.isFallback && applied.appliedRole
+                  ? `近似色の「${applied.appliedRole}」を適用`
+                  : applied.appliedRole
+                    ? `${applied.appliedRole}を適用しました`
+                    : '修正しました'
+              const details =
+                applied.isFallback && applied.originalColorHex
+                  ? `元の色: ${applied.originalColorHex}`
+                  : null
               return {
                 ...issue,
                 severity: 'resolved' as const,
-                message: appliedRole
-                  ? `${appliedRole}を適用しました`
-                  : '修正しました',
-                messageDetails: null,
+                message: baseMessage,
+                messageDetails: details,
               }
             })
             return { ...result, issues: updatedIssues }
@@ -204,19 +212,22 @@ export function useLintResults({
       const result = results.find(r => r.id === rootNodeId)
       if (!result) return
 
-      // suggestion付きのdesign-token issueを収集（同一nodeId重複排除）
+      // 全design-token issue（resolved除く）を収集（同一nodeId重複排除）
       const seen = new Set<string>()
       const items: ApplyTokenItem[] = []
       const tokenIssues = result.issues.filter(
         (issue): issue is DesignTokenIssue =>
-          issue.source === 'design-token' && !!issue.suggestion
+          issue.source === 'design-token' && issue.severity !== 'resolved'
       )
       for (const issue of tokenIssues) {
         if (seen.has(issue.nodeId)) continue
         seen.add(issue.nodeId)
+        const targetProperty =
+          issue.nodeType === 'TEXT' ? 'textColor' : 'backgroundColor'
         items.push({
           nodeId: issue.nodeId,
-          suggestion: issue.suggestion!,
+          ...(issue.suggestion && { suggestion: issue.suggestion }),
+          targetProperty,
         })
       }
       if (items.length > 0) {
