@@ -29,6 +29,9 @@ export function useLintResults({
   const [applyingTokenNodeIds, setApplyingTokenNodeIds] = useState<Set<string>>(
     new Set()
   )
+  const [applyingComponentNodeIds, setApplyingComponentNodeIds] = useState<
+    Set<string>
+  >(new Set())
   const { apiKey } = useApiKey()
   const {
     state: componentValidationState,
@@ -39,6 +42,11 @@ export function useLintResults({
   const handleLintMessage = useCallback(
     (message: PluginMessage) => {
       if (message.type === 'apply-components-result') {
+        setApplyingComponentNodeIds(prev => {
+          const next = new Set(prev)
+          next.delete(message.rootNodeId)
+          return next
+        })
         setResults(prev =>
           prev.map(result => {
             if (result.id !== message.rootNodeId) return result
@@ -227,6 +235,7 @@ export function useLintResults({
         })
       }
       if (items.length > 0) {
+        setApplyingComponentNodeIds(prev => new Set(prev).add(rootNodeId))
         postPluginMessage({ type: 'apply-components', rootNodeId, items })
       }
     },
@@ -279,6 +288,7 @@ export function useLintResults({
     isLoading,
     apiKey,
     applyingTokenNodeIds,
+    applyingComponentNodeIds,
     componentValidationState,
     cancelComponentValidation,
     handleRunLinter,
