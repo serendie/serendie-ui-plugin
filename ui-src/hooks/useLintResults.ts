@@ -32,6 +32,7 @@ export function useLintResults({
   const [applyingComponentNodeIds, setApplyingComponentNodeIds] = useState<
     Set<string>
   >(new Set())
+  const [imageRefreshKey, setImageRefreshKey] = useState(0)
   const { apiKey } = useApiKey()
   const {
     state: componentValidationState,
@@ -47,6 +48,7 @@ export function useLintResults({
           next.delete(message.rootNodeId)
           return next
         })
+        setImageRefreshKey(k => k + 1)
         setResults(prev =>
           prev.map(result => {
             if (result.id !== message.rootNodeId) return result
@@ -84,6 +86,7 @@ export function useLintResults({
           next.delete(message.rootNodeId)
           return next
         })
+        setImageRefreshKey(k => k + 1)
         const appliedResultMap = new Map(
           message.results
             .filter(r => r.status === 'success')
@@ -289,6 +292,7 @@ export function useLintResults({
     apiKey,
     applyingTokenNodeIds,
     applyingComponentNodeIds,
+    imageRefreshKey,
     componentValidationState,
     cancelComponentValidation,
     handleRunLinter,

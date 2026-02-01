@@ -42,6 +42,7 @@ export default function LintView({
     apiKey,
     applyingTokenNodeIds,
     applyingComponentNodeIds,
+    imageRefreshKey,
     componentValidationState,
     cancelComponentValidation,
     handleRunLinter,
@@ -193,6 +194,7 @@ export default function LintView({
                 selection={selection}
                 onLoadComplete={handleImageLoadComplete}
                 isActive={isActive}
+                refreshKey={imageRefreshKey}
               />
               {phase === 'results' && result && (
                 <>
