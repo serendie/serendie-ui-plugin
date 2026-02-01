@@ -42,6 +42,7 @@ export default function LintView({
     apiKey,
     applyingTokenNodeIds,
     applyingComponentNodeIds,
+    isRelinting,
     imageRefreshKey,
     componentValidationState,
     cancelComponentValidation,
@@ -217,7 +218,11 @@ export default function LintView({
                             <Button
                               size='small'
                               styleType='ghost'
-                              disabled={applyingComponentNodeIds.has(result.id)}
+                              disabled={
+                                applyingTokenNodeIds.has(result.id) ||
+                                applyingComponentNodeIds.has(result.id) ||
+                                isRelinting
+                              }
                               onClick={() => handleApplyComponents(result.id)}
                             >
                               すべて適用
@@ -254,7 +259,11 @@ export default function LintView({
                         <Button
                           size='small'
                           styleType='ghost'
-                          disabled={applyingTokenNodeIds.has(result.id)}
+                          disabled={
+                            applyingTokenNodeIds.has(result.id) ||
+                            applyingComponentNodeIds.has(result.id) ||
+                            isRelinting
+                          }
                           onClick={() => handleApplyTokens(result.id)}
                         >
                           すべて修正

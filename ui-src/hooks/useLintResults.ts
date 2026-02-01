@@ -33,6 +33,7 @@ export function useLintResults({
     Set<string>
   >(new Set())
   const [imageRefreshKey, setImageRefreshKey] = useState(0)
+  const [isRelinting, setIsRelinting] = useState(false)
   const { apiKey } = useApiKey()
   const {
     state: componentValidationState,
@@ -73,6 +74,7 @@ export function useLintResults({
         // 成功した適用がある場合、デザイントークン検証を再実施
         const hasSuccess = message.results.some(r => r.status === 'success')
         if (hasSuccess) {
+          setIsRelinting(true)
           postPluginMessage({
             type: 'run-linter',
             nodeIds: selections.map(s => s.id),
@@ -145,6 +147,7 @@ export function useLintResults({
         message.source === 'component-validation'
       ) {
         // コンポーネント適用後の再検証: デザイントークンissueのみ置換
+        setIsRelinting(false)
         setResults(prev =>
           prev.map(result => {
             const newResult = message.results.find(r => r.id === result.id)
@@ -293,6 +296,7 @@ export function useLintResults({
     apiKey,
     applyingTokenNodeIds,
     applyingComponentNodeIds,
+    isRelinting,
     imageRefreshKey,
     componentValidationState,
     cancelComponentValidation,
