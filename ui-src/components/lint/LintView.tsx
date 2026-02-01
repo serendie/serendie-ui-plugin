@@ -40,6 +40,7 @@ export default function LintView({
     results,
     isLoading,
     apiKey,
+    applyingTokenNodeIds,
     componentValidationState,
     cancelComponentValidation,
     handleRunLinter,
@@ -249,6 +250,7 @@ export default function LintView({
                         <Button
                           size='small'
                           styleType='ghost'
+                          disabled={applyingTokenNodeIds.has(result.id)}
                           onClick={() => handleApplyTokens(result.id)}
                         >
                           すべて修正

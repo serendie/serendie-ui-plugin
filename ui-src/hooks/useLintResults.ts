@@ -26,6 +26,9 @@ export function useLintResults({
 }) {
   const [results, setResults] = useState<Result[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [applyingTokenNodeIds, setApplyingTokenNodeIds] = useState<Set<string>>(
+    new Set()
+  )
   const { apiKey } = useApiKey()
   const {
     state: componentValidationState,
@@ -68,6 +71,11 @@ export function useLintResults({
         }
       }
       if (message.type === 'apply-tokens-result') {
+        setApplyingTokenNodeIds(prev => {
+          const next = new Set(prev)
+          next.delete(message.rootNodeId)
+          return next
+        })
         const appliedResultMap = new Map(
           message.results
             .filter(r => r.status === 'success')
@@ -255,6 +263,7 @@ export function useLintResults({
         })
       }
       if (items.length > 0) {
+        setApplyingTokenNodeIds(prev => new Set(prev).add(rootNodeId))
         postPluginMessage({ type: 'apply-tokens', rootNodeId, items })
       }
     },
@@ -269,6 +278,7 @@ export function useLintResults({
     results,
     isLoading,
     apiKey,
+    applyingTokenNodeIds,
     componentValidationState,
     cancelComponentValidation,
     handleRunLinter,
