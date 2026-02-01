@@ -243,9 +243,14 @@ export function useLintResults({
         seen.add(issue.nodeId)
         const targetProperty =
           issue.nodeType === 'TEXT' ? 'textColor' : 'backgroundColor'
+        const suggestion =
+          issue.suggestion &&
+          issue.suggestion.targetProperty === targetProperty
+            ? issue.suggestion
+            : undefined
         items.push({
           nodeId: issue.nodeId,
-          ...(issue.suggestion && { suggestion: issue.suggestion }),
+          ...(suggestion && { suggestion }),
           targetProperty,
         })
       }
