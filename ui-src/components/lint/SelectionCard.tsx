@@ -16,12 +16,14 @@ interface SelectionCardProps {
   selection: SelectionInfo
   onLoadComplete?: (nodeId: string) => void
   isActive: boolean
+  refreshKey?: number
 }
 
 export default function SelectionCard({
   selection,
   onLoadComplete,
   isActive,
+  refreshKey,
 }: SelectionCardProps) {
   const [image, setImage] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -46,7 +48,7 @@ export default function SelectionCard({
     setImage(null)
     setIsLoading(true)
     postPluginMessage({ type: 'get-selection-images', nodeIds: [selection.id] })
-  }, [selection.id, isActive])
+  }, [selection.id, isActive, refreshKey])
 
   const height = '10rem'
 

@@ -1,6 +1,6 @@
 import { UNEXPECTED, FRAME_TYPES } from '../../../shared-src/models/Rules'
 import extractVariableKey from './extractVariableKey'
-import getVariableMap from './getVariableMap'
+import getVariableMap, { VariableMap } from './getVariableMap'
 import traceBackgroundColor from './traceFillDefinition'
 import traceVisibility from './traceVisibility'
 
@@ -10,6 +10,67 @@ export type ColorInfo = {
   nodeType: string
   textColor: string | null
   backgroundColor: string | null
+}
+
+function extractTextColorFromNode(
+  node: SceneNode,
+  variableMap: VariableMap
+): string | null {
+  if (
+    'fills' in node &&
+    Array.isArray(node.fills) &&
+    node.fills.length > 0
+  ) {
+    const fill = node.fills[0]
+    if (
+      fill.type === 'SOLID' &&
+      'boundVariables' in fill &&
+      fill.boundVariables?.color
+    ) {
+      const variableId = extractVariableKey(fill.boundVariables.color.id)
+      if (variableId) {
+        return variableMap.get(variableId) || null
+      }
+    }
+  }
+  return null
+}
+
+function hasSolidFill(node: SceneNode): boolean {
+  if (!('fills' in node) || !Array.isArray(node.fills)) return false
+  const fills = node.fills as Paint[]
+  return fills.length > 0 && fills[0].type === 'SOLID' && fills[0].visible !== false
+}
+
+function collectChildTextColors(
+  node: SceneNode,
+  variableMap: VariableMap
+): string[] {
+  const colors: string[] = []
+  if (!('children' in node)) return colors
+  for (const child of (node as ChildrenMixin).children) {
+    if (child.type === 'TEXT') {
+      const color = extractTextColorFromNode(child, variableMap)
+      if (color) {
+        colors.push(color)
+      }
+    } else if ('children' in child && !hasSolidFill(child as SceneNode)) {
+      // 塗りを持つ子フレームは独自のペアリング対象なので再帰しない
+      colors.push(...collectChildTextColors(child as SceneNode, variableMap))
+    }
+  }
+  return colors
+}
+
+function resolveChildTextColor(
+  node: SceneNode,
+  variableMap: VariableMap
+): string | null {
+  const colors = collectChildTextColors(node, variableMap)
+  if (colors.length === 0) return null
+  const unique = new Set(colors)
+  if (unique.size === 1) return colors[0]
+  return null
 }
 
 export default async function extractColorInfo(
@@ -22,25 +83,7 @@ export default async function extractColorInfo(
 
   const results: ColorInfo[] = []
   if (node.type === 'TEXT') {
-    const textNode = node as TextNode
-    let textColor: string | null = null
-    if (
-      'fills' in textNode &&
-      Array.isArray(textNode.fills) &&
-      textNode.fills.length > 0
-    ) {
-      const fill = textNode.fills[0]
-      if (
-        fill.type === 'SOLID' &&
-        'boundVariables' in fill &&
-        fill.boundVariables?.color
-      ) {
-        const variableId = extractVariableKey(fill.boundVariables.color.id)
-        if (variableId) {
-          textColor = variableMap?.get(variableId) || null
-        }
-      }
-    }
+    const textColor = extractTextColorFromNode(node, variableMap)
     const backgroundColor = traceBackgroundColor(
       node.parent as SceneNode,
       variableMap
@@ -67,12 +110,13 @@ export default async function extractColorInfo(
         }
       }
     }
+    const textColor = resolveChildTextColor(node, variableMap)
     if (hasColor) {
       results.push({
         nodeId: node.id,
         nodeName: node.name,
         nodeType: node.type,
-        textColor: null,
+        textColor,
         backgroundColor: backgroundColor || UNEXPECTED,
       })
     } else {
@@ -80,7 +124,7 @@ export default async function extractColorInfo(
         nodeId: node.id,
         nodeName: node.name,
         nodeType: node.type,
-        textColor: null,
+        textColor,
         backgroundColor: null,
       })
     }

@@ -6,7 +6,7 @@ export type Result = {
   id: string
   issues: Issue[]
   totalNodes: number
-  structure: NodeStructure
+  structure?: NodeStructure
   totalComponents?: number
 }
 

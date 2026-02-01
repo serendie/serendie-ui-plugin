@@ -44,13 +44,36 @@ describe('assignTextVariable', () => {
     it('primaryContainerの場合', () => {
       const result = validate('primaryContainer')
       expect(result).not.toBeNull()
+      expect(result?.severity).toBe('error')
       expect(result?.message).toBe('テキスト色が不適切')
     })
 
     it('outlineの場合', () => {
       const result = validate('outline')
       expect(result).not.toBeNull()
+      expect(result?.severity).toBe('error')
       expect(result?.message).toBe('テキスト色が不適切')
+    })
+
+    it('背景色があればsuggestionが付く', () => {
+      const result = validate('primaryContainer', 'primary')
+      expect(result?.severity).toBe('error')
+      expect(result?.suggestion).toEqual({
+        targetRoles: ['onPrimary'],
+        targetProperty: 'textColor',
+      })
+    })
+
+    it('背景色がなければsuggestionは付かない', () => {
+      const result = validate('primaryContainer')
+      expect(result?.severity).toBe('error')
+      expect(result?.suggestion).toBeUndefined()
+    })
+
+    it('背景色がBACKGROUND_COLOR_PAIRSにない場合はsuggestionなし', () => {
+      const result = validate('primaryContainer', 'outline')
+      expect(result?.severity).toBe('error')
+      expect(result?.suggestion).toBeUndefined()
     })
   })
 
@@ -60,15 +83,60 @@ describe('assignTextVariable', () => {
       expect(result).toBeNull()
     })
 
-    it('任意の文字列の場合', () => {
-      const result = validate('customColor')
-      expect(result).not.toBeNull()
-      expect(result?.message).toBe('テキスト色にシステムトークンを未使用')
-    })
-
     it('テキストカラーがない場合', () => {
       const result = validate(null)
       expect(result).toBeNull()
+    })
+
+    it('背景色なし → warning', () => {
+      const result = validate('customColor')
+      expect(result?.severity).toBe('warning')
+      expect(result?.message).toBe('テキスト色にデザイントークンを使えます')
+      expect(result?.suggestion).toBeUndefined()
+    })
+
+    it('背景色がBACKGROUND_COLOR_PAIRSにない → warning', () => {
+      const result = validate('customColor', 'outline')
+      expect(result?.severity).toBe('warning')
+      expect(result?.suggestion).toBeUndefined()
+    })
+  })
+
+  describe('相方の色からsuggestionを計算', () => {
+    it('背景色がシステムトークンで候補がある場合 → warning + suggestion', () => {
+      const result = validate('customColor', 'primary')
+      expect(result?.severity).toBe('warning')
+      expect(result?.message).toBe('テキスト色にデザイントークンを使えます')
+      expect(result?.suggestion).toEqual({
+        targetRoles: ['onPrimary'],
+        targetProperty: 'textColor',
+      })
+    })
+
+    it('surface背景 → 全候補を提案', () => {
+      const result = validate('customColor', 'surface')
+      expect(result?.severity).toBe('warning')
+      expect(result?.suggestion?.targetRoles).toContain('onSurface')
+      expect(result?.suggestion?.targetRoles).toContain('onSurfaceVariant')
+      expect(result?.suggestion?.targetRoles).toContain('primary')
+      expect(result?.suggestion?.targetProperty).toBe('textColor')
+    })
+
+    it('surfaceContainerHigh背景 → onSurface等を含む候補を提案', () => {
+      const result = validate('customColor', 'surfaceContainerHigh')
+      expect(result?.severity).toBe('warning')
+      expect(result?.suggestion?.targetRoles).toContain('onSurface')
+      expect(result?.suggestion?.targetRoles).toContain('onSurfaceVariant')
+      expect(result?.suggestion?.targetProperty).toBe('textColor')
+    })
+
+    it('primaryContainer背景 → onPrimaryContainerを提案', () => {
+      const result = validate('customColor', 'primaryContainer')
+      expect(result?.severity).toBe('warning')
+      expect(result?.suggestion).toEqual({
+        targetRoles: ['onPrimaryContainer'],
+        targetProperty: 'textColor',
+      })
     })
   })
 })

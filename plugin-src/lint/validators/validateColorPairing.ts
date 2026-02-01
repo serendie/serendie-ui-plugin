@@ -7,14 +7,14 @@ export default function validateColorPairing(colorInfoList: ColorInfo[]): {
 } {
   const issues: Issue[] = []
   for (const colorInfo of colorInfoList) {
-    const issueDetail = validate(colorInfo.textColor, colorInfo.backgroundColor)
-    if (issueDetail) {
+    const ruleResult = validate(colorInfo.textColor, colorInfo.backgroundColor)
+    if (ruleResult) {
       issues.push({
         nodeId: colorInfo.nodeId,
         nodeName: colorInfo.nodeName,
         nodeType: colorInfo.nodeType,
         source: 'design-token',
-        ...issueDetail,
+        ...ruleResult,
       })
     }
   }

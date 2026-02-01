@@ -1,4 +1,8 @@
 import validate from './colorPairing'
+import {
+  TEXT_COLOR_PAIRS,
+  BACKGROUND_COLOR_PAIRS,
+} from '../../../shared-src/models/Rules'
 
 describe('colorPairing', () => {
   describe('正常なカラーペアリング', () => {
@@ -28,40 +32,94 @@ describe('colorPairing', () => {
       const result = validate('primary', 'primary')
       expect(result).not.toBeNull()
       expect(result?.severity).toBe('error')
-      expect(result?.message).toBe('テキスト色または背景色が不適切')
+      expect(result?.message).toBe('色の組み合わせが不適切')
     })
 
     it('異なるロールの組み合わせ', () => {
       const result = validate('primary', 'secondary')
       expect(result).not.toBeNull()
-      expect(result?.message).toBe('テキスト色または背景色が不適切')
+      expect(result?.message).toBe('色の組み合わせが不適切')
+    })
+
+    it('背景色からsuggestionが付く', () => {
+      const result = validate('onSecondary', 'primary')
+      expect(result?.suggestion).toEqual({
+        targetRoles: ['onPrimary'],
+        targetProperty: 'textColor',
+      })
+    })
+
+    it('背景色が配列候補の場合は全候補を提案', () => {
+      const result = validate('onPrimary', 'surface')
+      expect(result?.suggestion?.targetRoles).toContain('onSurface')
+      expect(result?.suggestion?.targetRoles).toContain('onSurfaceVariant')
+      expect(result?.suggestion?.targetRoles).toContain('primary')
+      expect(result?.suggestion?.targetProperty).toBe('textColor')
+    })
+
+    it('secondaryはsurface系との組み合わせ不可（コントラスト比不足）', () => {
+      const result = validate('secondary', 'surface')
+      expect(result?.severity).toBe('error')
+    })
+
+    it('tertiaryはsurface系との組み合わせ不可（コントラスト比不足）', () => {
+      const result = validate('tertiary', 'surfaceContainerHigh')
+      expect(result?.severity).toBe('error')
     })
   })
 
-  describe('impressionの基本色の例外的な組み合わせ', () => {
-    it('テキスト色がimpressionの基本色, 背景色がsurface系統', () => {
-      const result1_1 = validate('primary', 'surfaceContainerLowest')
-      const result1_2 = validate('surfaceContainerLowest', 'primary')
-      expect(result1_1).toBeNull()
-      expect(result1_2).toBeNull()
-      const result2_1 = validate('secondary', 'surface')
-      expect(result2_1).toBeNull()
-      const result3_1 = validate('tertiary', 'surfaceContainerHigh')
-      const result3_2 = validate('surfaceContainerHigh', 'tertiary')
-      expect(result3_1).toBeNull()
-      expect(result3_2).toBeNull()
-      const result4_1 = validate('notice', 'surfaceContainer')
-      const result4_2 = validate('surfaceContainer', 'notice')
-      expect(result4_1).toBeNull()
-      expect(result4_2).toBeNull()
-      const result5_1 = validate('negative', 'surfaceContainerHighest')
-      const result5_2 = validate('surfaceContainerHighest', 'negative')
-      expect(result5_1).toBeNull()
-      expect(result5_2).toBeNull()
-      const result6_1 = validate('positive', 'surfaceContainerLow')
-      const result6_2 = validate('surfaceContainerLow', 'positive')
-      expect(result6_1).toBeNull()
-      expect(result6_2).toBeNull()
+  describe('impressionの基本色とsurface系の組み合わせ', () => {
+    it('primary × surface系は有効', () => {
+      expect(validate('primary', 'surfaceContainerLowest')).toBeNull()
+      expect(validate('surfaceContainerLowest', 'primary')).toBeNull()
+    })
+
+    it('notice × surface系は有効', () => {
+      expect(validate('notice', 'surfaceContainer')).toBeNull()
+      expect(validate('surfaceContainer', 'notice')).toBeNull()
+    })
+
+    it('negative × surface系は有効', () => {
+      expect(validate('negative', 'surfaceContainerHighest')).toBeNull()
+      expect(validate('surfaceContainerHighest', 'negative')).toBeNull()
+    })
+
+    it('positive × surface系は有効', () => {
+      expect(validate('positive', 'surfaceContainerLow')).toBeNull()
+      expect(validate('surfaceContainerLow', 'positive')).toBeNull()
+    })
+  })
+
+  describe('ペアリングテーブルの双方向整合性', () => {
+    it('背景色から許可されたテキスト色の組み合わせがすべて正常と判定される', () => {
+      for (const [bgRole, textRoles] of Object.entries(
+        BACKGROUND_COLOR_PAIRS
+      )) {
+        const roles = textRoles
+        for (const textRole of roles) {
+          expect({
+            pair: `text=${textRole}, bg=${bgRole}`,
+            result: validate(textRole, bgRole),
+          }).toEqual({
+            pair: `text=${textRole}, bg=${bgRole}`,
+            result: null,
+          })
+        }
+      }
+    })
+    it('テキスト色から許可された背景色の組み合わせがすべて正常と判定される', () => {
+      for (const [textRole, bgRoles] of Object.entries(TEXT_COLOR_PAIRS)) {
+        const roles = bgRoles
+        for (const bgRole of roles) {
+          expect({
+            pair: `text=${textRole}, bg=${bgRole}`,
+            result: validate(textRole, bgRole),
+          }).toEqual({
+            pair: `text=${textRole}, bg=${bgRole}`,
+            result: null,
+          })
+        }
+      }
     })
   })
 

@@ -56,7 +56,9 @@ export function useLinterTool(): Record<string, Tool> {
                 ? result.issues.map(issue => serializeIssues(issue)).join('\n')
                 : '問題なし'
 
-            const structureText = serializeNodeStructure(result.structure)
+            const structureText = result.structure
+              ? serializeNodeStructure(result.structure)
+              : ''
 
             return `## ${result.name} (ID: ${result.id})
 検証ノード数: ${result.totalNodes}

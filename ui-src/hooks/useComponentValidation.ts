@@ -1,5 +1,5 @@
 import { createOpenAI } from '@ai-sdk/openai'
-import { generateObject } from 'ai'
+import { generateObject, NoObjectGeneratedError } from 'ai'
 import { useCallback, useRef, useState } from 'react'
 import { NodeStructure } from '../../shared-src/models/PluginMessage'
 import { Issue } from '../../shared-src/models/Rules'
@@ -8,6 +8,7 @@ import { PROMPT_TO_NEST_PROPERTY } from '../../shared-src/utils/nestProperty'
 import {
   componentValidationResponseSchema,
   ComponentCandidate,
+  filterValidCandidates,
 } from '../models/componentValidationSchema'
 import componentKeys from '../../shared-src/assets/component-keys.json'
 import componentsManifest from '../../shared-src/assets/components_manifest.json'
@@ -188,18 +189,58 @@ ${PROMPT_TO_NEST_PROPERTY}
             ]
           : `以下のノード構造を分析してください:\n\n${serializedStructure}`
 
-        const response = await generateObject({
-          model: openai('gpt-5.2-codex'),
-          schema: componentValidationResponseSchema,
-          messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: userContent },
-          ],
-          temperature: 0,
-          abortSignal: abortController.signal,
-        })
+        const maxTryCount = 2
 
-        const candidates = response.object.candidates
+        const callGenerateObject = () =>
+          generateObject({
+            model: openai('gpt-5.2-codex'),
+            schema: componentValidationResponseSchema,
+            messages: [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: userContent },
+            ],
+            temperature: 0,
+            abortSignal: abortController.signal,
+          })
+
+        let candidates: ComponentCandidate[] | null = null
+        let lastError: unknown = null
+        let tryCount = 0
+
+        while (tryCount < maxTryCount && candidates === null) {
+          tryCount++
+          try {
+            const response = await callGenerateObject()
+            candidates = response.object.candidates
+          } catch (err) {
+            lastError = err
+            if (!NoObjectGeneratedError.isInstance(err)) throw err
+            console.warn(
+              `Attempt ${tryCount}/${maxTryCount} failed:`,
+              err
+            )
+          }
+        }
+
+        // 全リトライ失敗 → エラーテキストから部分的な結果を抽出
+        if (candidates === null) {
+          const errorText = NoObjectGeneratedError.isInstance(lastError)
+            ? lastError.text
+            : undefined
+          try {
+            const parsed = JSON.parse(errorText ?? '')
+            if (Array.isArray(parsed?.candidates)) {
+              candidates = filterValidCandidates(parsed.candidates)
+            }
+          } catch {
+            // パース失敗は無視
+          }
+          if (!candidates || candidates.length === 0) throw lastError
+          console.warn(
+            'Using partially extracted candidates:',
+            candidates.length
+          )
+        }
         const nodeMap = flattenNodes(structure)
 
         const elapsedTime = ((performance.now() - startTime) / 1000).toFixed(2)
