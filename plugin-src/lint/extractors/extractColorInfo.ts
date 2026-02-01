@@ -36,6 +36,12 @@ function extractTextColorFromNode(
   return null
 }
 
+function hasSolidFill(node: SceneNode): boolean {
+  if (!('fills' in node) || !Array.isArray(node.fills)) return false
+  const fills = node.fills as Paint[]
+  return fills.length > 0 && fills[0].type === 'SOLID' && fills[0].visible !== false
+}
+
 function collectChildTextColors(
   node: SceneNode,
   variableMap: VariableMap
@@ -48,8 +54,8 @@ function collectChildTextColors(
       if (color) {
         colors.push(color)
       }
-    }
-    if ('children' in child) {
+    } else if ('children' in child && !hasSolidFill(child as SceneNode)) {
+      // 塗りを持つ子フレームは独自のペアリング対象なので再帰しない
       colors.push(...collectChildTextColors(child as SceneNode, variableMap))
     }
   }
