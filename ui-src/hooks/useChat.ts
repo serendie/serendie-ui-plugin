@@ -124,7 +124,7 @@ export function useChat({
         }
         const openai = createOpenAI({ apiKey })
         const streamResult = streamText({
-          model: openai('gpt-4.1'),
+          model: openai('gpt-5.2-codex'),
           tools,
           stopWhen: stepCountIs(10),
           abortSignal: abortController.signal,

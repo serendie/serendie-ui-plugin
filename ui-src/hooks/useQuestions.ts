@@ -76,7 +76,7 @@ export function useQuestions({
 作る質問文は2つ、各質問はですます調で、40文字以内の簡潔な表現にしてください。`
 
         const { object } = await generateObject({
-          model: openai('gpt-4o-mini'),
+          model: openai('gpt-5-mini'),
           schema: questionSchema,
           messages: [
             {
