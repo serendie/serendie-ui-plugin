@@ -91,7 +91,7 @@ describe('assignTextVariable', () => {
     it('背景色なし → warning', () => {
       const result = validate('customColor')
       expect(result?.severity).toBe('warning')
-      expect(result?.message).toBe('テキスト色にシステムトークンを未使用')
+      expect(result?.message).toBe('テキスト色にデザイントークンを使えます')
       expect(result?.suggestion).toBeUndefined()
     })
 
@@ -106,7 +106,7 @@ describe('assignTextVariable', () => {
     it('背景色がシステムトークンで候補がある場合 → warning + suggestion', () => {
       const result = validate('customColor', 'primary')
       expect(result?.severity).toBe('warning')
-      expect(result?.message).toBe('テキスト色にシステムトークンを未使用')
+      expect(result?.message).toBe('テキスト色にデザイントークンを使えます')
       expect(result?.suggestion).toEqual({
         targetRoles: ['onPrimary'],
         targetProperty: 'textColor',

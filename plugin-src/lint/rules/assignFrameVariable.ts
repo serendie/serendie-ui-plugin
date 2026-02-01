@@ -26,12 +26,10 @@ export default function validate(
 
   const backgroundRole = extractColorRole(backgroundColor)
   if (!backgroundRole) {
-    const suggestion = textColor
-      ? computeSuggestion(textColor)
-      : undefined
+    const suggestion = textColor ? computeSuggestion(textColor) : undefined
     return {
       severity: 'warning',
-      message: '背景色にシステムトークンを未使用',
+      message: '背景色にデザイントークンを使えます',
       messageDetails: suggestion
         ? `塗りを${formatRoles(suggestion.targetRoles)}に変更してください。`
         : '塗りにデザインシステムのバリアブルを設定してください。',
@@ -40,9 +38,7 @@ export default function validate(
   }
 
   if (backgroundColor.match(/^on/) || backgroundColor.match(/^\w+On[A-Z]/)) {
-    const suggestion = textColor
-      ? computeSuggestion(textColor)
-      : undefined
+    const suggestion = textColor ? computeSuggestion(textColor) : undefined
     return {
       severity: 'error',
       message: '背景色が不適切',

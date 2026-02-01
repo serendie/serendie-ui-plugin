@@ -32,13 +32,13 @@ describe('colorPairing', () => {
       const result = validate('primary', 'primary')
       expect(result).not.toBeNull()
       expect(result?.severity).toBe('error')
-      expect(result?.message).toBe('テキスト色または背景色が不適切')
+      expect(result?.message).toBe('色の組み合わせが不適切')
     })
 
     it('異なるロールの組み合わせ', () => {
       const result = validate('primary', 'secondary')
       expect(result).not.toBeNull()
-      expect(result?.message).toBe('テキスト色または背景色が不適切')
+      expect(result?.message).toBe('色の組み合わせが不適切')
     })
 
     it('背景色からsuggestionが付く', () => {
@@ -87,7 +87,9 @@ describe('colorPairing', () => {
 
   describe('ペアリングテーブルの双方向整合性', () => {
     it('背景色から許可されたテキスト色の組み合わせがすべて正常と判定される', () => {
-      for (const [bgRole, textRoles] of Object.entries(BACKGROUND_COLOR_PAIRS)) {
+      for (const [bgRole, textRoles] of Object.entries(
+        BACKGROUND_COLOR_PAIRS
+      )) {
         const roles = textRoles
         for (const textRole of roles) {
           expect({
