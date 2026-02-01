@@ -1,5 +1,13 @@
 import { filterValidCandidates } from '../models/componentValidationSchema'
 
+beforeEach(() => {
+  jest.spyOn(console, 'warn').mockImplementation(() => {})
+})
+
+afterEach(() => {
+  jest.restoreAllMocks()
+})
+
 const validCandidate = {
   nodeId: '1600:6545',
   suggestedComponent: 'TopAppBar',
