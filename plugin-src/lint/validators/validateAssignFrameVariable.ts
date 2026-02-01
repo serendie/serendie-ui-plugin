@@ -15,14 +15,14 @@ export default function validateAssignFrameVariable(nodes: ColorInfo[]): {
     // 背景色がNone（色なし）の場合はスキップ
     if (node.backgroundColor === 'None') continue
 
-    const issueDetail = validate(node.backgroundColor)
-    if (issueDetail) {
+    const ruleResult = validate(node.backgroundColor, node.textColor)
+    if (ruleResult) {
       issues.push({
         nodeId: node.nodeId,
         nodeName: node.nodeName,
         nodeType: node.nodeType,
         source: 'design-token',
-        ...issueDetail,
+        ...ruleResult,
       })
     }
   }

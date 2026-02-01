@@ -6,8 +6,12 @@ import notify from '../../utils/nodes/notify'
 import extractVariableKey from './extractVariableKey'
 
 export type VariableMap = Map<string, string>
+// name → fullKey（importVariableByKeyAsync用）の逆引きマップ
+export type ReverseVariableMap = Map<string, string>
 
 const variableMap: VariableMap = new Map()
+const reverseVariableMap: ReverseVariableMap = new Map()
+
 export default async function getVariableMap(): Promise<VariableMap> {
   if (variableMap.size > 0) return variableMap
 
@@ -34,14 +38,23 @@ export default async function getVariableMap(): Promise<VariableMap> {
         const variableKey = extractVariableKey(variable.key)
         if (variableKey) {
           variableMap.set(variableKey, variable.name)
+          reverseVariableMap.set(variable.name, variable.key)
         }
       }
     }
   } catch (error) {
     notify(`${LIBRARY_NAME}の取得に失敗しました。`)
     variableMap.clear()
+    reverseVariableMap.clear()
   }
   return variableMap
+}
+
+export async function getReverseVariableMap(): Promise<ReverseVariableMap> {
+  if (reverseVariableMap.size === 0) {
+    await getVariableMap()
+  }
+  return reverseVariableMap
 }
 
 async function getLocalVariableMap() {
@@ -65,6 +78,7 @@ async function getLocalVariableMap() {
         const variableKey = extractVariableKey(variable.id)
         if (variableKey) {
           variableMap.set(variableKey, variable.name)
+          reverseVariableMap.set(variable.name, variable.key)
         }
       }
     }

@@ -1,4 +1,4 @@
-import { Issue, ComponentSuggestion } from './Rules'
+import { Issue, ComponentSuggestion, DesignTokenSuggestion } from './Rules'
 
 // インスタンスのコンポーネントプロパティ
 export type ComponentProperty = {
@@ -31,7 +31,7 @@ export type LintResult = {
   id: string
   issues: Issue[]
   totalNodes: number
-  structure: NodeStructure
+  structure?: NodeStructure
 }
 
 // 選択要素の情報
@@ -40,7 +40,7 @@ export type SelectionInfo = {
   name: string
 }
 
-type Source = 'chat-view' | 'lint-view'
+type Source = 'chat-view' | 'lint-view' | 'component-validation'
 
 // Lint関連メッセージ
 export type LintMessage =
@@ -61,17 +61,57 @@ export type ImageMessage =
 // エラーメッセージ
 export type ErrorMessage = { type: 'error'; message: string }
 
+// コンポーネント適用結果メッセージ
+export type ApplyComponentsResultMessage = {
+  type: 'apply-components-result'
+  rootNodeId: string
+  results: ApplyComponentResult[]
+}
+
+// トークン修正アイテム
+export type ApplyTokenItem = {
+  nodeId: string
+  suggestion?: DesignTokenSuggestion // あれば使う（確実な候補）
+  targetProperty: 'textColor' | 'backgroundColor' // フォールバック判定に使用
+}
+
+// トークン修正結果（個別ノード）
+export type ApplyTokenResult = {
+  nodeId: string
+  status: 'success' | 'failed'
+  appliedRole?: string
+  isFallback?: boolean // フォールバック候補からの適用かどうか
+  originalColorHex?: string // 適用前の元の色（hex）
+}
+
+// トークン修正結果メッセージ
+export type ApplyTokensResultMessage = {
+  type: 'apply-tokens-result'
+  rootNodeId: string
+  results: ApplyTokenResult[]
+  finalIssues: Issue[] // 再帰修正後の最終リント結果
+}
+
 // Plugin → UI
 export type PluginToUIMessage =
   | LintMessage
   | SelectionMessage
   | ImageMessage
   | ErrorMessage
+  | ApplyComponentsResultMessage
+  | ApplyTokensResultMessage
 
 // コンポーネント適用アイテム
 export type ApplyComponentItem = {
   nodeId: string
 } & ComponentSuggestion
+
+// コンポーネント適用結果（個別ノード）
+export type ApplyComponentResult = {
+  oldNodeId: string
+  newNodeId: string
+  status: 'success' | 'failed' | 'skipped'
+}
 
 // UI → Plugin
 export type UIToPluginMessage =
@@ -86,6 +126,11 @@ export type UIToPluginMessage =
       items: ApplyComponentItem[]
     }
   | { type: 'select-node'; nodeId: string }
+  | {
+      type: 'apply-tokens'
+      rootNodeId: string
+      items: ApplyTokenItem[]
+    }
 
 // 全メッセージ型
 export type PluginMessage = PluginToUIMessage | UIToPluginMessage

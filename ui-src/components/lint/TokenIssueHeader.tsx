@@ -16,6 +16,10 @@ export default function TokenIssueHeader({
   const warningCount = issues.filter(
     issue => issue.severity === 'warning'
   ).length
+  const resolvedCount = issues.filter(
+    issue => issue.severity === 'resolved'
+  ).length
+  const activeIssueCount = errorCount + warningCount
 
   return (
     <div
@@ -32,9 +36,12 @@ export default function TokenIssueHeader({
     >
       <StatLabel
         symbolName='check-circle'
-        targetNodes={totalItems - issues.length}
+        targetNodes={totalItems - activeIssueCount}
         totalNodes={totalItems}
       />
+      {resolvedCount > 0 && (
+        <StatLabel targetNodes={resolvedCount} label='個修正済み' />
+      )}
       {errorCount > 0 && (
         <StatLabel
           symbolName='alert-circle'

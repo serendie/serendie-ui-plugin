@@ -21,7 +21,12 @@ export default function IssuesList({
       {type === 'token' ? (
         <TokenIssueHeader issues={issues} totalItems={totalItems} />
       ) : (
-        <ComponentIssueHeader count={issues.length} />
+        <ComponentIssueHeader
+          count={issues.length}
+          resolvedCount={
+            issues.filter(i => i.severity === 'resolved').length
+          }
+        />
       )}
       {issues.length > 0 && (
         <div
@@ -33,28 +38,20 @@ export default function IssuesList({
             overflowY: 'scroll',
           }}
         >
-          {issues
-            .filter(({ severity }) => severity === 'error')
-            .map((issue, index) => (
+          {(() => {
+            const sorted = [
+              ...issues.filter(({ severity }) => severity === 'error'),
+              ...issues.filter(({ severity }) => severity === 'warning'),
+              ...issues.filter(({ severity }) => severity === 'resolved'),
+            ]
+            return sorted.map((issue, index) => (
               <IssueListItem
-                key={`error-${index}`}
+                key={`${issue.severity}-${index}`}
                 issue={issue}
-                withBorder={index !== issues.length - 1}
+                withBorder={index !== sorted.length - 1}
               />
-            ))}
-          {issues
-            .filter(({ severity }) => severity === 'warning')
-            .map((issue, index) => (
-              <IssueListItem
-                key={`warning-${index}`}
-                issue={issue}
-                withBorder={
-                  index !==
-                  issues.filter(issue => issue.severity === 'warning').length -
-                    1
-                }
-              />
-            ))}
+            ))
+          })()}
         </div>
       )}
     </div>
