@@ -79,7 +79,10 @@ figma.ui.onmessage = async msg => {
         const colorInfoList = await extractColorInfo(selection)
         const issues = runLint(colorInfoList)
 
-        const structure = await buildNodeStructure(selection)
+        const structure =
+          msg.source === 'component-validation'
+            ? undefined
+            : await buildNodeStructure(selection)
 
         results.push({
           name: selection.name,

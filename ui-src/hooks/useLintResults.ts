@@ -174,6 +174,7 @@ export function useLintResults({
               { issues: Issue[]; totalComponents: number }
             >()
             for (const result of message.results) {
+              if (!result.structure) continue
               const image = selectionImages[result.id]
               const componentResult = await validateComponents(
                 result.structure,

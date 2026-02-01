@@ -31,7 +31,7 @@ export type LintResult = {
   id: string
   issues: Issue[]
   totalNodes: number
-  structure: NodeStructure
+  structure?: NodeStructure
 }
 
 // 選択要素の情報
