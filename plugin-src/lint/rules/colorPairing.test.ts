@@ -1,4 +1,8 @@
 import validate from './colorPairing'
+import {
+  TEXT_COLOR_PAIRS,
+  BACKGROUND_COLOR_PAIRS,
+} from '../../../shared-src/models/Rules'
 
 describe('colorPairing', () => {
   describe('正常なカラーペアリング', () => {
@@ -83,7 +87,6 @@ describe('colorPairing', () => {
 
   describe('ペアリングテーブルの双方向整合性', () => {
     it('背景色から許可されたテキスト色の組み合わせがすべて正常と判定される', () => {
-      const { BACKGROUND_COLOR_PAIRS } = require('../../../shared-src/models/Rules')
       for (const [bgRole, textRoles] of Object.entries(BACKGROUND_COLOR_PAIRS)) {
         const roles =
           typeof textRoles === 'string' ? [textRoles] : (textRoles as string[])
@@ -99,7 +102,6 @@ describe('colorPairing', () => {
       }
     })
     it('テキスト色から許可された背景色の組み合わせがすべて正常と判定される', () => {
-      const { TEXT_COLOR_PAIRS } = require('../../../shared-src/models/Rules')
       for (const [textRole, bgRoles] of Object.entries(TEXT_COLOR_PAIRS)) {
         const roles =
           typeof bgRoles === 'string' ? [bgRoles] : (bgRoles as string[])

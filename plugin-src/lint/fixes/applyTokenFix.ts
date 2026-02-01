@@ -7,14 +7,8 @@ import {
   FALLBACK_BACKGROUND_ROLES,
 } from '../../../shared-src/models/Rules'
 import { getReverseVariableMap } from '../extractors/getVariableMap'
+import { convertRgbToHex } from '../core/convertRgbToHex'
 import { pickBestVariable } from './pickBestVariable'
-
-function rgbToHex(color: RGB): string {
-  const r = Math.round(color.r * 255)
-  const g = Math.round(color.g * 255)
-  const b = Math.round(color.b * 255)
-  return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`
-}
 
 function getCurrentFillColor(
   node: SceneNode
@@ -66,7 +60,7 @@ export async function applyTokenFixes(
       const isFallback = !item.suggestion?.targetRoles
       const currentFill = isFallback ? getCurrentFillColor(node) : null
       const originalColorHex = currentFill
-        ? rgbToHex(currentFill.color)
+        ? convertRgbToHex(currentFill.color)
         : undefined
 
       const targetRoles =

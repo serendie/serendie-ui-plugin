@@ -1,7 +1,31 @@
 import { ReverseVariableMap } from '../extractors/getVariableMap'
-import { colorDistance } from '../core/colorDistance'
+import { getColorDistance } from '../core/getColorDistance'
 
-const CONTAINER_SIZE_THRESHOLD = 10000 // 100x100px の面積
+export const CONTAINER_SIZE_THRESHOLD = 10000 // 100x100px の面積
+
+export type Candidate = { role: string; distance: number }
+
+export function pickBestCandidate(
+  candidates: Candidate[],
+  nodeArea: number
+): Candidate | null {
+  let best: Candidate | null = null
+  for (const candidate of candidates) {
+    if (!best || candidate.distance < best.distance) {
+      best = candidate
+    } else if (candidate.distance === best.distance) {
+      const isContainer = candidate.role.includes('Container')
+      const bestIsContainer = best.role.includes('Container')
+      if (isContainer !== bestIsContainer) {
+        const preferContainer = nodeArea >= CONTAINER_SIZE_THRESHOLD
+        if (isContainer === preferContainer) {
+          best = candidate
+        }
+      }
+    }
+  }
+  return best
+}
 
 function findVariableNameByRole(
   reverseMap: ReverseVariableMap,
@@ -32,8 +56,8 @@ export async function pickBestVariable(
   if (currentFill.type !== 'SOLID') return null
   const currentColor = currentFill.color
 
-  let best: { variable: Variable; role: string; distance: number } | null =
-    null
+  const resolved: { variable: Variable; role: string; distance: number }[] =
+    []
 
   for (const role of targetRoles) {
     const variableName = findVariableNameByRole(reverseMap, role)
@@ -43,30 +67,25 @@ export async function pickBestVariable(
 
     const variable =
       await figma.variables.importVariableByKeyAsync(fullKey)
-    const resolved = variable.resolveForConsumer(node)
-    if (resolved.resolvedType !== 'COLOR') continue
-    const resolvedColor = resolved.value as RGB
+    const result = variable.resolveForConsumer(node)
+    if (result.resolvedType !== 'COLOR') continue
+    const resolvedColor = result.value as RGB
 
-    const dist = colorDistance(currentColor, resolvedColor)
-    if (!best || dist < best.distance) {
-      best = { variable, role, distance: dist }
-    } else if (dist === best.distance) {
-      // 同じ色距離のContainer/無印ペアがある場合、ノードサイズで判定
-      const isContainer = role.includes('Container')
-      const bestIsContainer = best.role.includes('Container')
-      if (isContainer !== bestIsContainer) {
-        const area =
-          'width' in node && 'height' in node
-            ? (node as { width: number; height: number }).width *
-              (node as { width: number; height: number }).height
-            : 0
-        const preferContainer = area >= CONTAINER_SIZE_THRESHOLD
-        if (isContainer === preferContainer) {
-          best = { variable, role, distance: dist }
-        }
-      }
-    }
+    const dist = getColorDistance(currentColor, resolvedColor)
+    resolved.push({ variable, role, distance: dist })
   }
 
-  return best ? { variable: best.variable, role: best.role } : null
+  const area =
+    'width' in node && 'height' in node
+      ? (node as { width: number; height: number }).width *
+        (node as { width: number; height: number }).height
+      : 0
+  const picked = pickBestCandidate(
+    resolved.map(r => ({ role: r.role, distance: r.distance })),
+    area
+  )
+  if (!picked) return null
+
+  const match = resolved.find(r => r.role === picked.role)
+  return match ? { variable: match.variable, role: match.role } : null
 }
