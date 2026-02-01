@@ -71,7 +71,8 @@ export type ApplyComponentsResultMessage = {
 // トークン修正アイテム
 export type ApplyTokenItem = {
   nodeId: string
-  suggestion: DesignTokenSuggestion
+  suggestion?: DesignTokenSuggestion // あれば使う（確実な候補）
+  targetProperty: 'textColor' | 'backgroundColor' // フォールバック判定に使用
 }
 
 // トークン修正結果（個別ノード）
@@ -79,6 +80,8 @@ export type ApplyTokenResult = {
   nodeId: string
   status: 'success' | 'failed'
   appliedRole?: string
+  isFallback?: boolean // フォールバック候補からの適用かどうか
+  originalColorHex?: string // 適用前の元の色（hex）
 }
 
 // トークン修正結果メッセージ

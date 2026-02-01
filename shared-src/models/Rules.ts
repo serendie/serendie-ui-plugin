@@ -189,3 +189,43 @@ export function serializeIssues(issue: Issue): string {
     ].join('\n') + '\n'
   )
 }
+
+// フォールバック候補: テキスト色用（apply時の近似マッチで使用）
+export const FALLBACK_TEXT_ROLES = [
+  'onSurface',
+  'onSurfaceVariant',
+  'inverseOnSurface',
+  'primary',
+  'secondary',
+  'tertiary',
+  'notice',
+  'negative',
+  'positive',
+]
+
+// フォールバック候補: 背景色用（apply時の近似マッチで使用）
+export const FALLBACK_BACKGROUND_ROLES = [
+  'surface',
+  'surfaceContainerLowest',
+  'surfaceContainerLow',
+  'surfaceContainer',
+  'surfaceContainerHigh',
+  'surfaceContainerHighest',
+  'inverseSurface',
+  'primary',
+  'primaryContainer',
+  'secondary',
+  'secondaryContainer',
+  'tertiary',
+  'tertiaryContainer',
+  'notice',
+  'noticeContainer',
+  'noticeContainerVariant',
+  'negative',
+  'negativeContainer',
+  'negativeContainerVariant',
+  'positive',
+  'positiveContainer',
+  'positiveContainerVariant',
+  'inversePrimary',
+]
