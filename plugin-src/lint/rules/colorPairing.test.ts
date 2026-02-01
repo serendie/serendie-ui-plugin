@@ -88,8 +88,7 @@ describe('colorPairing', () => {
   describe('ペアリングテーブルの双方向整合性', () => {
     it('背景色から許可されたテキスト色の組み合わせがすべて正常と判定される', () => {
       for (const [bgRole, textRoles] of Object.entries(BACKGROUND_COLOR_PAIRS)) {
-        const roles =
-          typeof textRoles === 'string' ? [textRoles] : (textRoles as string[])
+        const roles = textRoles
         for (const textRole of roles) {
           expect({
             pair: `text=${textRole}, bg=${bgRole}`,
@@ -103,8 +102,7 @@ describe('colorPairing', () => {
     })
     it('テキスト色から許可された背景色の組み合わせがすべて正常と判定される', () => {
       for (const [textRole, bgRoles] of Object.entries(TEXT_COLOR_PAIRS)) {
-        const roles =
-          typeof bgRoles === 'string' ? [bgRoles] : (bgRoles as string[])
+        const roles = bgRoles
         for (const bgRole of roles) {
           expect({
             pair: `text=${textRole}, bg=${bgRole}`,
