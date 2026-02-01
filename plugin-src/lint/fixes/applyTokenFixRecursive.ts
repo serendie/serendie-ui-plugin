@@ -4,6 +4,7 @@ import {
 } from '../../../shared-src/models/PluginMessage'
 import { DesignTokenIssue, Issue } from '../../../shared-src/models/Rules'
 import extractColorInfo from '../extractors/extractColorInfo'
+import extractBorderInfo from '../extractors/extractBorderInfo'
 import { runLint } from '../validators/runLint'
 import { applyTokenFixes } from './applyTokenFix'
 
@@ -56,7 +57,8 @@ export async function applyTokenFixRecursive(
     if (results.every(r => r.status === 'failed')) break
 
     const colorInfoList = await extractColorInfo(rootNode)
-    const remaining = runLint(colorInfoList).filter(
+    const borderInfoList = await extractBorderInfo(rootNode)
+    const remaining = runLint(colorInfoList, borderInfoList).filter(
       (i): i is DesignTokenIssue => i.source === 'design-token'
     )
     if (remaining.length === 0) break
@@ -64,9 +66,10 @@ export async function applyTokenFixRecursive(
   }
 
   const finalColorInfo = await extractColorInfo(rootNode)
+  const finalBorderInfo = await extractBorderInfo(rootNode)
   return {
     results: allResults,
-    finalIssues: runLint(finalColorInfo),
+    finalIssues: runLint(finalColorInfo, finalBorderInfo),
     iterationCount,
   }
 }
