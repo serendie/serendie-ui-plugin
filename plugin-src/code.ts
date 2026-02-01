@@ -1,13 +1,10 @@
 import extractColorInfo from './lint/extractors/extractColorInfo'
-import { Issue } from '../shared-src/models/Rules'
-import validateColorPairing from './lint/validators/validateColorPairing'
-import validateAssignFrameVariable from './lint/validators/validateAssignFrameVariable'
-import validateAssignTextVariable from './lint/validators/validateAssignTextVariable'
+import { runLint } from './lint/validators/runLint'
 import getImage, { canGetImage } from '../shared-src/utils/getImage'
 import buildNodeStructure from './utils/nodes/buildNodeStructure'
-import { NodeStructure } from '../shared-src/models/PluginMessage'
+import { LintResult } from '../shared-src/models/PluginMessage'
 import { applyComponents } from './utils/components/applyComponent'
-import { applyTokenFixes } from './lint/fixes/applyTokenFix'
+import { applyTokenFixRecursive } from './lint/fixes/applyTokenFixRecursive'
 
 figma.showUI(__html__, {
   width: 360,
@@ -77,23 +74,10 @@ figma.ui.onmessage = async msg => {
     }
 
     try {
-      const results: Array<{
-        name: string
-        id: string
-        issues: Issue[]
-        totalNodes: number
-        structure: NodeStructure
-      }> = []
+      const results: LintResult[] = []
       for (const selection of selections) {
         const colorInfoList = await extractColorInfo(selection)
-        const pairingResult = validateColorPairing(colorInfoList)
-        const textColorResult = validateAssignTextVariable(colorInfoList)
-        const frameColorResult = validateAssignFrameVariable(colorInfoList)
-        const issues: Issue[] = [
-          ...pairingResult.issues,
-          ...textColorResult.issues,
-          ...frameColorResult.issues,
-        ]
+        const issues = runLint(colorInfoList)
 
         const structure = await buildNodeStructure(selection)
 
@@ -217,25 +201,30 @@ figma.ui.onmessage = async msg => {
   }
   if (msg.type === 'apply-tokens') {
     try {
-      const results = await applyTokenFixes(msg.items)
-      const successCount = results.filter(r => r.status === 'success').length
-      const failedCount = results.filter(r => r.status === 'failed').length
+      const rootNode = await figma.getNodeByIdAsync(msg.rootNodeId)
+      if (!rootNode || !('type' in rootNode)) {
+        figma.notify('対象のノードが見つかりませんでした。', { error: true })
+        return
+      }
 
+      const { results, finalIssues, iterationCount } =
+        await applyTokenFixRecursive(rootNode as SceneNode, msg.items)
+
+      const successCount = results.length
       const messages: string[] = []
-      if (successCount > 0) {
-        messages.push(`${successCount}個修正`)
-      }
-      if (messages.length > 0) {
-        figma.notify(messages.join('、'))
-      }
-      if (failedCount > 0) {
-        figma.notify(`${failedCount}個の修正に失敗しました`, { error: true })
-      }
+      if (successCount > 0) messages.push(`${successCount}個修正`)
+      if (iterationCount > 1) messages.push(`${iterationCount}回の反復`)
+      const remainingCount = finalIssues.filter(
+        i => i.source === 'design-token'
+      ).length
+      if (remainingCount > 0) messages.push(`${remainingCount}個の未解決あり`)
+      if (messages.length > 0) figma.notify(messages.join('、'))
 
       figma.ui.postMessage({
         type: 'apply-tokens-result',
         rootNodeId: msg.rootNodeId,
         results,
+        finalIssues,
       })
     } catch (error) {
       figma.notify(

@@ -89,6 +89,7 @@ export type ApplyTokensResultMessage = {
   type: 'apply-tokens-result'
   rootNodeId: string
   results: ApplyTokenResult[]
+  finalIssues: Issue[] // 再帰修正後の最終リント結果
 }
 
 // Plugin → UI

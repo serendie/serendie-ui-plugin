@@ -73,32 +73,51 @@ export function useLintResults({
             .filter(r => r.status === 'success')
             .map(r => [r.nodeId, r])
         )
+
         setResults(prev =>
           prev.map(result => {
             if (result.id !== message.rootNodeId) return result
-            const updatedIssues = result.issues.map(issue => {
-              if (issue.source !== 'design-token') return issue
-              const applied = appliedResultMap.get(issue.nodeId)
-              if (!applied) return issue
-              // 同一nodeIdのdesign-token issueをすべてresolvedに
-              const baseMessage =
-                applied.isFallback && applied.appliedRole
-                  ? `近似色の「${applied.appliedRole}」を適用`
-                  : applied.appliedRole
-                    ? `${applied.appliedRole}を適用しました`
-                    : '修正しました'
-              const details =
-                applied.isFallback && applied.originalColorHex
-                  ? `元の色: ${applied.originalColorHex}`
-                  : null
-              return {
-                ...issue,
-                severity: 'resolved' as const,
-                message: baseMessage,
-                messageDetails: details,
-              }
-            })
-            return { ...result, issues: updatedIssues }
+
+            const componentIssues = result.issues.filter(
+              i => i.source === 'component'
+            )
+
+            // finalIssuesに残っているdesign-token issue
+            const newTokenIssues = message.finalIssues.filter(
+              i => i.source === 'design-token'
+            )
+
+            // 修正済みだがfinalIssuesに残っていないノード → resolved
+            const finalNodeIds = new Set(newTokenIssues.map(i => i.nodeId))
+            const resolvedIssues = result.issues
+              .filter(
+                i =>
+                  i.source === 'design-token' &&
+                  appliedResultMap.has(i.nodeId) &&
+                  !finalNodeIds.has(i.nodeId)
+              )
+              .map(issue => {
+                const applied = appliedResultMap.get(issue.nodeId)!
+                return {
+                  ...issue,
+                  severity: 'resolved' as const,
+                  message:
+                    applied.isFallback && applied.appliedRole
+                      ? `近似色の「${applied.appliedRole}」を適用`
+                      : applied.appliedRole
+                        ? `${applied.appliedRole}を適用しました`
+                        : '修正しました',
+                  messageDetails:
+                    applied.isFallback && applied.originalColorHex
+                      ? `元の色: ${applied.originalColorHex}`
+                      : null,
+                }
+              })
+
+            return {
+              ...result,
+              issues: [...componentIssues, ...resolvedIssues, ...newTokenIssues],
+            }
           })
         )
       }
