@@ -142,21 +142,25 @@ export async function applyComponents(
 
         // Auto Layout内の場合、レイアウト設定を継承
         if ('layoutMode' in parent && parent.layoutMode !== 'NONE') {
-          // 元のノードのレイアウト設定を継承
-          if ('layoutPositioning' in sceneNode) {
-            instance.layoutPositioning = sceneNode.layoutPositioning
-          }
-          if (
-            'layoutSizingHorizontal' in sceneNode &&
-            'layoutSizingHorizontal' in instance
-          ) {
-            instance.layoutSizingHorizontal = sceneNode.layoutSizingHorizontal
-          }
-          if (
-            'layoutSizingVertical' in sceneNode &&
-            'layoutSizingVertical' in instance
-          ) {
-            instance.layoutSizingVertical = sceneNode.layoutSizingVertical
+          try {
+            if ('layoutPositioning' in sceneNode) {
+              instance.layoutPositioning = sceneNode.layoutPositioning
+            }
+            if (
+              'layoutSizingHorizontal' in sceneNode &&
+              'layoutSizingHorizontal' in instance
+            ) {
+              instance.layoutSizingHorizontal =
+                sceneNode.layoutSizingHorizontal
+            }
+            if (
+              'layoutSizingVertical' in sceneNode &&
+              'layoutSizingVertical' in instance
+            ) {
+              instance.layoutSizingVertical = sceneNode.layoutSizingVertical
+            }
+          } catch {
+            // HUGなど、コンポーネントの構造上設定できない値は無視
           }
         }
 
