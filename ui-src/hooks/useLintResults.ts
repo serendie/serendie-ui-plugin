@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react'
 import { Result } from '../models/Result'
 import { postPluginMessage } from './usePluginMessage'
 import {
+  ApplyBorderTokenItem,
   ApplyComponentItem,
   ApplyTokenItem,
   PluginMessage,
@@ -14,6 +15,12 @@ import {
 } from '../../shared-src/models/Rules'
 import { useApiKey } from './useApiKey'
 import { useComponentValidation } from './useComponentValidation'
+
+const BORDER_ISSUE_MESSAGES = ['線色', '線幅', '角丸']
+
+function isBorderIssue(issue: DesignTokenIssue): boolean {
+  return BORDER_ISSUE_MESSAGES.some((m) => issue.message.includes(m))
+}
 
 export function useLintResults({
   selections,
@@ -142,6 +149,53 @@ export function useLintResults({
           })
         )
       }
+      if (message.type === 'apply-border-tokens-result') {
+        setApplyingTokenNodeIds(prev => {
+          const next = new Set(prev)
+          next.delete(message.rootNodeId)
+          return next
+        })
+        setImageRefreshKey(k => k + 1)
+        const appliedNodeIds = new Set(
+          message.results
+            .filter(r => r.status === 'success')
+            .map(r => r.nodeId)
+        )
+
+        setResults(prev =>
+          prev.map(result => {
+            if (result.id !== message.rootNodeId) return result
+
+            const componentIssues = result.issues.filter(
+              i => i.source === 'component'
+            )
+
+            const newTokenIssues = message.finalIssues.filter(
+              i => i.source === 'design-token'
+            )
+
+            const finalNodeIds = new Set(newTokenIssues.map(i => i.nodeId))
+            const resolvedIssues = result.issues
+              .filter(
+                i =>
+                  i.source === 'design-token' &&
+                  appliedNodeIds.has(i.nodeId) &&
+                  !finalNodeIds.has(i.nodeId)
+              )
+              .map(issue => ({
+                ...issue,
+                severity: 'resolved' as const,
+                message: '修正しました',
+                messageDetails: null,
+              }))
+
+            return {
+              ...result,
+              issues: [...componentIssues, ...resolvedIssues, ...newTokenIssues],
+            }
+          })
+        )
+      }
       if (
         message.type === 'lint-result' &&
         message.source === 'component-validation'
@@ -255,32 +309,66 @@ export function useLintResults({
       const result = results.find(r => r.id === rootNodeId)
       if (!result) return
 
-      // 全design-token issue（resolved除く）を収集（同一nodeId重複排除）
-      const seen = new Set<string>()
-      const items: ApplyTokenItem[] = []
       const tokenIssues = result.issues.filter(
         (issue): issue is DesignTokenIssue =>
           issue.source === 'design-token' && issue.severity !== 'resolved'
       )
-      for (const issue of tokenIssues) {
-        if (seen.has(issue.nodeId)) continue
-        seen.add(issue.nodeId)
-        const targetProperty =
-          issue.nodeType === 'TEXT' ? 'textColor' : 'backgroundColor'
-        const suggestion =
-          issue.suggestion &&
-          issue.suggestion.targetProperty === targetProperty
-            ? issue.suggestion
-            : undefined
-        items.push({
-          nodeId: issue.nodeId,
-          ...(suggestion && { suggestion }),
-          targetProperty,
-        })
+
+      // カラー系issueとボーダー系issueを分離
+      const colorIssues = tokenIssues.filter(issue => !isBorderIssue(issue))
+      const borderIssues = tokenIssues.filter(issue => isBorderIssue(issue))
+
+      let hasSentAny = false
+
+      // カラー系issue → apply-tokens
+      if (colorIssues.length > 0) {
+        const seen = new Set<string>()
+        const items: ApplyTokenItem[] = []
+        for (const issue of colorIssues) {
+          if (seen.has(issue.nodeId)) continue
+          seen.add(issue.nodeId)
+          const targetProperty =
+            issue.nodeType === 'TEXT' ? 'textColor' : 'backgroundColor'
+          const suggestion =
+            issue.suggestion &&
+            issue.suggestion.targetProperty === targetProperty
+              ? issue.suggestion
+              : undefined
+          items.push({
+            nodeId: issue.nodeId,
+            ...(suggestion && { suggestion }),
+            targetProperty,
+          })
+        }
+        if (items.length > 0) {
+          postPluginMessage({ type: 'apply-tokens', rootNodeId, items })
+          hasSentAny = true
+        }
       }
-      if (items.length > 0) {
+
+      // ボーダー系issue → apply-border-tokens
+      if (borderIssues.length > 0) {
+        const borderItems: ApplyBorderTokenItem[] = borderIssues.map(issue => {
+          let targetProperty: ApplyBorderTokenItem['targetProperty']
+          if (issue.message.includes('線色')) {
+            targetProperty = 'strokeColor'
+          } else if (issue.message.includes('線幅')) {
+            targetProperty = 'strokeWeight'
+          } else {
+            targetProperty = 'cornerRadius'
+          }
+          return { nodeId: issue.nodeId, targetProperty }
+        })
+        postPluginMessage({
+          type: 'apply-border-tokens',
+          rootNodeId,
+          items: borderItems,
+        })
+        hasSentAny = true
+      }
+
+      if (hasSentAny) {
         setApplyingTokenNodeIds(prev => new Set(prev).add(rootNodeId))
-        postPluginMessage({ type: 'apply-tokens', rootNodeId, items })
       }
     },
     [results]
