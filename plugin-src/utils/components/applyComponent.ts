@@ -1,5 +1,5 @@
 import {
-  ApplyComponentItem,
+  ComponentToFix,
   ApplyComponentResult,
 } from '../../../shared-src/models/PluginMessage'
 import { ComponentKeysMap } from '../../../shared-src/models/ComponentKeys'
@@ -16,7 +16,7 @@ const componentKeysMap = componentKeys as ComponentKeysMap
  */
 export async function applyComponents(
   rootNodeId: string,
-  items: ApplyComponentItem[]
+  items: ComponentToFix[]
 ): Promise<{
   results: ApplyComponentResult[]
   detached: number
@@ -150,8 +150,7 @@ export async function applyComponents(
               'layoutSizingHorizontal' in sceneNode &&
               'layoutSizingHorizontal' in instance
             ) {
-              instance.layoutSizingHorizontal =
-                sceneNode.layoutSizingHorizontal
+              instance.layoutSizingHorizontal = sceneNode.layoutSizingHorizontal
             }
             if (
               'layoutSizingVertical' in sceneNode &&

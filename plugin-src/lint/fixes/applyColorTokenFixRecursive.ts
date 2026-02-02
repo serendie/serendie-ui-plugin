@@ -1,5 +1,5 @@
 import {
-  ApplyTokenItem,
+  ColorTokenToFix,
   ApplyTokenResult,
 } from '../../../shared-src/models/PluginMessage'
 import { DesignTokenIssue, Issue } from '../../../shared-src/models/Rules'
@@ -10,11 +10,9 @@ import { applyColorTokenFixes } from './applyColorTokenFix'
 
 const MAX_ITERATIONS = 5
 
-function buildItemsFromIssues(
-  issues: DesignTokenIssue[]
-): ApplyTokenItem[] {
+function buildItemsFromIssues(issues: DesignTokenIssue[]): ColorTokenToFix[] {
   const seen = new Set<string>()
-  const items: ApplyTokenItem[] = []
+  const items: ColorTokenToFix[] = []
   for (const issue of issues) {
     if (seen.has(issue.nodeId)) continue
     seen.add(issue.nodeId)
@@ -23,8 +21,7 @@ function buildItemsFromIssues(
     // suggestionのtargetPropertyとノードのtargetPropertyが一致しない場合は
     // suggestionを無視してフォールバック候補を使う
     const suggestion =
-      issue.suggestion &&
-      issue.suggestion.targetProperty === targetProperty
+      issue.suggestion && issue.suggestion.targetProperty === targetProperty
         ? issue.suggestion
         : undefined
     items.push({
@@ -38,7 +35,7 @@ function buildItemsFromIssues(
 
 export async function applyColorTokenFixRecursive(
   rootNode: SceneNode,
-  initialItems: ApplyTokenItem[]
+  initialItems: ColorTokenToFix[]
 ): Promise<{
   results: ApplyTokenResult[]
   finalIssues: Issue[]

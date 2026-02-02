@@ -227,16 +227,14 @@ figma.ui.onmessage = async msg => {
       if (messages.length > 0) figma.notify(messages.join('、'))
 
       figma.ui.postMessage({
-        type: 'apply-tokens-result',
+        type: 'apply-color-tokens-result',
         rootNodeId: msg.rootNodeId,
         results,
         finalIssues,
       })
     } catch (error) {
       figma.notify(
-        error instanceof Error
-          ? error.message
-          : 'トークンの修正に失敗しました',
+        error instanceof Error ? error.message : 'トークンの修正に失敗しました',
         { error: true }
       )
     }
@@ -251,17 +249,13 @@ figma.ui.onmessage = async msg => {
 
       const results = await applyBorderTokenFixes(msg.items)
 
-      const successCount = results.filter(
-        (r) => r.status === 'success'
-      ).length
+      const successCount = results.filter(r => r.status === 'success').length
       if (successCount > 0) {
         figma.notify(`ボーダートークン: ${successCount}個修正`)
       }
 
       const finalColorInfo = await extractColorInfo(rootNode as SceneNode)
-      const finalBorderInfo = await extractBorderInfo(
-        rootNode as SceneNode
-      )
+      const finalBorderInfo = await extractBorderInfo(rootNode as SceneNode)
       const finalIssues = runLint(finalColorInfo, finalBorderInfo)
 
       figma.ui.postMessage({
