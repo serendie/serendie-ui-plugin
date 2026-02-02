@@ -6,6 +6,7 @@ import buildNodeStructure from './utils/nodes/buildNodeStructure'
 import { LintResult } from '../shared-src/models/PluginMessage'
 import { applyComponents } from './utils/components/applyComponent'
 import { applyTokenFixRecursive } from './lint/fixes/applyTokenFixRecursive'
+import { applyBorderTokenFixes } from './lint/fixes/applyBorderTokenFix'
 
 figma.showUI(__html__, {
   width: 360,
@@ -236,6 +237,44 @@ figma.ui.onmessage = async msg => {
         error instanceof Error
           ? error.message
           : 'トークンの修正に失敗しました',
+        { error: true }
+      )
+    }
+  }
+  if (msg.type === 'apply-border-tokens') {
+    try {
+      const rootNode = await figma.getNodeByIdAsync(msg.rootNodeId)
+      if (!rootNode || !('type' in rootNode)) {
+        figma.notify('対象のノードが見つかりませんでした。', { error: true })
+        return
+      }
+
+      const results = await applyBorderTokenFixes(msg.items)
+
+      const successCount = results.filter(
+        (r) => r.status === 'success'
+      ).length
+      if (successCount > 0) {
+        figma.notify(`ボーダートークン: ${successCount}個修正`)
+      }
+
+      const finalColorInfo = await extractColorInfo(rootNode as SceneNode)
+      const finalBorderInfo = await extractBorderInfo(
+        rootNode as SceneNode
+      )
+      const finalIssues = runLint(finalColorInfo, finalBorderInfo)
+
+      figma.ui.postMessage({
+        type: 'apply-border-tokens-result',
+        rootNodeId: msg.rootNodeId,
+        results,
+        finalIssues,
+      })
+    } catch (error) {
+      figma.notify(
+        error instanceof Error
+          ? error.message
+          : 'ボーダートークンの修正に失敗しました',
         { error: true }
       )
     }

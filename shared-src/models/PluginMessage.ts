@@ -92,6 +92,18 @@ export type ApplyTokensResultMessage = {
   finalIssues: Issue[] // 再帰修正後の最終リント結果
 }
 
+export type ApplyBorderTokenItem = {
+  nodeId: string
+  targetProperty: 'strokeColor' | 'strokeWeight' | 'cornerRadius'
+}
+
+export type ApplyBorderTokensResultMessage = {
+  type: 'apply-border-tokens-result'
+  rootNodeId: string
+  results: ApplyTokenResult[]
+  finalIssues: Issue[]
+}
+
 // Plugin → UI
 export type PluginToUIMessage =
   | LintMessage
@@ -100,6 +112,7 @@ export type PluginToUIMessage =
   | ErrorMessage
   | ApplyComponentsResultMessage
   | ApplyTokensResultMessage
+  | ApplyBorderTokensResultMessage
 
 // コンポーネント適用アイテム
 export type ApplyComponentItem = {
@@ -130,6 +143,11 @@ export type UIToPluginMessage =
       type: 'apply-tokens'
       rootNodeId: string
       items: ApplyTokenItem[]
+    }
+  | {
+      type: 'apply-border-tokens'
+      rootNodeId: string
+      items: ApplyBorderTokenItem[]
     }
 
 // 全メッセージ型
