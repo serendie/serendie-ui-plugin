@@ -17,6 +17,7 @@ export default function validateAssignStrokeColorVariable(
         nodeName: node.nodeName,
         nodeType: node.nodeType,
         source: 'design-token',
+        targetProperty: 'strokeColor',
         ...ruleResult,
       })
     }

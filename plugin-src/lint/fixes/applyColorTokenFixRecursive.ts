@@ -38,7 +38,7 @@ export async function applyColorTokenFixRecursive(
   initialItems: ColorTokenToFix[]
 ): Promise<{
   results: ApplyTokenResult[]
-  finalIssues: Issue[]
+  postFixIssues: Issue[]
   iterationCount: number
 }> {
   const allResults: ApplyTokenResult[] = []
@@ -66,7 +66,7 @@ export async function applyColorTokenFixRecursive(
   const finalBorderInfo = await extractBorderInfo(rootNode)
   return {
     results: allResults,
-    finalIssues: runLint(finalColorInfo, finalBorderInfo),
+    postFixIssues: runLint(finalColorInfo, finalBorderInfo),
     iterationCount,
   }
 }

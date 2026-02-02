@@ -1,4 +1,9 @@
-import { Issue, ComponentSuggestion, DesignTokenSuggestion } from './Rules'
+import {
+  Issue,
+  ComponentSuggestion,
+  DesignTokenSuggestion,
+  DesignTokenTargetProperty,
+} from './Rules'
 
 // インスタンスのコンポーネントプロパティ
 export type ComponentProperty = {
@@ -87,6 +92,7 @@ export type ApplyTokenResult = {
   nodeId: string
   status: 'success' | 'failed'
   appliedRole?: string | string[]
+  targetProperty?: DesignTokenTargetProperty // 修正対象プロパティ
   isFallback?: boolean // フォールバック候補からの適用かどうか
   originalColorHex?: string // 適用前の元の色（hex）
 }
@@ -106,13 +112,13 @@ export type PluginToUIMessage =
       type: 'apply-color-tokens-result'
       rootNodeId: string
       results: ApplyTokenResult[]
-      finalIssues: Issue[] // 再帰修正後の最終リント結果
+      postFixIssues: Issue[] // 修正後の再リント結果
     }
   | {
       type: 'apply-border-tokens-result'
       rootNodeId: string
       results: ApplyTokenResult[]
-      finalIssues: Issue[]
+      postFixIssues: Issue[]
     }
 
 // UI → Plugin

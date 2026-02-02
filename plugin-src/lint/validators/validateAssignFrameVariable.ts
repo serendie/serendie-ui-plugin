@@ -22,6 +22,7 @@ export default function validateAssignFrameVariable(nodes: ColorInfo[]): {
         nodeName: node.nodeName,
         nodeType: node.nodeType,
         source: 'design-token',
+        targetProperty: 'backgroundColor',
         ...ruleResult,
       })
     }

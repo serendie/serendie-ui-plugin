@@ -165,8 +165,16 @@ export type RuleResult = IssueDetail & {
   suggestion?: DesignTokenSuggestion
 }
 
+export type DesignTokenTargetProperty =
+  | 'textColor'
+  | 'backgroundColor'
+  | 'strokeColor'
+  | 'strokeWeight'
+  | 'cornerRadius'
+
 export type DesignTokenIssue = BaseIssue & {
   source: 'design-token'
+  targetProperty: DesignTokenTargetProperty
   suggestion?: DesignTokenSuggestion
 }
 
