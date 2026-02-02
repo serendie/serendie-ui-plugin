@@ -1,8 +1,11 @@
 import {
-  ApplyBorderTokenItem,
+  BorderTokenToFix,
   ApplyTokenResult,
 } from '../../../shared-src/models/PluginMessage'
-import { getReverseVariableMap, ReverseVariableMap } from '../extractors/getVariableMap'
+import {
+  getReverseVariableMap,
+  ReverseVariableMap,
+} from '../extractors/getVariableMap'
 import { getColorDistance } from '../core/getColorDistance'
 
 type DimensionCandidate = {
@@ -30,8 +33,7 @@ async function resolveDimensionCandidates(
     if (!name.includes(prefix)) continue
 
     try {
-      const variable =
-        await figma.variables.importVariableByKeyAsync(key)
+      const variable = await figma.variables.importVariableByKeyAsync(key)
       const result = variable.resolveForConsumer(node)
       if (result.resolvedType !== 'FLOAT') continue
       candidates.push({
@@ -76,8 +78,7 @@ export function shouldUseFull(
 
 function isFullRadiusCandidate(candidate: DimensionCandidate): boolean {
   return (
-    candidate.value >= FULL_RADIUS_THRESHOLD &&
-    candidate.name.includes('full')
+    candidate.value >= FULL_RADIUS_THRESHOLD && candidate.name.includes('full')
   )
 }
 
@@ -120,20 +121,20 @@ async function fixStrokeWeight(
         },
       ]
 
-      let appliedName = ''
+      const appliedNames: string[] = []
       for (const { field, value } of fields) {
         if (value === 0) continue
         const best = findClosestCandidate(value, candidates)
         if (best) {
           node.setBoundVariable(field, best.variable)
-          appliedName = appliedName || best.name
+          appliedNames.push(best.name)
         }
       }
 
       return {
         nodeId: node.id,
-        status: appliedName ? 'success' : 'failed',
-        ...(appliedName && { appliedRole: appliedName }),
+        status: appliedNames.length > 0 ? 'success' : 'failed',
+        ...(appliedNames.length > 0 && { appliedRole: appliedNames }),
       }
     } else {
       // 統一ストローク
@@ -170,12 +171,9 @@ async function fixCornerRadius(
     return { nodeId: node.id, status: 'failed' }
   }
 
-  const nodeHeight =
-    'height' in node ? (node as { height: number }).height : 0
+  const nodeHeight = 'height' in node ? (node as { height: number }).height : 0
   const fullCandidate = candidates.find(isFullRadiusCandidate)
-  const normalCandidates = candidates.filter(
-    (c) => !isFullRadiusCandidate(c)
-  )
+  const normalCandidates = candidates.filter(c => !isFullRadiusCandidate(c))
 
   const cornerNode = node as CornerMixin & RectangleCornerMixin
 
@@ -201,26 +199,26 @@ async function fixCornerRadius(
         },
       ]
 
-      let appliedName = ''
+      const appliedNames: string[] = []
       for (const { field, value } of fields) {
         if (value === 0) continue
         const useFullForCorner = shouldUseFull(value, nodeHeight)
         if (useFullForCorner && fullCandidate) {
           node.setBoundVariable(field, fullCandidate.variable)
-          appliedName = appliedName || fullCandidate.name
+          appliedNames.push(fullCandidate.name)
         } else {
           const best = findClosestCandidate(value, normalCandidates)
           if (best) {
             node.setBoundVariable(field, best.variable)
-            appliedName = appliedName || best.name
+            appliedNames.push(best.name)
           }
         }
       }
 
       return {
         nodeId: node.id,
-        status: appliedName ? 'success' : 'failed',
-        ...(appliedName && { appliedRole: appliedName }),
+        status: appliedNames.length > 0 ? 'success' : 'failed',
+        ...(appliedNames.length > 0 && { appliedRole: appliedNames }),
       }
     } else {
       // 統一角丸
@@ -276,7 +274,7 @@ async function resolveColorCandidates(
 
   const strokes = node.strokes as Paint[]
   const solidStroke = strokes.find(
-    (s) => s.type === 'SOLID' && s.visible !== false
+    s => s.type === 'SOLID' && s.visible !== false
   ) as SolidPaint | undefined
   if (!solidStroke) return []
 
@@ -288,8 +286,7 @@ async function resolveColorCandidates(
     if (name.includes('dimension/')) continue
 
     try {
-      const variable =
-        await figma.variables.importVariableByKeyAsync(key)
+      const variable = await figma.variables.importVariableByKeyAsync(key)
       const result = variable.resolveForConsumer(node)
       if (result.resolvedType !== 'COLOR') continue
       const resolvedColor = result.value as RGB
@@ -332,7 +329,7 @@ async function fixStrokeColor(
   try {
     const strokes = [...(node.strokes as Paint[])]
     const strokeIndex = strokes.findIndex(
-      (s) => s.type === 'SOLID' && s.visible !== false
+      s => s.type === 'SOLID' && s.visible !== false
     )
     if (strokeIndex === -1) {
       return { nodeId: node.id, status: 'failed' }
@@ -357,7 +354,7 @@ async function fixStrokeColor(
 }
 
 export async function applyBorderTokenFixes(
-  items: ApplyBorderTokenItem[]
+  items: BorderTokenToFix[]
 ): Promise<ApplyTokenResult[]> {
   const reverseMap = await getReverseVariableMap()
   const results: ApplyTokenResult[] = []

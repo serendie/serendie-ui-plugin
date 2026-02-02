@@ -61,47 +61,34 @@ export type ImageMessage =
 // エラーメッセージ
 export type ErrorMessage = { type: 'error'; message: string }
 
-// コンポーネント適用結果メッセージ
-export type ApplyComponentsResultMessage = {
-  type: 'apply-components-result'
-  rootNodeId: string
-  results: ApplyComponentResult[]
-}
+// 検証メッセージ
+export type ComponentToFix = {
+  nodeId: string
+} & ComponentSuggestion
 
-// トークン修正アイテム
-export type ApplyTokenItem = {
+export type ColorTokenToFix = {
   nodeId: string
   suggestion?: DesignTokenSuggestion // あれば使う（確実な候補）
   targetProperty: 'textColor' | 'backgroundColor' // フォールバック判定に使用
 }
 
-// トークン修正結果（個別ノード）
-export type ApplyTokenResult = {
-  nodeId: string
-  status: 'success' | 'failed'
-  appliedRole?: string
-  isFallback?: boolean // フォールバック候補からの適用かどうか
-  originalColorHex?: string // 適用前の元の色（hex）
-}
-
-// トークン修正結果メッセージ
-export type ApplyTokensResultMessage = {
-  type: 'apply-tokens-result'
-  rootNodeId: string
-  results: ApplyTokenResult[]
-  finalIssues: Issue[] // 再帰修正後の最終リント結果
-}
-
-export type ApplyBorderTokenItem = {
+export type BorderTokenToFix = {
   nodeId: string
   targetProperty: 'strokeColor' | 'strokeWeight' | 'cornerRadius'
 }
 
-export type ApplyBorderTokensResultMessage = {
-  type: 'apply-border-tokens-result'
-  rootNodeId: string
-  results: ApplyTokenResult[]
-  finalIssues: Issue[]
+export type ApplyComponentResult = {
+  oldNodeId: string
+  newNodeId: string
+  status: 'success' | 'failed' | 'skipped'
+}
+
+export type ApplyTokenResult = {
+  nodeId: string
+  status: 'success' | 'failed'
+  appliedRole?: string | string[]
+  isFallback?: boolean // フォールバック候補からの適用かどうか
+  originalColorHex?: string // 適用前の元の色（hex）
 }
 
 // Plugin → UI
@@ -110,21 +97,23 @@ export type PluginToUIMessage =
   | SelectionMessage
   | ImageMessage
   | ErrorMessage
-  | ApplyComponentsResultMessage
-  | ApplyTokensResultMessage
-  | ApplyBorderTokensResultMessage
-
-// コンポーネント適用アイテム
-export type ApplyComponentItem = {
-  nodeId: string
-} & ComponentSuggestion
-
-// コンポーネント適用結果（個別ノード）
-export type ApplyComponentResult = {
-  oldNodeId: string
-  newNodeId: string
-  status: 'success' | 'failed' | 'skipped'
-}
+  | {
+      type: 'apply-components-result'
+      rootNodeId: string
+      results: ApplyComponentResult[]
+    }
+  | {
+      type: 'apply-color-tokens-result'
+      rootNodeId: string
+      results: ApplyTokenResult[]
+      finalIssues: Issue[] // 再帰修正後の最終リント結果
+    }
+  | {
+      type: 'apply-border-tokens-result'
+      rootNodeId: string
+      results: ApplyTokenResult[]
+      finalIssues: Issue[]
+    }
 
 // UI → Plugin
 export type UIToPluginMessage =
@@ -136,18 +125,18 @@ export type UIToPluginMessage =
   | {
       type: 'apply-components'
       rootNodeId: string // コピー元のルートノードID
-      items: ApplyComponentItem[]
+      items: ComponentToFix[]
     }
   | { type: 'select-node'; nodeId: string }
   | {
       type: 'apply-tokens'
       rootNodeId: string
-      items: ApplyTokenItem[]
+      items: ColorTokenToFix[]
     }
   | {
       type: 'apply-border-tokens'
       rootNodeId: string
-      items: ApplyBorderTokenItem[]
+      items: BorderTokenToFix[]
     }
 
 // 全メッセージ型

@@ -2,9 +2,10 @@ import { useState, useCallback } from 'react'
 import { Result } from '../models/Result'
 import { postPluginMessage } from './usePluginMessage'
 import {
-  ApplyBorderTokenItem,
-  ApplyComponentItem,
-  ApplyTokenItem,
+  BorderTokenToFix,
+  ComponentToFix,
+  ColorTokenToFix,
+  ApplyTokenResult,
   PluginMessage,
   SelectionInfo,
 } from '../../shared-src/models/PluginMessage'
@@ -18,8 +19,60 @@ import { useComponentValidation } from './useComponentValidation'
 
 const BORDER_ISSUE_MESSAGES = ['線色', '線幅', '角丸']
 
+function extractRoleName(fullPath: string): string {
+  return fullPath.split('/').pop() ?? fullPath
+}
+
+function formatBorderResolvedMessage(
+  issueMessage: string,
+  appliedResults: ApplyTokenResult[]
+): string {
+  // issue のメッセージからプロパティ種別を判定し、対応する result を選択
+  const label = issueMessage.includes('線幅')
+    ? '線幅'
+    : issueMessage.includes('角丸')
+      ? '角丸'
+      : '線色'
+
+  const pathKeyword = issueMessage.includes('線幅')
+    ? 'border/'
+    : issueMessage.includes('角丸')
+      ? 'radius/'
+      : ''
+
+  const matched = pathKeyword
+    ? appliedResults.find(r => {
+        const roles = Array.isArray(r.appliedRole)
+          ? r.appliedRole
+          : r.appliedRole
+            ? [r.appliedRole]
+            : []
+        return roles.some(role => role.includes(pathKeyword))
+      })
+    : appliedResults.find(r => {
+        const roles = Array.isArray(r.appliedRole)
+          ? r.appliedRole
+          : r.appliedRole
+            ? [r.appliedRole]
+            : []
+        return roles.some(
+          role => !role.includes('border/') && !role.includes('radius/')
+        )
+      })
+
+  if (!matched?.appliedRole) return '修正しました'
+
+  const roles = Array.isArray(matched.appliedRole)
+    ? matched.appliedRole
+    : [matched.appliedRole]
+
+  const uniqueRoles = [...new Set(roles.map(extractRoleName))]
+  const rolesText = uniqueRoles.map(r => `「${r}」`).join('')
+  return `${label}を${rolesText}で修正しました`
+}
+
 function isBorderIssue(issue: DesignTokenIssue): boolean {
-  return BORDER_ISSUE_MESSAGES.some((m) => issue.message.includes(m))
+  return BORDER_ISSUE_MESSAGES.some(m => issue.message.includes(m))
 }
 
 export function useLintResults({
@@ -89,7 +142,7 @@ export function useLintResults({
           })
         }
       }
-      if (message.type === 'apply-tokens-result') {
+      if (message.type === 'apply-color-tokens-result') {
         setApplyingTokenNodeIds(prev => {
           const next = new Set(prev)
           next.delete(message.rootNodeId)
@@ -144,7 +197,11 @@ export function useLintResults({
 
             return {
               ...result,
-              issues: [...componentIssues, ...resolvedIssues, ...newTokenIssues],
+              issues: [
+                ...componentIssues,
+                ...resolvedIssues,
+                ...newTokenIssues,
+              ],
             }
           })
         )
@@ -156,11 +213,13 @@ export function useLintResults({
           return next
         })
         setImageRefreshKey(k => k + 1)
-        const appliedNodeIds = new Set(
-          message.results
-            .filter(r => r.status === 'success')
-            .map(r => r.nodeId)
-        )
+        const appliedResultMap = new Map<string, ApplyTokenResult[]>()
+        for (const r of message.results) {
+          if (r.status !== 'success') continue
+          const list = appliedResultMap.get(r.nodeId) ?? []
+          list.push(r)
+          appliedResultMap.set(r.nodeId, list)
+        }
 
         setResults(prev =>
           prev.map(result => {
@@ -179,19 +238,26 @@ export function useLintResults({
               .filter(
                 i =>
                   i.source === 'design-token' &&
-                  appliedNodeIds.has(i.nodeId) &&
+                  appliedResultMap.has(i.nodeId) &&
                   !finalNodeIds.has(i.nodeId)
               )
-              .map(issue => ({
-                ...issue,
-                severity: 'resolved' as const,
-                message: '修正しました',
-                messageDetails: null,
-              }))
+              .map(issue => {
+                const results = appliedResultMap.get(issue.nodeId) ?? []
+                return {
+                  ...issue,
+                  severity: 'resolved' as const,
+                  message: formatBorderResolvedMessage(issue.message, results),
+                  messageDetails: null,
+                }
+              })
 
             return {
               ...result,
-              issues: [...componentIssues, ...resolvedIssues, ...newTokenIssues],
+              issues: [
+                ...componentIssues,
+                ...resolvedIssues,
+                ...newTokenIssues,
+              ],
             }
           })
         )
@@ -284,7 +350,7 @@ export function useLintResults({
       const result = results.find(r => r.id === rootNodeId)
       if (!result) return
 
-      const items: ApplyComponentItem[] = []
+      const items: ComponentToFix[] = []
       const componentIssues = result.issues.filter(
         (issue): issue is ComponentIssue =>
           issue.source === 'component' && issue.severity !== 'resolved'
@@ -323,7 +389,7 @@ export function useLintResults({
       // カラー系issue → apply-tokens
       if (colorIssues.length > 0) {
         const seen = new Set<string>()
-        const items: ApplyTokenItem[] = []
+        const items: ColorTokenToFix[] = []
         for (const issue of colorIssues) {
           if (seen.has(issue.nodeId)) continue
           seen.add(issue.nodeId)
@@ -348,8 +414,8 @@ export function useLintResults({
 
       // ボーダー系issue → apply-border-tokens
       if (borderIssues.length > 0) {
-        const borderItems: ApplyBorderTokenItem[] = borderIssues.map(issue => {
-          let targetProperty: ApplyBorderTokenItem['targetProperty']
+        const borderItems: BorderTokenToFix[] = borderIssues.map(issue => {
+          let targetProperty: BorderTokenToFix['targetProperty']
           if (issue.message.includes('線色')) {
             targetProperty = 'strokeColor'
           } else if (issue.message.includes('線幅')) {

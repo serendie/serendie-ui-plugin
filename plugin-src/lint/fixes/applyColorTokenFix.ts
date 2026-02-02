@@ -1,5 +1,5 @@
 import {
-  ApplyTokenItem,
+  ColorTokenToFix,
   ApplyTokenResult,
 } from '../../../shared-src/models/PluginMessage'
 import {
@@ -10,9 +10,7 @@ import { getReverseVariableMap } from '../extractors/getVariableMap'
 import { convertRgbToHex } from '../core/convertRgbToHex'
 import { pickBestVariable } from './pickBestVariable'
 
-function getCurrentFillColor(
-  node: SceneNode
-): { color: RGB } | null {
+function getCurrentFillColor(node: SceneNode): { color: RGB } | null {
   if (!('fills' in node) || !Array.isArray(node.fills)) return null
   const fills = node.fills as Paint[]
   if (fills.length === 0) return null
@@ -43,7 +41,7 @@ function applyVariableToFills(node: SceneNode, variable: Variable) {
 }
 
 export async function applyColorTokenFixes(
-  items: ApplyTokenItem[]
+  items: ColorTokenToFix[]
 ): Promise<ApplyTokenResult[]> {
   const reverseMap = await getReverseVariableMap()
   const results: ApplyTokenResult[] = []
