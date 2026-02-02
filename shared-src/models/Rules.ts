@@ -245,3 +245,19 @@ export const FALLBACK_BACKGROUND_ROLES = [
   'positiveContainerVariant',
   'inversePrimary',
 ]
+
+// フォールバック候補: 線色用（fix時の近似マッチで使用）
+export const FALLBACK_STROKE_ROLES = [
+  'outline',
+  'outlineVariant',
+  'onSurface',
+  'onSurfaceVariant',
+  'inverseOnSurface',
+  'primary',
+  'secondary',
+  'tertiary',
+  'notice',
+  'negative',
+  'positive',
+  'inversePrimary',
+]

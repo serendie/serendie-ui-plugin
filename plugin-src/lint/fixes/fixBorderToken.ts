@@ -6,18 +6,13 @@ import {
   getReverseVariableMap,
   ReverseVariableMap,
 } from '../extractors/getVariableMap'
-import { getColorDistance } from '../core/getColorDistance'
+import { FALLBACK_STROKE_ROLES } from '../../../shared-src/models/Rules'
+import { pickBestStrokeColor } from './pickBestStrokeColor'
 
 type DimensionCandidate = {
   variable: Variable
   name: string
   value: number
-}
-
-type ColorCandidate = {
-  variable: Variable
-  name: string
-  distance: number
 }
 
 const FULL_RADIUS_THRESHOLD = 9000
@@ -268,41 +263,6 @@ async function fixCornerRadius(
   }
 }
 
-async function resolveColorCandidates(
-  reverseMap: ReverseVariableMap,
-  node: SceneNode
-): Promise<ColorCandidate[]> {
-  if (!('strokes' in node) || !Array.isArray(node.strokes)) return []
-
-  const strokes = node.strokes as Paint[]
-  const solidStroke = strokes.find(
-    s => s.type === 'SOLID' && s.visible !== false
-  ) as SolidPaint | undefined
-  if (!solidStroke) return []
-
-  const currentColor = solidStroke.color
-  const candidates: ColorCandidate[] = []
-
-  for (const [name, key] of reverseMap.entries()) {
-    // カラー変数のみ対象（dimension等は除外）
-    if (name.includes('dimension/')) continue
-
-    try {
-      const variable = await figma.variables.importVariableByKeyAsync(key)
-      const result = variable.resolveForConsumer(node)
-      if (result.resolvedType !== 'COLOR') continue
-      const resolvedColor = result.value as RGB
-
-      const distance = getColorDistance(currentColor, resolvedColor)
-      candidates.push({ variable, name, distance })
-    } catch {
-      // スキップ
-    }
-  }
-
-  return candidates
-}
-
 async function fixStrokeColor(
   node: SceneNode,
   reverseMap: ReverseVariableMap
@@ -311,19 +271,11 @@ async function fixStrokeColor(
     return { nodeId: node.id, status: 'failed' }
   }
 
-  const candidates = await resolveColorCandidates(reverseMap, node)
-  if (candidates.length === 0) {
-    return { nodeId: node.id, status: 'failed' }
-  }
-
-  // RGB距離が最小の候補を選択
-  let best: ColorCandidate | null = null
-  for (const candidate of candidates) {
-    if (!best || candidate.distance < best.distance) {
-      best = candidate
-    }
-  }
-
+  const best = await pickBestStrokeColor(
+    node,
+    FALLBACK_STROKE_ROLES,
+    reverseMap
+  )
   if (!best) {
     return { nodeId: node.id, status: 'failed' }
   }
@@ -348,7 +300,7 @@ async function fixStrokeColor(
     return {
       nodeId: node.id,
       status: 'success',
-      appliedRole: best.name,
+      appliedRole: best.role,
     }
   } catch {
     return { nodeId: node.id, status: 'failed' }
