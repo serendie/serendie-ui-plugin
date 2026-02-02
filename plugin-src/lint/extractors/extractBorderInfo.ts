@@ -8,7 +8,7 @@ export type BorderInfo = {
   nodeName: string
   nodeType: string
   strokeColor: string | null
-  strokeWeight: string | null
+  strokeWeight: string | string[] | null
   cornerRadius: string | string[] | null
 }
 
@@ -54,11 +54,21 @@ function extractStrokeColor(
 function extractStrokeWeight(
   node: SceneNode,
   variableMap: VariableMap
-): string | null {
+): string | string[] | null {
+  if (!('strokeWeight' in node)) {
+    return null
+  }
+
+  const sw = (node as MinimalStrokesMixin).strokeWeight
+  if (sw === figma.mixed) {
+    return extractIndividualStrokeWeight(node, variableMap)
+  }
+
   if (!('boundVariables' in node) || !node.boundVariables) {
     return CUSTOM_VALUE
   }
 
+  // Figma は統一ストロークでも boundVariables を個別キーで保持する場合がある
   const bv = node.boundVariables as {
     readonly [field in
       | 'strokeWeight'
@@ -79,6 +89,63 @@ function extractStrokeWeight(
   }
 
   return CUSTOM_VALUE
+}
+
+function extractIndividualStrokeWeight(
+  node: SceneNode,
+  variableMap: VariableMap
+): string[] | null {
+  const sNode = node as IndividualStrokesMixin
+  const hasAnyStroke =
+    sNode.strokeTopWeight > 0 ||
+    sNode.strokeBottomWeight > 0 ||
+    sNode.strokeLeftWeight > 0 ||
+    sNode.strokeRightWeight > 0
+
+  if (!hasAnyStroke) {
+    return null
+  }
+
+  const bv =
+    'boundVariables' in node && node.boundVariables
+      ? (node.boundVariables as {
+          readonly [field in
+            | 'strokeTopWeight'
+            | 'strokeBottomWeight'
+            | 'strokeLeftWeight'
+            | 'strokeRightWeight']?: VariableAlias
+        })
+      : null
+
+  const sides = [
+    { alias: bv?.strokeTopWeight, value: sNode.strokeTopWeight },
+    { alias: bv?.strokeBottomWeight, value: sNode.strokeBottomWeight },
+    { alias: bv?.strokeLeftWeight, value: sNode.strokeLeftWeight },
+    { alias: bv?.strokeRightWeight, value: sNode.strokeRightWeight },
+  ]
+
+  const tokenNames: string[] = []
+  for (const side of sides) {
+    if (side.value === 0) continue
+
+    if (!side.alias) {
+      tokenNames.push(CUSTOM_VALUE)
+      continue
+    }
+
+    const variableId = extractVariableKey(side.alias.id)
+    if (variableId) {
+      const tokenName = variableMap.get(variableId)
+      if (tokenName) {
+        tokenNames.push(tokenName)
+        continue
+      }
+    }
+
+    tokenNames.push(CUSTOM_VALUE)
+  }
+
+  return tokenNames
 }
 
 function extractCornerRadius(

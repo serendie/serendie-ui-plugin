@@ -49,4 +49,43 @@ describe('assignStrokeWidthVariable', () => {
       )
     })
   })
+
+  describe('配列入力（個別ストローク）', () => {
+    it('全辺が有効なSDSトークン → OK', () => {
+      const result = validate([
+        'dimension/border/medium',
+        'dimension/border/thick',
+      ])
+      expect(result).toBeNull()
+    })
+
+    it('一部がCUSTOM_VALUE → warning', () => {
+      const result = validate([
+        'dimension/border/medium',
+        CUSTOM_VALUE,
+      ])
+      expect(result).not.toBeNull()
+      expect(result?.severity).toBe('warning')
+    })
+
+    it('一部が不正なトークン名 → warning', () => {
+      const result = validate([
+        'dimension/border/medium',
+        'spacing/medium',
+      ])
+      expect(result).not.toBeNull()
+      expect(result?.severity).toBe('warning')
+    })
+
+    it('全辺がCUSTOM_VALUE → warning', () => {
+      const result = validate([CUSTOM_VALUE, CUSTOM_VALUE])
+      expect(result).not.toBeNull()
+      expect(result?.severity).toBe('warning')
+    })
+
+    it('空配列 → OK（ストロークなし相当）', () => {
+      const result = validate([])
+      expect(result).toBeNull()
+    })
+  })
 })
