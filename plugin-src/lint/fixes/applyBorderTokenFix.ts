@@ -95,22 +95,61 @@ async function fixStrokeWeight(
     return { nodeId: node.id, status: 'failed' }
   }
 
-  const currentWeight =
-    typeof (node as MinimalStrokesMixin).strokeWeight === 'number'
-      ? ((node as MinimalStrokesMixin).strokeWeight as number)
-      : 1
-
-  const best = findClosestCandidate(currentWeight, candidates)
-  if (!best) {
-    return { nodeId: node.id, status: 'failed' }
-  }
+  const sw = (node as MinimalStrokesMixin).strokeWeight
 
   try {
-    node.setBoundVariable('strokeWeight', best.variable)
-    return {
-      nodeId: node.id,
-      status: 'success',
-      appliedRole: best.name,
+    if (sw === figma.mixed) {
+      // 個別ストローク
+      const sNode = node as IndividualStrokesMixin
+      const fields = [
+        {
+          field: 'strokeTopWeight' as const,
+          value: sNode.strokeTopWeight,
+        },
+        {
+          field: 'strokeBottomWeight' as const,
+          value: sNode.strokeBottomWeight,
+        },
+        {
+          field: 'strokeLeftWeight' as const,
+          value: sNode.strokeLeftWeight,
+        },
+        {
+          field: 'strokeRightWeight' as const,
+          value: sNode.strokeRightWeight,
+        },
+      ]
+
+      let appliedName = ''
+      for (const { field, value } of fields) {
+        if (value === 0) continue
+        const best = findClosestCandidate(value, candidates)
+        if (best) {
+          node.setBoundVariable(field, best.variable)
+          appliedName = appliedName || best.name
+        }
+      }
+
+      return {
+        nodeId: node.id,
+        status: appliedName ? 'success' : 'failed',
+        ...(appliedName && { appliedRole: appliedName }),
+      }
+    } else {
+      // 統一ストローク
+      const currentWeight = typeof sw === 'number' ? sw : 1
+
+      const best = findClosestCandidate(currentWeight, candidates)
+      if (!best) {
+        return { nodeId: node.id, status: 'failed' }
+      }
+
+      node.setBoundVariable('strokeWeight', best.variable)
+      return {
+        nodeId: node.id,
+        status: 'success',
+        appliedRole: best.name,
+      }
     }
   } catch {
     return { nodeId: node.id, status: 'failed' }
