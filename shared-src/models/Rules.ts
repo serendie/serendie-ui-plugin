@@ -7,7 +7,7 @@ export const COLLECTION_NAME_LIST = [
   'dimension-system',
   'typography-system',
 ]
-export const UNEXPECTED = 'Unexpected'
+export const CUSTOM_VALUE = 'CustomValue'
 export const FRAME_TYPES = [
   'FRAME',
   'RECTANGLE',
@@ -133,6 +133,17 @@ export const COLOR_ROLES: string[] = Array.from(
   ])
 )
 
+export const STROKE_WIDTH_ROLES: string[] = ['medium', 'thick', 'extraThick']
+
+export const CORNER_RADIUS_ROLES: string[] = [
+  'extraSmall',
+  'small',
+  'medium',
+  'large',
+  'extraLarge',
+  'full',
+]
+
 export type IssueDetail = {
   severity: 'error' | 'warning' | 'resolved'
   message: string
@@ -172,7 +183,7 @@ export type ComponentIssue = BaseIssue & {
 export type Issue = DesignTokenIssue | ComponentIssue
 
 export function formatRoles(roles: string[] | undefined): string {
-  if (!roles) return UNEXPECTED
+  if (!roles) return '不明'
   if (roles.length === 1) return `「${roles[0]}」`
   if (roles.length === 2) return `「${roles[0]}」または「${roles[1]}」`
   return `${roles.map(role => `「${role}」`).join('')}のいずれか`

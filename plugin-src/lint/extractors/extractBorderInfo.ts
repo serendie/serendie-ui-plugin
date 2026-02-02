@@ -1,4 +1,4 @@
-import { UNEXPECTED, FRAME_TYPES } from '../../../shared-src/models/Rules'
+import { CUSTOM_VALUE, FRAME_TYPES } from '../../../shared-src/models/Rules'
 import extractVariableKey from './extractVariableKey'
 import getVariableMap, { VariableMap } from './getVariableMap'
 import traceVisibility from './traceVisibility'
@@ -9,9 +9,7 @@ export type BorderInfo = {
   nodeType: string
   strokeColor: string | null
   strokeWeight: string | null
-  cornerRadius: string | null
-  hasStroke: boolean
-  hasCornerRadius: boolean
+  cornerRadius: string | string[] | null
 }
 
 const BORDER_TARGET_TYPES = [
@@ -26,16 +24,16 @@ const BORDER_TARGET_TYPES = [
 function extractStrokeColor(
   node: SceneNode,
   variableMap: VariableMap
-): { hasStroke: boolean; strokeColor: string | null } {
+): string | null {
   if (!('strokes' in node) || !Array.isArray(node.strokes)) {
-    return { hasStroke: false, strokeColor: null }
+    return null
   }
   const strokes = node.strokes as Paint[]
   const solidStroke = strokes.find(
     (s) => s.type === 'SOLID' && s.visible !== false
   )
   if (!solidStroke) {
-    return { hasStroke: false, strokeColor: null }
+    return null
   }
 
   if ('boundVariables' in solidStroke && solidStroke.boundVariables?.color) {
@@ -45,12 +43,12 @@ function extractStrokeColor(
     if (variableId) {
       const tokenName = variableMap.get(variableId)
       if (tokenName) {
-        return { hasStroke: true, strokeColor: tokenName }
+        return tokenName
       }
     }
   }
 
-  return { hasStroke: true, strokeColor: UNEXPECTED }
+  return CUSTOM_VALUE
 }
 
 function extractStrokeWeight(
@@ -58,7 +56,7 @@ function extractStrokeWeight(
   variableMap: VariableMap
 ): string | null {
   if (!('boundVariables' in node) || !node.boundVariables) {
-    return UNEXPECTED
+    return CUSTOM_VALUE
   }
 
   const bv = node.boundVariables as {
@@ -69,7 +67,7 @@ function extractStrokeWeight(
 
   const alias = bv.strokeWeight || bv.strokeTopWeight
   if (!alias) {
-    return UNEXPECTED
+    return CUSTOM_VALUE
   }
 
   const variableId = extractVariableKey(alias.id)
@@ -80,15 +78,15 @@ function extractStrokeWeight(
     }
   }
 
-  return UNEXPECTED
+  return CUSTOM_VALUE
 }
 
 function extractCornerRadius(
   node: SceneNode,
   variableMap: VariableMap
-): { hasCornerRadius: boolean; cornerRadius: string | null } {
+): string | string[] | null {
   if (!('cornerRadius' in node)) {
-    return { hasCornerRadius: false, cornerRadius: null }
+    return null
   }
 
   const radius = (node as CornerMixin).cornerRadius
@@ -97,11 +95,11 @@ function extractCornerRadius(
     if (radius === figma.mixed) {
       return extractIndividualCornerRadius(node, variableMap)
     }
-    return { hasCornerRadius: false, cornerRadius: null }
+    return null
   }
 
   if (!('boundVariables' in node) || !node.boundVariables) {
-    return { hasCornerRadius: true, cornerRadius: UNEXPECTED }
+    return CUSTOM_VALUE
   }
 
   const bv = node.boundVariables as {
@@ -110,24 +108,24 @@ function extractCornerRadius(
 
   const alias = bv.topLeftRadius
   if (!alias) {
-    return { hasCornerRadius: true, cornerRadius: UNEXPECTED }
+    return CUSTOM_VALUE
   }
 
   const variableId = extractVariableKey(alias.id)
   if (variableId) {
     const tokenName = variableMap.get(variableId)
     if (tokenName) {
-      return { hasCornerRadius: true, cornerRadius: tokenName }
+      return tokenName
     }
   }
 
-  return { hasCornerRadius: true, cornerRadius: UNEXPECTED }
+  return CUSTOM_VALUE
 }
 
 function extractIndividualCornerRadius(
   node: SceneNode,
   variableMap: VariableMap
-): { hasCornerRadius: boolean; cornerRadius: string | null } {
+): string[] | null {
   const rNode = node as RectangleCornerMixin
   const hasAnyRadius =
     rNode.topLeftRadius > 0 ||
@@ -136,53 +134,50 @@ function extractIndividualCornerRadius(
     rNode.bottomRightRadius > 0
 
   if (!hasAnyRadius) {
-    return { hasCornerRadius: false, cornerRadius: null }
+    return null
   }
 
-  if (!('boundVariables' in node) || !node.boundVariables) {
-    return { hasCornerRadius: true, cornerRadius: UNEXPECTED }
-  }
-
-  const bv = node.boundVariables as {
-    readonly [field in
-      | 'topLeftRadius'
-      | 'topRightRadius'
-      | 'bottomLeftRadius'
-      | 'bottomRightRadius']?: VariableAlias
-  }
+  const bv =
+    'boundVariables' in node && node.boundVariables
+      ? (node.boundVariables as {
+          readonly [field in
+            | 'topLeftRadius'
+            | 'topRightRadius'
+            | 'bottomLeftRadius'
+            | 'bottomRightRadius']?: VariableAlias
+        })
+      : null
 
   const corners = [
-    { alias: bv.topLeftRadius, value: rNode.topLeftRadius },
-    { alias: bv.topRightRadius, value: rNode.topRightRadius },
-    { alias: bv.bottomLeftRadius, value: rNode.bottomLeftRadius },
-    { alias: bv.bottomRightRadius, value: rNode.bottomRightRadius },
+    { alias: bv?.topLeftRadius, value: rNode.topLeftRadius },
+    { alias: bv?.topRightRadius, value: rNode.topRightRadius },
+    { alias: bv?.bottomLeftRadius, value: rNode.bottomLeftRadius },
+    { alias: bv?.bottomRightRadius, value: rNode.bottomRightRadius },
   ]
 
-  // 角丸 > 0 の角ごとに変数が適用されているかチェック
+  // 角丸 > 0 の各角ごとにトークン名 or CUSTOM_VALUE を収集
+  const tokenNames: string[] = []
   for (const corner of corners) {
     if (corner.value === 0) continue
-    if (!corner.alias) {
-      return { hasCornerRadius: true, cornerRadius: UNEXPECTED }
-    }
-    const variableId = extractVariableKey(corner.alias.id)
-    if (!variableId || !variableMap.get(variableId)) {
-      return { hasCornerRadius: true, cornerRadius: UNEXPECTED }
-    }
-  }
 
-  // 全角トークン適用済み — 代表として最初の角丸 > 0 のトークン名を返す
-  for (const corner of corners) {
-    if (corner.value === 0 || !corner.alias) continue
+    if (!corner.alias) {
+      tokenNames.push(CUSTOM_VALUE)
+      continue
+    }
+
     const variableId = extractVariableKey(corner.alias.id)
     if (variableId) {
       const tokenName = variableMap.get(variableId)
       if (tokenName) {
-        return { hasCornerRadius: true, cornerRadius: tokenName }
+        tokenNames.push(tokenName)
+        continue
       }
     }
+
+    tokenNames.push(CUSTOM_VALUE)
   }
 
-  return { hasCornerRadius: true, cornerRadius: UNEXPECTED }
+  return tokenNames
 }
 
 export default async function extractBorderInfo(
@@ -200,14 +195,11 @@ export default async function extractBorderInfo(
       node.type as (typeof BORDER_TARGET_TYPES)[number]
     )
   ) {
-    const { hasStroke, strokeColor } = extractStrokeColor(node, variableMap)
-    const strokeWeight = hasStroke
+    const strokeColor = extractStrokeColor(node, variableMap)
+    const strokeWeight = strokeColor
       ? extractStrokeWeight(node, variableMap)
       : null
-    const { hasCornerRadius, cornerRadius } = extractCornerRadius(
-      node,
-      variableMap
-    )
+    const cornerRadius = extractCornerRadius(node, variableMap)
 
     results.push({
       nodeId: node.id,
@@ -216,8 +208,6 @@ export default async function extractBorderInfo(
       strokeColor,
       strokeWeight,
       cornerRadius,
-      hasStroke,
-      hasCornerRadius,
     })
   }
 

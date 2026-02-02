@@ -1,4 +1,5 @@
 import {
+  CUSTOM_VALUE,
   RuleResult,
   TEXT_COLOR_PAIRS,
   DesignTokenSuggestion,
@@ -20,8 +21,19 @@ export default function validate(
   backgroundColor: string | null,
   textColor?: string | null
 ): RuleResult | null {
-  if (!backgroundColor || backgroundColor.match(/^sd\/reference/)) {
-    return null
+  if (!backgroundColor) return null
+  if (backgroundColor.match(/^sd\/reference/)) return null
+
+  if (backgroundColor === CUSTOM_VALUE) {
+    const suggestion = textColor ? computeSuggestion(textColor) : undefined
+    return {
+      severity: 'warning',
+      message: '背景色にデザイントークンを使えます',
+      messageDetails: suggestion
+        ? `塗りを${formatRoles(suggestion.targetRoles)}に変更してください。`
+        : '塗りにデザインシステムのバリアブルを設定してください。',
+      suggestion,
+    }
   }
 
   const backgroundRole = extractColorRole(backgroundColor)
@@ -37,7 +49,7 @@ export default function validate(
     }
   }
 
-  if (backgroundColor.match(/^on/) || backgroundColor.match(/^\w+On[A-Z]/)) {
+  if (backgroundRole.match(/^on/) || backgroundRole.match(/^\w+On[A-Z]/)) {
     const suggestion = textColor ? computeSuggestion(textColor) : undefined
     return {
       severity: 'error',
