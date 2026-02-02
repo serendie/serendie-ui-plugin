@@ -6,7 +6,7 @@ import { DesignTokenIssue, Issue } from '../../../shared-src/models/Rules'
 import extractColorInfo from '../extractors/extractColorInfo'
 import extractBorderInfo from '../extractors/extractBorderInfo'
 import { runLint } from '../validators/runLint'
-import { applyTokenFixes } from './applyTokenFix'
+import { applyColorTokenFixes } from './applyColorTokenFix'
 
 const MAX_ITERATIONS = 5
 
@@ -36,7 +36,7 @@ function buildItemsFromIssues(
   return items
 }
 
-export async function applyTokenFixRecursive(
+export async function applyColorTokenFixRecursive(
   rootNode: SceneNode,
   initialItems: ApplyTokenItem[]
 ): Promise<{
@@ -52,7 +52,7 @@ export async function applyTokenFixRecursive(
     if (currentItems.length === 0) break
     iterationCount++
 
-    const results = await applyTokenFixes(currentItems)
+    const results = await applyColorTokenFixes(currentItems)
     allResults.push(...results.filter(r => r.status === 'success'))
     if (results.every(r => r.status === 'failed')) break
 
