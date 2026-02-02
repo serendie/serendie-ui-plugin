@@ -1,5 +1,5 @@
 import {
-  ComponentToFix,
+  ComponentApplyTarget,
   ApplyComponentResult,
 } from '../../../shared-src/models/PluginMessage'
 import { ComponentKeysMap } from '../../../shared-src/models/ComponentKeys'
@@ -16,7 +16,7 @@ const componentKeysMap = componentKeys as ComponentKeysMap
  */
 export async function applyComponents(
   rootNodeId: string,
-  items: ComponentToFix[]
+  targets: ComponentApplyTarget[]
 ): Promise<{
   results: ApplyComponentResult[]
   detached: number
@@ -26,26 +26,26 @@ export async function applyComponents(
   const rootNode = await figma.getNodeByIdAsync(rootNodeId)
   if (!rootNode) {
     console.error(`Root node not found: ${rootNodeId}`)
-    for (const item of items) {
-      results.push({ oldNodeId: item.nodeId, newNodeId: '', status: 'failed' })
+    for (const target of targets) {
+      results.push({ oldNodeId: target.nodeId, newNodeId: '', status: 'failed' })
     }
     return { results, detached: 0 }
   }
 
   // Step 1: 解体前にツリーパスを記録
   const treePathMap = new Map<string, number[]>()
-  for (const item of items) {
-    const node = await figma.getNodeByIdAsync(item.nodeId)
+  for (const target of targets) {
+    const node = await figma.getNodeByIdAsync(target.nodeId)
     if (!node) continue
     const path = getTreePath(node, rootNode)
     if (path) {
-      treePathMap.set(item.nodeId, path)
+      treePathMap.set(target.nodeId, path)
     }
   }
 
   // Step 2: 提案対象ノードの祖先にあるインスタンスを部分的に解体
   const detached = await detachAncestorInstances(
-    items.map(i => i.nodeId),
+    targets.map(i => i.nodeId),
     rootNodeId,
     id => figma.getNodeByIdAsync(id)
   )
@@ -58,11 +58,11 @@ export async function applyComponents(
   }
 
   // Step 4: 深い階層から処理（親を先に置き換えると子が消えるため）
-  const sortedItems = await sortByDepthDescending(items, async item => {
-    return findNodeByTreePath(item.nodeId)
+  const sortedTargets = await sortByDepthDescending(targets, async target => {
+    return findNodeByTreePath(target.nodeId)
   })
 
-  for (const item of sortedItems) {
+  for (const item of sortedTargets) {
     try {
       // component-keys.json にないコンポーネントはスキップ
       const componentInfo = componentKeysMap[item.componentName]

@@ -1,6 +1,6 @@
 import {
-  ColorTokenToFix,
-  ApplyTokenResult,
+  ColorTokenFixTarget,
+  TokenFixResult,
 } from '../../../shared-src/models/PluginMessage'
 import {
   FALLBACK_TEXT_ROLES,
@@ -40,13 +40,13 @@ function applyVariableToFills(node: SceneNode, variable: Variable) {
   node.fills = fills
 }
 
-export async function applyColorTokenFixes(
-  items: ColorTokenToFix[]
-): Promise<ApplyTokenResult[]> {
+export async function fixColorTokens(
+  targets: ColorTokenFixTarget[]
+): Promise<TokenFixResult[]> {
   const reverseMap = await getReverseVariableMap()
-  const results: ApplyTokenResult[] = []
+  const results: TokenFixResult[] = []
 
-  for (const item of items) {
+  for (const item of targets) {
     try {
       const baseNode = await figma.getNodeByIdAsync(item.nodeId)
       if (!baseNode || !('fills' in baseNode)) {

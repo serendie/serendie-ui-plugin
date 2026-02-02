@@ -4,11 +4,11 @@ import {
   Issue,
 } from '../../shared-src/models/Rules'
 import {
-  ApplyTokenResult,
-  BorderTokenToFix,
+  TokenFixResult,
+  BorderTokenFixTarget,
 } from '../../shared-src/models/PluginMessage'
 
-type BorderTargetProperty = BorderTokenToFix['targetProperty']
+type BorderTargetProperty = BorderTokenFixTarget['targetProperty']
 
 const COLOR_PROPERTIES: ReadonlySet<DesignTokenTargetProperty> = new Set([
   'textColor',
@@ -50,7 +50,7 @@ function toRoleList(appliedRole: string | string[] | undefined): string[] {
   return Array.isArray(appliedRole) ? appliedRole : [appliedRole]
 }
 
-export function formatColorResolvedMessage(applied: ApplyTokenResult[]): {
+export function formatColorResolvedMessage(applied: TokenFixResult[]): {
   message: string
   messageDetails: string | null
 } {
@@ -78,7 +78,7 @@ const BORDER_LABEL_MAP: Record<BorderTargetProperty, string> = {
 
 export function formatBorderResolvedMessage(
   targetProperty: BorderTargetProperty,
-  appliedResults: ApplyTokenResult[]
+  appliedResults: TokenFixResult[]
 ): { message: string; messageDetails: string | null } {
   const label = BORDER_LABEL_MAP[targetProperty]
 
@@ -100,9 +100,9 @@ export function formatBorderResolvedMessage(
 }
 
 export function buildSuccessResultMap(
-  results: ApplyTokenResult[]
-): Map<string, ApplyTokenResult[]> {
-  const map = new Map<string, ApplyTokenResult[]>()
+  results: TokenFixResult[]
+): Map<string, TokenFixResult[]> {
+  const map = new Map<string, TokenFixResult[]>()
   for (const r of results) {
     if (r.status !== 'success') continue
     const list = map.get(r.nodeId) ?? []
@@ -119,11 +119,11 @@ export function buildSuccessResultMap(
 export function mergeTokenFixResults(
   currentIssues: Issue[],
   postFixIssues: Issue[],
-  successResultMap: Map<string, ApplyTokenResult[]>,
+  successResultMap: Map<string, TokenFixResult[]>,
   isTargetIssue: (issue: Issue) => boolean,
   formatResolved: (
     issue: Issue,
-    applied: ApplyTokenResult[]
+    applied: TokenFixResult[]
   ) => { message: string; messageDetails: string | null }
 ): Issue[] {
   // 対象外の issue はそのまま保持

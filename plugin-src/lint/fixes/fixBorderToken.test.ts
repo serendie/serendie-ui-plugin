@@ -1,4 +1,4 @@
-import { findClosestCandidate, shouldUseFull } from './applyBorderTokenFix'
+import { findClosestCandidate, shouldUseFull } from './fixBorderToken'
 
 describe('findClosestCandidate', () => {
   const makeCandidates = (values: { name: string; value: number }[]) =>

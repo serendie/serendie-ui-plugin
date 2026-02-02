@@ -1,18 +1,18 @@
 import {
-  ColorTokenToFix,
-  ApplyTokenResult,
+  ColorTokenFixTarget,
+  TokenFixResult,
 } from '../../../shared-src/models/PluginMessage'
 import { DesignTokenIssue, Issue } from '../../../shared-src/models/Rules'
 import extractColorInfo from '../extractors/extractColorInfo'
 import extractBorderInfo from '../extractors/extractBorderInfo'
 import { runLint } from '../validators/runLint'
-import { applyColorTokenFixes } from './applyColorTokenFix'
+import { fixColorTokens } from './fixColorToken'
 
 const MAX_ITERATIONS = 5
 
-function buildItemsFromIssues(issues: DesignTokenIssue[]): ColorTokenToFix[] {
+function buildTargetsFromIssues(issues: DesignTokenIssue[]): ColorTokenFixTarget[] {
   const seen = new Set<string>()
-  const items: ColorTokenToFix[] = []
+  const targets: ColorTokenFixTarget[] = []
   for (const issue of issues) {
     if (seen.has(issue.nodeId)) continue
     seen.add(issue.nodeId)
@@ -24,32 +24,32 @@ function buildItemsFromIssues(issues: DesignTokenIssue[]): ColorTokenToFix[] {
       issue.suggestion && issue.suggestion.targetProperty === targetProperty
         ? issue.suggestion
         : undefined
-    items.push({
+    targets.push({
       nodeId: issue.nodeId,
       ...(suggestion && { suggestion }),
       targetProperty,
     })
   }
-  return items
+  return targets
 }
 
-export async function applyColorTokenFixRecursive(
+export async function fixColorTokensRecursive(
   rootNode: SceneNode,
-  initialItems: ColorTokenToFix[]
+  initialTargets: ColorTokenFixTarget[]
 ): Promise<{
-  results: ApplyTokenResult[]
+  results: TokenFixResult[]
   postFixIssues: Issue[]
   iterationCount: number
 }> {
-  const allResults: ApplyTokenResult[] = []
-  let currentItems = initialItems
+  const allResults: TokenFixResult[] = []
+  let currentTargets = initialTargets
   let iterationCount = 0
 
   for (let i = 0; i < MAX_ITERATIONS; i++) {
-    if (currentItems.length === 0) break
+    if (currentTargets.length === 0) break
     iterationCount++
 
-    const results = await applyColorTokenFixes(currentItems)
+    const results = await fixColorTokens(currentTargets)
     allResults.push(...results.filter(r => r.status === 'success'))
     if (results.every(r => r.status === 'failed')) break
 
@@ -59,7 +59,7 @@ export async function applyColorTokenFixRecursive(
       (i): i is DesignTokenIssue => i.source === 'design-token'
     )
     if (remaining.length === 0) break
-    currentItems = buildItemsFromIssues(remaining)
+    currentTargets = buildTargetsFromIssues(remaining)
   }
 
   const finalColorInfo = await extractColorInfo(rootNode)

@@ -1,6 +1,6 @@
 import {
-  BorderTokenToFix,
-  ApplyTokenResult,
+  BorderTokenFixTarget,
+  TokenFixResult,
 } from '../../../shared-src/models/PluginMessage'
 import {
   getReverseVariableMap,
@@ -85,7 +85,7 @@ function isFullRadiusCandidate(candidate: DimensionCandidate): boolean {
 async function fixStrokeWeight(
   node: SceneNode,
   reverseMap: ReverseVariableMap
-): Promise<ApplyTokenResult> {
+): Promise<TokenFixResult> {
   const candidates = await resolveDimensionCandidates(
     'dimension/border/',
     reverseMap,
@@ -160,7 +160,7 @@ async function fixStrokeWeight(
 async function fixCornerRadius(
   node: SceneNode,
   reverseMap: ReverseVariableMap
-): Promise<ApplyTokenResult> {
+): Promise<TokenFixResult> {
   const candidates = await resolveDimensionCandidates(
     'dimension/radius/',
     reverseMap,
@@ -304,7 +304,7 @@ async function resolveColorCandidates(
 async function fixStrokeColor(
   node: SceneNode,
   reverseMap: ReverseVariableMap
-): Promise<ApplyTokenResult> {
+): Promise<TokenFixResult> {
   if (!('strokes' in node) || !Array.isArray(node.strokes)) {
     return { nodeId: node.id, status: 'failed' }
   }
@@ -353,13 +353,13 @@ async function fixStrokeColor(
   }
 }
 
-export async function applyBorderTokenFixes(
-  items: BorderTokenToFix[]
-): Promise<ApplyTokenResult[]> {
+export async function fixBorderTokens(
+  targets: BorderTokenFixTarget[]
+): Promise<TokenFixResult[]> {
   const reverseMap = await getReverseVariableMap()
-  const results: ApplyTokenResult[] = []
+  const results: TokenFixResult[] = []
 
-  for (const item of items) {
+  for (const item of targets) {
     try {
       const baseNode = await figma.getNodeByIdAsync(item.nodeId)
       if (!baseNode) {
@@ -368,7 +368,7 @@ export async function applyBorderTokenFixes(
       }
       const node = baseNode as SceneNode
 
-      let result: ApplyTokenResult
+      let result: TokenFixResult
 
       switch (item.targetProperty) {
         case 'strokeWeight':

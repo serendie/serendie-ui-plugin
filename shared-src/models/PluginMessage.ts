@@ -66,18 +66,18 @@ export type ImageMessage =
 // エラーメッセージ
 export type ErrorMessage = { type: 'error'; message: string }
 
-// 検証メッセージ
-export type ComponentToFix = {
+// 修正・適用対象データ型
+export type ComponentApplyTarget = {
   nodeId: string
 } & ComponentSuggestion
 
-export type ColorTokenToFix = {
+export type ColorTokenFixTarget = {
   nodeId: string
   suggestion?: DesignTokenSuggestion // あれば使う（確実な候補）
   targetProperty: 'textColor' | 'backgroundColor' // フォールバック判定に使用
 }
 
-export type BorderTokenToFix = {
+export type BorderTokenFixTarget = {
   nodeId: string
   targetProperty: 'strokeColor' | 'strokeWeight' | 'cornerRadius'
 }
@@ -88,7 +88,7 @@ export type ApplyComponentResult = {
   status: 'success' | 'failed' | 'skipped'
 }
 
-export type ApplyTokenResult = {
+export type TokenFixResult = {
   nodeId: string
   status: 'success' | 'failed'
   appliedRole?: string | string[]
@@ -109,15 +109,15 @@ export type PluginToUIMessage =
       results: ApplyComponentResult[]
     }
   | {
-      type: 'apply-color-tokens-result'
+      type: 'fix-color-tokens-result'
       rootNodeId: string
-      results: ApplyTokenResult[]
+      results: TokenFixResult[]
       postFixIssues: Issue[] // 修正後の再リント結果
     }
   | {
-      type: 'apply-border-tokens-result'
+      type: 'fix-border-tokens-result'
       rootNodeId: string
-      results: ApplyTokenResult[]
+      results: TokenFixResult[]
       postFixIssues: Issue[]
     }
 
@@ -131,18 +131,18 @@ export type UIToPluginMessage =
   | {
       type: 'apply-components'
       rootNodeId: string // コピー元のルートノードID
-      items: ComponentToFix[]
+      targets: ComponentApplyTarget[]
     }
   | { type: 'select-node'; nodeId: string }
   | {
-      type: 'apply-tokens'
+      type: 'fix-color-tokens'
       rootNodeId: string
-      items: ColorTokenToFix[]
+      targets: ColorTokenFixTarget[]
     }
   | {
-      type: 'apply-border-tokens'
+      type: 'fix-border-tokens'
       rootNodeId: string
-      items: BorderTokenToFix[]
+      targets: BorderTokenFixTarget[]
     }
 
 // 全メッセージ型

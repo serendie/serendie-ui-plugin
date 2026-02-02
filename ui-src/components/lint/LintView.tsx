@@ -40,7 +40,7 @@ export default function LintView({
     results,
     isLoading,
     apiKey,
-    applyingTokenNodeIds,
+    fixingTokenNodeIds,
     applyingComponentNodeIds,
     isRelinting,
     imageRefreshKey,
@@ -48,7 +48,7 @@ export default function LintView({
     cancelComponentValidation,
     handleRunLinter,
     handleApplyComponents,
-    handleApplyTokens,
+    handleFixTokens,
     handleLintMessage,
     resetResults,
   } = useLintResults({
@@ -219,7 +219,7 @@ export default function LintView({
                               size='small'
                               styleType='ghost'
                               disabled={
-                                applyingTokenNodeIds.has(result.id) ||
+                                fixingTokenNodeIds.has(result.id) ||
                                 applyingComponentNodeIds.has(result.id) ||
                                 isRelinting
                               }
@@ -260,11 +260,11 @@ export default function LintView({
                           size='small'
                           styleType='ghost'
                           disabled={
-                            applyingTokenNodeIds.has(result.id) ||
+                            fixingTokenNodeIds.has(result.id) ||
                             applyingComponentNodeIds.has(result.id) ||
                             isRelinting
                           }
-                          onClick={() => handleApplyTokens(result.id)}
+                          onClick={() => handleFixTokens(result.id)}
                         >
                           すべて修正
                         </Button>

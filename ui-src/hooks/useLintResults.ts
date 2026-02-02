@@ -2,10 +2,10 @@ import { useState, useCallback } from 'react'
 import { Result } from '../models/Result'
 import { postPluginMessage } from './usePluginMessage'
 import {
-  ApplyTokenResult,
-  BorderTokenToFix,
-  ComponentToFix,
-  ColorTokenToFix,
+  TokenFixResult,
+  BorderTokenFixTarget,
+  ComponentApplyTarget,
+  ColorTokenFixTarget,
   PluginMessage,
   SelectionInfo,
 } from '../../shared-src/models/PluginMessage'
@@ -38,7 +38,7 @@ export function useLintResults({
 }) {
   const [results, setResults] = useState<Result[]>([])
   const [isLoading, setIsLoading] = useState(false)
-  const [applyingTokenNodeIds, setApplyingTokenNodeIds] = useState<Set<string>>(
+  const [fixingTokenNodeIds, setFixingTokenNodeIds] = useState<Set<string>>(
     new Set()
   )
   const [applyingComponentNodeIds, setApplyingComponentNodeIds] = useState<
@@ -95,26 +95,26 @@ export function useLintResults({
         }
       }
       if (
-        message.type === 'apply-color-tokens-result' ||
-        message.type === 'apply-border-tokens-result'
+        message.type === 'fix-color-tokens-result' ||
+        message.type === 'fix-border-tokens-result'
       ) {
-        setApplyingTokenNodeIds(prev => {
+        setFixingTokenNodeIds(prev => {
           const next = new Set(prev)
           next.delete(message.rootNodeId)
           return next
         })
         setImageRefreshKey(k => k + 1)
 
-        const isColor = message.type === 'apply-color-tokens-result'
+        const isColor = message.type === 'fix-color-tokens-result'
         const isTargetIssue = isColor ? isColorTokenIssue : isBorderTokenIssue
         const successResultMap = buildSuccessResultMap(message.results)
 
         const formatResolved = isColor
-          ? (_issue: Issue, applied: ApplyTokenResult[]) =>
+          ? (_issue: Issue, applied: TokenFixResult[]) =>
               formatColorResolvedMessage(applied)
-          : (issue: Issue, applied: ApplyTokenResult[]) =>
+          : (issue: Issue, applied: TokenFixResult[]) =>
               formatBorderResolvedMessage(
-                (issue as DesignTokenIssue).targetProperty as BorderTokenToFix['targetProperty'],
+                (issue as DesignTokenIssue).targetProperty as BorderTokenFixTarget['targetProperty'],
                 applied
               )
 
@@ -187,7 +187,7 @@ export function useLintResults({
                   ).length ?? 0,
               })
             }
-            // prevベースでマージ（apply-tokens等の更新を保持）
+            // prevベースでマージ（fix-tokens等の更新を保持）
             setResults(prev =>
               prev.map(result => {
                 const comp = componentResultMap.get(result.id)
@@ -222,27 +222,27 @@ export function useLintResults({
       const result = results.find(r => r.id === rootNodeId)
       if (!result) return
 
-      const items: ComponentToFix[] = []
+      const targets: ComponentApplyTarget[] = []
       const componentIssues = result.issues.filter(
         (issue): issue is ComponentIssue =>
           issue.source === 'component' && issue.severity !== 'resolved'
       )
       for (const issue of componentIssues) {
-        items.push({
+        targets.push({
           nodeId: issue.nodeId,
           ...issue.suggestion,
         })
       }
-      if (items.length > 0) {
+      if (targets.length > 0) {
         setApplyingComponentNodeIds(prev => new Set(prev).add(rootNodeId))
-        postPluginMessage({ type: 'apply-components', rootNodeId, items })
+        postPluginMessage({ type: 'apply-components', rootNodeId, targets })
       }
     },
     [results]
   )
 
   // デザイントークンの修正ハンドラ
-  const handleApplyTokens = useCallback(
+  const handleFixTokens = useCallback(
     (rootNodeId: string) => {
       const result = results.find(r => r.id === rootNodeId)
       if (!result) return
@@ -261,10 +261,10 @@ export function useLintResults({
 
       let hasSentAny = false
 
-      // カラー系issue → apply-tokens
+      // カラー系issue → fix-color-tokens
       if (colorIssues.length > 0) {
         const seen = new Set<string>()
-        const items: ColorTokenToFix[] = []
+        const targets: ColorTokenFixTarget[] = []
         for (const issue of colorIssues) {
           if (seen.has(issue.nodeId)) continue
           seen.add(issue.nodeId)
@@ -273,7 +273,7 @@ export function useLintResults({
             issue.suggestion.targetProperty === issue.targetProperty
               ? issue.suggestion
               : undefined
-          items.push({
+          targets.push({
             nodeId: issue.nodeId,
             ...(suggestion && { suggestion }),
             targetProperty: issue.targetProperty as
@@ -281,29 +281,31 @@ export function useLintResults({
               | 'backgroundColor',
           })
         }
-        if (items.length > 0) {
-          postPluginMessage({ type: 'apply-tokens', rootNodeId, items })
+        if (targets.length > 0) {
+          postPluginMessage({ type: 'fix-color-tokens', rootNodeId, targets })
           hasSentAny = true
         }
       }
 
-      // ボーダー系issue → apply-border-tokens
+      // ボーダー系issue → fix-border-tokens
       if (borderIssues.length > 0) {
-        const borderItems: BorderTokenToFix[] = borderIssues.map(issue => ({
-          nodeId: issue.nodeId,
-          targetProperty:
-            issue.targetProperty as BorderTokenToFix['targetProperty'],
-        }))
+        const borderTargets: BorderTokenFixTarget[] = borderIssues.map(
+          issue => ({
+            nodeId: issue.nodeId,
+            targetProperty:
+              issue.targetProperty as BorderTokenFixTarget['targetProperty'],
+          })
+        )
         postPluginMessage({
-          type: 'apply-border-tokens',
+          type: 'fix-border-tokens',
           rootNodeId,
-          items: borderItems,
+          targets: borderTargets,
         })
         hasSentAny = true
       }
 
       if (hasSentAny) {
-        setApplyingTokenNodeIds(prev => new Set(prev).add(rootNodeId))
+        setFixingTokenNodeIds(prev => new Set(prev).add(rootNodeId))
       }
     },
     [results]
@@ -317,7 +319,7 @@ export function useLintResults({
     results,
     isLoading,
     apiKey,
-    applyingTokenNodeIds,
+    fixingTokenNodeIds,
     applyingComponentNodeIds,
     isRelinting,
     imageRefreshKey,
@@ -325,7 +327,7 @@ export function useLintResults({
     cancelComponentValidation,
     handleRunLinter,
     handleApplyComponents,
-    handleApplyTokens,
+    handleFixTokens,
     handleLintMessage,
     resetResults,
   }
