@@ -42,7 +42,7 @@ function applyVariableToFills(node: SceneNode, variable: Variable) {
   node.fills = fills
 }
 
-export async function applyTokenFixes(
+export async function applyColorTokenFixes(
   items: ApplyTokenItem[]
 ): Promise<ApplyTokenResult[]> {
   const reverseMap = await getReverseVariableMap()

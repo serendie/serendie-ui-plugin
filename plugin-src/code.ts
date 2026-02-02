@@ -5,7 +5,7 @@ import getImage, { canGetImage } from '../shared-src/utils/getImage'
 import buildNodeStructure from './utils/nodes/buildNodeStructure'
 import { LintResult } from '../shared-src/models/PluginMessage'
 import { applyComponents } from './utils/components/applyComponent'
-import { applyTokenFixRecursive } from './lint/fixes/applyTokenFixRecursive'
+import { applyColorTokenFixRecursive } from './lint/fixes/applyColorTokenFixRecursive'
 import { applyBorderTokenFixes } from './lint/fixes/applyBorderTokenFix'
 
 figma.showUI(__html__, {
@@ -214,7 +214,7 @@ figma.ui.onmessage = async msg => {
       }
 
       const { results, finalIssues, iterationCount } =
-        await applyTokenFixRecursive(rootNode as SceneNode, msg.items)
+        await applyColorTokenFixRecursive(rootNode as SceneNode, msg.items)
 
       const successCount = results.length
       const messages: string[] = []
