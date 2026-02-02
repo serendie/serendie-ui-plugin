@@ -17,6 +17,7 @@ export default function validateAssignStrokeWidthVariable(
         nodeName: node.nodeName,
         nodeType: node.nodeType,
         source: 'design-token',
+        targetProperty: 'strokeWeight',
         ...ruleResult,
       })
     }

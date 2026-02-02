@@ -17,6 +17,7 @@ export default function validateAssignTextVariable(
         nodeName: colorInfo.nodeName,
         nodeType: colorInfo.nodeType,
         source: 'design-token',
+        targetProperty: 'textColor',
         ...ruleResult,
       })
     }

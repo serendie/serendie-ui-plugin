@@ -2,10 +2,10 @@ import { useState, useCallback } from 'react'
 import { Result } from '../models/Result'
 import { postPluginMessage } from './usePluginMessage'
 import {
+  ApplyTokenResult,
   BorderTokenToFix,
   ComponentToFix,
   ColorTokenToFix,
-  ApplyTokenResult,
   PluginMessage,
   SelectionInfo,
 } from '../../shared-src/models/PluginMessage'
@@ -16,64 +16,16 @@ import {
 } from '../../shared-src/models/Rules'
 import { useApiKey } from './useApiKey'
 import { useComponentValidation } from './useComponentValidation'
-
-const BORDER_ISSUE_MESSAGES = ['線色', '線幅', '角丸']
-
-function extractRoleName(fullPath: string): string {
-  return fullPath.split('/').pop() ?? fullPath
-}
-
-function formatBorderResolvedMessage(
-  issueMessage: string,
-  appliedResults: ApplyTokenResult[]
-): string {
-  // issue のメッセージからプロパティ種別を判定し、対応する result を選択
-  const label = issueMessage.includes('線幅')
-    ? '線幅'
-    : issueMessage.includes('角丸')
-      ? '角丸'
-      : '線色'
-
-  const pathKeyword = issueMessage.includes('線幅')
-    ? 'border/'
-    : issueMessage.includes('角丸')
-      ? 'radius/'
-      : ''
-
-  const matched = pathKeyword
-    ? appliedResults.find(r => {
-        const roles = Array.isArray(r.appliedRole)
-          ? r.appliedRole
-          : r.appliedRole
-            ? [r.appliedRole]
-            : []
-        return roles.some(role => role.includes(pathKeyword))
-      })
-    : appliedResults.find(r => {
-        const roles = Array.isArray(r.appliedRole)
-          ? r.appliedRole
-          : r.appliedRole
-            ? [r.appliedRole]
-            : []
-        return roles.some(
-          role => !role.includes('border/') && !role.includes('radius/')
-        )
-      })
-
-  if (!matched?.appliedRole) return '修正しました'
-
-  const roles = Array.isArray(matched.appliedRole)
-    ? matched.appliedRole
-    : [matched.appliedRole]
-
-  const uniqueRoles = [...new Set(roles.map(extractRoleName))]
-  const rolesText = uniqueRoles.map(r => `「${r}」`).join('')
-  return `${label}を${rolesText}で修正しました`
-}
-
-function isBorderIssue(issue: DesignTokenIssue): boolean {
-  return BORDER_ISSUE_MESSAGES.some(m => issue.message.includes(m))
-}
+import {
+  isColorTokenIssue,
+  isBorderTokenIssue,
+  isColorProperty,
+  isBorderProperty,
+  formatColorResolvedMessage,
+  formatBorderResolvedMessage,
+  buildSuccessResultMap,
+  mergeTokenFixResults,
+} from './useLintResultsHelpers'
 
 export function useLintResults({
   selections,
@@ -142,122 +94,42 @@ export function useLintResults({
           })
         }
       }
-      if (message.type === 'apply-color-tokens-result') {
+      if (
+        message.type === 'apply-color-tokens-result' ||
+        message.type === 'apply-border-tokens-result'
+      ) {
         setApplyingTokenNodeIds(prev => {
           const next = new Set(prev)
           next.delete(message.rootNodeId)
           return next
         })
         setImageRefreshKey(k => k + 1)
-        const appliedResultMap = new Map(
-          message.results
-            .filter(r => r.status === 'success')
-            .map(r => [r.nodeId, r])
-        )
+
+        const isColor = message.type === 'apply-color-tokens-result'
+        const isTargetIssue = isColor ? isColorTokenIssue : isBorderTokenIssue
+        const successResultMap = buildSuccessResultMap(message.results)
+
+        const formatResolved = isColor
+          ? (_issue: Issue, applied: ApplyTokenResult[]) =>
+              formatColorResolvedMessage(applied)
+          : (issue: Issue, applied: ApplyTokenResult[]) =>
+              formatBorderResolvedMessage(
+                (issue as DesignTokenIssue).targetProperty as BorderTokenToFix['targetProperty'],
+                applied
+              )
 
         setResults(prev =>
           prev.map(result => {
             if (result.id !== message.rootNodeId) return result
-
-            const componentIssues = result.issues.filter(
-              i => i.source === 'component'
-            )
-
-            // finalIssuesに残っているdesign-token issue
-            const newTokenIssues = message.finalIssues.filter(
-              i => i.source === 'design-token'
-            )
-
-            // 修正済みだがfinalIssuesに残っていないノード → resolved
-            const finalNodeIds = new Set(newTokenIssues.map(i => i.nodeId))
-            const resolvedIssues = result.issues
-              .filter(
-                i =>
-                  i.source === 'design-token' &&
-                  appliedResultMap.has(i.nodeId) &&
-                  !finalNodeIds.has(i.nodeId)
-              )
-              .map(issue => {
-                const applied = appliedResultMap.get(issue.nodeId)!
-                return {
-                  ...issue,
-                  severity: 'resolved' as const,
-                  message:
-                    applied.isFallback && applied.appliedRole
-                      ? `近似色の「${applied.appliedRole}」を適用`
-                      : applied.appliedRole
-                        ? `${applied.appliedRole}を適用しました`
-                        : '修正しました',
-                  messageDetails:
-                    applied.isFallback && applied.originalColorHex
-                      ? `元の色: ${applied.originalColorHex}`
-                      : null,
-                }
-              })
-
             return {
               ...result,
-              issues: [
-                ...componentIssues,
-                ...resolvedIssues,
-                ...newTokenIssues,
-              ],
-            }
-          })
-        )
-      }
-      if (message.type === 'apply-border-tokens-result') {
-        setApplyingTokenNodeIds(prev => {
-          const next = new Set(prev)
-          next.delete(message.rootNodeId)
-          return next
-        })
-        setImageRefreshKey(k => k + 1)
-        const appliedResultMap = new Map<string, ApplyTokenResult[]>()
-        for (const r of message.results) {
-          if (r.status !== 'success') continue
-          const list = appliedResultMap.get(r.nodeId) ?? []
-          list.push(r)
-          appliedResultMap.set(r.nodeId, list)
-        }
-
-        setResults(prev =>
-          prev.map(result => {
-            if (result.id !== message.rootNodeId) return result
-
-            const componentIssues = result.issues.filter(
-              i => i.source === 'component'
-            )
-
-            const newTokenIssues = message.finalIssues.filter(
-              i => i.source === 'design-token'
-            )
-
-            const finalNodeIds = new Set(newTokenIssues.map(i => i.nodeId))
-            const resolvedIssues = result.issues
-              .filter(
-                i =>
-                  i.source === 'design-token' &&
-                  appliedResultMap.has(i.nodeId) &&
-                  !finalNodeIds.has(i.nodeId)
-              )
-              .map(issue => {
-                const results = appliedResultMap.get(issue.nodeId) ?? []
-                return {
-                  ...issue,
-                  severity: 'resolved' as const,
-                  message: formatBorderResolvedMessage(issue.message, results),
-                  messageDetails: null,
-                }
-              })
-
-            return {
-              ...result,
-              issues: [
-                ...componentIssues,
-                ...resolvedIssues,
-                ...newTokenIssues,
-              ],
+              issues: mergeTokenFixResults(
+                result.issues,
+                message.postFixIssues,
+                successResultMap,
+                isTargetIssue,
+                formatResolved
+              ),
             }
           })
         )
@@ -380,9 +252,12 @@ export function useLintResults({
           issue.source === 'design-token' && issue.severity !== 'resolved'
       )
 
-      // カラー系issueとボーダー系issueを分離
-      const colorIssues = tokenIssues.filter(issue => !isBorderIssue(issue))
-      const borderIssues = tokenIssues.filter(issue => isBorderIssue(issue))
+      const colorIssues = tokenIssues.filter(issue =>
+        isColorProperty(issue.targetProperty)
+      )
+      const borderIssues = tokenIssues.filter(issue =>
+        isBorderProperty(issue.targetProperty)
+      )
 
       let hasSentAny = false
 
@@ -393,17 +268,17 @@ export function useLintResults({
         for (const issue of colorIssues) {
           if (seen.has(issue.nodeId)) continue
           seen.add(issue.nodeId)
-          const targetProperty =
-            issue.nodeType === 'TEXT' ? 'textColor' : 'backgroundColor'
           const suggestion =
             issue.suggestion &&
-            issue.suggestion.targetProperty === targetProperty
+            issue.suggestion.targetProperty === issue.targetProperty
               ? issue.suggestion
               : undefined
           items.push({
             nodeId: issue.nodeId,
             ...(suggestion && { suggestion }),
-            targetProperty,
+            targetProperty: issue.targetProperty as
+              | 'textColor'
+              | 'backgroundColor',
           })
         }
         if (items.length > 0) {
@@ -414,17 +289,11 @@ export function useLintResults({
 
       // ボーダー系issue → apply-border-tokens
       if (borderIssues.length > 0) {
-        const borderItems: BorderTokenToFix[] = borderIssues.map(issue => {
-          let targetProperty: BorderTokenToFix['targetProperty']
-          if (issue.message.includes('線色')) {
-            targetProperty = 'strokeColor'
-          } else if (issue.message.includes('線幅')) {
-            targetProperty = 'strokeWeight'
-          } else {
-            targetProperty = 'cornerRadius'
-          }
-          return { nodeId: issue.nodeId, targetProperty }
-        })
+        const borderItems: BorderTokenToFix[] = borderIssues.map(issue => ({
+          nodeId: issue.nodeId,
+          targetProperty:
+            issue.targetProperty as BorderTokenToFix['targetProperty'],
+        }))
         postPluginMessage({
           type: 'apply-border-tokens',
           rootNodeId,

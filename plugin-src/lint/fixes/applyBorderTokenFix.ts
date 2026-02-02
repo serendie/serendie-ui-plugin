@@ -384,6 +384,8 @@ export async function applyBorderTokenFixes(
           result = { nodeId: item.nodeId, status: 'failed' }
       }
 
+      // 修正対象プロパティを結果に付与
+      result.targetProperty = item.targetProperty
       results.push(result)
     } catch {
       results.push({ nodeId: item.nodeId, status: 'failed' })

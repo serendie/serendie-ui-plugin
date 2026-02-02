@@ -213,14 +213,14 @@ figma.ui.onmessage = async msg => {
         return
       }
 
-      const { results, finalIssues, iterationCount } =
+      const { results, postFixIssues, iterationCount } =
         await applyColorTokenFixRecursive(rootNode as SceneNode, msg.items)
 
       const successCount = results.length
       const messages: string[] = []
       if (successCount > 0) messages.push(`${successCount}個修正`)
       if (iterationCount > 1) messages.push(`${iterationCount}回の反復`)
-      const remainingCount = finalIssues.filter(
+      const remainingCount = postFixIssues.filter(
         i => i.source === 'design-token'
       ).length
       if (remainingCount > 0) messages.push(`${remainingCount}個の未解決あり`)
@@ -230,7 +230,7 @@ figma.ui.onmessage = async msg => {
         type: 'apply-color-tokens-result',
         rootNodeId: msg.rootNodeId,
         results,
-        finalIssues,
+        postFixIssues,
       })
     } catch (error) {
       figma.notify(
@@ -256,13 +256,13 @@ figma.ui.onmessage = async msg => {
 
       const finalColorInfo = await extractColorInfo(rootNode as SceneNode)
       const finalBorderInfo = await extractBorderInfo(rootNode as SceneNode)
-      const finalIssues = runLint(finalColorInfo, finalBorderInfo)
+      const postFixIssues = runLint(finalColorInfo, finalBorderInfo)
 
       figma.ui.postMessage({
         type: 'apply-border-tokens-result',
         rootNodeId: msg.rootNodeId,
         results,
-        finalIssues,
+        postFixIssues,
       })
     } catch (error) {
       figma.notify(

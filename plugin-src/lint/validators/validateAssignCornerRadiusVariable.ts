@@ -17,6 +17,7 @@ export default function validateAssignCornerRadiusVariable(
         nodeName: node.nodeName,
         nodeType: node.nodeType,
         source: 'design-token',
+        targetProperty: 'cornerRadius',
         ...ruleResult,
       })
     }
