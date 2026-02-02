@@ -71,9 +71,9 @@ export function findClosestCandidate(
 
 export function shouldUseFull(
   radiusValue: number,
-  nodeHeight: number
+  minSide: number
 ): boolean {
-  return nodeHeight > 0 && radiusValue >= nodeHeight / 2
+  return minSide > 0 && radiusValue >= minSide / 2
 }
 
 function isFullRadiusCandidate(candidate: DimensionCandidate): boolean {
@@ -171,7 +171,9 @@ async function fixCornerRadius(
     return { nodeId: node.id, status: 'failed' }
   }
 
+  const nodeWidth = 'width' in node ? (node as { width: number }).width : 0
   const nodeHeight = 'height' in node ? (node as { height: number }).height : 0
+  const minSide = Math.min(nodeWidth, nodeHeight)
   const fullCandidate = candidates.find(isFullRadiusCandidate)
   const normalCandidates = candidates.filter(c => !isFullRadiusCandidate(c))
 
@@ -202,7 +204,7 @@ async function fixCornerRadius(
       const appliedNames: string[] = []
       for (const { field, value } of fields) {
         if (value === 0) continue
-        const useFullForCorner = shouldUseFull(value, nodeHeight)
+        const useFullForCorner = shouldUseFull(value, minSide)
         if (useFullForCorner && fullCandidate) {
           node.setBoundVariable(field, fullCandidate.variable)
           appliedNames.push(fullCandidate.name)
@@ -231,7 +233,7 @@ async function fixCornerRadius(
         return { nodeId: node.id, status: 'failed' }
       }
 
-      const useFull = shouldUseFull(currentRadius, nodeHeight)
+      const useFull = shouldUseFull(currentRadius, minSide)
       let best: DimensionCandidate | null = null
 
       if (useFull && fullCandidate) {
