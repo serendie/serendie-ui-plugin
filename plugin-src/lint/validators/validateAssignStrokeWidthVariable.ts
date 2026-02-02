@@ -10,8 +10,6 @@ export default function validateAssignStrokeWidthVariable(
   const issues: Issue[] = []
 
   for (const node of nodes) {
-    if (!node.hasStroke) continue
-
     const ruleResult = validate(node.strokeWeight)
     if (ruleResult) {
       issues.push({

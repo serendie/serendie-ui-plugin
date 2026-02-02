@@ -10,8 +10,6 @@ export default function validateAssignStrokeColorVariable(
   const issues: Issue[] = []
 
   for (const node of nodes) {
-    if (!node.hasStroke) continue
-
     const ruleResult = validate(node.strokeColor)
     if (ruleResult) {
       issues.push({

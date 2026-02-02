@@ -10,8 +10,6 @@ export default function validateAssignCornerRadiusVariable(
   const issues: Issue[] = []
 
   for (const node of nodes) {
-    if (!node.hasCornerRadius) continue
-
     const ruleResult = validate(node.cornerRadius)
     if (ruleResult) {
       issues.push({
