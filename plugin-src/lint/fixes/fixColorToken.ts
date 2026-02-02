@@ -8,7 +8,7 @@ import {
 } from '../../../shared-src/models/Rules'
 import { getReverseVariableMap } from '../extractors/getVariableMap'
 import { convertRgbToHex } from '../core/convertRgbToHex'
-import { pickBestColorVariable } from './pickBestColorVariable'
+import { pickBestFillColor } from './pickBestFillColor'
 
 function getCurrentFillColor(node: SceneNode): { color: RGB } | null {
   if (!('fills' in node) || !Array.isArray(node.fills)) return null
@@ -67,7 +67,7 @@ export async function fixColorTokens(
           ? FALLBACK_TEXT_ROLES
           : FALLBACK_BACKGROUND_ROLES)
 
-      const picked = await pickBestColorVariable(node, targetRoles, reverseMap)
+      const picked = await pickBestFillColor(node, targetRoles, reverseMap)
       if (!picked) {
         results.push({ nodeId: item.nodeId, status: 'failed' })
         continue
