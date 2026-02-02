@@ -75,23 +75,23 @@ describe('findClosestCandidate', () => {
 })
 
 describe('shouldUseFull', () => {
-  it('角丸が高さの半分以上ならtrue', () => {
+  it('角丸が短辺の半分以上ならtrue', () => {
     expect(shouldUseFull(20, 40)).toBe(true)
   })
 
-  it('角丸が高さの半分未満ならfalse', () => {
+  it('角丸が短辺の半分未満ならfalse', () => {
     expect(shouldUseFull(19, 40)).toBe(false)
   })
 
-  it('角丸が高さの半分と等しい場合はtrue', () => {
+  it('角丸が短辺の半分と等しい場合はtrue', () => {
     expect(shouldUseFull(50, 100)).toBe(true)
   })
 
-  it('角丸が高さより大きい場合もtrue', () => {
+  it('角丸が短辺より大きい場合もtrue', () => {
     expect(shouldUseFull(100, 40)).toBe(true)
   })
 
-  it('高さが0の場合はfalse', () => {
+  it('短辺が0の場合はfalse', () => {
     expect(shouldUseFull(10, 0)).toBe(false)
   })
 
@@ -99,11 +99,21 @@ describe('shouldUseFull', () => {
     expect(shouldUseFull(0, 40)).toBe(false)
   })
 
-  it('ピル型ボタン (height=40, radius=20)', () => {
+  it('ピル型ボタン (minSide=40, radius=20)', () => {
     expect(shouldUseFull(20, 40)).toBe(true)
   })
 
-  it('少し丸い角 (height=40, radius=8)', () => {
+  it('少し丸い角 (minSide=40, radius=8)', () => {
+    expect(shouldUseFull(8, 40)).toBe(false)
+  })
+
+  it('縦長要素 (width=40, height=200) でradius=20ならtrue', () => {
+    // 短辺=40 なので radius=20 >= 40/2 → true
+    expect(shouldUseFull(20, 40)).toBe(true)
+  })
+
+  it('縦長要素 (width=40, height=200) でradius=8ならfalse', () => {
+    // 短辺=40 なので radius=8 < 40/2 → false
     expect(shouldUseFull(8, 40)).toBe(false)
   })
 })
