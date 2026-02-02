@@ -40,7 +40,7 @@ function findVariableNameByRole(
   return undefined
 }
 
-export async function pickBestVariable(
+export async function pickBestColorVariable(
   node: SceneNode,
   targetRoles: string[],
   reverseMap: ReverseVariableMap
