@@ -173,6 +173,7 @@ export default function ChatView({
         ref={viewRef}
         messages={messages}
         imageMetas={imageMetas}
+        isStreaming={isStreaming}
       />
       <div
         style={{

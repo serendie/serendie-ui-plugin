@@ -32,7 +32,7 @@ export async function generateChatTitle(
   try {
     const openai = createOpenAI({ apiKey })
     const result = await generateText({
-      model: openai('gpt-4.1-mini'),
+      model: openai('gpt-5-mini'),
       messages: [
         {
           role: 'system',

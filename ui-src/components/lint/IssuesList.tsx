@@ -2,22 +2,32 @@ import tokens from '@serendie/design-token'
 
 import { Issue } from '../../../shared-src/models/Rules'
 import IssueListItem from './IssueListItem'
-import IssueHeader from './IssueHeader'
+import TokenIssueHeader from './TokenIssueHeader'
+import ComponentIssueHeader from './ComponentIssueHeader'
 
 const { sd } = tokens
 
 export default function IssuesList({
   issues,
   totalItems,
-  title,
+  type,
 }: {
   issues: Issue[]
   totalItems: number
-  title?: string
+  type: 'token' | 'component'
 }) {
   return (
     <div>
-      <IssueHeader issues={issues} totalItems={totalItems} />
+      {type === 'token' ? (
+        <TokenIssueHeader issues={issues} totalItems={totalItems} />
+      ) : (
+        <ComponentIssueHeader
+          count={issues.length}
+          resolvedCount={
+            issues.filter(i => i.severity === 'resolved').length
+          }
+        />
+      )}
       {issues.length > 0 && (
         <div
           style={{
@@ -28,28 +38,20 @@ export default function IssuesList({
             overflowY: 'scroll',
           }}
         >
-          {issues
-            .filter(({ severity }) => severity === 'error')
-            .map((issue, index) => (
+          {(() => {
+            const sorted = [
+              ...issues.filter(({ severity }) => severity === 'error'),
+              ...issues.filter(({ severity }) => severity === 'warning'),
+              ...issues.filter(({ severity }) => severity === 'resolved'),
+            ]
+            return sorted.map((issue, index) => (
               <IssueListItem
-                key={`error-${index}`}
+                key={`${issue.severity}-${index}`}
                 issue={issue}
-                withBorder={index !== issues.length - 1}
+                withBorder={index !== sorted.length - 1}
               />
-            ))}
-          {issues
-            .filter(({ severity }) => severity === 'warning')
-            .map((issue, index) => (
-              <IssueListItem
-                key={`warning-${index}`}
-                issue={issue}
-                withBorder={
-                  index !==
-                  issues.filter(issue => issue.severity === 'warning').length -
-                    1
-                }
-              />
-            ))}
+            ))
+          })()}
         </div>
       )}
     </div>

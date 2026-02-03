@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { z } from 'zod'
 import { LintResult, PluginMessage } from '../../shared-src/models/PluginMessage'
 import { serializeIssues } from '../../shared-src/models/Rules'
-import { serializeNodeStructure } from '../../shared-src/utils/serializeNodeStructure'
+import { serializeNodeStructure } from '../utils/serializeNodeStructure'
 import { postPluginMessage } from './usePluginMessage'
 
 const runLinterParams = z.object({
@@ -56,7 +56,9 @@ export function useLinterTool(): Record<string, Tool> {
                 ? result.issues.map(issue => serializeIssues(issue)).join('\n')
                 : '問題なし'
 
-            const structureText = serializeNodeStructure(result.structure)
+            const structureText = result.structure
+              ? serializeNodeStructure(result.structure)
+              : ''
 
             return `## ${result.name} (ID: ${result.id})
 検証ノード数: ${result.totalNodes}

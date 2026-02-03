@@ -1,4 +1,4 @@
-export const LIBRARY_NAME = '🛠️ Serendie UI Kit'
+export const LIBRARY_NAME = 'Serendie UI Kit'
 export const COLLECTION_NAME_LIST = [
   'color-reference',
   'dimension-reference',
@@ -7,7 +7,14 @@ export const COLLECTION_NAME_LIST = [
   'dimension-system',
   'typography-system',
 ]
-export const UNEXPECTED = 'Unexpected'
+export const CUSTOM_VALUE = 'CustomValue'
+export const FRAME_TYPES = [
+  'FRAME',
+  'RECTANGLE',
+  'COMPONENT',
+  'INSTANCE',
+] as const
+export type FrameType = (typeof FRAME_TYPES)[number]
 const surfaceSeries = [
   'surface',
   'surfaceContainerLowest',
@@ -16,92 +23,77 @@ const surfaceSeries = [
   'surfaceContainerHigh',
   'surfaceContainerHighest',
 ]
-const impressionBasicColors = [
+const onSurfaceSeries = [
+  'onSurface',
+  'onSurfaceVariant',
   'primary',
-  'secondary',
-  'tertiary',
-  'notice',
   'negative',
   'positive',
 ]
-export const TEXT_COLOR_PAIRS: Record<string, string | string[]> = {
+const markLabelSeries = ['01', '02', '03', '04', '05', '06', '07', '08', '09']
+const onMarkLabelSeries = ['onMarkLabel', 'inverseOnMarkLabel']
+
+export const TEXT_COLOR_PAIRS: Record<string, string[]> = {
   primary: surfaceSeries,
-  onPrimary: 'primary',
-  onPrimaryContainer: 'primaryContainer',
-  secondary: surfaceSeries,
-  onSecondary: 'secondary',
-  onSecondaryContainer: 'secondaryContainer',
-  tertiary: surfaceSeries,
-  onTertiary: 'tertiary',
-  onTertiaryContainer: 'tertiaryContainer',
-  notice: surfaceSeries,
-  onNotice: 'notice',
-  onNoticeContainer: 'noticeContainer',
-  onNoticeContainerVariant: 'noticeContainerVariant',
+  onPrimary: ['primary'],
+  onPrimaryContainer: ['primaryContainer'],
+  secondary: ['secondaryContainer'],
+  onSecondary: ['secondary'],
+  onSecondaryContainer: ['secondaryContainer'],
+  tertiary: ['tertiaryContainer'],
+  onTertiary: ['tertiary'],
+  onTertiaryContainer: ['tertiaryContainer'],
+  onNotice: ['notice'],
+  onNoticeContainer: ['noticeContainer'],
+  onNoticeContainerVariant: ['noticeContainerVariant'],
   negative: surfaceSeries,
-  onNegative: 'negative',
-  onNegativeContainer: 'negativeContainer',
-  onNegativeContainerVariant: 'negativeContainerVariant',
+  onNegative: ['negative'],
+  onNegativeContainer: ['negativeContainer'],
+  onNegativeContainerVariant: ['negativeContainerVariant'],
   positive: surfaceSeries,
-  onPositive: 'positive',
-  onPositiveContainer: 'positiveContainer',
-  onPositiveContainerVariant: 'positiveContainerVariant',
+  onPositive: ['positive'],
+  onPositiveContainer: ['positiveContainer'],
+  onPositiveContainerVariant: ['positiveContainerVariant'],
   onSurface: surfaceSeries,
-  inverseOnSurface: 'inverseSurface',
-  onChartSurface: 'chartSurface',
-  onMarkLabel: ['01', '02', '03', '04', '05', '06', '07', '08', '09'],
-  inverseOnMarkLabel: ['01', '02', '03', '04', '05', '06', '07', '08', '09'],
+  inverseOnSurface: ['inverseSurface'],
+  onChartSurface: ['chartSurface'],
+  onMarkLabel: markLabelSeries,
+  inverseOnMarkLabel: markLabelSeries,
 }
 
-export const BACKGROUND_COLOR_PAIRS: Record<string, string | string[]> = {
+export const BACKGROUND_COLOR_PAIRS: Record<string, string[]> = {
   primary: ['onPrimary'],
-  primaryContainer: 'onPrimaryContainer',
-  secondary: 'onSecondary',
-  secondaryContainer: 'onSecondaryContainer',
-  tertiary: 'onTertiary',
-  tertiaryContainer: 'onTertiaryContainer',
-  notice: 'onNotice',
-  noticeContainer: 'onNoticeContainer',
-  noticeContainerVariant: 'onNoticeContainerVariant',
-  negative: 'onNegative',
-  negativeContainer: 'onNegativeContainer',
-  negativeContainerVariant: 'onNegativeContainerVariant',
-  positive: 'onPositive',
-  positiveContainer: 'onPositiveContainer',
-  positiveContainerVariant: 'onPositiveContainerVariant',
-  surface: [...impressionBasicColors, 'onSurface', 'onSurfaceVariant'],
-  inverseSurface: [...impressionBasicColors, 'inverseOnSurface'],
-  surfaceContainerLowest: [
-    ...impressionBasicColors,
-    'onSurface',
-    'onSurfaceVariant',
-  ],
-  surfaceContainerLow: [
-    ...impressionBasicColors,
-    'onSurface',
-    'onSurfaceVariant',
-  ],
-  surfaceContainer: [...impressionBasicColors, 'onSurface', 'onSurfaceVariant'],
-  surfaceContainerHigh: [
-    ...impressionBasicColors,
-    'onSurface',
-    'onSurfaceVariant',
-  ],
-  surfaceContainerHighest: [
-    ...impressionBasicColors,
-    'onSurface',
-    'onSurfaceVariant',
-  ],
-  chartSurface: 'onChartSurface',
-  '01': ['onMarkLabel', 'inverseOnMarkLabel'],
-  '02': ['onMarkLabel', 'inverseOnMarkLabel'],
-  '03': ['onMarkLabel', 'inverseOnMarkLabel'],
-  '04': ['onMarkLabel', 'inverseOnMarkLabel'],
-  '05': ['onMarkLabel', 'inverseOnMarkLabel'],
-  '06': ['onMarkLabel', 'inverseOnMarkLabel'],
-  '07': ['onMarkLabel', 'inverseOnMarkLabel'],
-  '08': ['onMarkLabel', 'inverseOnMarkLabel'],
-  '09': ['onMarkLabel', 'inverseOnMarkLabel'],
+  primaryContainer: ['onPrimaryContainer'],
+  secondary: ['onSecondary'],
+  secondaryContainer: ['onSecondaryContainer', 'secondary'],
+  tertiary: ['onTertiary'],
+  tertiaryContainer: ['onTertiaryContainer', 'tertiary'],
+  notice: ['onNotice'],
+  noticeContainer: ['onNoticeContainer'],
+  noticeContainerVariant: ['onNoticeContainerVariant'],
+  negative: ['onNegative'],
+  negativeContainer: ['onNegativeContainer'],
+  negativeContainerVariant: ['onNegativeContainerVariant'],
+  positive: ['onPositive'],
+  positiveContainer: ['onPositiveContainer'],
+  positiveContainerVariant: ['onPositiveContainerVariant'],
+  surface: onSurfaceSeries,
+  inverseSurface: ['inverseOnSurface'],
+  surfaceContainerLowest: onSurfaceSeries,
+  surfaceContainerLow: onSurfaceSeries,
+  surfaceContainer: onSurfaceSeries,
+  surfaceContainerHigh: onSurfaceSeries,
+  surfaceContainerHighest: onSurfaceSeries,
+  chartSurface: ['onChartSurface'],
+  '01': onMarkLabelSeries,
+  '02': onMarkLabelSeries,
+  '03': onMarkLabelSeries,
+  '04': onMarkLabelSeries,
+  '05': onMarkLabelSeries,
+  '06': onMarkLabelSeries,
+  '07': onMarkLabelSeries,
+  '08': onMarkLabelSeries,
+  '09': onMarkLabelSeries,
 }
 
 export const COLOR_ROLES: string[] = Array.from(
@@ -125,25 +117,163 @@ export const COLOR_ROLES: string[] = Array.from(
   ])
 )
 
+export const STROKE_WIDTH_ROLES: string[] = ['medium', 'thick', 'extraThick']
+
+export const CORNER_RADIUS_ROLES: string[] = [
+  'extraSmall',
+  'small',
+  'medium',
+  'large',
+  'extraLarge',
+  'full',
+]
+
 export type IssueDetail = {
-  severity: 'error' | 'warning'
+  severity: 'error' | 'warning' | 'resolved'
   message: string
-  suggestion: string | null
+  messageDetails: string | null
 }
 
-export type IssueSource = 'design-token' | 'component'
-
-export type Issue = {
+type BaseIssue = {
   nodeId: string
   nodeName: string
   nodeType: string
-  source?: IssueSource
 } & IssueDetail
+
+export type DesignTokenSuggestion = {
+  targetRoles: string[]
+  targetProperty: 'textColor' | 'backgroundColor'
+}
+
+export type RuleResult = IssueDetail & {
+  suggestion?: DesignTokenSuggestion
+}
+
+export type DesignTokenTargetProperty =
+  | 'textColor'
+  | 'backgroundColor'
+  | 'strokeColor'
+  | 'strokeWeight'
+  | 'cornerRadius'
+
+export type DesignTokenIssue = BaseIssue & {
+  source: 'design-token'
+  targetProperty: DesignTokenTargetProperty
+  suggestion?: DesignTokenSuggestion
+}
+
+export type ComponentSuggestion = {
+  componentName: string
+  properties?: Record<string, string | boolean | number>
+}
+
+export type ComponentIssue = BaseIssue & {
+  source: 'component'
+  suggestion: ComponentSuggestion
+}
+
+export type Issue = DesignTokenIssue | ComponentIssue
+
+export function formatRoles(roles: string[] | undefined): string {
+  if (!roles) return '不明'
+  if (roles.length === 1) return `「${roles[0]}」`
+  if (roles.length === 2) return `「${roles[0]}」または「${roles[1]}」`
+  return `${roles.map(role => `「${role}」`).join('')}のいずれか`
+}
 
 export function serializeIssues(issue: Issue): string {
   return (
-    [`${issue.severity}: ${issue.message}`, `提案: ${issue.suggestion}`].join(
-      '\n'
-    ) + '\n'
+    [
+      `${issue.severity}: ${issue.message}`,
+      `提案: ${issue.messageDetails}`,
+    ].join('\n') + '\n'
+  )
+}
+
+// フォールバック候補: テキスト色用（apply時の近似マッチで使用）
+export const FALLBACK_TEXT_ROLES = [
+  'onSurface',
+  'onSurfaceVariant',
+  'inverseOnSurface',
+  'primary',
+  'secondary',
+  'tertiary',
+  'notice',
+  'negative',
+  'positive',
+]
+
+// フォールバック候補: 背景色用（apply時の近似マッチで使用）
+export const FALLBACK_BACKGROUND_ROLES = [
+  'surface',
+  'surfaceContainerLowest',
+  'surfaceContainerLow',
+  'surfaceContainer',
+  'surfaceContainerHigh',
+  'surfaceContainerHighest',
+  'inverseSurface',
+  'primary',
+  'primaryContainer',
+  'secondary',
+  'secondaryContainer',
+  'tertiary',
+  'tertiaryContainer',
+  'notice',
+  'noticeContainer',
+  'noticeContainerVariant',
+  'negative',
+  'negativeContainer',
+  'negativeContainerVariant',
+  'positive',
+  'positiveContainer',
+  'positiveContainerVariant',
+  'inversePrimary',
+]
+
+// フォールバック候補: 線色用（fix時の近似マッチで使用）
+export const FALLBACK_STROKE_ROLES = [
+  'outline',
+  'outlineVariant',
+  'onSurface',
+  'onSurfaceVariant',
+  'inverseOnSurface',
+  'primary',
+  'secondary',
+  'tertiary',
+  'notice',
+  'negative',
+  'positive',
+  'inversePrimary',
+]
+
+// イシュー判定ユーティリティ
+const COLOR_PROPERTIES: ReadonlySet<DesignTokenTargetProperty> = new Set([
+  'textColor',
+  'backgroundColor',
+])
+
+const BORDER_PROPERTIES: ReadonlySet<DesignTokenTargetProperty> = new Set([
+  'strokeColor',
+  'strokeWeight',
+  'cornerRadius',
+])
+
+export function isColorProperty(tp: DesignTokenTargetProperty): boolean {
+  return COLOR_PROPERTIES.has(tp)
+}
+
+export function isBorderProperty(tp: DesignTokenTargetProperty): boolean {
+  return BORDER_PROPERTIES.has(tp)
+}
+
+export function isColorTokenIssue(issue: Issue): issue is DesignTokenIssue {
+  return (
+    issue.source === 'design-token' && isColorProperty(issue.targetProperty)
+  )
+}
+
+export function isBorderTokenIssue(issue: Issue): issue is DesignTokenIssue {
+  return (
+    issue.source === 'design-token' && isBorderProperty(issue.targetProperty)
   )
 }
