@@ -1,5 +1,6 @@
 import {
   BorderTokenFixTarget,
+  FixTokensProgress,
   TokenFixResult,
 } from '../../../shared-src/models/PluginMessage'
 import {
@@ -305,9 +306,11 @@ async function fixStrokeColor(
 }
 
 const CHUNK_SIZE = 20
+const yieldToUI = () => new Promise<void>(resolve => setTimeout(resolve, 0))
 
 export async function fixBorderTokens(
-  targets: BorderTokenFixTarget[]
+  targets: BorderTokenFixTarget[],
+  onProgress?: (progress: FixTokensProgress) => void
 ): Promise<TokenFixResult[]> {
   const reverseMap = await getReverseVariableMap()
 
@@ -319,6 +322,8 @@ export async function fixBorderTokens(
   const allResults: TokenFixResult[] = []
 
   for (let i = 0; i < targets.length; i += CHUNK_SIZE) {
+    onProgress?.({ phase: 'border', current: i, total: targets.length })
+    await yieldToUI()
     const chunk = targets.slice(i, i + CHUNK_SIZE)
     const results = await Promise.all(
       chunk.map(async ({ nodeId, targetProperty }) => {

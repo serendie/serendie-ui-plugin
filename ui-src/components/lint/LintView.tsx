@@ -4,6 +4,7 @@ import tokens from '@serendie/design-token'
 import IssuesList from './IssuesList'
 import SelectionCard from './SelectionCard'
 import ComponentValidationStatus from './ComponentValidationStatus'
+import { FixTokensProgress } from '../../../shared-src/models/PluginMessage'
 import { SerendieSymbol } from '@serendie/symbols'
 import {
   usePluginMessage,
@@ -17,6 +18,19 @@ import { useLintResults } from '../../hooks/useLintResults'
 import IssueTitle from './IssueTitle'
 
 const { sd } = tokens
+
+function formatProgress(progress: FixTokensProgress): string {
+  switch (progress.phase) {
+    case 'color':
+      if (progress.total === 0) return '修正を準備中...'
+      return `塗りを修正中（${progress.current}/${progress.total}）`
+    case 'border':
+      if (progress.total === 0) return '修正を準備中...'
+      return `線のスタイルを修正中（${progress.current}/${progress.total}）`
+    case 'relint':
+      return '再検証中...'
+  }
+}
 
 type LintPhase = 'selecting' | 'results'
 
@@ -40,7 +54,7 @@ export default function LintView({
     results,
     isLoading,
     apiKey,
-    fixingTokenNodeIds,
+    fixProgressMap,
     applyingComponentNodeIds,
     isRelinting,
     imageRefreshKey,
@@ -219,7 +233,7 @@ export default function LintView({
                               size='small'
                               styleType='ghost'
                               disabled={
-                                fixingTokenNodeIds.has(result.id) ||
+                                fixProgressMap.has(result.id) ||
                                 applyingComponentNodeIds.has(result.id) ||
                                 isRelinting
                               }
@@ -251,23 +265,33 @@ export default function LintView({
                       }}
                     >
                       <IssueTitle title='デザイントークン' />
-                      {result.issues.filter(
-                        i =>
-                          i.source === 'design-token' &&
-                          i.severity !== 'resolved'
-                      ).length > 0 && (
-                        <Button
-                          size='small'
-                          styleType='ghost'
-                          disabled={
-                            fixingTokenNodeIds.has(result.id) ||
-                            applyingComponentNodeIds.has(result.id) ||
-                            isRelinting
-                          }
-                          onClick={() => handleFixTokens(result.id)}
+                      {fixProgressMap.has(result.id) ? (
+                        <span
+                          style={{
+                            ...sd.system.typography.body.extraSmall_expanded,
+                            color: sd.system.color.component.onSurfaceVariant,
+                          }}
                         >
-                          すべて修正
-                        </Button>
+                          {formatProgress(fixProgressMap.get(result.id)!)}
+                        </span>
+                      ) : (
+                        result.issues.filter(
+                          i =>
+                            i.source === 'design-token' &&
+                            i.severity !== 'resolved'
+                        ).length > 0 && (
+                          <Button
+                            size='small'
+                            styleType='ghost'
+                            disabled={
+                              applyingComponentNodeIds.has(result.id) ||
+                              isRelinting
+                            }
+                            onClick={() => handleFixTokens(result.id)}
+                          >
+                            すべて修正
+                          </Button>
+                        )
                       )}
                     </div>
                     <IssuesList
