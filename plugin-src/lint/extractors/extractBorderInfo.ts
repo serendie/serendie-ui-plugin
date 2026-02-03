@@ -279,9 +279,11 @@ export default async function extractBorderInfo(
   }
 
   if ('children' in node) {
-    for (const child of node.children) {
-      const childResults = await extractBorderInfo(child)
-      results.push(...childResults)
+    const childResults = await Promise.all(
+      node.children.map(child => extractBorderInfo(child))
+    )
+    for (const r of childResults) {
+      results.push(...r)
     }
   }
 

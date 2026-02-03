@@ -78,8 +78,10 @@ figma.ui.onmessage = async msg => {
     try {
       const results: LintResult[] = []
       for (const selection of selections) {
-        const colorInfoList = await extractColorInfo(selection)
-        const borderInfoList = await extractBorderInfo(selection)
+        const [colorInfoList, borderInfoList] = await Promise.all([
+          extractColorInfo(selection),
+          extractBorderInfo(selection),
+        ])
         const issues = runLint(colorInfoList, borderInfoList)
 
         const structure =
@@ -254,8 +256,10 @@ figma.ui.onmessage = async msg => {
         figma.notify(`ボーダートークン: ${successCount}個修正`)
       }
 
-      const finalColorInfo = await extractColorInfo(rootNode as SceneNode)
-      const finalBorderInfo = await extractBorderInfo(rootNode as SceneNode)
+      const [finalColorInfo, finalBorderInfo] = await Promise.all([
+        extractColorInfo(rootNode as SceneNode),
+        extractBorderInfo(rootNode as SceneNode),
+      ])
       const postFixIssues = runLint(finalColorInfo, finalBorderInfo)
 
       figma.ui.postMessage({
