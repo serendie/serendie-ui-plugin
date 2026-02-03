@@ -2,7 +2,11 @@ import {
   ColorTokenFixTarget,
   TokenFixResult,
 } from '../../../shared-src/models/PluginMessage'
-import { DesignTokenIssue, Issue } from '../../../shared-src/models/Rules'
+import {
+  DesignTokenIssue,
+  Issue,
+  isColorTokenIssue,
+} from '../../../shared-src/models/Rules'
 import extractColorInfo from '../extractors/extractColorInfo'
 import extractBorderInfo from '../extractors/extractBorderInfo'
 import { runLint } from '../validators/runLint'
@@ -10,7 +14,9 @@ import { fixColorTokens } from './fixColorToken'
 
 const MAX_ITERATIONS = 5
 
-function buildTargetsFromIssues(issues: DesignTokenIssue[]): ColorTokenFixTarget[] {
+function buildTargetsFromIssues(
+  issues: DesignTokenIssue[]
+): ColorTokenFixTarget[] {
   const seen = new Set<string>()
   const targets: ColorTokenFixTarget[] = []
   for (const issue of issues) {
@@ -44,6 +50,7 @@ export async function fixColorTokensRecursive(
   const allResults: TokenFixResult[] = []
   let currentTargets = initialTargets
   let iterationCount = 0
+  let postFixIssues: Issue[] | null = null
 
   for (let i = 0; i < MAX_ITERATIONS; i++) {
     if (currentTargets.length === 0) break
@@ -53,20 +60,31 @@ export async function fixColorTokensRecursive(
     allResults.push(...results.filter(r => r.status === 'success'))
     if (results.every(r => r.status === 'failed')) break
 
-    const colorInfoList = await extractColorInfo(rootNode)
-    const borderInfoList = await extractBorderInfo(rootNode)
-    const remaining = runLint(colorInfoList, borderInfoList).filter(
-      (i): i is DesignTokenIssue => i.source === 'design-token'
+    const [colorInfoList, borderInfoList] = await Promise.all([
+      extractColorInfo(rootNode),
+      extractBorderInfo(rootNode),
+    ])
+    postFixIssues = runLint(colorInfoList, borderInfoList)
+    const remaining = postFixIssues.filter(isColorTokenIssue)
+    console.log(
+      `[perf] re-lint iter=${iterationCount}: ${Date.now() - tLint}ms`
+    )
     )
     if (remaining.length === 0) break
+
     currentTargets = buildTargetsFromIssues(remaining)
   }
 
-  const finalColorInfo = await extractColorInfo(rootNode)
-  const finalBorderInfo = await extractBorderInfo(rootNode)
+  // re-lint 結果があればそれを再利用し、なければ final-lint を実行
+  if (!postFixIssues) {
+    const [finalColorInfo, finalBorderInfo] = await Promise.all([
+      extractColorInfo(rootNode),
+      extractBorderInfo(rootNode),
+    ])
+    postFixIssues = runLint(finalColorInfo, finalBorderInfo)
   return {
     results: allResults,
-    postFixIssues: runLint(finalColorInfo, finalBorderInfo),
+    postFixIssues,
     iterationCount,
   }
 }

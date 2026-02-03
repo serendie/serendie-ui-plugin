@@ -261,3 +261,35 @@ export const FALLBACK_STROKE_ROLES = [
   'positive',
   'inversePrimary',
 ]
+
+// イシュー判定ユーティリティ
+const COLOR_PROPERTIES: ReadonlySet<DesignTokenTargetProperty> = new Set([
+  'textColor',
+  'backgroundColor',
+])
+
+const BORDER_PROPERTIES: ReadonlySet<DesignTokenTargetProperty> = new Set([
+  'strokeColor',
+  'strokeWeight',
+  'cornerRadius',
+])
+
+export function isColorProperty(tp: DesignTokenTargetProperty): boolean {
+  return COLOR_PROPERTIES.has(tp)
+}
+
+export function isBorderProperty(tp: DesignTokenTargetProperty): boolean {
+  return BORDER_PROPERTIES.has(tp)
+}
+
+export function isColorTokenIssue(issue: Issue): issue is DesignTokenIssue {
+  return (
+    issue.source === 'design-token' && isColorProperty(issue.targetProperty)
+  )
+}
+
+export function isBorderTokenIssue(issue: Issue): issue is DesignTokenIssue {
+  return (
+    issue.source === 'design-token' && isBorderProperty(issue.targetProperty)
+  )
+}
