@@ -44,9 +44,11 @@ function applyVariableToFills(node: SceneNode, variable: Variable) {
 }
 
 const CHUNK_SIZE = 20
+const yieldToUI = () => new Promise<void>(resolve => setTimeout(resolve, 0))
 
 export async function fixColorTokens(
-  targets: ColorTokenFixTarget[]
+  targets: ColorTokenFixTarget[],
+  onChunkProgress?: (processed: number, total: number) => void
 ): Promise<TokenFixResult[]> {
   const reverseMap = await getReverseVariableMap()
 
@@ -65,6 +67,8 @@ export async function fixColorTokens(
   const allResults: TokenFixResult[] = []
 
   for (let i = 0; i < targets.length; i += CHUNK_SIZE) {
+    onChunkProgress?.(i, targets.length)
+    await yieldToUI()
     const chunk = targets.slice(i, i + CHUNK_SIZE)
     const results = await Promise.all(
       chunk.map(async ({ nodeId, suggestion, targetProperty }) => {

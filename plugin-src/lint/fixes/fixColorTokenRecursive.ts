@@ -1,5 +1,6 @@
 import {
   ColorTokenFixTarget,
+  FixTokensProgress,
   TokenFixResult,
 } from '../../../shared-src/models/PluginMessage'
 import {
@@ -41,7 +42,8 @@ function buildTargetsFromIssues(
 
 export async function fixColorTokensRecursive(
   rootNode: SceneNode,
-  initialTargets: ColorTokenFixTarget[]
+  initialTargets: ColorTokenFixTarget[],
+  onProgress?: (progress: FixTokensProgress) => void
 ): Promise<{
   results: TokenFixResult[]
   postFixIssues: Issue[]
@@ -51,15 +53,24 @@ export async function fixColorTokensRecursive(
   let currentTargets = initialTargets
   let iterationCount = 0
   let postFixIssues: Issue[] | null = null
+  let totalTargets = initialTargets.length
 
   for (let i = 0; i < MAX_ITERATIONS; i++) {
     if (currentTargets.length === 0) break
     iterationCount++
 
-    const results = await fixColorTokens(currentTargets)
+    // 2回目以降はtotalを累積させてcurrentがtotalを超えないようにする
+    if (i > 0) totalTargets += currentTargets.length
+
+    onProgress?.({ phase: 'color', current: allResults.length, total: totalTargets })
+    const baseCount = allResults.length
+    const results = await fixColorTokens(currentTargets, (processed) => {
+      onProgress?.({ phase: 'color', current: baseCount + processed, total: totalTargets })
+    })
     allResults.push(...results.filter(r => r.status === 'success'))
     if (results.every(r => r.status === 'failed')) break
 
+    onProgress?.({ phase: 'relint', current: i + 1, total: MAX_ITERATIONS })
     const [colorInfoList, borderInfoList] = await Promise.all([
       extractColorInfo(rootNode),
       extractBorderInfo(rootNode),
@@ -73,6 +84,7 @@ export async function fixColorTokensRecursive(
 
   // re-lint 結果があればそれを再利用し、なければ final-lint を実行
   if (!postFixIssues) {
+    onProgress?.({ phase: 'relint', current: 0, total: 1 })
     const [finalColorInfo, finalBorderInfo] = await Promise.all([
       extractColorInfo(rootNode),
       extractBorderInfo(rootNode),

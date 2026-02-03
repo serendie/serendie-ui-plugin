@@ -6,6 +6,7 @@ import {
   BorderTokenFixTarget,
   ComponentApplyTarget,
   ColorTokenFixTarget,
+  FixTokensProgress,
   PluginMessage,
   SelectionInfo,
 } from '../../shared-src/models/PluginMessage'
@@ -38,9 +39,9 @@ export function useLintResults({
 }) {
   const [results, setResults] = useState<Result[]>([])
   const [isLoading, setIsLoading] = useState(false)
-  const [fixingTokenNodeIds, setFixingTokenNodeIds] = useState<Set<string>>(
-    new Set()
-  )
+  const [fixProgressMap, setFixProgressMap] = useState<
+    Map<string, FixTokensProgress>
+  >(new Map())
   const [applyingComponentNodeIds, setApplyingComponentNodeIds] = useState<
     Set<string>
   >(new Set())
@@ -94,12 +95,19 @@ export function useLintResults({
           })
         }
       }
+      if (message.type === 'fix-tokens-progress') {
+        setFixProgressMap(prev => {
+          const next = new Map(prev)
+          next.set(message.rootNodeId, message.progress)
+          return next
+        })
+      }
       if (
         message.type === 'fix-color-tokens-result' ||
         message.type === 'fix-border-tokens-result'
       ) {
-        setFixingTokenNodeIds(prev => {
-          const next = new Set(prev)
+        setFixProgressMap(prev => {
+          const next = new Map(prev)
           next.delete(message.rootNodeId)
           return next
         })
@@ -305,7 +313,11 @@ export function useLintResults({
       }
 
       if (hasSentAny) {
-        setFixingTokenNodeIds(prev => new Set(prev).add(rootNodeId))
+        setFixProgressMap(prev => {
+          const next = new Map(prev)
+          next.set(rootNodeId, { phase: 'color', current: 0, total: 0 })
+          return next
+        })
       }
     },
     [results]
@@ -319,7 +331,7 @@ export function useLintResults({
     results,
     isLoading,
     apiKey,
-    fixingTokenNodeIds,
+    fixProgressMap,
     applyingComponentNodeIds,
     isRelinting,
     imageRefreshKey,

@@ -97,6 +97,13 @@ export type TokenFixResult = {
   originalColorHex?: string // 適用前の元の色（hex）
 }
 
+// 修正進捗
+export type FixTokensProgress = {
+  phase: 'color' | 'border' | 'relint'
+  current: number
+  total: number
+}
+
 // Plugin → UI
 export type PluginToUIMessage =
   | LintMessage
@@ -119,6 +126,11 @@ export type PluginToUIMessage =
       rootNodeId: string
       results: TokenFixResult[]
       postFixIssues: Issue[]
+    }
+  | {
+      type: 'fix-tokens-progress'
+      rootNodeId: string
+      progress: FixTokensProgress
     }
 
 // UI → Plugin
