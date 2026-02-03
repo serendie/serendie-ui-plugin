@@ -122,7 +122,8 @@ export function useLintResults({
               formatColorResolvedMessage(applied)
           : (issue: Issue, applied: TokenFixResult[]) =>
               formatBorderResolvedMessage(
-                (issue as DesignTokenIssue).targetProperty as BorderTokenFixTarget['targetProperty'],
+                (issue as DesignTokenIssue)
+                  .targetProperty as BorderTokenFixTarget['targetProperty'],
                 applied
               )
 
@@ -217,6 +218,7 @@ export function useLintResults({
 
   const handleRunLinter = useCallback(() => {
     setIsLoading(true)
+    setImageRefreshKey(k => k + 1)
     postPluginMessage({
       type: 'run-linter',
       nodeIds: selections.map(s => s.id),
