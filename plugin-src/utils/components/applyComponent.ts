@@ -32,14 +32,17 @@ export async function applyComponents(
     return { results, detached: 0 }
   }
 
-  // Step 1: 解体前にツリーパスを記録
+  // Step 1: 解体前にツリーパスを記録（並列取得）
   const treePathMap = new Map<string, number[]>()
-  for (const target of targets) {
-    const node = await figma.getNodeByIdAsync(target.nodeId)
+  const nodes = await Promise.all(
+    targets.map(t => figma.getNodeByIdAsync(t.nodeId))
+  )
+  for (let i = 0; i < targets.length; i++) {
+    const node = nodes[i]
     if (!node) continue
     const path = getTreePath(node, rootNode)
     if (path) {
-      treePathMap.set(target.nodeId, path)
+      treePathMap.set(targets[i].nodeId, path)
     }
   }
 
