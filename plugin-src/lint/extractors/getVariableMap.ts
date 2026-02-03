@@ -57,6 +57,16 @@ export async function getReverseVariableMap(): Promise<ReverseVariableMap> {
   return reverseVariableMap
 }
 
+const variableCache = new Map<string, Promise<Variable>>()
+
+export function importVariableCached(key: string): Promise<Variable> {
+  const cached = variableCache.get(key)
+  if (cached) return cached
+  const promise = figma.variables.importVariableByKeyAsync(key)
+  variableCache.set(key, promise)
+  return promise
+}
+
 async function getLocalVariableMap() {
   const allCollections =
     await figma.variables.getLocalVariableCollectionsAsync()
