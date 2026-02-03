@@ -130,9 +130,11 @@ export default async function extractColorInfo(
     }
   }
   if ('children' in node) {
-    for (const child of node.children) {
-      const childResults = await extractColorInfo(child)
-      results.push(...childResults)
+    const childResults = await Promise.all(
+      node.children.map(child => extractColorInfo(child))
+    )
+    for (const r of childResults) {
+      results.push(...r)
     }
   }
   return results
