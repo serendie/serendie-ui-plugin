@@ -85,11 +85,20 @@ export async function fixColorTokens(
             ? convertRgbToHex(currentFill.color)
             : undefined
 
+          const hasChildren =
+            'children' in node &&
+            Array.isArray((node as ChildrenMixin).children) &&
+            (node as ChildrenMixin).children.length > 0
+
           const targetRoles =
             suggestion?.targetRoles ??
             (targetProperty === 'textColor'
               ? FALLBACK_TEXT_ROLES
-              : FALLBACK_BACKGROUND_ROLES)
+              : hasChildren
+                ? FALLBACK_BACKGROUND_ROLES
+                : FALLBACK_BACKGROUND_ROLES.filter(
+                    r => !r.includes('Container')
+                  ))
 
           const picked = await pickBestFillColor(node, targetRoles, reverseMap)
           if (!picked) {
