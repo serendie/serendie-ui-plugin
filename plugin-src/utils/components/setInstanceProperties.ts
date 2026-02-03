@@ -11,6 +11,10 @@ import {
 import { parseInstanceSwapValue } from '../../../shared-src/utils/parseInstanceSwapValue'
 import { applyFigmaSpecificDefaults } from './applyFigmaSpecificDefaults'
 import { findDescendantByName } from '../nodes/findDescendantByName'
+import {
+  importComponentByKeyCached,
+  importComponentSetByKeyCached,
+} from './importComponentCached'
 import componentKeys from '../../../shared-src/assets/component-keys.json'
 
 const componentKeysMap = componentKeys as ComponentKeysMap
@@ -165,7 +169,7 @@ export async function setInstanceProperties(
   if (pendingInstanceSwaps.length > 0) {
     const importedSets = await Promise.all(
       pendingInstanceSwaps.map(s =>
-        figma.importComponentSetByKeyAsync(s.componentSetKey)
+        importComponentSetByKeyCached(s.componentSetKey)
       )
     )
     for (let i = 0; i < pendingInstanceSwaps.length; i++) {
@@ -233,7 +237,7 @@ export async function setInstanceProperties(
   if (instanceSwapProps.length > 0) {
     const swapImports = await Promise.all(
       instanceSwapProps.map(({ componentKey }) =>
-        figma.importComponentByKeyAsync(componentKey)
+        importComponentByKeyCached(componentKey)
       )
     )
     for (let i = 0; i < instanceSwapProps.length; i++) {
