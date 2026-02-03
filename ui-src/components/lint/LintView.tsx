@@ -1,24 +1,36 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
-import { Button, ProgressIndicatorIndeterminate } from '@serendie/ui'
+import { Button } from '@serendie/ui'
 import tokens from '@serendie/design-token'
 import IssuesList from './IssuesList'
 import SelectionCard from './SelectionCard'
+import ComponentValidationStatus from './ComponentValidationStatus'
+import { FixTokensProgress } from '../../../shared-src/models/PluginMessage'
 import { SerendieSymbol } from '@serendie/symbols'
-import { Result } from '../../models/Result'
 import {
   usePluginMessage,
   postPluginMessage,
 } from '../../hooks/usePluginMessage'
 import {
-  LintResult,
   PluginMessage,
   SelectionInfo,
 } from '../../../shared-src/models/PluginMessage'
-import { useApiKey } from '../../hooks/useApiKey'
-import { useComponentValidation } from '../../validations/useComponentValidation'
+import { useLintResults } from '../../hooks/useLintResults'
 import IssueTitle from './IssueTitle'
 
 const { sd } = tokens
+
+function formatProgress(progress: FixTokensProgress): string {
+  switch (progress.phase) {
+    case 'color':
+      if (progress.total === 0) return '修正を準備中...'
+      return `塗りを修正中（${progress.current}/${progress.total}）`
+    case 'border':
+      if (progress.total === 0) return '修正を準備中...'
+      return `線のスタイルを修正中（${progress.current}/${progress.total}）`
+    case 'relint':
+      return '再検証中...'
+  }
+}
 
 type LintPhase = 'selecting' | 'results'
 
@@ -33,20 +45,31 @@ export default function LintView({
 }: LintViewProps) {
   const [phase, setPhase] = useState<LintPhase>('selecting')
   const [selections, setSelections] = useState<SelectionInfo[]>([])
-  const [results, setResults] = useState<Result[]>([])
-  const [isLoading, setIsLoading] = useState(false)
   const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({})
   const [selectionImages, setSelectionImages] = useState<
     Record<string, string>
   >({})
-  const pendingLintResultsRef = useRef<LintResult[] | null>(null)
 
-  const { apiKey } = useApiKey()
   const {
-    state: componentValidationState,
-    validate: validateComponents,
-    cancel: cancelComponentValidation,
-  } = useComponentValidation({ apiKey })
+    results,
+    isLoading,
+    apiKey,
+    fixProgressMap,
+    applyingComponentNodeIds,
+    isRelinting,
+    imageRefreshKey,
+    componentValidationState,
+    cancelComponentValidation,
+    handleRunLinter,
+    handleApplyComponents,
+    handleFixTokens,
+    handleLintMessage,
+    resetResults,
+  } = useLintResults({
+    selections,
+    selectionImages,
+    onPhaseChange: setPhase,
+  })
 
   const allImagesLoaded =
     selections.length > 0 &&
@@ -91,44 +114,9 @@ export default function LintView({
           return next
         })
       }
-      if (message.type === 'lint-result' && message.source === 'lint-view') {
-        // デザイントークン検証完了、まず結果を表示
-        setIsLoading(false)
-        setResults(message.results)
-        setPhase('results')
-
-        // APIキーがあればコンポーネント検証を裏で実行
-        if (apiKey) {
-          pendingLintResultsRef.current = message.results
-          const runComponentValidation = async () => {
-            const updatedResults: Result[] = []
-            for (const result of message.results) {
-              const image = selectionImages[result.id]
-              const componentResult = await validateComponents(
-                result.structure,
-                image
-              )
-              // キャンセルされた場合はループを中断
-              if (componentResult === null) {
-                return
-              }
-              updatedResults.push({
-                ...result,
-                issues: [...result.issues, ...(componentResult?.issues || [])],
-                totalComponents:
-                  componentResult?.candidates.filter(
-                    c => c.suggestedComponent !== null
-                  ).length ?? 0,
-              })
-            }
-            // コンポーネント検証完了後に結果を更新
-            setResults(updatedResults)
-          }
-          runComponentValidation()
-        }
-      }
+      handleLintMessage(message)
     },
-    [phase, apiKey, selectionImages, validateComponents]
+    [phase, handleLintMessage]
   )
 
   useEffect(() => {
@@ -137,21 +125,12 @@ export default function LintView({
 
   usePluginMessage(handleMessage)
 
-  const handleRunLinter = useCallback(() => {
-    setIsLoading(true)
-    postPluginMessage({
-      type: 'run-linter',
-      nodeIds: selections.map(s => s.id),
-      source: 'lint-view',
-    })
-  }, [selections])
-
   const handleReselect = useCallback(() => {
     cancelComponentValidation()
     setPhase('selecting')
-    setResults([])
+    resetResults()
     postPluginMessage({ type: 'request-selection' })
-  }, [cancelComponentValidation])
+  }, [cancelComponentValidation, resetResults])
 
   const handleImageLoadComplete = useCallback((nodeId: string) => {
     setLoadedImages(prev => ({ ...prev, [nodeId]: true }))
@@ -223,60 +202,104 @@ export default function LintView({
               style={{
                 display: 'flex',
                 flexDirection: 'column',
-                gap: sd.system.dimension.spacing.large,
+                gap: sd.system.dimension.spacing.medium,
               }}
             >
               <SelectionCard
                 selection={selection}
                 onLoadComplete={handleImageLoadComplete}
                 isActive={isActive}
+                refreshKey={imageRefreshKey}
               />
               {phase === 'results' && result && (
                 <>
                   {apiKey && (
                     <div>
-                      <IssueTitle title='コンポーネント' />
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <IssueTitle title='コンポーネント' />
+                        {componentValidationState === 'done' &&
+                          result.issues.filter(
+                            i =>
+                              i.source === 'component' &&
+                              i.severity !== 'resolved'
+                          ).length > 0 && (
+                            <Button
+                              size='small'
+                              styleType='ghost'
+                              disabled={
+                                fixProgressMap.has(result.id) ||
+                                applyingComponentNodeIds.has(result.id) ||
+                                isRelinting
+                              }
+                              onClick={() => handleApplyComponents(result.id)}
+                            >
+                              すべて適用
+                            </Button>
+                          )}
+                      </div>
                       {componentValidationState === 'analyzing' ? (
-                        <div
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: sd.system.dimension.spacing.small,
-                            padding: sd.system.dimension.spacing.small,
-                            backgroundColor: sd.system.color.component.surface,
-                            borderRadius: sd.system.dimension.radius.medium,
-                          }}
-                        >
-                          <ProgressIndicatorIndeterminate
-                            size='small'
-                            type='circular'
-                          />
-                          <span
-                            style={{
-                              ...sd.system.typography.body.extraSmall_expanded,
-                              color: sd.system.color.component.onSurfaceVariant,
-                            }}
-                          >
-                            Serendie UIを適用できるか検証しています
-                          </span>
-                        </div>
+                        <ComponentValidationStatus />
                       ) : (
                         <IssuesList
                           issues={result.issues.filter(
                             issue => issue.source === 'component'
                           )}
                           totalItems={result.totalComponents ?? 0}
+                          type='component'
                         />
                       )}
                     </div>
                   )}
                   <div>
-                    <IssueTitle title='デザイントークン' />
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <IssueTitle title='デザイントークン' />
+                      {fixProgressMap.has(result.id) ? (
+                        <span
+                          style={{
+                            ...sd.system.typography.body.extraSmall_expanded,
+                            color: sd.system.color.component.onSurfaceVariant,
+                          }}
+                        >
+                          {formatProgress(fixProgressMap.get(result.id)!)}
+                        </span>
+                      ) : (
+                        result.issues.filter(
+                          i =>
+                            i.source === 'design-token' &&
+                            i.severity !== 'resolved'
+                        ).length > 0 && (
+                          <Button
+                            size='small'
+                            styleType='ghost'
+                            disabled={
+                              applyingComponentNodeIds.has(result.id) ||
+                              isRelinting
+                            }
+                            onClick={() => handleFixTokens(result.id)}
+                          >
+                            すべて修正
+                          </Button>
+                        )
+                      )}
+                    </div>
                     <IssuesList
                       issues={result.issues.filter(
                         issue => issue.source !== 'component'
                       )}
                       totalItems={result.totalNodes}
+                      type='token'
                     />
                   </div>
                 </>

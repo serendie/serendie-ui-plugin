@@ -9,55 +9,81 @@ import {
 } from '../utils/generateChatTitle'
 
 export const MAX_SESSIONS = 20
-const MAX_IMAGE_SIZE_BYTES = 2 * 1024 * 1024 // 1セッションあたりの画像最大2MB
+export const MAX_SESSION_SIZE = 1.25 * 1024 * 1024 // 1.25MB
+export const IMAGE_REMOVED_PLACEHOLDER = '[IMAGE_REMOVED_DUE_TO_SIZE_LIMIT]'
 
 function generateId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
 }
 
-// imageMetasのサイズを計算（バイト単位）
-function getImageMetasSize(imageMetas: ImageMetas): number {
-  return new Blob([JSON.stringify(imageMetas)]).size
-}
-
-// セッションから画像を削除してサイズを制限
-function trimSessionImages(
-  imageMetas: ImageMetas,
-  maxSize: number
-): ImageMetas {
-  const size = getImageMetasSize(imageMetas)
-  if (size <= maxSize) return imageMetas
-
-  // imageMetasから古い順に削除（オブジェクトのキー順）
-  const imageKeys = Object.keys(imageMetas)
-  if (imageKeys.length === 0) return imageMetas
-
-  const trimmed = { ...imageMetas }
-  for (const key of imageKeys) {
-    delete trimmed[key]
-    if (getImageMetasSize(trimmed) <= maxSize) {
-      return trimmed
+// imageMetasから画像データを除外してラベル情報のみ保持
+function stripImageData(imageMetas: ImageMetas): ImageMetas {
+  const stripped: ImageMetas = {}
+  for (const [key, value] of Object.entries(imageMetas)) {
+    stripped[key] = {
+      ...value,
+      image: '', // 画像データは保存しない
     }
   }
-
-  return {}
+  return stripped
 }
 
-// セッション配列から古いセッションの画像を削除
-function trimOldestSessionImages(sessions: ChatSession[]): ChatSession[] {
+// 容量超過時に古いセッションを削除
+function trimOldestSession(sessions: ChatSession[]): ChatSession[] {
   if (sessions.length === 0) return sessions
+  // 一番古いセッション（末尾）を削除
+  return sessions.slice(0, -1)
+}
 
-  const result = [...sessions]
-  // 一番古いセッション（末尾）から画像を削除
-  for (let i = result.length - 1; i >= 0; i--) {
-    if (Object.keys(result[i].imageMetas).length > 0) {
-      result[i] = { ...result[i], imageMetas: {} }
-      return result
+// メッセージ内の古い画像から順に削除してサイズを制限内に収める
+function trimSessionImages(
+  messages: ModelMessage[],
+  maxSize: number
+): { messages: ModelMessage[]; trimmed: boolean } {
+  let trimmed = false
+  let currentMessages = [...messages]
+
+  // サイズが制限内になるまで古い画像から削除
+  while (JSON.stringify(currentMessages).length > maxSize) {
+    // 古いメッセージから順に画像を探す
+    let removed = false
+    for (let i = 0; i < currentMessages.length; i++) {
+      const msg = currentMessages[i]
+      if (msg.role !== 'user' || !Array.isArray(msg.content)) continue
+
+      // このメッセージ内に削除可能な画像があるか
+      const imageIndex = msg.content.findIndex(
+        part =>
+          part.type === 'image' &&
+          typeof part.image === 'string' &&
+          part.image !== IMAGE_REMOVED_PLACEHOLDER
+      )
+
+      if (imageIndex !== -1) {
+        // 画像をプレースホルダーに置き換え
+        const newContent = msg.content.map((part, idx) => {
+          if (idx === imageIndex && part.type === 'image') {
+            return { type: 'image' as const, image: IMAGE_REMOVED_PLACEHOLDER }
+          }
+          return part
+        })
+        currentMessages = [
+          ...currentMessages.slice(0, i),
+          { ...msg, content: newContent },
+          ...currentMessages.slice(i + 1),
+        ]
+        trimmed = true
+        removed = true
+        console.log(`容量制限: メッセージ[${i}]の画像を削除しました`)
+        break
+      }
     }
+
+    // 削除できる画像がなければループを抜ける
+    if (!removed) break
   }
 
-  // すべての画像が削除済みの場合、一番古いセッションを削除
-  return result.slice(0, -1)
+  return { messages: currentMessages, trimmed }
 }
 
 export function useChatSessions(apiKey: string) {
@@ -97,9 +123,10 @@ export function useChatSessions(apiKey: string) {
         type === 'storage-save-failed' &&
         key === ClientStorage.CHAT_SESSIONS
       ) {
-        // 保存失敗時：古いセッションから画像を削除してリトライ
+        // 保存失敗時：古いセッションを削除してリトライ
         if (pendingSaveRef.current && pendingSaveRef.current.length > 0) {
-          const trimmed = trimOldestSessionImages(pendingSaveRef.current)
+          const trimmed = trimOldestSession(pendingSaveRef.current)
+          console.log(`ストレージ容量超過: 古いセッションを削除しました（残り${trimmed.length}件）`)
           if (trimmed.length > 0) {
             pendingSaveRef.current = trimmed
             parent.postMessage(
@@ -139,10 +166,13 @@ export function useChatSessions(apiKey: string) {
     async (messages: ModelMessage[], imageMetas: ImageMetas) => {
       if (messages.length === 0) return null
 
-      // 画像サイズを制限
-      const trimmedImageMetas = trimSessionImages(
-        imageMetas,
-        MAX_IMAGE_SIZE_BYTES
+      // imageMetasから画像データを除外（ラベル情報のみ保持）
+      const strippedImageMetas = stripImageData(imageMetas)
+
+      // セッションサイズが制限を超える場合、古い画像から削除
+      const { messages: trimmedMessages } = trimSessionImages(
+        messages,
+        MAX_SESSION_SIZE
       )
 
       const now = Date.now()
@@ -154,8 +184,8 @@ export function useChatSessions(apiKey: string) {
         session = {
           id: currentSessionId,
           title: existing?.title ?? DEFAULT_CHAT_TITLE,
-          messages,
-          imageMetas: trimmedImageMetas,
+          messages: trimmedMessages,
+          imageMetas: strippedImageMetas,
           createdAt: existing?.createdAt ?? now,
           updatedAt: now,
         }
@@ -168,8 +198,8 @@ export function useChatSessions(apiKey: string) {
         session = {
           id: newId,
           title,
-          messages,
-          imageMetas: trimmedImageMetas,
+          messages: trimmedMessages,
+          imageMetas: strippedImageMetas,
           createdAt: now,
           updatedAt: now,
         }

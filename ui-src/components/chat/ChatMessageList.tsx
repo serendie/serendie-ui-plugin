@@ -12,6 +12,7 @@ const { sd } = tokens
 interface ChatMessageListProps {
   messages: ModelMessage[]
   imageMetas: ImageMetas
+  isStreaming?: boolean
 }
 
 export interface ChatMessageListRef {
@@ -19,7 +20,7 @@ export interface ChatMessageListRef {
 }
 
 const ChatMessageList = forwardRef<ChatMessageListRef, ChatMessageListProps>(
-  function ChatMessageList({ messages, imageMetas }, ref) {
+  function ChatMessageList({ messages, imageMetas, isStreaming }, ref) {
     const { scrollContainerRef, scrollToBottom } = useAutoScroll(messages)
 
     useImperativeHandle(ref, () => ({
@@ -36,17 +37,20 @@ const ChatMessageList = forwardRef<ChatMessageListRef, ChatMessageListProps>(
         }}
       >
         {messages
+          .map((msg, originalIndex) => ({ ...msg, originalIndex }))
           .filter(
             ({ role }) =>
               role === 'user' || role === 'assistant' || role === 'tool'
           )
-          .map(({ role, content }, index) => {
+          .map(({ role, content, originalIndex }, index, filtered) => {
+            const isLastAssistant =
+              role === 'assistant' && index === filtered.length - 1
             if (role === 'tool') {
               const toolContent = content as ToolContent
               if (toolContent?.[0].toolName) {
                 return (
                   <p
-                    key={index}
+                    key={originalIndex}
                     style={{
                       ...sd.system.typography.label.small_expanded,
                       color: sd.system.color.component.onSurfaceVariant,
@@ -78,17 +82,18 @@ const ChatMessageList = forwardRef<ChatMessageListRef, ChatMessageListProps>(
             }
 
             const imageLabels = imageContents.map((_, imageIndex) => {
-              const item = imageMetas[getImageMetaKey(index, imageIndex)]
+              const item = imageMetas[getImageMetaKey(originalIndex, imageIndex)]
               return item?.label ?? ''
             })
 
             return (
               <ChatMessage
-                key={index}
+                key={originalIndex}
                 role={role as 'user' | 'assistant'}
                 content={textContent}
                 images={imageContents.length > 0 ? imageContents : undefined}
                 imageLabels={imageLabels.length > 0 ? imageLabels : undefined}
+                isStreaming={isLastAssistant && isStreaming}
               />
             )
           })}

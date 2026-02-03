@@ -1,11 +1,12 @@
-import extractColorInfo from './utils/extractColorInfo'
-import { Issue } from '../shared-src/models/Rules'
-import validateColorPairing from './utils/validateColorPairing'
-import validateAssignFrameVariable from './utils/validateAssignFrameVariable'
-import validateAssignTextVariable from './utils/validateAssignTextVariable'
+import extractColorInfo from './lint/extractors/extractColorInfo'
+import extractBorderInfo from './lint/extractors/extractBorderInfo'
+import { runLint } from './lint/validators/runLint'
 import getImage, { canGetImage } from '../shared-src/utils/getImage'
-import buildNodeStructure from './utils/buildNodeStructure'
-import { NodeStructure } from '../shared-src/models/PluginMessage'
+import buildNodeStructure from './utils/nodes/buildNodeStructure'
+import { LintResult } from '../shared-src/models/PluginMessage'
+import { applyComponents } from './utils/components/applyComponent'
+import { fixColorTokensRecursive } from './lint/fixes/fixColorTokenRecursive'
+import { fixBorderTokens } from './lint/fixes/fixBorderToken'
 
 figma.showUI(__html__, {
   width: 360,
@@ -75,25 +76,18 @@ figma.ui.onmessage = async msg => {
     }
 
     try {
-      const results: Array<{
-        name: string
-        id: string
-        issues: Issue[]
-        totalNodes: number
-        structure: NodeStructure
-      }> = []
+      const results: LintResult[] = []
       for (const selection of selections) {
-        const colorInfoList = await extractColorInfo(selection)
-        const pairingResult = validateColorPairing(colorInfoList)
-        const textColorResult = validateAssignTextVariable(colorInfoList)
-        const frameColorResult = validateAssignFrameVariable(colorInfoList)
-        const issues: Issue[] = [
-          ...pairingResult.issues,
-          ...textColorResult.issues,
-          ...frameColorResult.issues,
-        ]
+        const [colorInfoList, borderInfoList] = await Promise.all([
+          extractColorInfo(selection),
+          extractBorderInfo(selection),
+        ])
+        const issues = runLint(colorInfoList, borderInfoList)
 
-        const structure = await buildNodeStructure(selection)
+        const structure =
+          msg.source === 'component-validation'
+            ? undefined
+            : await buildNodeStructure(selection)
 
         results.push({
           name: selection.name,
@@ -165,6 +159,153 @@ figma.ui.onmessage = async msg => {
   }
   if (msg.type === 'notify') {
     figma.notify(msg.message)
+  }
+  if (msg.type === 'apply-components') {
+    try {
+      const result = await applyComponents(msg.rootNodeId, msg.targets)
+      const successCount = result.results.filter(
+        r => r.status === 'success'
+      ).length
+      const failedCount = result.results.filter(
+        r => r.status === 'failed'
+      ).length
+      const skippedCount = result.results.filter(
+        r => r.status === 'skipped'
+      ).length
+
+      const messages: string[] = []
+      if (result.detached > 0) {
+        messages.push(`${result.detached}個インスタンス解除`)
+      }
+      if (successCount > 0) {
+        messages.push(`${successCount}個適用`)
+      }
+      if (skippedCount > 0) {
+        messages.push(`${skippedCount}個スキップ`)
+      }
+      if (messages.length > 0) {
+        figma.notify(messages.join('、'))
+      }
+      if (failedCount > 0) {
+        figma.notify(`${failedCount}個の適用に失敗しました`, {
+          error: true,
+        })
+      }
+
+      // UIに適用結果を送信
+      figma.ui.postMessage({
+        type: 'apply-components-result',
+        rootNodeId: msg.rootNodeId,
+        results: result.results,
+      })
+    } catch (error) {
+      figma.notify(
+        error instanceof Error
+          ? error.message
+          : 'コンポーネントの適用に失敗しました',
+        { error: true }
+      )
+    }
+  }
+  if (msg.type === 'fix-color-tokens') {
+    try {
+      const rootNode = await figma.getNodeByIdAsync(msg.rootNodeId)
+      if (!rootNode || !('type' in rootNode)) {
+        figma.notify('対象のノードが見つかりませんでした。', { error: true })
+        return
+      }
+
+      const sendProgress = (progress: {
+        phase: string
+        current: number
+        total: number
+      }) => {
+        figma.ui.postMessage({
+          type: 'fix-tokens-progress',
+          rootNodeId: msg.rootNodeId,
+          progress,
+        })
+      }
+
+      const { results, postFixIssues } = await fixColorTokensRecursive(
+        rootNode as SceneNode,
+        msg.targets,
+        sendProgress
+      )
+
+      const successCount = results.length
+      const messages: string[] = []
+      if (successCount > 0) messages.push(`${successCount}個修正`)
+      const remainingCount = postFixIssues.filter(
+        i => i.source === 'design-token'
+      ).length
+      if (remainingCount > 0) messages.push(`${remainingCount}個の未解決あり`)
+      if (messages.length > 0)
+        figma.notify(`塗りのスタイル：${messages.join('、')}`)
+
+      figma.ui.postMessage({
+        type: 'fix-color-tokens-result',
+        rootNodeId: msg.rootNodeId,
+        results,
+        postFixIssues,
+      })
+    } catch (error) {
+      figma.notify(
+        error instanceof Error ? error.message : '塗りの修正に失敗しました',
+        { error: true }
+      )
+    }
+  }
+  if (msg.type === 'fix-border-tokens') {
+    try {
+      const rootNode = await figma.getNodeByIdAsync(msg.rootNodeId)
+      if (!rootNode || !('type' in rootNode)) {
+        figma.notify('対象のノードが見つかりませんでした。', { error: true })
+        return
+      }
+
+      const sendProgress = (progress: {
+        phase: string
+        current: number
+        total: number
+      }) => {
+        figma.ui.postMessage({
+          type: 'fix-tokens-progress',
+          rootNodeId: msg.rootNodeId,
+          progress,
+        })
+      }
+
+      const results = await fixBorderTokens(msg.targets, sendProgress)
+
+      const successCount = results.filter(
+        (r: { status: string }) => r.status === 'success'
+      ).length
+      if (successCount > 0) {
+        figma.notify(`線のスタイル: ${successCount}個修正`)
+      }
+
+      sendProgress({ phase: 'relint', current: 0, total: 1 })
+      const [finalColorInfo, finalBorderInfo] = await Promise.all([
+        extractColorInfo(rootNode as SceneNode),
+        extractBorderInfo(rootNode as SceneNode),
+      ])
+      const postFixIssues = runLint(finalColorInfo, finalBorderInfo)
+
+      figma.ui.postMessage({
+        type: 'fix-border-tokens-result',
+        rootNodeId: msg.rootNodeId,
+        results,
+        postFixIssues,
+      })
+    } catch (error) {
+      figma.notify(
+        error instanceof Error
+          ? error.message
+          : '線のスタイルの修正に失敗しました',
+        { error: true }
+      )
+    }
   }
   if (msg.type === 'close') {
     figma.closePlugin()

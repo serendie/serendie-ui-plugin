@@ -76,6 +76,7 @@ export default function ChatInputArea({
         rows={1}
         style={{
           ...sd.system.typography.body.extraSmall_expanded,
+          maxHeight: '200px',
           color: sd.system.color.component.onSurface,
           border: 'none',
           outline: 'none',

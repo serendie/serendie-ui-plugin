@@ -1,0 +1,129 @@
+import {
+  COLLECTION_NAME_LIST,
+  LIBRARY_NAME,
+} from '../../../shared-src/models/Rules'
+import notify from '../../utils/nodes/notify'
+import extractVariableKey from './extractVariableKey'
+
+export type VariableMap = Map<string, string>
+// name → fullKey（importVariableByKeyAsync用）の逆引きマップ
+export type ReverseVariableMap = Map<string, string>
+
+const variableMap: VariableMap = new Map()
+const reverseVariableMap: ReverseVariableMap = new Map()
+
+export default async function getVariableMap(): Promise<VariableMap> {
+  if (variableMap.size > 0) return variableMap
+
+  try {
+    const allCollections =
+      await figma.teamLibrary.getAvailableLibraryVariableCollectionsAsync()
+    const collections = allCollections.filter(collection =>
+      collection.libraryName.includes(LIBRARY_NAME)
+    )
+    if (collections.length == 0) {
+      const success = await getLocalVariableMap()
+      if (!success) {
+        notify(`${LIBRARY_NAME}をインポートしてください。`)
+      }
+      return variableMap
+    }
+
+    for (const collection of collections) {
+      const variables =
+        await figma.teamLibrary.getVariablesInLibraryCollectionAsync(
+          collection.key
+        )
+      for (const variable of variables) {
+        const variableKey = extractVariableKey(variable.key)
+        if (variableKey) {
+          variableMap.set(variableKey, variable.name)
+          reverseVariableMap.set(variable.name, variable.key)
+        }
+      }
+    }
+  } catch (error) {
+    notify(`${LIBRARY_NAME}の取得に失敗しました。`)
+    variableMap.clear()
+    reverseVariableMap.clear()
+  }
+  return variableMap
+}
+
+export async function getReverseVariableMap(): Promise<ReverseVariableMap> {
+  if (reverseVariableMap.size === 0) {
+    await getVariableMap()
+  }
+  return reverseVariableMap
+}
+
+const variableCache = new Map<string, Promise<Variable>>()
+
+export function importVariableCached(key: string): Promise<Variable> {
+  const cached = variableCache.get(key)
+  if (cached) return cached
+  const promise = figma.variables.importVariableByKeyAsync(key)
+  variableCache.set(key, promise)
+  return promise
+}
+
+/**
+ * 指定されたロール名・プレフィックスに対応する変数を事前にimportしてキャッシュを温める。
+ * ロール名は reverseMap の末尾一致（`/roleName`）、プレフィックスは部分一致で検索する。
+ */
+export async function preWarmVariableCache(
+  reverseMap: ReverseVariableMap,
+  roles: string[],
+  prefixes: string[] = []
+): Promise<void> {
+  const keysToImport = new Set<string>()
+
+  for (const role of roles) {
+    const suffix = `/${role}`
+    for (const [name, key] of reverseMap.entries()) {
+      if (name.endsWith(suffix)) {
+        keysToImport.add(key)
+        break
+      }
+    }
+  }
+
+  for (const prefix of prefixes) {
+    for (const [name, key] of reverseMap.entries()) {
+      if (name.includes(prefix)) {
+        keysToImport.add(key)
+      }
+    }
+  }
+
+  await Promise.all([...keysToImport].map(key => importVariableCached(key)))
+}
+
+async function getLocalVariableMap() {
+  const allCollections =
+    await figma.variables.getLocalVariableCollectionsAsync()
+  const collections = allCollections.filter(collection => {
+    return COLLECTION_NAME_LIST.includes(collection.name)
+  })
+  if (collections.length == 0) {
+    return false
+  }
+
+  for (const collection of collections) {
+    const variablePromises = collection.variableIds.map(id =>
+      figma.variables.getVariableByIdAsync(id)
+    )
+    const variables = await Promise.all(variablePromises)
+    for (const variable of variables) {
+      if (variable !== null) {
+        // NOTE: ローカルライブラリから取得する場合は variable.id を 利用する
+        const variableKey = extractVariableKey(variable.id)
+        if (variableKey) {
+          variableMap.set(variableKey, variable.name)
+          reverseVariableMap.set(variable.name, variable.key)
+        }
+      }
+    }
+  }
+  return true
+}

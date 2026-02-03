@@ -10,9 +10,6 @@ out/
 dist/
 code.js
 
-# These pages are fetched from the @serendie/serendie-web repository
-serendie-web/
-assets/serendie-web/
 
 # PandaCSS generated files
 styled-system/
