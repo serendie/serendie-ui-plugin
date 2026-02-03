@@ -1,4 +1,7 @@
-import { ReverseVariableMap } from '../extractors/getVariableMap'
+import {
+  ReverseVariableMap,
+  importVariableCached,
+} from '../extractors/getVariableMap'
 import { getColorDistance } from '../core/getColorDistance'
 
 export const CONTAINER_SIZE_THRESHOLD = 10000 // 100x100px の面積
@@ -27,7 +30,7 @@ export function pickBestCandidate(
   return best
 }
 
-function findVariableNameByRole(
+export function findVariableNameByRole(
   reverseMap: ReverseVariableMap,
   targetRole: string
 ): string | undefined {
@@ -40,7 +43,7 @@ function findVariableNameByRole(
   return undefined
 }
 
-export async function pickBestVariable(
+export async function pickBestFillColor(
   node: SceneNode,
   targetRoles: string[],
   reverseMap: ReverseVariableMap
@@ -56,24 +59,30 @@ export async function pickBestVariable(
   if (currentFill.type !== 'SOLID') return null
   const currentColor = currentFill.color
 
-  const resolved: { variable: Variable; role: string; distance: number }[] =
-    []
-
-  for (const role of targetRoles) {
+  const promises = targetRoles.map(async role => {
     const variableName = findVariableNameByRole(reverseMap, role)
-    if (!variableName) continue
+    if (!variableName) return null
     const fullKey = reverseMap.get(variableName)
-    if (!fullKey) continue
+    if (!fullKey) return null
 
-    const variable =
-      await figma.variables.importVariableByKeyAsync(fullKey)
-    const result = variable.resolveForConsumer(node)
-    if (result.resolvedType !== 'COLOR') continue
-    const resolvedColor = result.value as RGB
+    try {
+      const variable = await importVariableCached(fullKey)
+      const result = variable.resolveForConsumer(node)
+      if (result.resolvedType !== 'COLOR') return null
+      const resolvedColor = result.value as RGB
 
-    const dist = getColorDistance(currentColor, resolvedColor)
-    resolved.push({ variable, role, distance: dist })
-  }
+      const dist = getColorDistance(currentColor, resolvedColor)
+      return { variable, role, distance: dist }
+    } catch {
+      return null
+    }
+  })
+
+  const results = await Promise.all(promises)
+  const resolved = results.filter(
+    (r): r is { variable: Variable; role: string; distance: number } =>
+      r !== null
+  )
 
   const area =
     'width' in node && 'height' in node

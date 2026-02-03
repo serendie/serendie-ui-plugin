@@ -11,6 +11,10 @@ import {
 import { parseInstanceSwapValue } from '../../../shared-src/utils/parseInstanceSwapValue'
 import { applyFigmaSpecificDefaults } from './applyFigmaSpecificDefaults'
 import { findDescendantByName } from '../nodes/findDescendantByName'
+import {
+  importComponentByKeyCached,
+  importComponentSetByKeyCached,
+} from './importComponentCached'
 import componentKeys from '../../../shared-src/assets/component-keys.json'
 
 const componentKeysMap = componentKeys as ComponentKeysMap
@@ -77,8 +81,11 @@ export async function setInstanceProperties(
   const variantProps: Record<string, string> = {}
   const textProps: Record<string, string> = {}
   const booleanProps: Record<string, boolean> = {}
-  const instanceSwapProps: Array<{ propName: string; componentKey: string }> =
-    []
+  const pendingInstanceSwaps: Array<{
+    propName: string
+    componentSetKey: string
+    variantValue: string
+  }> = []
   const nestedProps: Record<string, string | boolean | number> = {}
 
   for (const [key, value] of Object.entries(normalizedProperties)) {
@@ -146,27 +153,44 @@ export async function setInstanceProperties(
           continue
         }
 
-        const importedSet = await figma.importComponentSetByKeyAsync(
-          targetComponentSet.key
-        )
-        const variantComponent = importedSet.children.find(child => {
-          if (child.type !== 'COMPONENT') return false
-          return child.name
-            .split(', ')
-            .some(
-              part =>
-                part.toLowerCase() ===
-                `name=${parsed.variantValue.toLowerCase()}`
-            )
-        }) as ComponentNode | undefined
-
-        if (variantComponent) {
-          instanceSwapProps.push({
-            propName: propDef.name,
-            componentKey: variantComponent.key,
-          })
-        }
+        pendingInstanceSwaps.push({
+          propName: propDef.name,
+          componentSetKey: targetComponentSet.key,
+          variantValue: parsed.variantValue,
+        })
         break
+      }
+    }
+  }
+
+  // INSTANCE_SWAP: コンポーネントセットを並列インポートしてバリアントを解決
+  const instanceSwapProps: Array<{ propName: string; componentKey: string }> =
+    []
+  if (pendingInstanceSwaps.length > 0) {
+    const importedSets = await Promise.all(
+      pendingInstanceSwaps.map(s =>
+        importComponentSetByKeyCached(s.componentSetKey)
+      )
+    )
+    for (let i = 0; i < pendingInstanceSwaps.length; i++) {
+      const swap = pendingInstanceSwaps[i]
+      const importedSet = importedSets[i]
+      const variantComponent = importedSet.children.find(child => {
+        if (child.type !== 'COMPONENT') return false
+        return child.name
+          .split(', ')
+          .some(
+            part =>
+              part.toLowerCase() ===
+              `name=${swap.variantValue.toLowerCase()}`
+          )
+      }) as ComponentNode | undefined
+
+      if (variantComponent) {
+        instanceSwapProps.push({
+          propName: swap.propName,
+          componentKey: variantComponent.key,
+        })
       }
     }
   }
@@ -209,12 +233,18 @@ export async function setInstanceProperties(
     instance.setProperties(otherProps)
   }
 
-  // Step 3: INSTANCE_SWAPを適用
-  for (const { propName, componentKey } of instanceSwapProps) {
-    const swappedComponent = await figma.importComponentByKeyAsync(componentKey)
-    instance.setProperties({
-      [propName]: swappedComponent.id,
-    })
+  // Step 3: INSTANCE_SWAPを適用（並列インポート → 逐次適用）
+  if (instanceSwapProps.length > 0) {
+    const swapImports = await Promise.all(
+      instanceSwapProps.map(({ componentKey }) =>
+        importComponentByKeyCached(componentKey)
+      )
+    )
+    for (let i = 0; i < instanceSwapProps.length; i++) {
+      instance.setProperties({
+        [instanceSwapProps[i].propName]: swapImports[i].id,
+      })
+    }
   }
 
   // Step 4: ネストしたプロパティを適用

@@ -1,4 +1,4 @@
-import { UNEXPECTED, FRAME_TYPES } from '../../../shared-src/models/Rules'
+import { CUSTOM_VALUE, FRAME_TYPES } from '../../../shared-src/models/Rules'
 import extractVariableKey from './extractVariableKey'
 import getVariableMap, { VariableMap } from './getVariableMap'
 import traceBackgroundColor from './traceFillDefinition'
@@ -92,8 +92,8 @@ export default async function extractColorInfo(
       nodeId: node.id,
       nodeName: node.name,
       nodeType: node.type,
-      textColor: textColor || UNEXPECTED,
-      backgroundColor: backgroundColor || UNEXPECTED,
+      textColor: textColor || CUSTOM_VALUE,
+      backgroundColor: backgroundColor || CUSTOM_VALUE,
     })
   } else if (FRAME_TYPES.includes(node.type as (typeof FRAME_TYPES)[number])) {
     let backgroundColor: string | null = null
@@ -117,7 +117,7 @@ export default async function extractColorInfo(
         nodeName: node.name,
         nodeType: node.type,
         textColor,
-        backgroundColor: backgroundColor || UNEXPECTED,
+        backgroundColor: backgroundColor || CUSTOM_VALUE,
       })
     } else {
       results.push({
@@ -130,9 +130,11 @@ export default async function extractColorInfo(
     }
   }
   if ('children' in node) {
-    for (const child of node.children) {
-      const childResults = await extractColorInfo(child)
-      results.push(...childResults)
+    const childResults = await Promise.all(
+      node.children.map(child => extractColorInfo(child))
+    )
+    for (const r of childResults) {
+      results.push(...r)
     }
   }
   return results

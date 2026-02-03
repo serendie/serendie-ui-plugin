@@ -3,7 +3,7 @@ import {
   BACKGROUND_COLOR_PAIRS,
   RuleResult,
   DesignTokenSuggestion,
-  UNEXPECTED,
+  CUSTOM_VALUE,
   formatRoles,
 } from '../../../shared-src/models/Rules'
 import extractColorRole from '../core/extractColorRole'
@@ -30,8 +30,8 @@ export default function validate(
   if (
     !textColor ||
     !backgroundColor ||
-    textColor === UNEXPECTED ||
-    backgroundColor === UNEXPECTED
+    textColor === CUSTOM_VALUE ||
+    backgroundColor === CUSTOM_VALUE
   ) {
     return null
   }

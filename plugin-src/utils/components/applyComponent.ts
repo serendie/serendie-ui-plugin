@@ -1,10 +1,14 @@
 import {
-  ApplyComponentItem,
+  ComponentApplyTarget,
   ApplyComponentResult,
 } from '../../../shared-src/models/PluginMessage'
 import { ComponentKeysMap } from '../../../shared-src/models/ComponentKeys'
 import { setInstanceProperties } from './setInstanceProperties'
 import { detachAncestorInstances } from './detachAncestorInstances'
+import {
+  importComponentByKeyCached,
+  importComponentSetByKeyCached,
+} from './importComponentCached'
 import getTreePath, { getNodeByTreePath } from '../nodes/getTreePath'
 import { sortByDepthDescending } from '../nodes/sortByDepth'
 import componentKeys from '../../../shared-src/assets/component-keys.json'
@@ -16,7 +20,7 @@ const componentKeysMap = componentKeys as ComponentKeysMap
  */
 export async function applyComponents(
   rootNodeId: string,
-  items: ApplyComponentItem[]
+  targets: ComponentApplyTarget[]
 ): Promise<{
   results: ApplyComponentResult[]
   detached: number
@@ -26,26 +30,29 @@ export async function applyComponents(
   const rootNode = await figma.getNodeByIdAsync(rootNodeId)
   if (!rootNode) {
     console.error(`Root node not found: ${rootNodeId}`)
-    for (const item of items) {
-      results.push({ oldNodeId: item.nodeId, newNodeId: '', status: 'failed' })
+    for (const target of targets) {
+      results.push({ oldNodeId: target.nodeId, newNodeId: '', status: 'failed' })
     }
     return { results, detached: 0 }
   }
 
-  // Step 1: 解体前にツリーパスを記録
+  // Step 1: 解体前にツリーパスを記録（並列取得）
   const treePathMap = new Map<string, number[]>()
-  for (const item of items) {
-    const node = await figma.getNodeByIdAsync(item.nodeId)
+  const nodes = await Promise.all(
+    targets.map(t => figma.getNodeByIdAsync(t.nodeId))
+  )
+  for (let i = 0; i < targets.length; i++) {
+    const node = nodes[i]
     if (!node) continue
     const path = getTreePath(node, rootNode)
     if (path) {
-      treePathMap.set(item.nodeId, path)
+      treePathMap.set(targets[i].nodeId, path)
     }
   }
 
   // Step 2: 提案対象ノードの祖先にあるインスタンスを部分的に解体
   const detached = await detachAncestorInstances(
-    items.map(i => i.nodeId),
+    targets.map(i => i.nodeId),
     rootNodeId,
     id => figma.getNodeByIdAsync(id)
   )
@@ -58,11 +65,11 @@ export async function applyComponents(
   }
 
   // Step 4: 深い階層から処理（親を先に置き換えると子が消えるため）
-  const sortedItems = await sortByDepthDescending(items, async item => {
-    return findNodeByTreePath(item.nodeId)
+  const sortedTargets = await sortByDepthDescending(targets, async target => {
+    return findNodeByTreePath(target.nodeId)
   })
 
-  for (const item of sortedItems) {
+  for (const item of sortedTargets) {
     try {
       // component-keys.json にないコンポーネントはスキップ
       const componentInfo = componentKeysMap[item.componentName]
@@ -93,7 +100,7 @@ export async function applyComponents(
       // コンポーネントをインポート
       let instance: InstanceNode
       if (componentInfo.type === 'COMPONENT_SET') {
-        const componentSet = await figma.importComponentSetByKeyAsync(
+        const componentSet = await importComponentSetByKeyCached(
           componentInfo.key
         )
         instance = componentSet.defaultVariant.createInstance()
@@ -116,7 +123,7 @@ export async function applyComponents(
           }
         }
       } else {
-        const component = await figma.importComponentByKeyAsync(
+        const component = await importComponentByKeyCached(
           componentInfo.key
         )
         instance = component.createInstance()
@@ -150,8 +157,7 @@ export async function applyComponents(
               'layoutSizingHorizontal' in sceneNode &&
               'layoutSizingHorizontal' in instance
             ) {
-              instance.layoutSizingHorizontal =
-                sceneNode.layoutSizingHorizontal
+              instance.layoutSizingHorizontal = sceneNode.layoutSizingHorizontal
             }
             if (
               'layoutSizingVertical' in sceneNode &&

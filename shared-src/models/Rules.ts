@@ -7,7 +7,7 @@ export const COLLECTION_NAME_LIST = [
   'dimension-system',
   'typography-system',
 ]
-export const UNEXPECTED = 'Unexpected'
+export const CUSTOM_VALUE = 'CustomValue'
 export const FRAME_TYPES = [
   'FRAME',
   'RECTANGLE',
@@ -23,9 +23,10 @@ const surfaceSeries = [
   'surfaceContainerHigh',
   'surfaceContainerHighest',
 ]
-const impressionBasicColors = [
+const onSurfaceSeries = [
+  'onSurface',
+  'onSurfaceVariant',
   'primary',
-  'notice',
   'negative',
   'positive',
 ]
@@ -42,7 +43,6 @@ export const TEXT_COLOR_PAIRS: Record<string, string[]> = {
   tertiary: ['tertiaryContainer'],
   onTertiary: ['tertiary'],
   onTertiaryContainer: ['tertiaryContainer'],
-  notice: surfaceSeries,
   onNotice: ['notice'],
   onNoticeContainer: ['noticeContainer'],
   onNoticeContainerVariant: ['noticeContainerVariant'],
@@ -77,29 +77,13 @@ export const BACKGROUND_COLOR_PAIRS: Record<string, string[]> = {
   positive: ['onPositive'],
   positiveContainer: ['onPositiveContainer'],
   positiveContainerVariant: ['onPositiveContainerVariant'],
-  surface: ['onSurface', 'onSurfaceVariant', ...impressionBasicColors],
+  surface: onSurfaceSeries,
   inverseSurface: ['inverseOnSurface'],
-  surfaceContainerLowest: [
-    'onSurface',
-    'onSurfaceVariant',
-    ...impressionBasicColors,
-  ],
-  surfaceContainerLow: [
-    'onSurface',
-    'onSurfaceVariant',
-    ...impressionBasicColors,
-  ],
-  surfaceContainer: ['onSurface', 'onSurfaceVariant', ...impressionBasicColors],
-  surfaceContainerHigh: [
-    'onSurface',
-    'onSurfaceVariant',
-    ...impressionBasicColors,
-  ],
-  surfaceContainerHighest: [
-    'onSurface',
-    'onSurfaceVariant',
-    ...impressionBasicColors,
-  ],
+  surfaceContainerLowest: onSurfaceSeries,
+  surfaceContainerLow: onSurfaceSeries,
+  surfaceContainer: onSurfaceSeries,
+  surfaceContainerHigh: onSurfaceSeries,
+  surfaceContainerHighest: onSurfaceSeries,
   chartSurface: ['onChartSurface'],
   '01': onMarkLabelSeries,
   '02': onMarkLabelSeries,
@@ -133,6 +117,17 @@ export const COLOR_ROLES: string[] = Array.from(
   ])
 )
 
+export const STROKE_WIDTH_ROLES: string[] = ['medium', 'thick', 'extraThick']
+
+export const CORNER_RADIUS_ROLES: string[] = [
+  'extraSmall',
+  'small',
+  'medium',
+  'large',
+  'extraLarge',
+  'full',
+]
+
 export type IssueDetail = {
   severity: 'error' | 'warning' | 'resolved'
   message: string
@@ -154,8 +149,16 @@ export type RuleResult = IssueDetail & {
   suggestion?: DesignTokenSuggestion
 }
 
+export type DesignTokenTargetProperty =
+  | 'textColor'
+  | 'backgroundColor'
+  | 'strokeColor'
+  | 'strokeWeight'
+  | 'cornerRadius'
+
 export type DesignTokenIssue = BaseIssue & {
   source: 'design-token'
+  targetProperty: DesignTokenTargetProperty
   suggestion?: DesignTokenSuggestion
 }
 
@@ -172,7 +175,7 @@ export type ComponentIssue = BaseIssue & {
 export type Issue = DesignTokenIssue | ComponentIssue
 
 export function formatRoles(roles: string[] | undefined): string {
-  if (!roles) return UNEXPECTED
+  if (!roles) return '不明'
   if (roles.length === 1) return `「${roles[0]}」`
   if (roles.length === 2) return `「${roles[0]}」または「${roles[1]}」`
   return `${roles.map(role => `「${role}」`).join('')}のいずれか`
@@ -226,3 +229,51 @@ export const FALLBACK_BACKGROUND_ROLES = [
   'positiveContainerVariant',
   'inversePrimary',
 ]
+
+// フォールバック候補: 線色用（fix時の近似マッチで使用）
+export const FALLBACK_STROKE_ROLES = [
+  'outline',
+  'outlineVariant',
+  'onSurface',
+  'onSurfaceVariant',
+  'inverseOnSurface',
+  'primary',
+  'secondary',
+  'tertiary',
+  'notice',
+  'negative',
+  'positive',
+  'inversePrimary',
+]
+
+// イシュー判定ユーティリティ
+const COLOR_PROPERTIES: ReadonlySet<DesignTokenTargetProperty> = new Set([
+  'textColor',
+  'backgroundColor',
+])
+
+const BORDER_PROPERTIES: ReadonlySet<DesignTokenTargetProperty> = new Set([
+  'strokeColor',
+  'strokeWeight',
+  'cornerRadius',
+])
+
+export function isColorProperty(tp: DesignTokenTargetProperty): boolean {
+  return COLOR_PROPERTIES.has(tp)
+}
+
+export function isBorderProperty(tp: DesignTokenTargetProperty): boolean {
+  return BORDER_PROPERTIES.has(tp)
+}
+
+export function isColorTokenIssue(issue: Issue): issue is DesignTokenIssue {
+  return (
+    issue.source === 'design-token' && isColorProperty(issue.targetProperty)
+  )
+}
+
+export function isBorderTokenIssue(issue: Issue): issue is DesignTokenIssue {
+  return (
+    issue.source === 'design-token' && isBorderProperty(issue.targetProperty)
+  )
+}
