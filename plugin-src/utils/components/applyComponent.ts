@@ -5,6 +5,10 @@ import {
 import { ComponentKeysMap } from '../../../shared-src/models/ComponentKeys'
 import { setInstanceProperties } from './setInstanceProperties'
 import { detachAncestorInstances } from './detachAncestorInstances'
+import {
+  importComponentByKeyCached,
+  importComponentSetByKeyCached,
+} from './importComponentCached'
 import getTreePath, { getNodeByTreePath } from '../nodes/getTreePath'
 import { sortByDepthDescending } from '../nodes/sortByDepth'
 import componentKeys from '../../../shared-src/assets/component-keys.json'
@@ -96,7 +100,7 @@ export async function applyComponents(
       // コンポーネントをインポート
       let instance: InstanceNode
       if (componentInfo.type === 'COMPONENT_SET') {
-        const componentSet = await figma.importComponentSetByKeyAsync(
+        const componentSet = await importComponentSetByKeyCached(
           componentInfo.key
         )
         instance = componentSet.defaultVariant.createInstance()
@@ -119,7 +123,7 @@ export async function applyComponents(
           }
         }
       } else {
-        const component = await figma.importComponentByKeyAsync(
+        const component = await importComponentByKeyCached(
           componentInfo.key
         )
         instance = component.createInstance()
