@@ -6,7 +6,10 @@ import {
   FALLBACK_TEXT_ROLES,
   FALLBACK_BACKGROUND_ROLES,
 } from '../../../shared-src/models/Rules'
-import { getReverseVariableMap } from '../extractors/getVariableMap'
+import {
+  getReverseVariableMap,
+  preWarmVariableCache,
+} from '../extractors/getVariableMap'
 import { convertRgbToHex } from '../core/convertRgbToHex'
 import { pickBestFillColor } from './pickBestFillColor'
 
@@ -46,6 +49,18 @@ export async function fixColorTokens(
   targets: ColorTokenFixTarget[]
 ): Promise<TokenFixResult[]> {
   const reverseMap = await getReverseVariableMap()
+
+  // suggestionに含まれるtargetRolesも含め、全ロールを収集してpre-warm
+  const allRoles = new Set<string>([
+    ...FALLBACK_TEXT_ROLES,
+    ...FALLBACK_BACKGROUND_ROLES,
+  ])
+  for (const t of targets) {
+    if (t.suggestion?.targetRoles) {
+      for (const r of t.suggestion.targetRoles) allRoles.add(r)
+    }
+  }
+  await preWarmVariableCache(reverseMap, [...allRoles])
 
   const allResults: TokenFixResult[] = []
 

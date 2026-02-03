@@ -67,6 +67,38 @@ export function importVariableCached(key: string): Promise<Variable> {
   return promise
 }
 
+/**
+ * 指定されたロール名・プレフィックスに対応する変数を事前にimportしてキャッシュを温める。
+ * ロール名は reverseMap の末尾一致（`/roleName`）、プレフィックスは部分一致で検索する。
+ */
+export async function preWarmVariableCache(
+  reverseMap: ReverseVariableMap,
+  roles: string[],
+  prefixes: string[] = []
+): Promise<void> {
+  const keysToImport = new Set<string>()
+
+  for (const role of roles) {
+    const suffix = `/${role}`
+    for (const [name, key] of reverseMap.entries()) {
+      if (name.endsWith(suffix)) {
+        keysToImport.add(key)
+        break
+      }
+    }
+  }
+
+  for (const prefix of prefixes) {
+    for (const [name, key] of reverseMap.entries()) {
+      if (name.includes(prefix)) {
+        keysToImport.add(key)
+      }
+    }
+  }
+
+  await Promise.all([...keysToImport].map(key => importVariableCached(key)))
+}
+
 async function getLocalVariableMap() {
   const allCollections =
     await figma.variables.getLocalVariableCollectionsAsync()

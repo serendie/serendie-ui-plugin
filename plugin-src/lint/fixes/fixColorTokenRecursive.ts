@@ -66,10 +66,6 @@ export async function fixColorTokensRecursive(
     ])
     postFixIssues = runLint(colorInfoList, borderInfoList)
     const remaining = postFixIssues.filter(isColorTokenIssue)
-    console.log(
-      `[perf] re-lint iter=${iterationCount}: ${Date.now() - tLint}ms`
-    )
-    )
     if (remaining.length === 0) break
 
     currentTargets = buildTargetsFromIssues(remaining)
@@ -82,6 +78,8 @@ export async function fixColorTokensRecursive(
       extractBorderInfo(rootNode),
     ])
     postFixIssues = runLint(finalColorInfo, finalBorderInfo)
+  }
+
   return {
     results: allResults,
     postFixIssues,

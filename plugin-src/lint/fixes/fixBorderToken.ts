@@ -6,6 +6,7 @@ import {
   getReverseVariableMap,
   ReverseVariableMap,
   importVariableCached,
+  preWarmVariableCache,
 } from '../extractors/getVariableMap'
 import { FALLBACK_STROKE_ROLES } from '../../../shared-src/models/Rules'
 import { pickBestStrokeColor } from './pickBestStrokeColor'
@@ -310,6 +311,11 @@ export async function fixBorderTokens(
 ): Promise<TokenFixResult[]> {
   const reverseMap = await getReverseVariableMap()
 
+  await preWarmVariableCache(reverseMap, FALLBACK_STROKE_ROLES, [
+    'dimension/border/',
+    'dimension/radius/',
+  ])
+
   const allResults: TokenFixResult[] = []
 
   for (let i = 0; i < targets.length; i += CHUNK_SIZE) {
@@ -350,4 +356,5 @@ export async function fixBorderTokens(
     allResults.push(...results)
   }
 
+  return allResults
 }
