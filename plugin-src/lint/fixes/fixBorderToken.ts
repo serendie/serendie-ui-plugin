@@ -303,44 +303,51 @@ async function fixStrokeColor(
   }
 }
 
+const CHUNK_SIZE = 20
+
 export async function fixBorderTokens(
   targets: BorderTokenFixTarget[]
 ): Promise<TokenFixResult[]> {
   const reverseMap = await getReverseVariableMap()
 
-  const results = await Promise.all(
-    targets.map(async ({ nodeId, targetProperty }) => {
-      try {
-        const baseNode = await figma.getNodeByIdAsync(nodeId)
-        if (!baseNode) {
+  const allResults: TokenFixResult[] = []
+
+  for (let i = 0; i < targets.length; i += CHUNK_SIZE) {
+    const chunk = targets.slice(i, i + CHUNK_SIZE)
+    const results = await Promise.all(
+      chunk.map(async ({ nodeId, targetProperty }) => {
+        try {
+          const baseNode = await figma.getNodeByIdAsync(nodeId)
+          if (!baseNode) {
+            return { nodeId: nodeId, status: 'failed' as const }
+          }
+          const node = baseNode as SceneNode
+
+          let result: TokenFixResult
+
+          switch (targetProperty) {
+            case 'strokeWeight':
+              result = await fixStrokeWeight(node, reverseMap)
+              break
+            case 'cornerRadius':
+              result = await fixCornerRadius(node, reverseMap)
+              break
+            case 'strokeColor':
+              result = await fixStrokeColor(node, reverseMap)
+              break
+            default:
+              result = { nodeId: nodeId, status: 'failed' }
+          }
+
+          // 修正対象プロパティを結果に付与
+          result.targetProperty = targetProperty
+          return result
+        } catch {
           return { nodeId: nodeId, status: 'failed' as const }
         }
-        const node = baseNode as SceneNode
+      })
+    )
+    allResults.push(...results)
+  }
 
-        let result: TokenFixResult
-
-        switch (targetProperty) {
-          case 'strokeWeight':
-            result = await fixStrokeWeight(node, reverseMap)
-            break
-          case 'cornerRadius':
-            result = await fixCornerRadius(node, reverseMap)
-            break
-          case 'strokeColor':
-            result = await fixStrokeColor(node, reverseMap)
-            break
-          default:
-            result = { nodeId: nodeId, status: 'failed' }
-        }
-
-        // 修正対象プロパティを結果に付与
-        result.targetProperty = targetProperty
-        return result
-      } catch {
-        return { nodeId: nodeId, status: 'failed' as const }
-      }
-    })
-  )
-
-  return results
 }
