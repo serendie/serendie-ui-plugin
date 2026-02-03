@@ -40,50 +40,58 @@ function applyVariableToFills(node: SceneNode, variable: Variable) {
   node.fills = fills
 }
 
+const CHUNK_SIZE = 20
+
 export async function fixColorTokens(
   targets: ColorTokenFixTarget[]
 ): Promise<TokenFixResult[]> {
   const reverseMap = await getReverseVariableMap()
 
-  const results = await Promise.all(
-    targets.map(async ({ nodeId, suggestion, targetProperty }) => {
-      try {
-        const baseNode = await figma.getNodeByIdAsync(nodeId)
-        if (!baseNode || !('fills' in baseNode)) {
-          return { nodeId: nodeId, status: 'failed' as const }
+  const allResults: TokenFixResult[] = []
+
+  for (let i = 0; i < targets.length; i += CHUNK_SIZE) {
+    const chunk = targets.slice(i, i + CHUNK_SIZE)
+    const results = await Promise.all(
+      chunk.map(async ({ nodeId, suggestion, targetProperty }) => {
+        try {
+          const baseNode = await figma.getNodeByIdAsync(nodeId)
+          if (!baseNode || !('fills' in baseNode)) {
+            return { nodeId: nodeId, status: 'failed' as const }
+          }
+          const node = baseNode as SceneNode
+
+          const isFallback = !suggestion?.targetRoles
+          const currentFill = isFallback ? getCurrentFillColor(node) : null
+          const originalColorHex = currentFill
+            ? convertRgbToHex(currentFill.color)
+            : undefined
+
+          const targetRoles =
+            suggestion?.targetRoles ??
+            (targetProperty === 'textColor'
+              ? FALLBACK_TEXT_ROLES
+              : FALLBACK_BACKGROUND_ROLES)
+
+          const picked = await pickBestFillColor(node, targetRoles, reverseMap)
+          if (!picked) {
+            return { nodeId: nodeId, status: 'failed' as const }
+          }
+
+          applyVariableToFills(node, picked.variable)
+          return {
+            nodeId: nodeId,
+            status: 'success' as const,
+            appliedRole: picked.role,
+            ...(isFallback && { isFallback: true }),
+            ...(originalColorHex && { originalColorHex }),
+          }
+        } catch {
+          return { nodeId, status: 'failed' as const }
         }
-        const node = baseNode as SceneNode
+      })
+    )
+    allResults.push(...results)
+  }
 
-        const isFallback = !suggestion?.targetRoles
-        const currentFill = isFallback ? getCurrentFillColor(node) : null
-        const originalColorHex = currentFill
-          ? convertRgbToHex(currentFill.color)
-          : undefined
-
-        const targetRoles =
-          suggestion?.targetRoles ??
-          (targetProperty === 'textColor'
-            ? FALLBACK_TEXT_ROLES
-            : FALLBACK_BACKGROUND_ROLES)
-
-        const picked = await pickBestFillColor(node, targetRoles, reverseMap)
-        if (!picked) {
-          return { nodeId: nodeId, status: 'failed' as const }
-        }
-
-        applyVariableToFills(node, picked.variable)
-        return {
-          nodeId: nodeId,
-          status: 'success' as const,
-          appliedRole: picked.role,
-          ...(isFallback && { isFallback: true }),
-          ...(originalColorHex && { originalColorHex }),
-        }
-      } catch {
-        return { nodeId, status: 'failed' as const }
-      }
-    })
-  )
-
-  return results
+  return allResults
 }
