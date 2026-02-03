@@ -1,6 +1,6 @@
 import extractVariableKey from './extractVariableKey'
 import { VariableMap } from './getVariableMap'
-import { UNEXPECTED } from '../../../shared-src/models/Rules'
+import { CUSTOM_VALUE } from '../../../shared-src/models/Rules'
 
 export default function traceFillDefinition(
   node: SceneNode,
@@ -14,13 +14,13 @@ export default function traceFillDefinition(
         if ('boundVariables' in fill && fill.boundVariables?.color) {
           const variableId = extractVariableKey(fill.boundVariables.color.id)
           if (variableId) {
-            return variableMap.get(variableId) || UNEXPECTED
+            return variableMap.get(variableId) || CUSTOM_VALUE
           }
         } else {
-          return UNEXPECTED
+          return CUSTOM_VALUE
         }
       } else if (fill.type !== 'SOLID' && fill.visible !== false) {
-        return UNEXPECTED
+        return CUSTOM_VALUE
       }
     }
   }

@@ -2,8 +2,11 @@ import { useState, useCallback } from 'react'
 import { Result } from '../models/Result'
 import { postPluginMessage } from './usePluginMessage'
 import {
-  ApplyComponentItem,
-  ApplyTokenItem,
+  TokenFixResult,
+  BorderTokenFixTarget,
+  ComponentApplyTarget,
+  ColorTokenFixTarget,
+  FixTokensProgress,
   PluginMessage,
   SelectionInfo,
 } from '../../shared-src/models/PluginMessage'
@@ -14,6 +17,16 @@ import {
 } from '../../shared-src/models/Rules'
 import { useApiKey } from './useApiKey'
 import { useComponentValidation } from './useComponentValidation'
+import {
+  isColorTokenIssue,
+  isBorderTokenIssue,
+  isColorProperty,
+  isBorderProperty,
+  formatColorResolvedMessage,
+  formatBorderResolvedMessage,
+  buildSuccessResultMap,
+  mergeTokenFixResults,
+} from './useLintResultsHelpers'
 
 export function useLintResults({
   selections,
@@ -26,9 +39,9 @@ export function useLintResults({
 }) {
   const [results, setResults] = useState<Result[]>([])
   const [isLoading, setIsLoading] = useState(false)
-  const [applyingTokenNodeIds, setApplyingTokenNodeIds] = useState<Set<string>>(
-    new Set()
-  )
+  const [fixProgressMap, setFixProgressMap] = useState<
+    Map<string, FixTokensProgress>
+  >(new Map())
   const [applyingComponentNodeIds, setApplyingComponentNodeIds] = useState<
     Set<string>
   >(new Set())
@@ -82,62 +95,50 @@ export function useLintResults({
           })
         }
       }
-      if (message.type === 'apply-tokens-result') {
-        setApplyingTokenNodeIds(prev => {
-          const next = new Set(prev)
+      if (message.type === 'fix-tokens-progress') {
+        setFixProgressMap(prev => {
+          const next = new Map(prev)
+          next.set(message.rootNodeId, message.progress)
+          return next
+        })
+      }
+      if (
+        message.type === 'fix-color-tokens-result' ||
+        message.type === 'fix-border-tokens-result'
+      ) {
+        setFixProgressMap(prev => {
+          const next = new Map(prev)
           next.delete(message.rootNodeId)
           return next
         })
         setImageRefreshKey(k => k + 1)
-        const appliedResultMap = new Map(
-          message.results
-            .filter(r => r.status === 'success')
-            .map(r => [r.nodeId, r])
-        )
+
+        const isColor = message.type === 'fix-color-tokens-result'
+        const isTargetIssue = isColor ? isColorTokenIssue : isBorderTokenIssue
+        const successResultMap = buildSuccessResultMap(message.results)
+
+        const formatResolved = isColor
+          ? (_issue: Issue, applied: TokenFixResult[]) =>
+              formatColorResolvedMessage(applied)
+          : (issue: Issue, applied: TokenFixResult[]) =>
+              formatBorderResolvedMessage(
+                (issue as DesignTokenIssue)
+                  .targetProperty as BorderTokenFixTarget['targetProperty'],
+                applied
+              )
 
         setResults(prev =>
           prev.map(result => {
             if (result.id !== message.rootNodeId) return result
-
-            const componentIssues = result.issues.filter(
-              i => i.source === 'component'
-            )
-
-            // finalIssuesに残っているdesign-token issue
-            const newTokenIssues = message.finalIssues.filter(
-              i => i.source === 'design-token'
-            )
-
-            // 修正済みだがfinalIssuesに残っていないノード → resolved
-            const finalNodeIds = new Set(newTokenIssues.map(i => i.nodeId))
-            const resolvedIssues = result.issues
-              .filter(
-                i =>
-                  i.source === 'design-token' &&
-                  appliedResultMap.has(i.nodeId) &&
-                  !finalNodeIds.has(i.nodeId)
-              )
-              .map(issue => {
-                const applied = appliedResultMap.get(issue.nodeId)!
-                return {
-                  ...issue,
-                  severity: 'resolved' as const,
-                  message:
-                    applied.isFallback && applied.appliedRole
-                      ? `近似色の「${applied.appliedRole}」を適用`
-                      : applied.appliedRole
-                        ? `${applied.appliedRole}を適用しました`
-                        : '修正しました',
-                  messageDetails:
-                    applied.isFallback && applied.originalColorHex
-                      ? `元の色: ${applied.originalColorHex}`
-                      : null,
-                }
-              })
-
             return {
               ...result,
-              issues: [...componentIssues, ...resolvedIssues, ...newTokenIssues],
+              issues: mergeTokenFixResults(
+                result.issues,
+                message.postFixIssues,
+                successResultMap,
+                isTargetIssue,
+                formatResolved
+              ),
             }
           })
         )
@@ -195,7 +196,7 @@ export function useLintResults({
                   ).length ?? 0,
               })
             }
-            // prevベースでマージ（apply-tokens等の更新を保持）
+            // prevベースでマージ（fix-tokens等の更新を保持）
             setResults(prev =>
               prev.map(result => {
                 const comp = componentResultMap.get(result.id)
@@ -217,6 +218,7 @@ export function useLintResults({
 
   const handleRunLinter = useCallback(() => {
     setIsLoading(true)
+    setImageRefreshKey(k => k + 1)
     postPluginMessage({
       type: 'run-linter',
       nodeIds: selections.map(s => s.id),
@@ -230,57 +232,94 @@ export function useLintResults({
       const result = results.find(r => r.id === rootNodeId)
       if (!result) return
 
-      const items: ApplyComponentItem[] = []
+      const targets: ComponentApplyTarget[] = []
       const componentIssues = result.issues.filter(
         (issue): issue is ComponentIssue =>
           issue.source === 'component' && issue.severity !== 'resolved'
       )
       for (const issue of componentIssues) {
-        items.push({
+        targets.push({
           nodeId: issue.nodeId,
           ...issue.suggestion,
         })
       }
-      if (items.length > 0) {
+      if (targets.length > 0) {
         setApplyingComponentNodeIds(prev => new Set(prev).add(rootNodeId))
-        postPluginMessage({ type: 'apply-components', rootNodeId, items })
+        postPluginMessage({ type: 'apply-components', rootNodeId, targets })
       }
     },
     [results]
   )
 
   // デザイントークンの修正ハンドラ
-  const handleApplyTokens = useCallback(
+  const handleFixTokens = useCallback(
     (rootNodeId: string) => {
       const result = results.find(r => r.id === rootNodeId)
       if (!result) return
 
-      // 全design-token issue（resolved除く）を収集（同一nodeId重複排除）
-      const seen = new Set<string>()
-      const items: ApplyTokenItem[] = []
       const tokenIssues = result.issues.filter(
         (issue): issue is DesignTokenIssue =>
           issue.source === 'design-token' && issue.severity !== 'resolved'
       )
-      for (const issue of tokenIssues) {
-        if (seen.has(issue.nodeId)) continue
-        seen.add(issue.nodeId)
-        const targetProperty =
-          issue.nodeType === 'TEXT' ? 'textColor' : 'backgroundColor'
-        const suggestion =
-          issue.suggestion &&
-          issue.suggestion.targetProperty === targetProperty
-            ? issue.suggestion
-            : undefined
-        items.push({
-          nodeId: issue.nodeId,
-          ...(suggestion && { suggestion }),
-          targetProperty,
-        })
+
+      const colorIssues = tokenIssues.filter(issue =>
+        isColorProperty(issue.targetProperty)
+      )
+      const borderIssues = tokenIssues.filter(issue =>
+        isBorderProperty(issue.targetProperty)
+      )
+
+      let hasSentAny = false
+
+      // カラー系issue → fix-color-tokens
+      if (colorIssues.length > 0) {
+        const seen = new Set<string>()
+        const targets: ColorTokenFixTarget[] = []
+        for (const issue of colorIssues) {
+          if (seen.has(issue.nodeId)) continue
+          seen.add(issue.nodeId)
+          const suggestion =
+            issue.suggestion &&
+            issue.suggestion.targetProperty === issue.targetProperty
+              ? issue.suggestion
+              : undefined
+          targets.push({
+            nodeId: issue.nodeId,
+            ...(suggestion && { suggestion }),
+            targetProperty: issue.targetProperty as
+              | 'textColor'
+              | 'backgroundColor',
+          })
+        }
+        if (targets.length > 0) {
+          postPluginMessage({ type: 'fix-color-tokens', rootNodeId, targets })
+          hasSentAny = true
+        }
       }
-      if (items.length > 0) {
-        setApplyingTokenNodeIds(prev => new Set(prev).add(rootNodeId))
-        postPluginMessage({ type: 'apply-tokens', rootNodeId, items })
+
+      // ボーダー系issue → fix-border-tokens
+      if (borderIssues.length > 0) {
+        const borderTargets: BorderTokenFixTarget[] = borderIssues.map(
+          issue => ({
+            nodeId: issue.nodeId,
+            targetProperty:
+              issue.targetProperty as BorderTokenFixTarget['targetProperty'],
+          })
+        )
+        postPluginMessage({
+          type: 'fix-border-tokens',
+          rootNodeId,
+          targets: borderTargets,
+        })
+        hasSentAny = true
+      }
+
+      if (hasSentAny) {
+        setFixProgressMap(prev => {
+          const next = new Map(prev)
+          next.set(rootNodeId, { phase: 'color', current: 0, total: 0 })
+          return next
+        })
       }
     },
     [results]
@@ -294,7 +333,7 @@ export function useLintResults({
     results,
     isLoading,
     apiKey,
-    applyingTokenNodeIds,
+    fixProgressMap,
     applyingComponentNodeIds,
     isRelinting,
     imageRefreshKey,
@@ -302,7 +341,7 @@ export function useLintResults({
     cancelComponentValidation,
     handleRunLinter,
     handleApplyComponents,
-    handleApplyTokens,
+    handleFixTokens,
     handleLintMessage,
     resetResults,
   }

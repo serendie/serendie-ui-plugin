@@ -14,6 +14,8 @@ export default function validateColorPairing(colorInfoList: ColorInfo[]): {
         nodeName: colorInfo.nodeName,
         nodeType: colorInfo.nodeType,
         source: 'design-token',
+        targetProperty:
+          colorInfo.nodeType === 'TEXT' ? 'textColor' : 'backgroundColor',
         ...ruleResult,
       })
     }

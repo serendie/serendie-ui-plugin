@@ -1,7 +1,7 @@
 import traceFillDefinition from './traceFillDefinition'
 import { VariableMap } from './getVariableMap'
 import extractVariableKey from './extractVariableKey'
-import { UNEXPECTED } from '../../../shared-src/models/Rules'
+import { CUSTOM_VALUE } from '../../../shared-src/models/Rules'
 
 jest.mock('./extractVariableKey')
 const mockExtractVariableKey = extractVariableKey as jest.MockedFunction<
@@ -55,7 +55,7 @@ describe('traceFillDefinition', () => {
         parent: null,
       }
       const result = traceFillDefinition(node as FrameNode, variableMap)
-      expect(result).toBe(UNEXPECTED)
+      expect(result).toBe(CUSTOM_VALUE)
     })
 
     it('塗りつぶしが非表示の場合', () => {
@@ -96,7 +96,7 @@ describe('traceFillDefinition', () => {
         parent: null,
       }
       const result = traceFillDefinition(node as FrameNode, variableMap)
-      expect(result).toBe(UNEXPECTED)
+      expect(result).toBe(CUSTOM_VALUE)
     })
 
     it('塗りつぶしに変数がバインドされていない場合', () => {
@@ -111,7 +111,7 @@ describe('traceFillDefinition', () => {
         parent: null,
       }
       const result = traceFillDefinition(node as FrameNode, variableMap)
-      expect(result).toBe(UNEXPECTED)
+      expect(result).toBe(CUSTOM_VALUE)
     })
 
     it('塗りつぶしが空配列の場合', () => {

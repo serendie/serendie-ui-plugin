@@ -1,7 +1,7 @@
 import {
   pickBestCandidate,
   CONTAINER_SIZE_THRESHOLD,
-} from './pickBestVariable'
+} from './pickBestFillColor'
 
 describe('pickBestCandidate', () => {
   it('距離が最も近い候補を選ぶ', () => {

@@ -1,10 +1,12 @@
 import extractColorInfo from './lint/extractors/extractColorInfo'
+import extractBorderInfo from './lint/extractors/extractBorderInfo'
 import { runLint } from './lint/validators/runLint'
 import getImage, { canGetImage } from '../shared-src/utils/getImage'
 import buildNodeStructure from './utils/nodes/buildNodeStructure'
 import { LintResult } from '../shared-src/models/PluginMessage'
 import { applyComponents } from './utils/components/applyComponent'
-import { applyTokenFixRecursive } from './lint/fixes/applyTokenFixRecursive'
+import { fixColorTokensRecursive } from './lint/fixes/fixColorTokenRecursive'
+import { fixBorderTokens } from './lint/fixes/fixBorderToken'
 
 figma.showUI(__html__, {
   width: 360,
@@ -76,8 +78,11 @@ figma.ui.onmessage = async msg => {
     try {
       const results: LintResult[] = []
       for (const selection of selections) {
-        const colorInfoList = await extractColorInfo(selection)
-        const issues = runLint(colorInfoList)
+        const [colorInfoList, borderInfoList] = await Promise.all([
+          extractColorInfo(selection),
+          extractBorderInfo(selection),
+        ])
+        const issues = runLint(colorInfoList, borderInfoList)
 
         const structure =
           msg.source === 'component-validation'
@@ -157,7 +162,7 @@ figma.ui.onmessage = async msg => {
   }
   if (msg.type === 'apply-components') {
     try {
-      const result = await applyComponents(msg.rootNodeId, msg.items)
+      const result = await applyComponents(msg.rootNodeId, msg.targets)
       const successCount = result.results.filter(
         r => r.status === 'success'
       ).length
@@ -202,7 +207,7 @@ figma.ui.onmessage = async msg => {
       )
     }
   }
-  if (msg.type === 'apply-tokens') {
+  if (msg.type === 'fix-color-tokens') {
     try {
       const rootNode = await figma.getNodeByIdAsync(msg.rootNodeId)
       if (!rootNode || !('type' in rootNode)) {
@@ -210,30 +215,94 @@ figma.ui.onmessage = async msg => {
         return
       }
 
-      const { results, finalIssues, iterationCount } =
-        await applyTokenFixRecursive(rootNode as SceneNode, msg.items)
+      const sendProgress = (progress: {
+        phase: string
+        current: number
+        total: number
+      }) => {
+        figma.ui.postMessage({
+          type: 'fix-tokens-progress',
+          rootNodeId: msg.rootNodeId,
+          progress,
+        })
+      }
+
+      const { results, postFixIssues } = await fixColorTokensRecursive(
+        rootNode as SceneNode,
+        msg.targets,
+        sendProgress
+      )
 
       const successCount = results.length
       const messages: string[] = []
       if (successCount > 0) messages.push(`${successCount}個修正`)
-      if (iterationCount > 1) messages.push(`${iterationCount}回の反復`)
-      const remainingCount = finalIssues.filter(
+      const remainingCount = postFixIssues.filter(
         i => i.source === 'design-token'
       ).length
       if (remainingCount > 0) messages.push(`${remainingCount}個の未解決あり`)
-      if (messages.length > 0) figma.notify(messages.join('、'))
+      if (messages.length > 0)
+        figma.notify(`塗りのスタイル：${messages.join('、')}`)
 
       figma.ui.postMessage({
-        type: 'apply-tokens-result',
+        type: 'fix-color-tokens-result',
         rootNodeId: msg.rootNodeId,
         results,
-        finalIssues,
+        postFixIssues,
+      })
+    } catch (error) {
+      figma.notify(
+        error instanceof Error ? error.message : '塗りの修正に失敗しました',
+        { error: true }
+      )
+    }
+  }
+  if (msg.type === 'fix-border-tokens') {
+    try {
+      const rootNode = await figma.getNodeByIdAsync(msg.rootNodeId)
+      if (!rootNode || !('type' in rootNode)) {
+        figma.notify('対象のノードが見つかりませんでした。', { error: true })
+        return
+      }
+
+      const sendProgress = (progress: {
+        phase: string
+        current: number
+        total: number
+      }) => {
+        figma.ui.postMessage({
+          type: 'fix-tokens-progress',
+          rootNodeId: msg.rootNodeId,
+          progress,
+        })
+      }
+
+      const results = await fixBorderTokens(msg.targets, sendProgress)
+
+      const successCount = results.filter(
+        (r: { status: string }) => r.status === 'success'
+      ).length
+      if (successCount > 0) {
+        figma.notify(`線のスタイル: ${successCount}個修正`)
+      }
+
+      sendProgress({ phase: 'relint', current: 0, total: 1 })
+      const [finalColorInfo, finalBorderInfo] = await Promise.all([
+        extractColorInfo(rootNode as SceneNode),
+        extractBorderInfo(rootNode as SceneNode),
+      ])
+      const postFixIssues = runLint(finalColorInfo, finalBorderInfo)
+
+      figma.ui.postMessage({
+        type: 'fix-border-tokens-result',
+        rootNodeId: msg.rootNodeId,
+        results,
+        postFixIssues,
       })
     } catch (error) {
       figma.notify(
         error instanceof Error
           ? error.message
-          : 'トークンの修正に失敗しました',
+          : '線のスタイルの修正に失敗しました',
         { error: true }
       )
     }
