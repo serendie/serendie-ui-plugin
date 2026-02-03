@@ -1,4 +1,7 @@
-import { ReverseVariableMap } from '../extractors/getVariableMap'
+import {
+  ReverseVariableMap,
+  importVariableCached,
+} from '../extractors/getVariableMap'
 import { getColorDistance } from '../core/getColorDistance'
 import { findVariableNameByRole } from './pickBestFillColor'
 
@@ -24,8 +27,7 @@ export async function pickBestStrokeColor(
     if (!fullKey) return null
 
     try {
-      const variable =
-        await figma.variables.importVariableByKeyAsync(fullKey)
+      const variable = await importVariableCached(fullKey)
       const result = variable.resolveForConsumer(node)
       if (result.resolvedType !== 'COLOR') return null
       const resolvedColor = result.value as RGB

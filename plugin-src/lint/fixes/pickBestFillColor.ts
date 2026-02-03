@@ -1,4 +1,7 @@
-import { ReverseVariableMap } from '../extractors/getVariableMap'
+import {
+  ReverseVariableMap,
+  importVariableCached,
+} from '../extractors/getVariableMap'
 import { getColorDistance } from '../core/getColorDistance'
 
 export const CONTAINER_SIZE_THRESHOLD = 10000 // 100x100px の面積
@@ -63,8 +66,7 @@ export async function pickBestFillColor(
     if (!fullKey) return null
 
     try {
-      const variable =
-        await figma.variables.importVariableByKeyAsync(fullKey)
+      const variable = await importVariableCached(fullKey)
       const result = variable.resolveForConsumer(node)
       if (result.resolvedType !== 'COLOR') return null
       const resolvedColor = result.value as RGB

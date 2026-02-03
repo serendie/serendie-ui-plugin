@@ -5,6 +5,7 @@ import {
 import {
   getReverseVariableMap,
   ReverseVariableMap,
+  importVariableCached,
 } from '../extractors/getVariableMap'
 import { FALLBACK_STROKE_ROLES } from '../../../shared-src/models/Rules'
 import { pickBestStrokeColor } from './pickBestStrokeColor'
@@ -29,7 +30,7 @@ async function resolveDimensionCandidates(
   const results = await Promise.all(
     entries.map(async ([name, key]) => {
       try {
-        const variable = await figma.variables.importVariableByKeyAsync(key)
+        const variable = await importVariableCached(key)
         const result = variable.resolveForConsumer(node)
         if (result.resolvedType !== 'FLOAT') return null
         return { variable, name, value: result.value as number }
