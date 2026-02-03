@@ -150,6 +150,15 @@ scripts/
 - UI側: `parent.postMessage()` でPlugin側と通信
 - 型安全な通信: `PluginMessage` 型で定義
 
+### Figma Sandbox の制約と対策
+
+Figma Plugin の sandbox はシングルスレッドで動作し、重い処理中は UI 更新がブロックされる。
+
+- **yieldToUI**: `setTimeout(resolve, 0)` でイベントループに制御を返し、UI 更新を許可
+- **チャンク処理**: 大量の処理を `CHUNK_SIZE` 単位で分割し、各チャンク間で `yieldToUI` を呼ぶ
+- **インポートキャッシュ**: `importVariableCached`, `importComponentByKeyCached` 等で Promise をキャッシュし重複呼び出しを防止
+- **並列化**: 独立した非同期処理は `Promise.all` で一括実行
+
 ### UIコンポーネントとスタイリング
 
 ```typescript
