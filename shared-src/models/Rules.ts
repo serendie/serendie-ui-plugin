@@ -23,9 +23,10 @@ const surfaceSeries = [
   'surfaceContainerHigh',
   'surfaceContainerHighest',
 ]
-const impressionBasicColors = [
+const onSurfaceSeries = [
+  'onSurface',
+  'onSurfaceVariant',
   'primary',
-  'notice',
   'negative',
   'positive',
 ]
@@ -42,7 +43,6 @@ export const TEXT_COLOR_PAIRS: Record<string, string[]> = {
   tertiary: ['tertiaryContainer'],
   onTertiary: ['tertiary'],
   onTertiaryContainer: ['tertiaryContainer'],
-  notice: surfaceSeries,
   onNotice: ['notice'],
   onNoticeContainer: ['noticeContainer'],
   onNoticeContainerVariant: ['noticeContainerVariant'],
@@ -77,29 +77,13 @@ export const BACKGROUND_COLOR_PAIRS: Record<string, string[]> = {
   positive: ['onPositive'],
   positiveContainer: ['onPositiveContainer'],
   positiveContainerVariant: ['onPositiveContainerVariant'],
-  surface: ['onSurface', 'onSurfaceVariant', ...impressionBasicColors],
+  surface: onSurfaceSeries,
   inverseSurface: ['inverseOnSurface'],
-  surfaceContainerLowest: [
-    'onSurface',
-    'onSurfaceVariant',
-    ...impressionBasicColors,
-  ],
-  surfaceContainerLow: [
-    'onSurface',
-    'onSurfaceVariant',
-    ...impressionBasicColors,
-  ],
-  surfaceContainer: ['onSurface', 'onSurfaceVariant', ...impressionBasicColors],
-  surfaceContainerHigh: [
-    'onSurface',
-    'onSurfaceVariant',
-    ...impressionBasicColors,
-  ],
-  surfaceContainerHighest: [
-    'onSurface',
-    'onSurfaceVariant',
-    ...impressionBasicColors,
-  ],
+  surfaceContainerLowest: onSurfaceSeries,
+  surfaceContainerLow: onSurfaceSeries,
+  surfaceContainer: onSurfaceSeries,
+  surfaceContainerHigh: onSurfaceSeries,
+  surfaceContainerHighest: onSurfaceSeries,
   chartSurface: ['onChartSurface'],
   '01': onMarkLabelSeries,
   '02': onMarkLabelSeries,
