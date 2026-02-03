@@ -22,26 +22,24 @@ async function resolveDimensionCandidates(
   reverseMap: ReverseVariableMap,
   node: SceneNode
 ): Promise<DimensionCandidate[]> {
-  const candidates: DimensionCandidate[] = []
+  const entries = [...reverseMap.entries()].filter(([name]) =>
+    name.includes(prefix)
+  )
 
-  for (const [name, key] of reverseMap.entries()) {
-    if (!name.includes(prefix)) continue
+  const results = await Promise.all(
+    entries.map(async ([name, key]) => {
+      try {
+        const variable = await figma.variables.importVariableByKeyAsync(key)
+        const result = variable.resolveForConsumer(node)
+        if (result.resolvedType !== 'FLOAT') return null
+        return { variable, name, value: result.value as number }
+      } catch {
+        return null
+      }
+    })
+  )
 
-    try {
-      const variable = await figma.variables.importVariableByKeyAsync(key)
-      const result = variable.resolveForConsumer(node)
-      if (result.resolvedType !== 'FLOAT') continue
-      candidates.push({
-        variable,
-        name,
-        value: result.value as number,
-      })
-    } catch {
-      // 変数のインポートに失敗した場合はスキップ
-    }
-  }
-
-  return candidates
+  return results.filter((r): r is DimensionCandidate => r !== null)
 }
 
 export function findClosestCandidate(
@@ -64,10 +62,7 @@ export function findClosestCandidate(
   return best
 }
 
-export function shouldUseFull(
-  radiusValue: number,
-  minSide: number
-): boolean {
+export function shouldUseFull(radiusValue: number, minSide: number): boolean {
   return minSide > 0 && radiusValue >= minSide / 2
 }
 
@@ -311,40 +306,40 @@ export async function fixBorderTokens(
   targets: BorderTokenFixTarget[]
 ): Promise<TokenFixResult[]> {
   const reverseMap = await getReverseVariableMap()
-  const results: TokenFixResult[] = []
 
-  for (const item of targets) {
-    try {
-      const baseNode = await figma.getNodeByIdAsync(item.nodeId)
-      if (!baseNode) {
-        results.push({ nodeId: item.nodeId, status: 'failed' })
-        continue
+  const results = await Promise.all(
+    targets.map(async ({ nodeId, targetProperty }) => {
+      try {
+        const baseNode = await figma.getNodeByIdAsync(nodeId)
+        if (!baseNode) {
+          return { nodeId: nodeId, status: 'failed' as const }
+        }
+        const node = baseNode as SceneNode
+
+        let result: TokenFixResult
+
+        switch (targetProperty) {
+          case 'strokeWeight':
+            result = await fixStrokeWeight(node, reverseMap)
+            break
+          case 'cornerRadius':
+            result = await fixCornerRadius(node, reverseMap)
+            break
+          case 'strokeColor':
+            result = await fixStrokeColor(node, reverseMap)
+            break
+          default:
+            result = { nodeId: nodeId, status: 'failed' }
+        }
+
+        // 修正対象プロパティを結果に付与
+        result.targetProperty = targetProperty
+        return result
+      } catch {
+        return { nodeId: nodeId, status: 'failed' as const }
       }
-      const node = baseNode as SceneNode
-
-      let result: TokenFixResult
-
-      switch (item.targetProperty) {
-        case 'strokeWeight':
-          result = await fixStrokeWeight(node, reverseMap)
-          break
-        case 'cornerRadius':
-          result = await fixCornerRadius(node, reverseMap)
-          break
-        case 'strokeColor':
-          result = await fixStrokeColor(node, reverseMap)
-          break
-        default:
-          result = { nodeId: item.nodeId, status: 'failed' }
-      }
-
-      // 修正対象プロパティを結果に付与
-      result.targetProperty = item.targetProperty
-      results.push(result)
-    } catch {
-      results.push({ nodeId: item.nodeId, status: 'failed' })
-    }
-  }
+    })
+  )
 
   return results
 }

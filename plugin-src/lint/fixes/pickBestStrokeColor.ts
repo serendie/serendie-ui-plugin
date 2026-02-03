@@ -17,28 +17,37 @@ export async function pickBestStrokeColor(
 
   const currentColor = solidStroke.color
 
-  let best: { variable: Variable; role: string; distance: number } | null =
-    null
-
-  for (const role of targetRoles) {
+  const promises = targetRoles.map(async role => {
     const variableName = findVariableNameByRole(reverseMap, role)
-    if (!variableName) continue
+    if (!variableName) return null
     const fullKey = reverseMap.get(variableName)
-    if (!fullKey) continue
+    if (!fullKey) return null
 
     try {
       const variable =
         await figma.variables.importVariableByKeyAsync(fullKey)
       const result = variable.resolveForConsumer(node)
-      if (result.resolvedType !== 'COLOR') continue
+      if (result.resolvedType !== 'COLOR') return null
       const resolvedColor = result.value as RGB
 
       const distance = getColorDistance(currentColor, resolvedColor)
-      if (!best || distance < best.distance) {
-        best = { variable, role, distance }
-      }
+      return { variable, role, distance }
     } catch {
-      // スキップ
+      return null
+    }
+  })
+
+  const results = await Promise.all(promises)
+  const resolved = results.filter(
+    (r): r is { variable: Variable; role: string; distance: number } =>
+      r !== null
+  )
+
+  let best: { variable: Variable; role: string; distance: number } | null =
+    null
+  for (const candidate of resolved) {
+    if (!best || candidate.distance < best.distance) {
+      best = candidate
     }
   }
 
