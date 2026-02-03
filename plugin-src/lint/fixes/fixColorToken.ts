@@ -56,6 +56,8 @@ export async function fixColorTokens(
   const allRoles = new Set<string>([
     ...FALLBACK_TEXT_ROLES,
     ...FALLBACK_BACKGROUND_ROLES,
+    'outline',
+    'outlineVariant',
   ])
   for (const t of targets) {
     if (t.suggestion?.targetRoles) {
@@ -90,15 +92,27 @@ export async function fixColorTokens(
             Array.isArray((node as ChildrenMixin).children) &&
             (node as ChildrenMixin).children.length > 0
 
+          const isNarrow =
+            'width' in node &&
+            'height' in node &&
+            Math.min(
+              (node as { width: number }).width,
+              (node as { height: number }).height
+            ) <= 8
+
+          const baseBgRoles = hasChildren
+            ? FALLBACK_BACKGROUND_ROLES
+            : FALLBACK_BACKGROUND_ROLES.filter(
+                r => !r.includes('Container')
+              )
+
           const targetRoles =
             suggestion?.targetRoles ??
             (targetProperty === 'textColor'
               ? FALLBACK_TEXT_ROLES
-              : hasChildren
-                ? FALLBACK_BACKGROUND_ROLES
-                : FALLBACK_BACKGROUND_ROLES.filter(
-                    r => !r.includes('Container')
-                  ))
+              : isNarrow
+                ? [...baseBgRoles, 'outline', 'outlineVariant']
+                : baseBgRoles)
 
           const picked = await pickBestFillColor(node, targetRoles, reverseMap)
           if (!picked) {
