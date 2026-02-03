@@ -44,47 +44,46 @@ export async function fixColorTokens(
   targets: ColorTokenFixTarget[]
 ): Promise<TokenFixResult[]> {
   const reverseMap = await getReverseVariableMap()
-  const results: TokenFixResult[] = []
 
-  for (const item of targets) {
-    try {
-      const baseNode = await figma.getNodeByIdAsync(item.nodeId)
-      if (!baseNode || !('fills' in baseNode)) {
-        results.push({ nodeId: item.nodeId, status: 'failed' })
-        continue
+  const results = await Promise.all(
+    targets.map(async ({ nodeId, suggestion, targetProperty }) => {
+      try {
+        const baseNode = await figma.getNodeByIdAsync(nodeId)
+        if (!baseNode || !('fills' in baseNode)) {
+          return { nodeId: nodeId, status: 'failed' as const }
+        }
+        const node = baseNode as SceneNode
+
+        const isFallback = !suggestion?.targetRoles
+        const currentFill = isFallback ? getCurrentFillColor(node) : null
+        const originalColorHex = currentFill
+          ? convertRgbToHex(currentFill.color)
+          : undefined
+
+        const targetRoles =
+          suggestion?.targetRoles ??
+          (targetProperty === 'textColor'
+            ? FALLBACK_TEXT_ROLES
+            : FALLBACK_BACKGROUND_ROLES)
+
+        const picked = await pickBestFillColor(node, targetRoles, reverseMap)
+        if (!picked) {
+          return { nodeId: nodeId, status: 'failed' as const }
+        }
+
+        applyVariableToFills(node, picked.variable)
+        return {
+          nodeId: nodeId,
+          status: 'success' as const,
+          appliedRole: picked.role,
+          ...(isFallback && { isFallback: true }),
+          ...(originalColorHex && { originalColorHex }),
+        }
+      } catch {
+        return { nodeId, status: 'failed' as const }
       }
-      const node = baseNode as SceneNode
-
-      const isFallback = !item.suggestion?.targetRoles
-      const currentFill = isFallback ? getCurrentFillColor(node) : null
-      const originalColorHex = currentFill
-        ? convertRgbToHex(currentFill.color)
-        : undefined
-
-      const targetRoles =
-        item.suggestion?.targetRoles ??
-        (item.targetProperty === 'textColor'
-          ? FALLBACK_TEXT_ROLES
-          : FALLBACK_BACKGROUND_ROLES)
-
-      const picked = await pickBestFillColor(node, targetRoles, reverseMap)
-      if (!picked) {
-        results.push({ nodeId: item.nodeId, status: 'failed' })
-        continue
-      }
-
-      applyVariableToFills(node, picked.variable)
-      results.push({
-        nodeId: item.nodeId,
-        status: 'success',
-        appliedRole: picked.role,
-        ...(isFallback && { isFallback: true }),
-        ...(originalColorHex && { originalColorHex }),
-      })
-    } catch {
-      results.push({ nodeId: item.nodeId, status: 'failed' })
-    }
-  }
+    })
+  )
 
   return results
 }
