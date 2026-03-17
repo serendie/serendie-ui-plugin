@@ -56,7 +56,7 @@
     ],
     "storybookUrls": [
       {
-        "title": "バリエーション",
+        "title": "Story",
         "path": "/story/components-accordion--default",
         "variant": "default"
       }
@@ -72,7 +72,7 @@
     "category": "Layout",
     "hasDocumentation": false,
     "source": "auto-detected",
-    "lastUpdated": "2025-10-28",
+    "lastUpdated": "2026-03-17",
     "props": [],
     "examples": [],
     "storybookUrls": [],
@@ -140,27 +140,27 @@
     ],
     "examples": [
       {
-        "title": "Size",
-        "description": "",
-        "code": "import { Avatar } from \"@serendie/ui\";\nimport { HBox, VBox } from \"src/components/LayoutUtils\";\n\nexport function SizeSample() {\n  return (\n    <HBox>\n      <VBox>\n        <Avatar size=\"small\" text=\"SD\" />\n        <p>Small</p>\n      </VBox>\n      <VBox>\n        <Avatar size=\"medium\" text=\"SD\" />\n        <p>Medium</p>\n      </VBox>\n      <VBox>\n        <Avatar size=\"large\" text=\"SD\" />\n        <p>Large</p>\n      </VBox>\n    </HBox>\n  );\n}\n",
-        "fileName": "SizeSample.tsx",
-        "language": "tsx"
-      },
-      {
         "title": "Type",
         "description": "",
         "code": "import { Avatar } from \"@serendie/ui\";\nimport { VBox, HBox } from \"src/components/LayoutUtils\";\n\nexport function TypeSample() {\n  return (\n    <HBox>\n      <VBox>\n        <Avatar src=\"https://i.pravatar.cc/300\" />\n        <p>Image</p>\n      </VBox>\n      <VBox>\n        <Avatar text=\"SD\" />\n        <p>Text</p>\n      </VBox>\n      <VBox>\n        <Avatar />\n        <p>Placeholder(filled)</p>\n      </VBox>\n      <VBox>\n        <Avatar placeholder=\"outlined\" />\n        <p>Placeholder(outlined)</p>\n      </VBox>\n    </HBox>\n  );\n}\n",
         "fileName": "TypeSample.tsx",
         "language": "tsx"
+      },
+      {
+        "title": "Size",
+        "description": "",
+        "code": "import { Avatar } from \"@serendie/ui\";\nimport { HBox, VBox } from \"src/components/LayoutUtils\";\n\nexport function SizeSample() {\n  return (\n    <HBox>\n      <VBox>\n        <Avatar size=\"small\" text=\"SD\" />\n        <p>Small</p>\n      </VBox>\n      <VBox>\n        <Avatar size=\"medium\" text=\"SD\" />\n        <p>Medium</p>\n      </VBox>\n      <VBox>\n        <Avatar size=\"large\" text=\"SD\" />\n        <p>Large</p>\n      </VBox>\n    </HBox>\n  );\n}\n",
+        "fileName": "SizeSample.tsx",
+        "language": "tsx"
       }
     ],
     "storybookUrls": [
       {
-        "title": "サイズ",
+        "title": "Story",
         "path": "/story/components-avatar--text&args=size:small"
       },
       {
-        "title": "バリエーション",
+        "title": "Story",
         "path": "/docs/components-avatar--docs",
         "variant": "docs"
       }
@@ -197,10 +197,10 @@
     ],
     "examples": [
       {
-        "title": "Close Button",
+        "title": "Size",
         "description": "",
-        "code": "import { Badge, BadgeCloseButton } from \"@serendie/ui\";\nimport { HBox, VBox } from \"src/components/LayoutUtils\";\n\nexport function CloseButtonSample() {\n  return (\n    <HBox>\n      <VBox>\n        <Badge size=\"small\" closeButton={<BadgeCloseButton />}>\n          Label\n        </Badge>\n        <p>Small</p>\n      </VBox>\n      <VBox>\n        <Badge closeButton={<BadgeCloseButton />}>Label</Badge>\n        <p>Medium</p>\n      </VBox>\n      <VBox>\n        <Badge size=\"large\" closeButton={<BadgeCloseButton />}>\n          Label\n        </Badge>\n        <p>Large</p>\n      </VBox>\n    </HBox>\n  );\n}\n",
-        "fileName": "CloseButtonSample.tsx",
+        "code": "import { Badge } from \"@serendie/ui\";\nimport { HBox, VBox } from \"src/components/LayoutUtils\";\n\nexport function SizeSample() {\n  return (\n    <HBox>\n      <VBox>\n        <Badge size=\"small\">Label</Badge>\n        <p>Small</p>\n      </VBox>\n      <VBox>\n        <Badge>Label</Badge>\n        <p>Medium</p>\n      </VBox>\n      <VBox>\n        <Badge size=\"large\">Label</Badge>\n        <p>Large</p>\n      </VBox>\n    </HBox>\n  );\n}\n",
+        "fileName": "SizeSample.tsx",
         "language": "tsx"
       },
       {
@@ -211,26 +211,26 @@
         "language": "tsx"
       },
       {
-        "title": "Size",
+        "title": "Close Button",
         "description": "",
-        "code": "import { Badge } from \"@serendie/ui\";\nimport { HBox, VBox } from \"src/components/LayoutUtils\";\n\nexport function SizeSample() {\n  return (\n    <HBox>\n      <VBox>\n        <Badge size=\"small\">Label</Badge>\n        <p>Small</p>\n      </VBox>\n      <VBox>\n        <Badge>Label</Badge>\n        <p>Medium</p>\n      </VBox>\n      <VBox>\n        <Badge size=\"large\">Label</Badge>\n        <p>Large</p>\n      </VBox>\n    </HBox>\n  );\n}\n",
-        "fileName": "SizeSample.tsx",
+        "code": "import { Badge, BadgeCloseButton } from \"@serendie/ui\";\nimport { HBox, VBox } from \"src/components/LayoutUtils\";\n\nexport function CloseButtonSample() {\n  return (\n    <HBox>\n      <VBox>\n        <Badge size=\"small\" closeButton={<BadgeCloseButton />}>\n          Label\n        </Badge>\n        <p>Small</p>\n      </VBox>\n      <VBox>\n        <Badge closeButton={<BadgeCloseButton />}>Label</Badge>\n        <p>Medium</p>\n      </VBox>\n      <VBox>\n        <Badge size=\"large\" closeButton={<BadgeCloseButton />}>\n          Label\n        </Badge>\n        <p>Large</p>\n      </VBox>\n    </HBox>\n  );\n}\n",
+        "fileName": "CloseButtonSample.tsx",
         "language": "tsx"
       }
     ],
     "storybookUrls": [
       {
-        "title": "サイズ",
+        "title": "Story",
         "path": "/story/components-badge--small",
         "variant": "small"
       },
       {
-        "title": "カラー",
+        "title": "Story",
         "path": "/docs/components-badge--docs",
         "variant": "docs"
       },
       {
-        "title": "バリエーション",
+        "title": "Story",
         "path": "/docs/components-badge--docs",
         "variant": "docs"
       }
@@ -282,7 +282,7 @@
     ],
     "storybookUrls": [
       {
-        "title": "バリエーション",
+        "title": "Story",
         "path": "/story/components-banner--information",
         "variant": "information"
       }
@@ -301,12 +301,12 @@
     "examples": [],
     "storybookUrls": [
       {
-        "title": "サンプル",
+        "title": "Story",
         "path": "/story/components-bottomnavigation--default",
         "variant": "default"
       },
       {
-        "title": "バリエーション",
+        "title": "Story",
         "path": "/docs/components-bottomnavigation--docs",
         "variant": "docs"
       }
@@ -322,7 +322,7 @@
     "category": "Other",
     "hasDocumentation": false,
     "source": "auto-detected",
-    "lastUpdated": "2025-10-28",
+    "lastUpdated": "2026-03-17",
     "props": [],
     "examples": [],
     "storybookUrls": [],
@@ -372,17 +372,10 @@
     ],
     "examples": [
       {
-        "title": "Icon",
+        "title": "Type",
         "description": "",
-        "code": "import { Button } from \"@serendie/ui\";\nimport { SerendieSymbol } from \"@serendie/symbols\";\nimport { HBox } from \"src/components/LayoutUtils\";\n\nexport function IconSample() {\n  return (\n    <HBox>\n      <Button leftIcon={<SerendieSymbol name=\"chevron-left\" />}>\n        LeftIcon\n      </Button>\n      <Button\n        rightIcon={<SerendieSymbol name=\"chevron-right\" />}\n        styleType=\"ghost\"\n      >\n        RightIcon\n      </Button>\n    </HBox>\n  );\n}\n",
-        "fileName": "IconSample.tsx",
-        "language": "tsx"
-      },
-      {
-        "title": "Size",
-        "description": "",
-        "code": "import { Button } from \"@serendie/ui\";\nimport { HBox } from \"src/components/LayoutUtils\";\n\nexport function SizeSample() {\n  return (\n    <HBox>\n      <Button size=\"small\">Small</Button>\n      <Button size=\"medium\">Medium</Button>\n    </HBox>\n  );\n}\n",
-        "fileName": "SizeSample.tsx",
+        "code": "import { Button } from \"@serendie/ui\";\nimport { HBox } from \"src/components/LayoutUtils\";\n\nexport function TypeSample() {\n  return (\n    <HBox>\n      <Button>Filled</Button>\n      <Button styleType=\"outlined\">Outlined</Button>\n      <Button styleType=\"ghost\">Ghost</Button>\n      <Button styleType=\"rectangle\">Rectangle</Button>\n    </HBox>\n  );\n}\n",
+        "fileName": "TypeSample.tsx",
         "language": "tsx"
       },
       {
@@ -393,30 +386,37 @@
         "language": "tsx"
       },
       {
-        "title": "Type",
+        "title": "Size",
         "description": "",
-        "code": "import { Button } from \"@serendie/ui\";\nimport { HBox } from \"src/components/LayoutUtils\";\n\nexport function TypeSample() {\n  return (\n    <HBox>\n      <Button>Filled</Button>\n      <Button styleType=\"outlined\">Outlined</Button>\n      <Button styleType=\"ghost\">Ghost</Button>\n      <Button styleType=\"rectangle\">Rectangle</Button>\n    </HBox>\n  );\n}\n",
-        "fileName": "TypeSample.tsx",
+        "code": "import { Button } from \"@serendie/ui\";\nimport { HBox } from \"src/components/LayoutUtils\";\n\nexport function SizeSample() {\n  return (\n    <HBox>\n      <Button size=\"small\">Small</Button>\n      <Button size=\"medium\">Medium</Button>\n    </HBox>\n  );\n}\n",
+        "fileName": "SizeSample.tsx",
+        "language": "tsx"
+      },
+      {
+        "title": "Icon",
+        "description": "",
+        "code": "import { Button } from \"@serendie/ui\";\nimport { SerendieSymbol } from \"@serendie/symbols\";\nimport { HBox } from \"src/components/LayoutUtils\";\n\nexport function IconSample() {\n  return (\n    <HBox>\n      <Button leftIcon={<SerendieSymbol name=\"chevron-left\" />}>\n        LeftIcon\n      </Button>\n      <Button\n        rightIcon={<SerendieSymbol name=\"chevron-right\" />}\n        styleType=\"ghost\"\n      >\n        RightIcon\n      </Button>\n    </HBox>\n  );\n}\n",
+        "fileName": "IconSample.tsx",
         "language": "tsx"
       }
     ],
     "storybookUrls": [
       {
-        "title": "サイズ",
+        "title": "Story",
         "path": "/story/components-button--medium",
         "variant": "medium"
       },
       {
-        "title": "バリエーション",
+        "title": "Story",
         "path": "/story/components-button--outlined",
         "variant": "outlined"
       },
       {
-        "title": "アイコン付きボタン",
+        "title": "Story",
         "path": "/story/components-button--with-left-icon"
       },
       {
-        "title": "状態",
+        "title": "Story",
         "path": "/docs/components-button--docs",
         "variant": "docs"
       }
@@ -430,7 +430,7 @@
     "category": "Other",
     "hasDocumentation": false,
     "source": "auto-detected",
-    "lastUpdated": "2025-10-28",
+    "lastUpdated": "2026-03-17",
     "props": [],
     "examples": [],
     "storybookUrls": [],
@@ -445,7 +445,7 @@
     "category": "Other",
     "hasDocumentation": false,
     "source": "auto-detected",
-    "lastUpdated": "2025-10-28",
+    "lastUpdated": "2026-03-17",
     "props": [],
     "examples": [],
     "storybookUrls": [],
@@ -557,12 +557,12 @@
     "examples": [],
     "storybookUrls": [
       {
-        "title": "バリエーション",
+        "title": "Story",
         "path": "/story/components-checkbox--default",
         "variant": "default"
       },
       {
-        "title": "状態",
+        "title": "Story",
         "path": "/docs/components-checkbox--docs",
         "variant": "docs"
       }
@@ -649,12 +649,12 @@
     "examples": [],
     "storybookUrls": [
       {
-        "title": "バリエーション",
+        "title": "Story",
         "path": "/story/components-choicebox--radio",
         "variant": "radio"
       },
       {
-        "title": "Indeterminate状態",
+        "title": "Story",
         "path": "/story/components-choicebox--indeterminate",
         "variant": "indeterminate"
       }
@@ -686,7 +686,7 @@
     "examples": [],
     "storybookUrls": [
       {
-        "title": "バリエーション",
+        "title": "Story",
         "path": "/story/components-dashboardwidget--no-value"
       }
     ],
@@ -1203,29 +1203,29 @@
     "examples": [],
     "storybookUrls": [
       {
-        "title": "基本的な使用方法",
+        "title": "Story",
         "path": "/story/components-datatable--default",
         "variant": "default"
       },
       {
-        "title": "カラム形式の指定",
+        "title": "Story",
         "path": "/story/components-datatable--default",
         "variant": "default"
       },
       {
-        "title": "ソート機能",
+        "title": "Story",
         "path": "/story/components-datatable--with-custom-sorting"
       },
       {
-        "title": "選択機能",
+        "title": "Story",
         "path": "/story/components-datatable--without-row-selection"
       },
       {
-        "title": "イベントハンドリング",
+        "title": "Story",
         "path": "/story/components-datatable--with-callbacks"
       },
       {
-        "title": "異なるデータ型への対応",
+        "title": "Story",
         "path": "/story/components-datatable--different-data-type"
       }
     ],
@@ -1555,22 +1555,22 @@
     "examples": [],
     "storybookUrls": [
       {
-        "title": "基本",
+        "title": "Story",
         "path": "/story/components-datepicker--basic",
         "variant": "basic"
       },
       {
-        "title": "日付範囲",
+        "title": "Story",
         "path": "/story/components-datepicker--range",
         "variant": "range"
       },
       {
-        "title": "状態",
+        "title": "Story",
         "path": "/story/components-datepicker--states",
         "variant": "states"
       },
       {
-        "title": "カレンダーのみ",
+        "title": "Story",
         "path": "/story/components-datepicker--calendar-only"
       }
     ],
@@ -1585,7 +1585,7 @@
     "category": "Other",
     "hasDocumentation": false,
     "source": "auto-detected",
-    "lastUpdated": "2025-10-28",
+    "lastUpdated": "2026-03-17",
     "props": [],
     "examples": [],
     "storybookUrls": [],
@@ -1611,28 +1611,28 @@
     ],
     "examples": [
       {
-        "title": "Color",
-        "description": "",
-        "code": "import { Divider } from \"@serendie/ui\";\nimport { Dd, Dl, Dt } from \"src/components/LayoutUtils\";\n\nexport function ColorSample() {\n  return (\n    <Dl>\n      <Dt>Light</Dt>\n      <Dd>\n        <Divider color=\"light\" />\n      </Dd>\n\n      <Dt>Normal</Dt>\n      <Dd>\n        <Divider color=\"normal\" />\n      </Dd>\n\n      <Dt>Dark</Dt>\n      <Dd>\n        <Divider color=\"dark\" />\n      </Dd>\n    </Dl>\n  );\n}\n",
-        "fileName": "ColorSample.tsx",
-        "language": "tsx"
-      },
-      {
         "title": "Type",
         "description": "",
         "code": "import { Divider } from \"@serendie/ui\";\nimport { css } from \"styled-system/css\";\nimport { HBox, VBox } from \"src/components/LayoutUtils\";\n\nexport function TypeSample() {\n  return (\n    <div\n      className={css({\n        display: \"grid\",\n        gridTemplateColumns: \"1fr 1fr\",\n        height: \"200px\",\n        alignItems: \"center\",\n      })}\n    >\n      <HBox\n        data-name=\"horizontal\"\n        className={css({\n          alignItems: \"center !important\",\n        })}\n      >\n        Horizontal\n        <Divider />\n      </HBox>\n\n      <VBox\n        className={css({\n          height: \"100%\",\n        })}\n      >\n        <Divider type=\"vertical\" />\n        Vertical\n      </VBox>\n    </div>\n  );\n}\n",
         "fileName": "TypeSample.tsx",
         "language": "tsx"
+      },
+      {
+        "title": "Color",
+        "description": "",
+        "code": "import { Divider } from \"@serendie/ui\";\nimport { Dd, Dl, Dt } from \"src/components/LayoutUtils\";\n\nexport function ColorSample() {\n  return (\n    <Dl>\n      <Dt>Light</Dt>\n      <Dd>\n        <Divider color=\"light\" />\n      </Dd>\n\n      <Dt>Normal</Dt>\n      <Dd>\n        <Divider color=\"normal\" />\n      </Dd>\n\n      <Dt>Dark</Dt>\n      <Dd>\n        <Divider color=\"dark\" />\n      </Dd>\n    </Dl>\n  );\n}\n",
+        "fileName": "ColorSample.tsx",
+        "language": "tsx"
       }
     ],
     "storybookUrls": [
       {
-        "title": "カラー",
+        "title": "Story",
         "path": "/story/components-divider--horizontal",
         "variant": "horizontal"
       },
       {
-        "title": "バリエーション",
+        "title": "Story",
         "path": "/story/components-divider--vertical",
         "variant": "vertical"
       }
@@ -1850,7 +1850,7 @@
     ],
     "storybookUrls": [
       {
-        "title": "バリエーション",
+        "title": "Story",
         "path": "/story/components-drawer--left",
         "variant": "left"
       }
@@ -2069,7 +2069,7 @@
     "examples": [],
     "storybookUrls": [
       {
-        "title": "バリエーション",
+        "title": "Story",
         "path": "/story/components-dropdownmenu--default",
         "variant": "default"
       }
@@ -2113,22 +2113,22 @@
     "examples": [],
     "storybookUrls": [
       {
-        "title": "サイズ",
+        "title": "Story",
         "path": "/story/components-iconbutton--small",
         "variant": "small"
       },
       {
-        "title": "バリエーション",
+        "title": "Story",
         "path": "/story/components-iconbutton--outlined",
         "variant": "outlined"
       },
       {
-        "title": "シェイプ",
+        "title": "Story",
         "path": "/story/components-iconbutton--rectangle",
         "variant": "rectangle"
       },
       {
-        "title": "状態",
+        "title": "Story",
         "path": "/docs/components-button--docs",
         "variant": "docs"
       }
@@ -2146,28 +2146,28 @@
     "props": [],
     "examples": [
       {
-        "title": "State",
-        "description": "",
-        "code": "import { List, ListItem } from \"@serendie/ui\";\nimport { SerendieSymbol } from \"@serendie/symbols\";\nimport { Dd, Dl, Dt } from \"src/components/LayoutUtils\";\n\nexport function StateSample() {\n  return (\n    <Dl>\n      <Dt>Enabled</Dt>\n      <Dd>\n        <List>\n          <ListItem\n            title=\"リストタイトル\"\n            leftIcon={<SerendieSymbol name={\"placeholder\"} />}\n          />\n        </List>\n      </Dd>\n      <Dt>Focused</Dt>\n      <Dd>\n        <List>\n          <ListItem\n            title=\"リストタイトル\"\n            leftIcon={<SerendieSymbol name={\"placeholder\"} />}\n            focusVisible\n          />\n        </List>\n      </Dd>\n      <Dt>Disabled</Dt>\n      <Dd>\n        <List>\n          <ListItem\n            title=\"リストタイトル\"\n            leftIcon={<SerendieSymbol name={\"placeholder\"} />}\n            disabled\n          />\n        </List>\n      </Dd>\n      <Dt>Selected</Dt>\n      <Dd>\n        <List>\n          <ListItem\n            title=\"リストタイトル\"\n            leftIcon={<SerendieSymbol name={\"placeholder\"} />}\n            selected\n          />\n        </List>\n      </Dd>\n    </Dl>\n  );\n}\n",
-        "fileName": "StateSample.tsx",
-        "language": "tsx"
-      },
-      {
         "title": "Type",
         "description": "",
         "code": "import { List, ListItem } from \"@serendie/ui\";\nimport { SerendieSymbol } from \"@serendie/symbols\";\nimport { Dd, Dl, Dt } from \"src/components/LayoutUtils\";\n\nexport function TypeSample() {\n  return (\n    <Dl variant=\"dim\">\n      <Dt>Title Only</Dt>\n      <Dd>\n        <List>\n          <ListItem title=\"リストタイトル\" />\n        </List>\n      </Dd>\n\n      <Dt>Left Icon</Dt>\n      <Dd>\n        <List>\n          <ListItem\n            title=\"リストタイトル\"\n            leftIcon={<SerendieSymbol name={\"placeholder\"} />}\n          />\n        </List>\n      </Dd>\n\n      <Dt>Multiple Lines</Dt>\n      <Dd>\n        <List>\n          <ListItem\n            title=\"リストタイトル\"\n            description=\"補足テキスト\"\n            leftIcon={<SerendieSymbol name={\"placeholder\"} />}\n          >\n            <p>タイムスタンプなど</p>\n          </ListItem>\n        </List>\n      </Dd>\n\n      <Dt>Large Left Icon</Dt>\n      <Dd>\n        <List>\n          <ListItem\n            title=\"リストタイトル\"\n            leftIcon={<SerendieSymbol name={\"placeholder\"} />}\n            isLargeLeftIcon\n          />\n        </List>\n      </Dd>\n\n      <Dt>Multiple Lines</Dt>\n      <Dd>\n        <List>\n          <ListItem\n            title=\"リストタイトル\"\n            description=\"補足テキスト\"\n            leftIcon={<SerendieSymbol name={\"placeholder\"} />}\n            isLargeLeftIcon\n          >\n            <p>タイムスタンプなど</p>\n          </ListItem>\n        </List>\n      </Dd>\n\n      <Dt>Right Icon</Dt>\n      <Dd>\n        <List>\n          <ListItem\n            title=\"リストタイトル\"\n            rightIcon={<SerendieSymbol name={\"chevron-right\"} />}\n          />\n        </List>\n      </Dd>\n\n      <Dt>Multiple Lines</Dt>\n      <Dd>\n        <List>\n          <ListItem\n            title=\"リストタイトル\"\n            description=\"補足テキスト\"\n            rightIcon={<SerendieSymbol name={\"chevron-right\"} />}\n          />\n        </List>\n      </Dd>\n\n      <Dt>With Badge</Dt>\n      <Dd>\n        <List>\n          <ListItem\n            title=\"リストタイトル\"\n            description=\"補足テキスト\"\n            leftIcon={<SerendieSymbol name={\"placeholder\"} />}\n            isLargeLeftIcon\n            badge={3}\n          />\n        </List>\n      </Dd>\n    </Dl>\n  );\n}\n",
         "fileName": "TypeSample.tsx",
         "language": "tsx"
+      },
+      {
+        "title": "State",
+        "description": "",
+        "code": "import { List, ListItem } from \"@serendie/ui\";\nimport { SerendieSymbol } from \"@serendie/symbols\";\nimport { Dd, Dl, Dt } from \"src/components/LayoutUtils\";\n\nexport function StateSample() {\n  return (\n    <Dl>\n      <Dt>Enabled</Dt>\n      <Dd>\n        <List>\n          <ListItem\n            title=\"リストタイトル\"\n            leftIcon={<SerendieSymbol name={\"placeholder\"} />}\n          />\n        </List>\n      </Dd>\n      <Dt>Focused</Dt>\n      <Dd>\n        <List>\n          <ListItem\n            title=\"リストタイトル\"\n            leftIcon={<SerendieSymbol name={\"placeholder\"} />}\n            focusVisible\n          />\n        </List>\n      </Dd>\n      <Dt>Disabled</Dt>\n      <Dd>\n        <List>\n          <ListItem\n            title=\"リストタイトル\"\n            leftIcon={<SerendieSymbol name={\"placeholder\"} />}\n            disabled\n          />\n        </List>\n      </Dd>\n      <Dt>Selected</Dt>\n      <Dd>\n        <List>\n          <ListItem\n            title=\"リストタイトル\"\n            leftIcon={<SerendieSymbol name={\"placeholder\"} />}\n            selected\n          />\n        </List>\n      </Dd>\n    </Dl>\n  );\n}\n",
+        "fileName": "StateSample.tsx",
+        "language": "tsx"
       }
     ],
     "storybookUrls": [
       {
-        "title": "バリエーション",
+        "title": "Story",
         "path": "/story/components-list--basic",
         "variant": "basic"
       },
       {
-        "title": "状態",
+        "title": "Story",
         "path": "/docs/components-list--docs",
         "variant": "docs"
       }
@@ -2183,7 +2183,7 @@
     "category": "Layout",
     "hasDocumentation": false,
     "source": "auto-detected",
-    "lastUpdated": "2025-10-28",
+    "lastUpdated": "2026-03-17",
     "props": [],
     "examples": [],
     "storybookUrls": [],
@@ -2406,7 +2406,7 @@
     "examples": [],
     "storybookUrls": [
       {
-        "title": "サンプル",
+        "title": "Story",
         "path": "/story/components-modaldialog--basic",
         "variant": "basic"
       }
@@ -2456,15 +2456,15 @@
     "examples": [],
     "storybookUrls": [
       {
-        "title": "サイズ",
+        "title": "Story",
         "path": "/story/components-notificationbadge--default&args=size:small"
       },
       {
-        "title": "カラー",
+        "title": "Story",
         "path": "/story/components-notificationbadge--default&args=variant:secondary;size:medium"
       },
       {
-        "title": "バリエーション",
+        "title": "Story",
         "path": "/story/components-notificationbadge--no-number"
       }
     ],
@@ -2518,28 +2518,28 @@
     ],
     "examples": [
       {
-        "title": "Basic",
-        "description": "",
-        "code": "import { Pagination } from \"@serendie/ui\";\nimport { useState } from \"react\";\n\nexport function BasicSample() {\n  const [page, setPage] = useState(1);\n  return (\n    <Pagination\n      count={10}\n      page={page}\n      onPageChange={({ page }) => setPage(page)}\n    />\n  );\n}\n",
-        "fileName": "BasicSample.tsx",
-        "language": "tsx"
-      },
-      {
         "title": "With More Siblings",
         "description": "",
         "code": "import { Pagination } from \"@serendie/ui\";\n\nexport function WithMoreSiblingsSample() {\n  return <Pagination count={100} siblingCount={4} />;\n}\n",
         "fileName": "WithMoreSiblingsSample.tsx",
         "language": "tsx"
+      },
+      {
+        "title": "Basic",
+        "description": "",
+        "code": "import { Pagination } from \"@serendie/ui\";\nimport { useState } from \"react\";\n\nexport function BasicSample() {\n  const [page, setPage] = useState(1);\n  return (\n    <Pagination\n      count={10}\n      page={page}\n      onPageChange={({ page }) => setPage(page)}\n    />\n  );\n}\n",
+        "fileName": "BasicSample.tsx",
+        "language": "tsx"
       }
     ],
     "storybookUrls": [
       {
-        "title": "サンプル",
+        "title": "Story",
         "path": "/story/components-pagination--basic",
         "variant": "basic"
       },
       {
-        "title": "表示数の調整",
+        "title": "Story",
         "path": "/story/components-pagination--with-more-siblings"
       }
     ],
@@ -2552,7 +2552,7 @@
     "category": "Inputs",
     "hasDocumentation": false,
     "source": "auto-detected",
-    "lastUpdated": "2025-10-28",
+    "lastUpdated": "2026-03-17",
     "props": [
       {
         "name": "label",
@@ -2632,22 +2632,22 @@
     "examples": [],
     "storybookUrls": [
       {
-        "title": "サイズ",
+        "title": "Story",
         "path": "/docs/components-progressindicator--docs",
         "variant": "docs"
       },
       {
-        "title": "確定値（Determinate）",
+        "title": "Story",
         "path": "/docs/components-progressindicator--docs",
         "variant": "docs"
       },
       {
-        "title": "不確定値（Indeterminate）",
+        "title": "Story",
         "path": "/docs/components-progressindicatorindeterminate--docs",
         "variant": "docs"
       },
       {
-        "title": "カラー（Indeterminate）",
+        "title": "Story",
         "path": "/docs/components-progressindicatorindeterminate--docs",
         "variant": "docs"
       }
@@ -2663,7 +2663,7 @@
     "category": "Display",
     "hasDocumentation": false,
     "source": "auto-detected",
-    "lastUpdated": "2025-10-28",
+    "lastUpdated": "2026-03-17",
     "props": [],
     "examples": [],
     "storybookUrls": [],
@@ -2720,12 +2720,12 @@
     "examples": [],
     "storybookUrls": [
       {
-        "title": "バリエーション",
+        "title": "Story",
         "path": "/story/components-radiobutton--default",
         "variant": "default"
       },
       {
-        "title": "状態",
+        "title": "Story",
         "path": "/docs/components-radiobutton--docs",
         "variant": "docs"
       }
@@ -2741,7 +2741,7 @@
     "category": "Inputs",
     "hasDocumentation": false,
     "source": "auto-detected",
-    "lastUpdated": "2025-10-28",
+    "lastUpdated": "2026-03-17",
     "props": [],
     "examples": [],
     "storybookUrls": [],
@@ -3080,28 +3080,28 @@
     ],
     "examples": [
       {
-        "title": "Size",
-        "description": "",
-        "code": "import { Search } from \"@serendie/ui\";\nimport { Dd, Dl, Dt } from \"src/components/LayoutUtils\";\n\nexport function SizeSample() {\n  return (\n    <Dl>\n      <Dt>Small</Dt>\n      <Dd>\n        <Search\n          items={[\"React\", \"Vue\", \"Angular\", \"Svelte\", \"Ember\"]}\n          size=\"small\"\n        />\n      </Dd>\n\n      <Dt>Medium</Dt>\n      <Dd>\n        <Search\n          items={[\"React\", \"Vue\", \"Angular\", \"Svelte\", \"Ember\"]}\n          size=\"medium\"\n        />\n      </Dd>\n    </Dl>\n  );\n}\n",
-        "fileName": "SizeSample.tsx",
-        "language": "tsx"
-      },
-      {
         "title": "State",
         "description": "",
         "code": "import { Search } from \"@serendie/ui\";\nimport { Dd, Dl, Dt } from \"src/components/LayoutUtils\";\n\nexport function StateSample() {\n  return (\n    <Dl>\n      <Dt>Enabled</Dt>\n      <Dd>\n        <Search items={[\"React\", \"Vue\", \"Angular\", \"Svelte\", \"Ember\"]} />\n      </Dd>\n\n      <Dt>Filled</Dt>\n      <Dd>\n        <Search\n          items={[\"React\", \"Vue\", \"Angular\", \"Svelte\", \"Ember\"]}\n          value={[\"React\"]}\n        />\n      </Dd>\n\n      <Dt>Disabled</Dt>\n      <Dd>\n        <Search\n          items={[\"React\", \"Vue\", \"Angular\", \"Svelte\", \"Ember\"]}\n          disabled\n        />\n      </Dd>\n    </Dl>\n  );\n}\n",
         "fileName": "StateSample.tsx",
         "language": "tsx"
+      },
+      {
+        "title": "Size",
+        "description": "",
+        "code": "import { Search } from \"@serendie/ui\";\nimport { Dd, Dl, Dt } from \"src/components/LayoutUtils\";\n\nexport function SizeSample() {\n  return (\n    <Dl>\n      <Dt>Small</Dt>\n      <Dd>\n        <Search\n          items={[\"React\", \"Vue\", \"Angular\", \"Svelte\", \"Ember\"]}\n          size=\"small\"\n        />\n      </Dd>\n\n      <Dt>Medium</Dt>\n      <Dd>\n        <Search\n          items={[\"React\", \"Vue\", \"Angular\", \"Svelte\", \"Ember\"]}\n          size=\"medium\"\n        />\n      </Dd>\n    </Dl>\n  );\n}\n",
+        "fileName": "SizeSample.tsx",
+        "language": "tsx"
       }
     ],
     "storybookUrls": [
       {
-        "title": "サイズ",
+        "title": "Story",
         "path": "/story/components-search--basic",
         "variant": "basic"
       },
       {
-        "title": "状態",
+        "title": "Story",
         "path": "/docs/components-search--docs",
         "variant": "docs"
       }
@@ -3372,28 +3372,28 @@
     ],
     "examples": [
       {
-        "title": "Size",
-        "description": "",
-        "code": "import { Select } from \"@serendie/ui\";\nimport { Dd, Dl, Dt } from \"src/components/LayoutUtils\";\n\nexport function SizeSample() {\n  return (\n    <Dl>\n      <Dt>Small</Dt>\n      <Dd>\n        <Select\n          size=\"small\"\n          label=\"ラベル\"\n          placeholder=\"選択してください\"\n          required\n          items={[\n            { label: \"React\", value: \"React\" },\n            { label: \"Vue\", value: \"Vue\" },\n            { label: \"Angular\", value: \"Angular\" },\n            { label: \"Svelte\", value: \"Svelte\" },\n            { label: \"Ember\", value: \"Ember\" },\n          ]}\n        />\n      </Dd>\n\n      <Dt>Medium</Dt>\n      <Dd>\n        <Select\n          size=\"medium\"\n          label=\"ラベル\"\n          placeholder=\"選択してください\"\n          required\n          items={[\n            { label: \"React\", value: \"React\" },\n            { label: \"Vue\", value: \"Vue\" },\n            { label: \"Angular\", value: \"Angular\" },\n            { label: \"Svelte\", value: \"Svelte\" },\n            { label: \"Ember\", value: \"Ember\" },\n          ]}\n        />\n      </Dd>\n    </Dl>\n  );\n}\n",
-        "fileName": "SizeSample.tsx",
-        "language": "tsx"
-      },
-      {
         "title": "State",
         "description": "",
         "code": "import { Select } from \"@serendie/ui\";\nimport { Dd, Dl, Dt } from \"src/components/LayoutUtils\";\n\nexport function StateSample() {\n  return (\n    <Dl>\n      <Dt>Enabled</Dt>\n      <Dd>\n        <Select\n          label=\"ラベル\"\n          placeholder=\"選択してください\"\n          required\n          items={[\n            { label: \"React\", value: \"React\" },\n            { label: \"Vue\", value: \"Vue\" },\n            { label: \"Angular\", value: \"Angular\" },\n            { label: \"Svelte\", value: \"Svelte\" },\n            { label: \"Ember\", value: \"Ember\" },\n          ]}\n        />\n      </Dd>\n\n      <Dt>Error</Dt>\n      <Dd>\n        <Select\n          label=\"ラベル\"\n          placeholder=\"選択してください\"\n          required\n          invalid\n          invalidMessage=\"エラーメッセージ\"\n          items={[\n            { label: \"React\", value: \"React\" },\n            { label: \"Vue\", value: \"Vue\" },\n            { label: \"Angular\", value: \"Angular\" },\n            { label: \"Svelte\", value: \"Svelte\" },\n            { label: \"Ember\", value: \"Ember\" },\n          ]}\n        />\n      </Dd>\n\n      <Dt>Disabled</Dt>\n      <Dd>\n        <Select\n          label=\"ラベル\"\n          placeholder=\"選択してください\"\n          required\n          disabled\n          items={[\n            { label: \"React\", value: \"React\" },\n            { label: \"Vue\", value: \"Vue\" },\n            { label: \"Angular\", value: \"Angular\" },\n            { label: \"Svelte\", value: \"Svelte\" },\n            { label: \"Ember\", value: \"Ember\" },\n          ]}\n        />\n      </Dd>\n    </Dl>\n  );\n}\n",
         "fileName": "StateSample.tsx",
         "language": "tsx"
+      },
+      {
+        "title": "Size",
+        "description": "",
+        "code": "import { Select } from \"@serendie/ui\";\nimport { Dd, Dl, Dt } from \"src/components/LayoutUtils\";\n\nexport function SizeSample() {\n  return (\n    <Dl>\n      <Dt>Small</Dt>\n      <Dd>\n        <Select\n          size=\"small\"\n          label=\"ラベル\"\n          placeholder=\"選択してください\"\n          required\n          items={[\n            { label: \"React\", value: \"React\" },\n            { label: \"Vue\", value: \"Vue\" },\n            { label: \"Angular\", value: \"Angular\" },\n            { label: \"Svelte\", value: \"Svelte\" },\n            { label: \"Ember\", value: \"Ember\" },\n          ]}\n        />\n      </Dd>\n\n      <Dt>Medium</Dt>\n      <Dd>\n        <Select\n          size=\"medium\"\n          label=\"ラベル\"\n          placeholder=\"選択してください\"\n          required\n          items={[\n            { label: \"React\", value: \"React\" },\n            { label: \"Vue\", value: \"Vue\" },\n            { label: \"Angular\", value: \"Angular\" },\n            { label: \"Svelte\", value: \"Svelte\" },\n            { label: \"Ember\", value: \"Ember\" },\n          ]}\n        />\n      </Dd>\n    </Dl>\n  );\n}\n",
+        "fileName": "SizeSample.tsx",
+        "language": "tsx"
       }
     ],
     "storybookUrls": [
       {
-        "title": "サイズ",
+        "title": "Story",
         "path": "/story/components-select--basic",
         "variant": "basic"
       },
       {
-        "title": "状態",
+        "title": "Story",
         "path": "/docs/components-select--docs",
         "variant": "docs"
       }
@@ -3485,28 +3485,28 @@
     ],
     "examples": [
       {
-        "title": "State",
-        "description": "",
-        "code": "import { Switch } from \"@serendie/ui\";\nimport { Dd, Dl, Dt } from \"src/components/LayoutUtils\";\n\nexport function StateSample() {\n  return (\n    <Dl>\n      <Dt>Enabled</Dt>\n      <Dd>\n        <Switch label={\"スイッチラベル\"} />\n      </Dd>\n      <Dt>Checked</Dt>\n      <Dd>\n        <Switch checked={true} label={\"スイッチラベル\"} />\n      </Dd>\n      <Dt>Disabled</Dt>\n      <Dd>\n        <Switch checked={false} disabled label={\"スイッチラベル\"} />\n      </Dd>\n      <Dt>Selected - Disabled</Dt>\n      <Dd>\n        <Switch checked={true} disabled label={\"スイッチラベル\"} />\n      </Dd>\n      <Dt>Focused</Dt>\n      <Dd>\n        <Switch checked={false} data-focus label={\"スイッチラベル\"} />\n      </Dd>\n    </Dl>\n  );\n}\n",
-        "fileName": "StateSample.tsx",
-        "language": "tsx"
-      },
-      {
         "title": "Type",
         "description": "",
         "code": "import { Switch } from \"@serendie/ui\";\nimport { useState } from \"react\";\n\nexport function TypeSample() {\n  const [checked, setChecked] = useState(false);\n  const handleClick = () => {\n    setChecked(!checked);\n  };\n\n  return (\n    <Switch\n      checked={checked}\n      onCheckedChange={handleClick}\n      label={\"スイッチラベル\"}\n    />\n  );\n}\n",
         "fileName": "TypeSample.tsx",
         "language": "tsx"
+      },
+      {
+        "title": "State",
+        "description": "",
+        "code": "import { Switch } from \"@serendie/ui\";\nimport { Dd, Dl, Dt } from \"src/components/LayoutUtils\";\n\nexport function StateSample() {\n  return (\n    <Dl>\n      <Dt>Enabled</Dt>\n      <Dd>\n        <Switch label={\"スイッチラベル\"} />\n      </Dd>\n      <Dt>Checked</Dt>\n      <Dd>\n        <Switch checked={true} label={\"スイッチラベル\"} />\n      </Dd>\n      <Dt>Disabled</Dt>\n      <Dd>\n        <Switch checked={false} disabled label={\"スイッチラベル\"} />\n      </Dd>\n      <Dt>Selected - Disabled</Dt>\n      <Dd>\n        <Switch checked={true} disabled label={\"スイッチラベル\"} />\n      </Dd>\n      <Dt>Focused</Dt>\n      <Dd>\n        <Switch checked={false} data-focus label={\"スイッチラベル\"} />\n      </Dd>\n    </Dl>\n  );\n}\n",
+        "fileName": "StateSample.tsx",
+        "language": "tsx"
       }
     ],
     "storybookUrls": [
       {
-        "title": "サンプル",
+        "title": "Story",
         "path": "/story/components-switch--default",
         "variant": "default"
       },
       {
-        "title": "状態",
+        "title": "Story",
         "path": "/docs/components-switch--docs",
         "variant": "docs"
       }
@@ -3626,10 +3626,10 @@
     ],
     "examples": [
       {
-        "title": "State",
+        "title": "Tabs",
         "description": "",
-        "code": "import { Dd, Dl, Dt } from \"@/components/LayoutUtils\";\nimport { Tabs, TabItem } from \"@serendie/ui\";\n\nexport function StateSample() {\n  return (\n    <Dl\n      style={{\n        gridTemplateColumns: \"80px auto auto\",\n      }}\n    >\n      <Dt></Dt>\n      <Dt\n        style={{\n          textAlign: \"center\",\n        }}\n      >\n        Default\n      </Dt>\n      <Dt\n        style={{\n          textAlign: \"center\",\n        }}\n      >\n        Selected\n      </Dt>\n\n      <Dt>Default</Dt>\n      <Dd>\n        <Tabs>\n          <TabItem title=\"連絡先\" value=\"1\" />\n        </Tabs>\n      </Dd>\n      <Dd>\n        <Tabs defaultValue=\"1\">\n          <TabItem title=\"連絡先\" value=\"1\" />\n        </Tabs>\n      </Dd>\n\n      <Dt>Focused</Dt>\n      <Dd>\n        <Tabs>\n          <TabItem title=\"連絡先\" value=\"1\" data-focus-visible={true} />\n        </Tabs>\n      </Dd>\n      <Dd>\n        <Tabs defaultValue=\"1\">\n          <TabItem title=\"連絡先\" value=\"1\" data-focus-visible={true} />\n        </Tabs>\n      </Dd>\n\n      <Dt>Disabled</Dt>\n      <Dd>\n        <Tabs>\n          <TabItem title=\"連絡先\" value=\"1\" disabled />\n        </Tabs>\n      </Dd>\n      <Dd>\n        <Tabs defaultValue=\"1\">\n          <TabItem title=\"連絡先\" value=\"1\" disabled />\n        </Tabs>\n      </Dd>\n    </Dl>\n  );\n}\n",
-        "fileName": "StateSample.tsx",
+        "code": "import { TabItem } from \"@serendie/ui\";\nimport { Tabs } from \"@serendie/ui\";\n\nexport function TabsSample() {\n  return (\n    <Tabs defaultValue=\"2\">\n      <TabItem title=\"連絡先\" value=\"1\" />\n      <TabItem title=\"トーク\" value=\"2\" />\n      <TabItem title=\"売上履歴\" value=\"3\" dot />\n      <TabItem title=\"入出金\" value=\"4\" badge={3} disabled />\n    </Tabs>\n  );\n}\n",
+        "fileName": "TabsSample.tsx",
         "language": "tsx"
       },
       {
@@ -3640,26 +3640,26 @@
         "language": "tsx"
       },
       {
-        "title": "Tabs",
+        "title": "State",
         "description": "",
-        "code": "import { TabItem } from \"@serendie/ui\";\nimport { Tabs } from \"@serendie/ui\";\n\nexport function TabsSample() {\n  return (\n    <Tabs defaultValue=\"2\">\n      <TabItem title=\"連絡先\" value=\"1\" />\n      <TabItem title=\"トーク\" value=\"2\" />\n      <TabItem title=\"売上履歴\" value=\"3\" dot />\n      <TabItem title=\"入出金\" value=\"4\" badge={3} disabled />\n    </Tabs>\n  );\n}\n",
-        "fileName": "TabsSample.tsx",
+        "code": "import { Dd, Dl, Dt } from \"@/components/LayoutUtils\";\nimport { Tabs, TabItem } from \"@serendie/ui\";\n\nexport function StateSample() {\n  return (\n    <Dl\n      style={{\n        gridTemplateColumns: \"80px auto auto\",\n      }}\n    >\n      <Dt></Dt>\n      <Dt\n        style={{\n          textAlign: \"center\",\n        }}\n      >\n        Default\n      </Dt>\n      <Dt\n        style={{\n          textAlign: \"center\",\n        }}\n      >\n        Selected\n      </Dt>\n\n      <Dt>Default</Dt>\n      <Dd>\n        <Tabs>\n          <TabItem title=\"連絡先\" value=\"1\" />\n        </Tabs>\n      </Dd>\n      <Dd>\n        <Tabs defaultValue=\"1\">\n          <TabItem title=\"連絡先\" value=\"1\" />\n        </Tabs>\n      </Dd>\n\n      <Dt>Focused</Dt>\n      <Dd>\n        <Tabs>\n          <TabItem title=\"連絡先\" value=\"1\" data-focus-visible={true} />\n        </Tabs>\n      </Dd>\n      <Dd>\n        <Tabs defaultValue=\"1\">\n          <TabItem title=\"連絡先\" value=\"1\" data-focus-visible={true} />\n        </Tabs>\n      </Dd>\n\n      <Dt>Disabled</Dt>\n      <Dd>\n        <Tabs>\n          <TabItem title=\"連絡先\" value=\"1\" disabled />\n        </Tabs>\n      </Dd>\n      <Dd>\n        <Tabs defaultValue=\"1\">\n          <TabItem title=\"連絡先\" value=\"1\" disabled />\n        </Tabs>\n      </Dd>\n    </Dl>\n  );\n}\n",
+        "fileName": "StateSample.tsx",
         "language": "tsx"
       }
     ],
     "storybookUrls": [
       {
-        "title": "サンプル",
+        "title": "Story",
         "path": "/story/components-tabs--default",
         "variant": "default"
       },
       {
-        "title": "バリエーション",
+        "title": "Story",
         "path": "/docs/components-tabs--docs",
         "variant": "docs"
       },
       {
-        "title": "状態",
+        "title": "Story",
         "path": "/docs/components-tabs--docs",
         "variant": "docs"
       }
@@ -3675,7 +3675,7 @@
     "category": "Layout",
     "hasDocumentation": false,
     "source": "auto-detected",
-    "lastUpdated": "2025-10-28",
+    "lastUpdated": "2026-03-17",
     "props": [],
     "examples": [],
     "storybookUrls": [],
@@ -3726,12 +3726,12 @@
     "examples": [],
     "storybookUrls": [
       {
-        "title": "状態",
+        "title": "Story",
         "path": "/story/components-textarea--basic",
         "variant": "basic"
       },
       {
-        "title": "高さの自動調整",
+        "title": "Story",
         "path": "/story/components-textarea--auto-adjust-height"
       }
     ],
@@ -3786,12 +3786,12 @@
     "examples": [],
     "storybookUrls": [
       {
-        "title": "状態",
+        "title": "Story",
         "path": "/story/components-textfield--basic",
         "variant": "basic"
       },
       {
-        "title": "Password Field",
+        "title": "Story",
         "path": "/story/components-passwordfield--basic",
         "variant": "basic"
       }
@@ -3825,7 +3825,7 @@
     ],
     "storybookUrls": [
       {
-        "title": "バリエーション",
+        "title": "Story",
         "path": "/story/components-toast--default",
         "variant": "default"
       }
@@ -3874,10 +3874,10 @@
     ],
     "examples": [
       {
-        "title": "Basic",
+        "title": "State",
         "description": "",
-        "code": "import { Tooltip, Button, IconButton } from \"@serendie/ui\";\nimport { SerendieSymbol } from \"@serendie/symbols\";\nimport { HBox } from \"src/components/LayoutUtils\";\nimport { styled } from \"styled-system/jsx\";\n\nconst Span = styled(\"span\", {\n  base: {\n    width: \"fit-content\",\n  },\n});\n\nexport function BasicSample() {\n  return (\n    <HBox alignItems=\"center\">\n      <Tooltip content=\"削除ボタンです。この操作は取り消せません。\">\n        <Span>\n          <Button>削除</Button>\n        </Span>\n      </Tooltip>\n\n      <Tooltip content=\"編集ボタンです\">\n        <Span>\n          <Button styleType=\"outlined\">編集</Button>\n        </Span>\n      </Tooltip>\n\n      <Tooltip content=\"詳細情報を表示します\">\n        <Span>\n          <IconButton\n            icon={<SerendieSymbol name=\"information\" />}\n            styleType=\"ghost\"\n            size=\"small\"\n            shape=\"circle\"\n          />\n        </Span>\n      </Tooltip>\n    </HBox>\n  );\n}\n",
-        "fileName": "BasicSample.tsx",
+        "code": "import { Tooltip, Button } from \"@serendie/ui\";\nimport { styled } from \"../../../styled-system/jsx\";\n\nconst Span = styled(\"span\", {\n  base: {\n    width: \"fit-content\",\n  },\n});\n\nconst Label = styled(\"span\", {\n  base: {\n    fontSize: \"sm\",\n    minWidth: \"80px\",\n    textAlign: \"right\",\n  },\n});\n\nconst Grid = styled(\"div\", {\n  base: {\n    display: \"grid\",\n    gridTemplateColumns: \"repeat(2, auto)\",\n    width: \"fit-content\",\n    margin: \"0 auto\",\n    rowGap: \"sd.system.dimension.spacing.medium\",\n    columnGap: \"sd.system.dimension.spacing.large\",\n    pr: \"sd.system.dimension.spacing.medium\",\n  },\n});\n\nconst GridItemContainer = styled(\"div\", {\n  base: {\n    display: \"grid\",\n    gridTemplateColumns: \"subgrid\",\n    gridColumn: \"span 2\",\n    alignItems: \"center\",\n  },\n});\n\nexport function StateSample() {\n  return (\n    <Grid>\n      <GridItemContainer>\n        <Label>プロパティなし:</Label>\n        <Tooltip content=\"これは有効なツールチップです\">\n          <Span>\n            <Button>enabledの場合</Button>\n          </Span>\n        </Tooltip>\n      </GridItemContainer>\n\n      <GridItemContainer>\n        <Label>disabled:</Label>\n        <Tooltip content=\"このツールチップは表示されません\" disabled>\n          <Span>\n            <Button>disabledの場合</Button>\n          </Span>\n        </Tooltip>\n      </GridItemContainer>\n    </Grid>\n  );\n}\n",
+        "fileName": "StateSample.tsx",
         "language": "tsx"
       },
       {
@@ -3888,26 +3888,26 @@
         "language": "tsx"
       },
       {
-        "title": "State",
+        "title": "Basic",
         "description": "",
-        "code": "import { Tooltip, Button } from \"@serendie/ui\";\nimport { styled } from \"../../../styled-system/jsx\";\n\nconst Span = styled(\"span\", {\n  base: {\n    width: \"fit-content\",\n  },\n});\n\nconst Label = styled(\"span\", {\n  base: {\n    fontSize: \"sm\",\n    minWidth: \"80px\",\n    textAlign: \"right\",\n  },\n});\n\nconst Grid = styled(\"div\", {\n  base: {\n    display: \"grid\",\n    gridTemplateColumns: \"repeat(2, auto)\",\n    width: \"fit-content\",\n    margin: \"0 auto\",\n    rowGap: \"sd.system.dimension.spacing.medium\",\n    columnGap: \"sd.system.dimension.spacing.large\",\n    pr: \"sd.system.dimension.spacing.medium\",\n  },\n});\n\nconst GridItemContainer = styled(\"div\", {\n  base: {\n    display: \"grid\",\n    gridTemplateColumns: \"subgrid\",\n    gridColumn: \"span 2\",\n    alignItems: \"center\",\n  },\n});\n\nexport function StateSample() {\n  return (\n    <Grid>\n      <GridItemContainer>\n        <Label>プロパティなし:</Label>\n        <Tooltip content=\"これは有効なツールチップです\">\n          <Span>\n            <Button>enabledの場合</Button>\n          </Span>\n        </Tooltip>\n      </GridItemContainer>\n\n      <GridItemContainer>\n        <Label>disabled:</Label>\n        <Tooltip content=\"このツールチップは表示されません\" disabled>\n          <Span>\n            <Button>disabledの場合</Button>\n          </Span>\n        </Tooltip>\n      </GridItemContainer>\n    </Grid>\n  );\n}\n",
-        "fileName": "StateSample.tsx",
+        "code": "import { Tooltip, Button, IconButton } from \"@serendie/ui\";\nimport { SerendieSymbol } from \"@serendie/symbols\";\nimport { HBox } from \"src/components/LayoutUtils\";\nimport { styled } from \"styled-system/jsx\";\n\nconst Span = styled(\"span\", {\n  base: {\n    width: \"fit-content\",\n  },\n});\n\nexport function BasicSample() {\n  return (\n    <HBox alignItems=\"center\">\n      <Tooltip content=\"削除ボタンです。この操作は取り消せません。\">\n        <Span>\n          <Button>削除</Button>\n        </Span>\n      </Tooltip>\n\n      <Tooltip content=\"編集ボタンです\">\n        <Span>\n          <Button styleType=\"outlined\">編集</Button>\n        </Span>\n      </Tooltip>\n\n      <Tooltip content=\"詳細情報を表示します\">\n        <Span>\n          <IconButton\n            icon={<SerendieSymbol name=\"information\" />}\n            styleType=\"ghost\"\n            size=\"small\"\n            shape=\"circle\"\n          />\n        </Span>\n      </Tooltip>\n    </HBox>\n  );\n}\n",
+        "fileName": "BasicSample.tsx",
         "language": "tsx"
       }
     ],
     "storybookUrls": [
       {
-        "title": "基本的な使い方",
+        "title": "Story",
         "path": "/story/components-tooltip--default",
         "variant": "default"
       },
       {
-        "title": "配置",
+        "title": "Story",
         "path": "/story/components-tooltip--positions",
         "variant": "positions"
       },
       {
-        "title": "状態",
+        "title": "Story",
         "path": "/story/components-tooltip--disabled",
         "variant": "disabled"
       }
@@ -3957,7 +3957,7 @@
     "examples": [],
     "storybookUrls": [
       {
-        "title": "バリエーション",
+        "title": "Story",
         "path": "/story/components-topappbar--all",
         "variant": "all"
       }
