@@ -4,7 +4,6 @@
   "description": "A Figma plugin to assist designers in creating UI components with Serendie UI.",
   "scripts": {
     "build:sync-assets": "npx tsx scripts/sync-assets.ts",
-    "build:fetch-keys": "npx tsx scripts/fetch-component-keys.ts",
     "build:plugin-js": "node scripts/build-plugin-js.mjs",
     "build:ui-js": "node scripts/build-ui-js.mjs",
     "build:ui-html": "node scripts/build-ui-html.mjs",
