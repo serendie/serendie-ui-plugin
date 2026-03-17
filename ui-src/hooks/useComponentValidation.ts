@@ -13,51 +13,18 @@ import {
 import componentKeys from '../../shared-src/assets/component-keys.json'
 import componentsManifest from '../../shared-src/assets/components_manifest.json'
 import { ComponentKeysMap } from '../../shared-src/models/ComponentKeys'
+import { ComponentManifestEntry } from '../../shared-src/models/ComponentManifest'
+import ClientStorage from '../../shared-src/models/ClientStorage'
 import { getBasePropName } from '../../shared-src/utils/getBasePropName'
 
 const componentKeysMap = componentKeys as ComponentKeysMap
-
-// component-keys.jsonに存在するコンポーネント名のセット
-const validComponentNames = new Set(Object.keys(componentKeysMap))
-
-function generateComponentList(): string {
-  // component-keys.jsonに存在するコンポーネントのみ、manifestの説明付きで出力
-  return componentsManifest
-    .filter(c => validComponentNames.has(c.name))
-    .map(c => (c.description ? `- ${c.name}: ${c.description}` : `- ${c.name}`))
-    .join('\n')
-}
+const fallbackComponentsManifest = componentsManifest as ComponentManifestEntry[]
 
 type ValidationState = 'idle' | 'analyzing' | 'done' | 'error'
 
 export type ComponentValidationResult = {
   candidates: ComponentCandidate[]
   issues: Issue[]
-}
-
-function generateComponentPropertiesInfo(): string {
-  const lines: string[] = []
-  for (const [name, info] of Object.entries(componentKeysMap)) {
-    if (info.type === 'COMPONENT_SET' && info.componentProperties?.length) {
-      const props = info.componentProperties
-        .map(p => {
-          const propName = getBasePropName(p.name)
-          switch (p.type) {
-            case 'VARIANT':
-              return `${propName}: [${p.options.join(', ')}]`
-            case 'BOOLEAN':
-              return `${propName}: boolean (default: ${p.defaultValue})`
-            case 'TEXT':
-              return `${propName}: text`
-            case 'INSTANCE_SWAP':
-              return `${propName}: instance swap (${p.preferredComponentSets.join(' | ')})`
-          }
-        })
-        .join(', ')
-      lines.push(`- ${name}: ${props}`)
-    }
-  }
-  return lines.join('\n')
 }
 
 function flattenNodes(node: NodeStructure): Map<string, NodeStructure> {
@@ -107,6 +74,153 @@ export function createIssuesFromCandidates(
   return issues
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null
+}
+
+function isStringArray(value: unknown): value is string[] {
+  return Array.isArray(value) && value.every(item => typeof item === 'string')
+}
+
+function isRuntimeComponentKeysMap(value: unknown): value is ComponentKeysMap {
+  if (!isRecord(value)) return false
+
+  return Object.values(value).every(entry => {
+    if (!isRecord(entry)) return false
+    if (
+      typeof entry.key !== 'string' ||
+      typeof entry.name !== 'string' ||
+      typeof entry.description !== 'string' ||
+      typeof entry.nodeId !== 'string'
+    ) {
+      return false
+    }
+    if (entry.type !== 'COMPONENT' && entry.type !== 'COMPONENT_SET') {
+      return false
+    }
+    if (entry.componentProperties === undefined) {
+      return true
+    }
+    if (!Array.isArray(entry.componentProperties)) {
+      return false
+    }
+
+    return entry.componentProperties.every(property => {
+      if (!isRecord(property)) return false
+      if (typeof property.name !== 'string' || typeof property.type !== 'string') {
+        return false
+      }
+
+      switch (property.type) {
+        case 'VARIANT':
+          return isStringArray(property.options)
+        case 'BOOLEAN':
+          return typeof property.defaultValue === 'boolean'
+        case 'TEXT':
+          return typeof property.defaultValue === 'string'
+        case 'INSTANCE_SWAP':
+          return isStringArray(property.preferredComponentSets)
+        default:
+          return false
+      }
+    })
+  })
+}
+
+function isRuntimeComponentsManifest(
+  value: unknown
+): value is ComponentManifestEntry[] {
+  return (
+    Array.isArray(value) &&
+    value.every(entry => {
+      if (!isRecord(entry)) return false
+      return (
+        typeof entry.name === 'string' && typeof entry.description === 'string'
+      )
+    })
+  )
+}
+
+function requestStorageValue<T>(key: string): Promise<T | null> {
+  return new Promise(resolve => {
+    const onMessage = (event: MessageEvent) => {
+      const message = event.data.pluginMessage
+      if (message?.type === 'storage-value' && message.key === key) {
+        window.removeEventListener('message', onMessage)
+        resolve((message.value as T | undefined) ?? null)
+      }
+    }
+
+    window.addEventListener('message', onMessage)
+    parent.postMessage(
+      {
+        pluginMessage: {
+          type: 'get-storage',
+          key,
+        },
+      },
+      '*'
+    )
+  })
+}
+
+async function loadRuntimeComponentAssets(): Promise<{
+  componentKeys: ComponentKeysMap
+  componentsManifest: ComponentManifestEntry[]
+}> {
+  const [storedComponentKeys, storedComponentsManifest] = await Promise.all([
+    requestStorageValue<unknown>(ClientStorage.RUNTIME_COMPONENT_KEYS),
+    requestStorageValue<unknown>(ClientStorage.RUNTIME_COMPONENTS_MANIFEST),
+  ])
+
+  return {
+    componentKeys: isRuntimeComponentKeysMap(storedComponentKeys)
+      ? storedComponentKeys
+      : componentKeysMap,
+    componentsManifest: isRuntimeComponentsManifest(storedComponentsManifest)
+      ? storedComponentsManifest
+      : fallbackComponentsManifest,
+  }
+}
+
+function generateComponentListFromAssets(
+  componentKeysMap: ComponentKeysMap,
+  componentsManifest: ComponentManifestEntry[]
+): string {
+  const validComponentNames = new Set(Object.keys(componentKeysMap))
+  return componentsManifest
+    .filter(c => validComponentNames.has(c.name))
+    .map(c => (c.description ? `- ${c.name}: ${c.description}` : `- ${c.name}`))
+    .join('\n')
+}
+
+function generateComponentPropertiesInfoFromAssets(
+  componentKeysMap: ComponentKeysMap
+): string {
+  const lines: string[] = []
+  for (const [name, info] of Object.entries(componentKeysMap)) {
+    if (info.type === 'COMPONENT_SET' && info.componentProperties?.length) {
+      const props = info.componentProperties
+        .map(p => {
+          const propName = getBasePropName(p.name)
+          switch (p.type) {
+            case 'VARIANT':
+              return `${propName}: [${p.options.join(', ')}]`
+            case 'BOOLEAN':
+              return `${propName}: boolean (default: ${p.defaultValue})`
+            case 'TEXT':
+              return `${propName}: text`
+            case 'INSTANCE_SWAP':
+              return `${propName}: instance swap (${p.preferredComponentSets.join(' | ')})`
+          }
+        })
+        .join(', ')
+      lines.push(`- ${name}: ${props}`)
+    }
+  }
+  return lines.join('\n')
+}
+
 export function useComponentValidation({ apiKey }: { apiKey: string }) {
   const [state, setState] = useState<ValidationState>('idle')
   const [result, setResult] = useState<ComponentValidationResult | null>(null)
@@ -133,9 +247,15 @@ export function useComponentValidation({ apiKey }: { apiKey: string }) {
       try {
         const openai = createOpenAI({ apiKey })
         const serializedStructure = serializeNodeStructure(structure)
+        const runtimeAssets = await loadRuntimeComponentAssets()
 
-        const componentPropertiesInfo = generateComponentPropertiesInfo()
-        const componentList = generateComponentList()
+        const componentPropertiesInfo = generateComponentPropertiesInfoFromAssets(
+          runtimeAssets.componentKeys
+        )
+        const componentList = generateComponentListFromAssets(
+          runtimeAssets.componentKeys,
+          runtimeAssets.componentsManifest
+        )
         const systemPrompt = `あなたはSerendie Design System（SDS）の専門家です。
 与えられたFigmaノード構造と画像を分析し、各ノードがSDSのどのコンポーネントとして実装されるべきかを判断してください。
 

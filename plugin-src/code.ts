@@ -7,12 +7,18 @@ import { LintResult } from '../shared-src/models/PluginMessage'
 import { applyComponents } from './utils/components/applyComponent'
 import { fixColorTokensRecursive } from './lint/fixes/fixColorTokenRecursive'
 import { fixBorderTokens } from './lint/fixes/fixBorderToken'
+import {
+  getRuntimeComponentKeysMap,
+  refreshRemoteComponentAssetsIfStale,
+} from './catalog/runtimeComponentAssets'
 
 figma.showUI(__html__, {
   width: 360,
   height: 800,
   title: 'Serendie Design Linter',
 })
+
+void refreshRemoteComponentAssetsIfStale()
 
 let orderedSelectionIds: string[] = []
 
@@ -61,6 +67,7 @@ figma.ui.onmessage = async msg => {
     }
   }
   if (msg.type === 'run-linter') {
+    await refreshRemoteComponentAssetsIfStale()
     const nodes = await Promise.all(
       msg.nodeIds.map((id: string) => figma.getNodeByIdAsync(id))
     )
@@ -77,6 +84,7 @@ figma.ui.onmessage = async msg => {
 
     try {
       const results: LintResult[] = []
+      const componentKeysMap = await getRuntimeComponentKeysMap()
       for (const selection of selections) {
         const [colorInfoList, borderInfoList] = await Promise.all([
           extractColorInfo(selection),
@@ -87,7 +95,7 @@ figma.ui.onmessage = async msg => {
         const structure =
           msg.source === 'component-validation'
             ? undefined
-            : await buildNodeStructure(selection)
+            : await buildNodeStructure(selection, componentKeysMap)
 
         results.push({
           name: selection.name,
@@ -162,7 +170,13 @@ figma.ui.onmessage = async msg => {
   }
   if (msg.type === 'apply-components') {
     try {
-      const result = await applyComponents(msg.rootNodeId, msg.targets)
+      await refreshRemoteComponentAssetsIfStale()
+      const componentKeysMap = await getRuntimeComponentKeysMap()
+      const result = await applyComponents(
+        msg.rootNodeId,
+        msg.targets,
+        componentKeysMap
+      )
       const successCount = result.results.filter(
         r => r.status === 'success'
       ).length

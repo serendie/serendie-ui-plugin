@@ -4,19 +4,12 @@ import {
 } from '../../../shared-src/models/PluginMessage'
 import extractColorVariables from '../../lint/extractors/extractColorVariables'
 import getVariableMap from '../../lint/extractors/getVariableMap'
-import componentKeys from '../../../shared-src/assets/component-keys.json'
 import { ComponentKeysMap } from '../../../shared-src/models/ComponentKeys'
-
-const componentKeysMap = componentKeys as ComponentKeysMap
-
-// SDSコンポーネントのkeyセットを作成
-const sdsComponentKeys = new Set(
-  Object.values(componentKeysMap).map(c => c.key)
-)
 
 async function buildNodeStructureRecursive(
   node: SceneNode,
-  variableMap: Map<string, string>
+  variableMap: Map<string, string>,
+  sdsComponentKeys: Set<string>
 ): Promise<NodeStructure> {
   const extractFills = (node: SceneNode): string[] => {
     if ('fills' in node) {
@@ -110,7 +103,8 @@ async function buildNodeStructureRecursive(
 
       const childStructure = await buildNodeStructureRecursive(
         child,
-        variableMap
+        variableMap,
+        sdsComponentKeys
       )
       children.push(childStructure)
     }
@@ -134,8 +128,12 @@ async function buildNodeStructureRecursive(
 }
 
 export default async function buildNodeStructure(
-  node: SceneNode
+  node: SceneNode,
+  componentKeysMap: ComponentKeysMap
 ): Promise<NodeStructure> {
   const variableMap = await getVariableMap()
-  return buildNodeStructureRecursive(node, variableMap)
+  const sdsComponentKeys = new Set(
+    Object.values(componentKeysMap).map(component => component.key)
+  )
+  return buildNodeStructureRecursive(node, variableMap, sdsComponentKeys)
 }
