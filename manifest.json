@@ -1,5 +1,5 @@
 {
-  "name": "serendie-design-linter",
+  "name": "serendie-ui-copilot",
   "id": "1552496414081647274",
   "api": "1.0.0",
   "main": "dist/plugin.js",
@@ -16,6 +16,6 @@
       "https://main-production-a912.up.railway.app"
     ],
     "devAllowedDomains": ["http://localhost:4321/mcp"],
-    "reasoning": "デザインガイドラインに基づくアドバイスを提供するため、Serendie Design SystemのMCPサーバー・OpenAIのAPI・Serendie Design SystemのドキュメントAPIと通信します。"
+    "reasoning": "Serendie Design Systemのガイドラインに基づくアドバイスを提供するため、Serendie MCPサーバー, OpenAI API, Serendie Design SystemのドキュメントAPIと通信します。"
   }
 }
