@@ -111,12 +111,29 @@ function setMemoryCaches(
   componentsManifestCache = componentsManifest
 }
 
+let inflightRefresh: Promise<void> | null = null
+
 export function resetRuntimeComponentAssetsCache() {
   componentKeysCache = null
   componentsManifestCache = null
+  inflightRefresh = null
 }
 
-export async function refreshRemoteComponentAssetsIfStale({
+export function refreshRemoteComponentAssetsIfStale(opts?: {
+  storage?: StorageLike
+  fetchImpl?: FetchLike
+  now?: () => number
+}): Promise<void> {
+  if (inflightRefresh) return inflightRefresh
+  const promise = doRefreshRemoteComponentAssetsIfStale(opts)
+  inflightRefresh = promise
+  promise.finally(() => {
+    inflightRefresh = null
+  })
+  return promise
+}
+
+async function doRefreshRemoteComponentAssetsIfStale({
   storage = figma.clientStorage,
   fetchImpl = fetch,
   now = () => Date.now(),
