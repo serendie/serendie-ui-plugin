@@ -127,13 +127,20 @@ async function buildNodeStructureRecursive(
   }
 }
 
-export default async function buildNodeStructure(
-  node: SceneNode,
+export function buildSdsComponentKeys(
   componentKeysMap: ComponentKeysMap
-): Promise<NodeStructure> {
-  const variableMap = await getVariableMap()
-  const sdsComponentKeys = new Set(
+): Set<string> {
+  return new Set(
     Object.values(componentKeysMap).map(component => component.key)
   )
-  return buildNodeStructureRecursive(node, variableMap, sdsComponentKeys)
+}
+
+export default async function buildNodeStructure(
+  node: SceneNode,
+  componentKeysMap: ComponentKeysMap,
+  sdsComponentKeys?: Set<string>
+): Promise<NodeStructure> {
+  const variableMap = await getVariableMap()
+  const keys = sdsComponentKeys ?? buildSdsComponentKeys(componentKeysMap)
+  return buildNodeStructureRecursive(node, variableMap, keys)
 }

@@ -2,7 +2,9 @@ import extractColorInfo from './lint/extractors/extractColorInfo'
 import extractBorderInfo from './lint/extractors/extractBorderInfo'
 import { runLint } from './lint/validators/runLint'
 import getImage, { canGetImage } from '../shared-src/utils/getImage'
-import buildNodeStructure from './utils/nodes/buildNodeStructure'
+import buildNodeStructure, {
+  buildSdsComponentKeys,
+} from './utils/nodes/buildNodeStructure'
 import { LintResult } from '../shared-src/models/PluginMessage'
 import { applyComponents } from './utils/components/applyComponent'
 import { fixColorTokensRecursive } from './lint/fixes/fixColorTokenRecursive'
@@ -85,6 +87,7 @@ figma.ui.onmessage = async msg => {
     try {
       const results: LintResult[] = []
       const componentKeysMap = await getRuntimeComponentKeysMap()
+      const sdsComponentKeys = buildSdsComponentKeys(componentKeysMap)
       for (const selection of selections) {
         const [colorInfoList, borderInfoList] = await Promise.all([
           extractColorInfo(selection),
@@ -95,7 +98,11 @@ figma.ui.onmessage = async msg => {
         const structure =
           msg.source === 'component-validation'
             ? undefined
-            : await buildNodeStructure(selection, componentKeysMap)
+            : await buildNodeStructure(
+                selection,
+                componentKeysMap,
+                sdsComponentKeys
+              )
 
         results.push({
           name: selection.name,

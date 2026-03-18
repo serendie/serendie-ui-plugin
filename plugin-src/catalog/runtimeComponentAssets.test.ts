@@ -1,6 +1,7 @@
 import ClientStorage from '../../shared-src/models/ClientStorage'
 import {
   COMPONENT_ASSETS_TTL_MS,
+  COMPONENT_ASSETS_RETRY_TTL_MS,
   getRuntimeComponentKeysMap,
   getRuntimeComponentsManifest,
   refreshRemoteComponentAssetsIfStale,
@@ -112,6 +113,55 @@ describe('runtimeComponentAssets', () => {
         fetchImpl: fetchImpl as never,
       })
     ).resolves.toBeUndefined()
+  })
+
+  it('失敗後にリトライTTL内なら再fetchしない', async () => {
+    const nowMs = Date.parse('2026-03-17T00:00:00.000Z')
+    const storage = createStorage()
+    const fetchImpl = jest.fn(async () => {
+      throw new Error('network error')
+    })
+
+    // 1回目: 失敗する
+    await refreshRemoteComponentAssetsIfStale({
+      storage,
+      fetchImpl: fetchImpl as never,
+      now: () => nowMs,
+    })
+    expect(fetchImpl).toHaveBeenCalled()
+
+    // 2回目: リトライTTL内なのでfetchしない
+    fetchImpl.mockClear()
+    await refreshRemoteComponentAssetsIfStale({
+      storage,
+      fetchImpl: fetchImpl as never,
+      now: () => nowMs + COMPONENT_ASSETS_RETRY_TTL_MS - 1000,
+    })
+    expect(fetchImpl).not.toHaveBeenCalled()
+  })
+
+  it('失敗後にリトライTTLを超えたら再fetchする', async () => {
+    const nowMs = Date.parse('2026-03-17T00:00:00.000Z')
+    const storage = createStorage()
+    const fetchImpl = jest.fn(async () => {
+      throw new Error('network error')
+    })
+
+    // 1回目: 失敗する
+    await refreshRemoteComponentAssetsIfStale({
+      storage,
+      fetchImpl: fetchImpl as never,
+      now: () => nowMs,
+    })
+
+    // 2回目: リトライTTLを超えたので再fetchする
+    fetchImpl.mockClear()
+    await refreshRemoteComponentAssetsIfStale({
+      storage,
+      fetchImpl: fetchImpl as never,
+      now: () => nowMs + COMPONENT_ASSETS_RETRY_TTL_MS + 1000,
+    })
+    expect(fetchImpl).toHaveBeenCalled()
   })
 
   it('保存済み component keys を優先して返す', async () => {

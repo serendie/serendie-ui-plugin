@@ -79,12 +79,20 @@ function isComponentsManifestJson(value: unknown): boolean {
   )
 }
 
+const FETCH_TIMEOUT_MS = 30_000
+
 async function fetchJson(url: string): Promise<unknown> {
-  const response = await fetch(url)
-  if (!response.ok) {
-    throw new Error(`Failed to fetch ${url}: ${response.status}`)
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS)
+  try {
+    const response = await fetch(url, { signal: controller.signal })
+    if (!response.ok) {
+      throw new Error(`Failed to fetch ${url}: ${response.status}`)
+    }
+    return response.json()
+  } finally {
+    clearTimeout(timeoutId)
   }
-  return response.json()
 }
 
 async function main() {
