@@ -164,6 +164,39 @@ describe('runtimeComponentAssets', () => {
     expect(fetchImpl).toHaveBeenCalled()
   })
 
+  it('同時呼び出しで二重fetchしない', async () => {
+    const storage = createStorage()
+    let fetchCount = 0
+    const fetchImpl = jest.fn(async () => {
+      fetchCount++
+      // 少し遅延させて同時実行を再現
+      await new Promise(r => setTimeout(r, 10))
+      return {
+        ok: true,
+        status: 200,
+        json: async () =>
+          fetchCount <= 2 ? componentKeys : componentsManifest,
+      }
+    })
+
+    // 同時に2回呼び出す
+    const [r1, r2] = await Promise.all([
+      refreshRemoteComponentAssetsIfStale({
+        storage,
+        fetchImpl: fetchImpl as never,
+      }),
+      refreshRemoteComponentAssetsIfStale({
+        storage,
+        fetchImpl: fetchImpl as never,
+      }),
+    ])
+
+    expect(r1).toBeUndefined()
+    expect(r2).toBeUndefined()
+    // 2つのURL × 1回 = 2回のみ（二重なら4回になる）
+    expect(fetchImpl).toHaveBeenCalledTimes(2)
+  })
+
   it('保存済み component keys を優先して返す', async () => {
     const storage = createStorage({
       [ClientStorage.RUNTIME_COMPONENT_KEYS]: componentKeys,
