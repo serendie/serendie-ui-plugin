@@ -143,6 +143,17 @@ export async function setInstanceProperties(
         const parsed = parseInstanceSwapValue(String(value))
         if (!parsed) continue
 
+        if (
+          !propDef.preferredComponentSets.some(
+            name => name.toLowerCase() === parsed.componentSetName.toLowerCase()
+          )
+        ) {
+          console.warn(
+            `Skipping INSTANCE_SWAP: "${parsed.componentSetName}" is not in preferredComponentSets for ${propDef.name}`
+          )
+          continue
+        }
+
         const targetComponentSet = componentKeysMap[parsed.componentSetName]
         if (
           !targetComponentSet ||
