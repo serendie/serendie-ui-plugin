@@ -10,6 +10,7 @@ const REMOTE_COMPONENTS_MANIFEST_URL =
   'https://serendie.design/assets/components-manifest.json'
 
 export const COMPONENT_ASSETS_TTL_MS = 3 * 24 * 60 * 60 * 1000
+export const COMPONENT_ASSETS_RETRY_TTL_MS = 10 * 60 * 1000
 
 type StorageLike = {
   getAsync(key: string): Promise<unknown>
@@ -86,12 +87,20 @@ function isComponentsManifest(value: unknown): value is ComponentManifestEntry[]
   )
 }
 
+const FETCH_TIMEOUT_MS = 30_000
+
 async function fetchJson(fetchImpl: FetchLike, url: string): Promise<unknown> {
-  const response = await fetchImpl(url)
-  if (!response.ok) {
-    throw new Error(`Failed to fetch ${url}: ${response.status}`)
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS)
+  try {
+    const response = await fetchImpl(url, { signal: controller.signal })
+    if (!response.ok) {
+      throw new Error(`Failed to fetch ${url}: ${response.status}`)
+    }
+    return response.json()
+  } finally {
+    clearTimeout(timeoutId)
   }
-  return response.json()
 }
 
 function setMemoryCaches(
@@ -116,15 +125,27 @@ export async function refreshRemoteComponentAssetsIfStale({
   fetchImpl?: FetchLike
   now?: () => number
 } = {}): Promise<void> {
-  const lastSyncedAt = await storage.getAsync(
-    ClientStorage.COMPONENT_ASSETS_SYNCED_AT
-  )
+  const [lastSyncedAt, lastAttemptedAt] = await Promise.all([
+    storage.getAsync(ClientStorage.COMPONENT_ASSETS_SYNCED_AT),
+    storage.getAsync(ClientStorage.COMPONENT_ASSETS_ATTEMPTED_AT),
+  ])
   const lastSyncedMs =
     typeof lastSyncedAt === 'number' ? lastSyncedAt : Number(lastSyncedAt)
+  const lastAttemptedMs =
+    typeof lastAttemptedAt === 'number'
+      ? lastAttemptedAt
+      : Number(lastAttemptedAt)
 
   if (
     Number.isFinite(lastSyncedMs) &&
     now() - lastSyncedMs < COMPONENT_ASSETS_TTL_MS
+  ) {
+    return
+  }
+
+  if (
+    Number.isFinite(lastAttemptedMs) &&
+    now() - lastAttemptedMs < COMPONENT_ASSETS_RETRY_TTL_MS
   ) {
     return
   }
@@ -156,6 +177,9 @@ export async function refreshRemoteComponentAssetsIfStale({
 
     setMemoryCaches(componentKeysJson, componentsManifestJson)
   } catch (error) {
+    await storage
+      .setAsync(ClientStorage.COMPONENT_ASSETS_ATTEMPTED_AT, now())
+      .catch(() => {})
     console.warn('Failed to refresh remote component assets:', error)
   }
 }

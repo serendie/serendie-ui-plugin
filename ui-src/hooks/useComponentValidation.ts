@@ -141,17 +141,30 @@ function isRuntimeComponentsManifest(
   )
 }
 
+const STORAGE_REQUEST_TIMEOUT_MS = 5000
+
 function requestStorageValue<T>(key: string): Promise<T | null> {
   return new Promise(resolve => {
+    let settled = false
     const onMessage = (event: MessageEvent) => {
-      const message = event.data.pluginMessage
+      const message = event.data?.pluginMessage
       if (message?.type === 'storage-value' && message.key === key) {
+        if (settled) return
+        settled = true
         window.removeEventListener('message', onMessage)
         resolve((message.value as T | undefined) ?? null)
       }
     }
 
     window.addEventListener('message', onMessage)
+
+    setTimeout(() => {
+      if (settled) return
+      settled = true
+      window.removeEventListener('message', onMessage)
+      resolve(null)
+    }, STORAGE_REQUEST_TIMEOUT_MS)
+
     parent.postMessage(
       {
         pluginMessage: {
