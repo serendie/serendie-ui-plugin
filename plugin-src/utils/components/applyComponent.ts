@@ -11,16 +11,14 @@ import {
 } from './importComponentCached'
 import getTreePath, { getNodeByTreePath } from '../nodes/getTreePath'
 import { sortByDepthDescending } from '../nodes/sortByDepth'
-import componentKeys from '../../../shared-src/assets/component-keys.json'
-
-const componentKeysMap = componentKeys as ComponentKeysMap
 
 /**
  * 選択要素内のノードを直接Serendie UIコンポーネントに置き換える
  */
 export async function applyComponents(
   rootNodeId: string,
-  targets: ComponentApplyTarget[]
+  targets: ComponentApplyTarget[],
+  componentKeysMap: ComponentKeysMap
 ): Promise<{
   results: ApplyComponentResult[]
   detached: number
@@ -112,7 +110,8 @@ export async function applyComponents(
               instance,
               item.properties,
               componentInfo,
-              item.componentName
+              item.componentName,
+              componentKeysMap
             )
           } catch (e) {
             console.warn(

@@ -12,8 +12,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### 環境変数（.env.local）
 
 - `DOCS_SEARCH_API_KEY`: チャット機能でSerendieドキュメントを検索するためのAPI
-- `FIGMA_PERSONAL_ACCESS_TOKEN`: ビルド時にSerendie UI Kitのコンポーネント情報を取得（library_content:readスコープ必須）
-- `FIGMA_SERENDIE_UI_KIT_FILE_KEY`: Serendie UI KitのFigmaファイルキー
+
+### Component Assets
+
+- `shared-src/assets/component-keys.json` と `shared-src/assets/components_manifest.json` は `npm run build:sync-assets` で `https://serendie.design/assets/` から同期される
+- 通常の build / runtime 更新では Figma API キーは不要
 
 ### ユーザー入力（プラグインUI）
 
@@ -136,10 +139,10 @@ shared-src/
 │   └── parseInstanceSwapValue.ts # インスタンススワップ値のパース
 └── assets/
     ├── components_manifest.json # コンポーネントマニフェスト
-    └── component-keys.json      # コンポーネントキー（ビルド時生成）
+    └── component-keys.json      # コンポーネントキー（remote asset をビルド時同期）
 
 scripts/
-└── fetch-component-keys.ts      # コンポーネントキー取得
+└── sync-assets.ts               # remote component assets を同期
 ```
 
 ## 重要な実装パターン
