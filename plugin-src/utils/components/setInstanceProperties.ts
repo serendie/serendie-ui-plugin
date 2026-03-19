@@ -15,9 +15,6 @@ import {
   importComponentByKeyCached,
   importComponentSetByKeyCached,
 } from './importComponentCached'
-import componentKeys from '../../../shared-src/assets/component-keys.json'
-
-const componentKeysMap = componentKeys as ComponentKeysMap
 
 /**
  * ネストしたプロパティを適用
@@ -69,7 +66,8 @@ export async function setInstanceProperties(
   instance: InstanceNode,
   properties: Record<string, string | boolean | number>,
   componentKeyInfo: ComponentKeyInfo,
-  componentName: string
+  componentName: string,
+  componentKeysMap: ComponentKeysMap
 ): Promise<void> {
   // Figma固有の冗長プロパティを自動補完
   const normalizedProperties = applyFigmaSpecificDefaults(
@@ -144,6 +142,17 @@ export async function setInstanceProperties(
       case 'INSTANCE_SWAP': {
         const parsed = parseInstanceSwapValue(String(value))
         if (!parsed) continue
+
+        if (
+          !propDef.preferredComponentSets.some(
+            name => name.toLowerCase() === parsed.componentSetName.toLowerCase()
+          )
+        ) {
+          console.warn(
+            `Skipping INSTANCE_SWAP: "${parsed.componentSetName}" is not in preferredComponentSets for ${propDef.name}`
+          )
+          continue
+        }
 
         const targetComponentSet = componentKeysMap[parsed.componentSetName]
         if (
