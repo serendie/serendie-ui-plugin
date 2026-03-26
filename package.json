@@ -1,5 +1,5 @@
 {
-  "name": "serendie-ui-copilot",
+  "name": "serendie-ui-plugin",
   "version": "1.0.0",
   "description": "A Figma plugin to assist designers in creating UI components with Serendie UI.",
   "engines": {
