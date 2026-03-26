@@ -1,5 +1,5 @@
 {
-  "name": "serendie-ui-copilot",
+  "name": "serendie-ui-plugin",
   "id": "1552496414081647274",
   "api": "1.0.0",
   "main": "dist/plugin.js",
