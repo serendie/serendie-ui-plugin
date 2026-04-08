@@ -14,7 +14,7 @@
       "https://serendie.design/mcp",
       "https://serendie.design/assets",
       "https://api.openai.com",
-      "https://main-production-a912.up.railway.app"
+      "https://design-docs-search.takram-spread.workers.dev"
     ],
     "devAllowedDomains": ["http://localhost:4321/mcp"],
     "reasoning": "Serendie Design Systemのガイドラインに基づくアドバイスを提供するため、Serendie MCPサーバー, OpenAI API, Serendie Design SystemのドキュメントAPIと通信します。"
