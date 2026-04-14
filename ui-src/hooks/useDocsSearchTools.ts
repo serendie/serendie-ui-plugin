@@ -2,7 +2,8 @@ import { tool, Tool } from 'ai'
 import { useMemo } from 'react'
 import { z } from 'zod'
 
-const API_ENDPOINT = 'https://main-production-a912.up.railway.app/api/search'
+const API_ENDPOINT =
+  'https://design-docs-search.takram-spread.workers.dev/api/search'
 
 type SourceFilter = 'ark_ui' | 'component_gallery' | 'm3'
 
