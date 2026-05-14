@@ -22,11 +22,13 @@ const { sd } = tokens
 interface ChatViewProps {
   isActive: boolean
   onStreamingChange?: (isStreaming: boolean) => void
+  onOpenSettings: () => void
 }
 
 export default function ChatView({
   isActive,
   onStreamingChange,
+  onOpenSettings,
 }: ChatViewProps) {
   const { apiKey } = useApiKey()
   const { selections } = useSelection()
@@ -174,6 +176,8 @@ export default function ChatView({
         messages={messages}
         imageMetas={imageMetas}
         isStreaming={isStreaming}
+        hasApiKey={apiKey !== ''}
+        onOpenSettings={onOpenSettings}
       />
       <div
         style={{
@@ -203,6 +207,7 @@ export default function ChatView({
           selectionNames={selections.map(s => s.name)}
           isSending={isSending}
           isStreaming={isStreaming}
+          hasApiKey={apiKey !== ''}
         />
       </div>
       <ChatHistoryModal

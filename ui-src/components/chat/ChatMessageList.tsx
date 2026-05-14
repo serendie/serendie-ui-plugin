@@ -13,6 +13,8 @@ interface ChatMessageListProps {
   messages: ModelMessage[]
   imageMetas: ImageMetas
   isStreaming?: boolean
+  hasApiKey?: boolean
+  onOpenSettings?: () => void
 }
 
 export interface ChatMessageListRef {
@@ -20,7 +22,10 @@ export interface ChatMessageListRef {
 }
 
 const ChatMessageList = forwardRef<ChatMessageListRef, ChatMessageListProps>(
-  function ChatMessageList({ messages, imageMetas, isStreaming }, ref) {
+  function ChatMessageList(
+    { messages, imageMetas, isStreaming, hasApiKey = true, onOpenSettings },
+    ref
+  ) {
     const { scrollContainerRef, scrollToBottom } = useAutoScroll(messages)
 
     useImperativeHandle(ref, () => ({
@@ -34,8 +39,39 @@ const ChatMessageList = forwardRef<ChatMessageListRef, ChatMessageListProps>(
           flex: 1,
           overflow: 'auto',
           padding: `${sd.system.dimension.spacing.extraLarge} ${sd.system.dimension.spacing.extraLarge} 8rem`,
+          position: 'relative',
         }}
       >
+        {!hasApiKey && (
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: sd.system.dimension.spacing.extraLarge,
+              pointerEvents: 'none',
+            }}
+          >
+            <button
+              type='button'
+              onClick={onOpenSettings}
+              style={{
+                ...sd.system.typography.body.medium_expanded,
+                background: 'none',
+                border: 'none',
+                padding: 0,
+                cursor: 'pointer',
+                color: sd.system.color.component.onSurfaceVariant,
+                textAlign: 'center',
+                pointerEvents: 'auto',
+              }}
+            >
+              OpenAI API Keyを設定してください
+            </button>
+          </div>
+        )}
         {messages
           .map((msg, originalIndex) => ({ ...msg, originalIndex }))
           .filter(
@@ -82,7 +118,8 @@ const ChatMessageList = forwardRef<ChatMessageListRef, ChatMessageListProps>(
             }
 
             const imageLabels = imageContents.map((_, imageIndex) => {
-              const item = imageMetas[getImageMetaKey(originalIndex, imageIndex)]
+              const item =
+                imageMetas[getImageMetaKey(originalIndex, imageIndex)]
               return item?.label ?? ''
             })
 

@@ -81,6 +81,7 @@ export default function App() {
         <ChatView
           isActive={currentView === 'chat'}
           onStreamingChange={setIsChatStreaming}
+          onOpenSettings={() => setSettingsOpen(true)}
         />
       </div>
       <div
