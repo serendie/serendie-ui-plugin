@@ -12,7 +12,10 @@ if (!fs.existsSync(distDir)) {
 }
 
 // Read the HTML template
-let uiText = fs.readFileSync(path.join(__dirname, '..', 'ui-src', 'template.html'), 'utf8')
+let uiText = fs.readFileSync(
+  path.join(__dirname, '..', 'ui-src', 'template.html'),
+  'utf8'
+)
 
 // Read the bundled JavaScript
 const jsPath = path.join(distDir, 'ui.js')

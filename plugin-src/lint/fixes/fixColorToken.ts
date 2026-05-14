@@ -102,9 +102,7 @@ export async function fixColorTokens(
 
           const baseBgRoles = hasChildren
             ? FALLBACK_BACKGROUND_ROLES
-            : FALLBACK_BACKGROUND_ROLES.filter(
-                r => !r.includes('Container')
-              )
+            : FALLBACK_BACKGROUND_ROLES.filter(r => !r.includes('Container'))
 
           const targetRoles =
             suggestion?.targetRoles ??

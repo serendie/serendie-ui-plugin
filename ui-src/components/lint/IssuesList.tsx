@@ -23,9 +23,7 @@ export default function IssuesList({
       ) : (
         <ComponentIssueHeader
           count={issues.length}
-          resolvedCount={
-            issues.filter(i => i.severity === 'resolved').length
-          }
+          resolvedCount={issues.filter(i => i.severity === 'resolved').length}
         />
       )}
       {issues.length > 0 && (

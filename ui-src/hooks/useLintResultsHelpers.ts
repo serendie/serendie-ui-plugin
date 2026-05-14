@@ -10,7 +10,12 @@ import {
   BorderTokenFixTarget,
 } from '../../shared-src/models/PluginMessage'
 
-export { isColorProperty, isBorderProperty, isColorTokenIssue, isBorderTokenIssue }
+export {
+  isColorProperty,
+  isBorderProperty,
+  isColorTokenIssue,
+  isBorderTokenIssue,
+}
 
 type BorderTargetProperty = BorderTokenFixTarget['targetProperty']
 

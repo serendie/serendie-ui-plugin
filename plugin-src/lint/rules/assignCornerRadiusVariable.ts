@@ -6,8 +6,7 @@ function validateSingle(cornerRadius: string): RuleResult | null {
     return {
       severity: 'warning',
       message: '角丸にデザイントークンを使えます',
-      messageDetails:
-        '角丸にデザインシステムのバリアブルを設定してください。',
+      messageDetails: '角丸にデザインシステムのバリアブルを設定してください。',
     }
   }
 
@@ -16,8 +15,7 @@ function validateSingle(cornerRadius: string): RuleResult | null {
     return {
       severity: 'warning',
       message: '角丸にデザイントークンを使えます',
-      messageDetails:
-        '角丸にデザインシステムのバリアブルを設定してください。',
+      messageDetails: '角丸にデザインシステムのバリアブルを設定してください。',
     }
   }
 
