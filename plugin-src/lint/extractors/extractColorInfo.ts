@@ -16,11 +16,7 @@ function extractTextColorFromNode(
   node: SceneNode,
   variableMap: VariableMap
 ): string | null {
-  if (
-    'fills' in node &&
-    Array.isArray(node.fills) &&
-    node.fills.length > 0
-  ) {
+  if ('fills' in node && Array.isArray(node.fills) && node.fills.length > 0) {
     const fill = node.fills[0]
     if (
       fill.type === 'SOLID' &&
@@ -39,7 +35,9 @@ function extractTextColorFromNode(
 function hasSolidFill(node: SceneNode): boolean {
   if (!('fills' in node) || !Array.isArray(node.fills)) return false
   const fills = node.fills as Paint[]
-  return fills.length > 0 && fills[0].type === 'SOLID' && fills[0].visible !== false
+  return (
+    fills.length > 0 && fills[0].type === 'SOLID' && fills[0].visible !== false
+  )
 }
 
 function collectChildTextColors(

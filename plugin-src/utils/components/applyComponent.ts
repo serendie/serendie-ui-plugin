@@ -29,7 +29,11 @@ export async function applyComponents(
   if (!rootNode) {
     console.error(`Root node not found: ${rootNodeId}`)
     for (const target of targets) {
-      results.push({ oldNodeId: target.nodeId, newNodeId: '', status: 'failed' })
+      results.push({
+        oldNodeId: target.nodeId,
+        newNodeId: '',
+        status: 'failed',
+      })
     }
     return { results, detached: 0 }
   }
@@ -122,9 +126,7 @@ export async function applyComponents(
           }
         }
       } else {
-        const component = await importComponentByKeyCached(
-          componentInfo.key
-        )
+        const component = await importComponentByKeyCached(componentInfo.key)
         instance = component.createInstance()
       }
 

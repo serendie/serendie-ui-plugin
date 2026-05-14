@@ -19,7 +19,9 @@ describe('getColorDistance', () => {
     const base = { r: 0.5, g: 0.5, b: 0.5 }
     const near = { r: 0.6, g: 0.5, b: 0.5 }
     const far = { r: 1, g: 0, b: 0 }
-    expect(getColorDistance(base, near)).toBeLessThan(getColorDistance(base, far))
+    expect(getColorDistance(base, near)).toBeLessThan(
+      getColorDistance(base, far)
+    )
   })
 
   it('順序に依存しない（対称性）', () => {

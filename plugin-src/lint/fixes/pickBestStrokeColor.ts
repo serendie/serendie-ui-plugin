@@ -45,8 +45,7 @@ export async function pickBestStrokeColor(
       r !== null
   )
 
-  let best: { variable: Variable; role: string; distance: number } | null =
-    null
+  let best: { variable: Variable; role: string; distance: number } | null = null
   for (const candidate of resolved) {
     if (!best || candidate.distance < best.distance) {
       best = candidate

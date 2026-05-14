@@ -201,9 +201,16 @@ export default function ChatMessage({
       {images &&
         images.map((image, index) =>
           image === IMAGE_REMOVED_PLACEHOLDER ? (
-            <RemovedImagePlaceholder key={index} label={imageLabels?.[index] ?? null} />
+            <RemovedImagePlaceholder
+              key={index}
+              label={imageLabels?.[index] ?? null}
+            />
           ) : (
-            <Image key={index} image={image} label={imageLabels?.[index] ?? null} />
+            <Image
+              key={index}
+              image={image}
+              label={imageLabels?.[index] ?? null}
+            />
           )
         )}
       {content && (

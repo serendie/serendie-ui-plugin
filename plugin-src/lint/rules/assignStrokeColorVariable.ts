@@ -10,8 +10,7 @@ export default function validate(
     return {
       severity: 'warning',
       message: '線色にデザイントークンを使えます',
-      messageDetails:
-        '線色にデザインシステムのバリアブルを設定してください。',
+      messageDetails: '線色にデザインシステムのバリアブルを設定してください。',
     }
   }
 
@@ -20,8 +19,7 @@ export default function validate(
     return {
       severity: 'warning',
       message: '線色にデザイントークンを使えます',
-      messageDetails:
-        '線色にデザインシステムのバリアブルを設定してください。',
+      messageDetails: '線色にデザインシステムのバリアブルを設定してください。',
     }
   }
 

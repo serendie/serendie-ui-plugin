@@ -33,7 +33,7 @@ export function serializeNodeStructure(
 
   if (node.componentProperties && node.componentProperties.length > 0) {
     const propsStr = node.componentProperties
-      .map((p) => `${p.name}=${p.value}`)
+      .map(p => `${p.name}=${p.value}`)
       .join(', ')
     details.push(`props: {${propsStr}}`)
   }

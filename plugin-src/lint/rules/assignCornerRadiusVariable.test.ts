@@ -84,10 +84,7 @@ describe('assignCornerRadiusVariable', () => {
     })
 
     it('一部が不正なトークン名 → warning', () => {
-      const result = validate([
-        'dimension/radius/small',
-        'spacing/medium',
-      ])
+      const result = validate(['dimension/radius/small', 'spacing/medium'])
       expect(result).not.toBeNull()
       expect(result?.severity).toBe('warning')
     })

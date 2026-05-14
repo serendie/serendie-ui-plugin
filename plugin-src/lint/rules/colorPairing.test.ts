@@ -117,16 +117,10 @@ describe('colorPairing', () => {
 
     it('notice × surface系は有効', () => {
       expect(
-        validate(
-          'color/component/notice',
-          'color/component/surfaceContainer'
-        )
+        validate('color/component/notice', 'color/component/surfaceContainer')
       ).toBeNull()
       expect(
-        validate(
-          'color/component/surfaceContainer',
-          'color/component/notice'
-        )
+        validate('color/component/surfaceContainer', 'color/component/notice')
       ).toBeNull()
     })
 
