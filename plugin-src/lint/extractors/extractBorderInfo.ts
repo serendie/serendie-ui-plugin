@@ -30,16 +30,14 @@ function extractStrokeColor(
   }
   const strokes = node.strokes as Paint[]
   const solidStroke = strokes.find(
-    (s) => s.type === 'SOLID' && s.visible !== false
+    s => s.type === 'SOLID' && s.visible !== false
   )
   if (!solidStroke) {
     return null
   }
 
   if ('boundVariables' in solidStroke && solidStroke.boundVariables?.color) {
-    const variableId = extractVariableKey(
-      solidStroke.boundVariables.color.id
-    )
+    const variableId = extractVariableKey(solidStroke.boundVariables.color.id)
     if (variableId) {
       const tokenName = variableMap.get(variableId)
       if (tokenName) {
@@ -70,9 +68,7 @@ function extractStrokeWeight(
 
   // Figma は統一ストロークでも boundVariables を個別キーで保持する場合がある
   const bv = node.boundVariables as {
-    readonly [field in
-      | 'strokeWeight'
-      | 'strokeTopWeight']?: VariableAlias
+    readonly [field in 'strokeWeight' | 'strokeTopWeight']?: VariableAlias
   }
 
   const alias = bv.strokeWeight || bv.strokeTopWeight

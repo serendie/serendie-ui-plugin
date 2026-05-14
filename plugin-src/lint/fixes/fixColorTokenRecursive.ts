@@ -62,10 +62,18 @@ export async function fixColorTokensRecursive(
     // 2回目以降はtotalを累積させてcurrentがtotalを超えないようにする
     if (i > 0) totalTargets += currentTargets.length
 
-    onProgress?.({ phase: 'color', current: allResults.length, total: totalTargets })
+    onProgress?.({
+      phase: 'color',
+      current: allResults.length,
+      total: totalTargets,
+    })
     const baseCount = allResults.length
-    const results = await fixColorTokens(currentTargets, (processed) => {
-      onProgress?.({ phase: 'color', current: baseCount + processed, total: totalTargets })
+    const results = await fixColorTokens(currentTargets, processed => {
+      onProgress?.({
+        phase: 'color',
+        current: baseCount + processed,
+        total: totalTargets,
+      })
     })
     allResults.push(...results.filter(r => r.status === 'success'))
     if (results.every(r => r.status === 'failed')) break

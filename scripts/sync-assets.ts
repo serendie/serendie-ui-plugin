@@ -43,7 +43,10 @@ function isComponentKeysJson(value: unknown): boolean {
 
     return entry.componentProperties.every(property => {
       if (!isRecord(property)) return false
-      if (typeof property.name !== 'string' || typeof property.type !== 'string') {
+      if (
+        typeof property.name !== 'string' ||
+        typeof property.type !== 'string'
+      ) {
         return false
       }
 

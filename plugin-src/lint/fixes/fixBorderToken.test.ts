@@ -2,7 +2,7 @@ import { findClosestCandidate, shouldUseFull } from './fixBorderToken'
 
 describe('findClosestCandidate', () => {
   const makeCandidates = (values: { name: string; value: number }[]) =>
-    values.map((v) => ({
+    values.map(v => ({
       variable: {} as Variable,
       name: v.name,
       value: v.value,

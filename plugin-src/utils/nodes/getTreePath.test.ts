@@ -58,7 +58,11 @@ describe('getTreePath', () => {
   })
 
   it('別のツリーのノードの場合はnullを返す', () => {
-    const otherRoot: TestNode = { name: 'otherRoot', parent: null, children: [] }
+    const otherRoot: TestNode = {
+      name: 'otherRoot',
+      parent: null,
+      children: [],
+    }
     const otherChild: TestNode = { name: 'otherChild', parent: otherRoot }
     otherRoot.children = [otherChild]
     expect(getTreePath(otherChild, root)).toBeNull()

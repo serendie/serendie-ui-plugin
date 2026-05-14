@@ -65,10 +65,7 @@ describe('pickBestCandidate', () => {
   })
 
   it('候補が1つの場合はそれを返す', () => {
-    const result = pickBestCandidate(
-      [{ role: 'onSurface', distance: 0.5 }],
-      0
-    )
+    const result = pickBestCandidate([{ role: 'onSurface', distance: 0.5 }], 0)
     expect(result?.role).toBe('onSurface')
   })
 })

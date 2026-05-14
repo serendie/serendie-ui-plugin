@@ -13,6 +13,7 @@ interface ChatInputAreaProps {
   selectionNames?: string[]
   isSending?: boolean
   isStreaming?: boolean
+  hasApiKey?: boolean
 }
 
 export default function ChatInputArea({
@@ -23,16 +24,19 @@ export default function ChatInputArea({
   selectionNames = [],
   isSending = false,
   isStreaming = false,
+  hasApiKey = true,
 }: ChatInputAreaProps) {
+  const canSend = message.trim() !== '' && !isSending && hasApiKey
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
       e.preventDefault()
-      if (message.trim() !== '') onSend()
+      if (canSend) onSend()
     }
   }
 
   const handleSend = () => {
-    if (message.trim() !== '') onSend()
+    if (canSend) onSend()
   }
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -135,7 +139,7 @@ export default function ChatInputArea({
             shape='rectangle'
             size='small'
             styleType='filled'
-            disabled={message.trim() === '' || isSending}
+            disabled={!canSend}
             onClick={handleSend}
             icon={<SerendieSymbol name='send' />}
           />

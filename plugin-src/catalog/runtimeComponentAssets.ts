@@ -55,7 +55,10 @@ function isComponentKeysMap(value: unknown): value is ComponentKeysMap {
 
     return entry.componentProperties.every(property => {
       if (!isRecord(property)) return false
-      if (typeof property.name !== 'string' || typeof property.type !== 'string') {
+      if (
+        typeof property.name !== 'string' ||
+        typeof property.type !== 'string'
+      ) {
         return false
       }
 
@@ -75,7 +78,9 @@ function isComponentKeysMap(value: unknown): value is ComponentKeysMap {
   })
 }
 
-function isComponentsManifest(value: unknown): value is ComponentManifestEntry[] {
+function isComponentsManifest(
+  value: unknown
+): value is ComponentManifestEntry[] {
   return (
     Array.isArray(value) &&
     value.every(entry => {
@@ -181,10 +186,7 @@ async function doRefreshRemoteComponentAssetsIfStale({
     }
 
     await Promise.all([
-      storage.setAsync(
-        ClientStorage.RUNTIME_COMPONENT_KEYS,
-        componentKeysJson
-      ),
+      storage.setAsync(ClientStorage.RUNTIME_COMPONENT_KEYS, componentKeysJson),
       storage.setAsync(
         ClientStorage.RUNTIME_COMPONENTS_MANIFEST,
         componentsManifestJson

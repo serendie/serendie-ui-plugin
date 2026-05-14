@@ -4,7 +4,10 @@ describe('parseInstanceSwapValue', () => {
   it.each([
     [
       'OutlinedSerendieSymbols/arrow_back',
-      { componentSetName: 'OutlinedSerendieSymbols', variantValue: 'arrow_back' },
+      {
+        componentSetName: 'OutlinedSerendieSymbols',
+        variantValue: 'arrow_back',
+      },
     ],
     ['Icon/settings', { componentSetName: 'Icon', variantValue: 'settings' }],
     ['NoSlash', null],

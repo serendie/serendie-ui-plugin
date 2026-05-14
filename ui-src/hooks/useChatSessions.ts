@@ -126,7 +126,9 @@ export function useChatSessions(apiKey: string) {
         // 保存失敗時：古いセッションを削除してリトライ
         if (pendingSaveRef.current && pendingSaveRef.current.length > 0) {
           const trimmed = trimOldestSession(pendingSaveRef.current)
-          console.log(`ストレージ容量超過: 古いセッションを削除しました（残り${trimmed.length}件）`)
+          console.log(
+            `ストレージ容量超過: 古いセッションを削除しました（残り${trimmed.length}件）`
+          )
           if (trimmed.length > 0) {
             pendingSaveRef.current = trimmed
             parent.postMessage(
