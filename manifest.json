@@ -1,6 +1,6 @@
 {
   "name": "serendie-ui-plugin",
-  "id": "1552496414081647274",
+  "id": "1620336048159630313",
   "api": "1.0.0",
   "main": "dist/plugin.js",
   "ui": "dist/ui.html",
