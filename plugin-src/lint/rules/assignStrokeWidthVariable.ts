@@ -6,8 +6,7 @@ function validateSingle(strokeWeight: string): RuleResult | null {
     return {
       severity: 'warning',
       message: '線幅にデザイントークンを使えます',
-      messageDetails:
-        '線幅にデザインシステムのバリアブルを設定してください。',
+      messageDetails: '線幅にデザインシステムのバリアブルを設定してください。',
     }
   }
 
@@ -16,8 +15,7 @@ function validateSingle(strokeWeight: string): RuleResult | null {
     return {
       severity: 'warning',
       message: '線幅にデザイントークンを使えます',
-      messageDetails:
-        '線幅にデザインシステムのバリアブルを設定してください。',
+      messageDetails: '線幅にデザインシステムのバリアブルを設定してください。',
     }
   }
 

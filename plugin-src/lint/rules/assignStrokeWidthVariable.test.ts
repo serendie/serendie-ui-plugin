@@ -60,19 +60,13 @@ describe('assignStrokeWidthVariable', () => {
     })
 
     it('一部がCUSTOM_VALUE → warning', () => {
-      const result = validate([
-        'dimension/border/medium',
-        CUSTOM_VALUE,
-      ])
+      const result = validate(['dimension/border/medium', CUSTOM_VALUE])
       expect(result).not.toBeNull()
       expect(result?.severity).toBe('warning')
     })
 
     it('一部が不正なトークン名 → warning', () => {
-      const result = validate([
-        'dimension/border/medium',
-        'spacing/medium',
-      ])
+      const result = validate(['dimension/border/medium', 'spacing/medium'])
       expect(result).not.toBeNull()
       expect(result?.severity).toBe('warning')
     })

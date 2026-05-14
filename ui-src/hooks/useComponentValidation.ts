@@ -18,7 +18,8 @@ import ClientStorage from '../../shared-src/models/ClientStorage'
 import { getBasePropName } from '../../shared-src/utils/getBasePropName'
 
 const componentKeysMap = componentKeys as ComponentKeysMap
-const fallbackComponentsManifest = componentsManifest as ComponentManifestEntry[]
+const fallbackComponentsManifest =
+  componentsManifest as ComponentManifestEntry[]
 
 type ValidationState = 'idle' | 'analyzing' | 'done' | 'error'
 
@@ -107,7 +108,10 @@ function isRuntimeComponentKeysMap(value: unknown): value is ComponentKeysMap {
 
     return entry.componentProperties.every(property => {
       if (!isRecord(property)) return false
-      if (typeof property.name !== 'string' || typeof property.type !== 'string') {
+      if (
+        typeof property.name !== 'string' ||
+        typeof property.type !== 'string'
+      ) {
         return false
       }
 
@@ -264,9 +268,8 @@ export function useComponentValidation({ apiKey }: { apiKey: string }) {
         const serializedStructure = serializeNodeStructure(structure)
         const runtimeAssets = await loadRuntimeComponentAssets()
 
-        const componentPropertiesInfo = generateComponentPropertiesInfoFromAssets(
-          runtimeAssets.componentKeys
-        )
+        const componentPropertiesInfo =
+          generateComponentPropertiesInfoFromAssets(runtimeAssets.componentKeys)
         const componentList = generateComponentListFromAssets(
           runtimeAssets.componentKeys,
           runtimeAssets.componentsManifest
@@ -350,10 +353,7 @@ ${PROMPT_TO_NEST_PROPERTY}
           } catch (err) {
             lastError = err
             if (!NoObjectGeneratedError.isInstance(err)) throw err
-            console.warn(
-              `Attempt ${tryCount}/${maxTryCount} failed:`,
-              err
-            )
+            console.warn(`Attempt ${tryCount}/${maxTryCount} failed:`, err)
           }
         }
 

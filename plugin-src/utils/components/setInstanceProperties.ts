@@ -190,8 +190,7 @@ export async function setInstanceProperties(
           .split(', ')
           .some(
             part =>
-              part.toLowerCase() ===
-              `name=${swap.variantValue.toLowerCase()}`
+              part.toLowerCase() === `name=${swap.variantValue.toLowerCase()}`
           )
       }) as ComponentNode | undefined
 
