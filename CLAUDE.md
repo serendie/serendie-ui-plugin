@@ -5,13 +5,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## セットアップ
 
 1. `npm install`
-2. `.env.local` を作成（`.env.example` を参照）
-3. `npm run build`
-4. Figma Desktop App → Plugins → Development → Import plugin from manifest → `manifest.json` を選択
-
-### 環境変数（.env.local）
-
-- `DOCS_SEARCH_API_KEY`: チャット機能でSerendieドキュメントを検索するためのAPI
+2. `npm run build`
+3. Figma Desktop App → Plugins → Development → Import plugin from manifest → `manifest.json` を選択
 
 ### Component Assets
 

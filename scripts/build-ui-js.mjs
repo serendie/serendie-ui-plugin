@@ -1,6 +1,3 @@
-import dotenv from 'dotenv'
-
-dotenv.config({ path: '.env.local' })
 import * as esbuild from 'esbuild'
 
 const isWatch = process.argv.includes('--watch')
@@ -12,11 +9,6 @@ const buildOptions = {
   target: 'es2020',
   format: 'iife',
   loader: { '.tsx': 'tsx' },
-  define: {
-    'process.env.DOCS_SEARCH_API_KEY': JSON.stringify(
-      process.env.DOCS_SEARCH_API_KEY || ''
-    ),
-  },
 }
 
 if (isWatch) {
