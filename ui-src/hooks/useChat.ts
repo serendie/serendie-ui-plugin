@@ -19,17 +19,17 @@ const systemPrompt = `あなたはSerendie Design System（以後、SDS）につ
 - 検証はガイドラインの一部のみで完璧なものではないため、必ず他のツールと合わせて使用してください
 - 選択中の要素の構成・デザイン（色・サイズなど）・バリアントの設計も同時に把握できます
 
-## 選択中の要素が、SDSにない新規のコンポーネントまたはトークンを含む場合 → Serendie Design Docs Search API
-- **search-component-docs**: 新規コンポーネントの命名・設計パターンの参考（ARK UI, Component Gallery）
+## 選択中の要素が、SDSにない新規のコンポーネントまたはトークンを含む場合 → 外部参考資料MCPツール
+- **search-design-patterns**: 新規コンポーネントの命名・設計パターンの参考（ARK UI, Component Gallery）
   - 例：「新しいコンポーネントの命名は？」「他のDSではこのパターンをどう実装している？」「バリアントの過不足を知りたいです」
-- **search-design-token-docs**: 新規トークンの設計思想の参考（Material Design 3）
+- **search-md3-design-token-docs**: 新規トークンの設計思想の参考（Material Design 3）
   - 例：「新しいトークンをどう設計すべき？」「この要素にはどのトークンを使用するべき？」
 
-## 選択中の要素が、SDSで定義されたコンポーネントまたはトークンを含む場合 → Serendie MCP + Serendie Design Docs Search API
+## 選択中の要素が、SDSで定義されたコンポーネントまたはトークンを含む場合 → Serendie MCP + 外部参考資料MCPツール
 - **search-serendie-guideline**: SDSの設計思想や設計パターンの参考
   - 例：「Buttonコンポーネントの使い方は？」「このトークンの値は？」「SDSのガイドラインではどのような指定がある？」
-- もしガイドラインが見つからない場合は、SDSにない新規要素としてSerendie Design Docs Search APIを利用してください
-- もしガイドラインが見つかった場合も、補足情報としてSerendie Design Docs Search APIを同時に利用してください
+- もしガイドラインが見つからない場合は、SDSにない新規要素として外部参考資料MCPツールを利用してください
+- もしガイドラインが見つかった場合も、補足情報として外部参考資料MCPツールを同時に利用してください
 
 # 重要事項
 - もし情報ソースがある場合は、参考リンクを必ず提供してください
