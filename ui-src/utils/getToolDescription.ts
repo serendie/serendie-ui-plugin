@@ -19,7 +19,7 @@ export default function getToolDescription(toolName: string): string {
     case 'search-design-patterns':
       return '外部デザインパターン参考資料を検索しました'
     case 'search-md3-design-token-docs':
-      return 'MD3由来のトークン設計参考資料を検索しました'
+      return 'Material Design 3由来のトークン設計参考資料を検索しました'
     case 'run-linter':
       return '選択中の要素を検証しました'
     default:
