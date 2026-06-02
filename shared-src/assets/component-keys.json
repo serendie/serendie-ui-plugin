@@ -261,6 +261,126 @@
       }
     ]
   },
+  "BreadcrumbItem": {
+    "key": "f39f7f8b0e0009760f53c81273071cfcde8c5266",
+    "name": "BreadcrumbItem",
+    "description": "",
+    "nodeId": "32021:1844",
+    "type": "COMPONENT_SET",
+    "componentProperties": [
+      {
+        "name": "Current",
+        "type": "VARIANT",
+        "options": [
+          "true",
+          "false"
+        ]
+      },
+      {
+        "name": "Heading Elements#31615:32",
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      {
+        "name": "IconInstance#31691:0",
+        "type": "INSTANCE_SWAP",
+        "preferredComponentSets": [
+          "OutlinedSerendieSymbols",
+          "FilledSerendieSymbols",
+          "SerendieSymbols"
+        ]
+      },
+      {
+        "name": "more-horizontal#31697:20",
+        "type": "INSTANCE_SWAP",
+        "preferredComponentSets": [
+          "FilledSerendieSymbols",
+          "OutlinedSerendieSymbols",
+          "SerendieSymbols"
+        ]
+      },
+      {
+        "name": "Size",
+        "type": "VARIANT",
+        "options": [
+          "Medium",
+          "Small"
+        ]
+      },
+      {
+        "name": "State",
+        "type": "VARIANT",
+        "options": [
+          "Enabled",
+          "Hovered",
+          "Focused"
+        ]
+      },
+      {
+        "name": "Text#31615:53",
+        "type": "TEXT",
+        "defaultValue": "Link"
+      },
+      {
+        "name": "Type",
+        "type": "VARIANT",
+        "options": [
+          "Label",
+          "Ellipsis"
+        ]
+      }
+    ]
+  },
+  "Breadcrumbs": {
+    "key": "096e1f6549343bdaea4a3c63eda84ec3d9362014",
+    "name": "Breadcrumbs",
+    "description": "現在のページがWebサイトやアプリケーションの階層構造の中でどの位置にあるかを示し、上位の階層へ素早く戻るための二次的なナビゲーションです。",
+    "nodeId": "32103:2146",
+    "type": "COMPONENT_SET",
+    "componentProperties": [
+      {
+        "name": "Separator Type",
+        "type": "VARIANT",
+        "options": [
+          "Chevron",
+          "Slash"
+        ]
+      },
+      {
+        "name": "Size",
+        "type": "VARIANT",
+        "options": [
+          "Small",
+          "Medium"
+        ]
+      }
+    ]
+  },
+  "BreadcrumbSeparator": {
+    "key": "7ab92dc69797af1dfb001d4af35061672022146e",
+    "name": "BreadcrumbSeparator",
+    "description": "",
+    "nodeId": "32021:1921",
+    "type": "COMPONENT_SET",
+    "componentProperties": [
+      {
+        "name": "Separator Type",
+        "type": "VARIANT",
+        "options": [
+          "Chevron",
+          "Slash"
+        ]
+      },
+      {
+        "name": "Size",
+        "type": "VARIANT",
+        "options": [
+          "Medium",
+          "Small"
+        ]
+      }
+    ]
+  },
   "Button": {
     "key": "f91482850c7ade11d6f2a811330df40a7f57c2df",
     "name": "Button",
@@ -655,6 +775,32 @@
     "type": "COMPONENT_SET",
     "componentProperties": [
       {
+        "name": "Description#31410:6",
+        "type": "TEXT",
+        "defaultValue": "補足テキスト補足テキスト補足テキスト補足テキスト"
+      },
+      {
+        "name": "LeftIconInstance#31410:8",
+        "type": "INSTANCE_SWAP",
+        "preferredComponentSets": [
+          "OutlinedSerendieSymbols"
+        ]
+      },
+      {
+        "name": "LeftLargeIconInstance#31410:9",
+        "type": "INSTANCE_SWAP",
+        "preferredComponentSets": [
+          "OutlinedSerendieSymbols"
+        ]
+      },
+      {
+        "name": "RightIconInstance#31410:10",
+        "type": "INSTANCE_SWAP",
+        "preferredComponentSets": [
+          "OutlinedSerendieSymbols"
+        ]
+      },
+      {
         "name": "State",
         "type": "VARIANT",
         "options": [
@@ -664,6 +810,11 @@
           "Focused",
           "Hovered"
         ]
+      },
+      {
+        "name": "SubDescription#31410:7",
+        "type": "TEXT",
+        "defaultValue": "タイムスタンプなど"
       },
       {
         "name": "Title#6410:571",
@@ -1168,35 +1319,35 @@
     ]
   },
   "ListItem": {
-    "key": "3a40851062d6c80589afe3e44a04ae7307875cb1",
+    "key": "8e517c9fb68b21d2f279158c5c044577c36c771a",
     "name": "ListItem",
     "description": "関連する項目を縦に並べて、メニューや一覧を構成するためのコンポーネントです。",
-    "nodeId": "3442:9387",
+    "nodeId": "31891:657",
     "type": "COMPONENT_SET",
     "componentProperties": [
       {
         "name": "Description#6408:261",
         "type": "TEXT",
-        "defaultValue": "補足テキスト補足テキスト補足テキスト補足テキスト"
+        "defaultValue": "補足テキスト補足テキスト補足テキスト"
       },
       {
         "name": "Heading Elements",
         "type": "VARIANT",
         "options": [
+          "IconMedium",
           "IconLarge",
-          "None",
-          "IconMedium"
+          "None"
         ]
       },
       {
-        "name": "LeftIconInstance#13249:299",
+        "name": "Heading Elements Instance#13249:299",
         "type": "INSTANCE_SWAP",
         "preferredComponentSets": [
           "OutlinedSerendieSymbols"
         ]
       },
       {
-        "name": "LeftLargeIconInstance#13249:340",
+        "name": "Heading Elements LargeIconInstance#13249:340",
         "type": "INSTANCE_SWAP",
         "preferredComponentSets": [
           "OutlinedSerendieSymbols"
@@ -1206,15 +1357,8 @@
         "name": "Lines",
         "type": "VARIANT",
         "options": [
-          "Multiple Lines",
-          "Single Line"
-        ]
-      },
-      {
-        "name": "RightIconInstance#13249:381",
-        "type": "INSTANCE_SWAP",
-        "preferredComponentSets": [
-          "OutlinedSerendieSymbols"
+          "Single Line",
+          "Multiple Lines"
         ]
       },
       {
@@ -1242,9 +1386,17 @@
         "name": "Trailing Elements",
         "type": "VARIANT",
         "options": [
-          "Icon",
+          "IconMedium",
+          "IconLarge",
           "None",
           "Badge"
+        ]
+      },
+      {
+        "name": "Trailing Elements Instance#13249:381",
+        "type": "INSTANCE_SWAP",
+        "preferredComponentSets": [
+          "OutlinedSerendieSymbols"
         ]
       }
     ]

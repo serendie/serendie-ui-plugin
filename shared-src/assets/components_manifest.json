@@ -72,7 +72,7 @@
     "category": "Layout",
     "hasDocumentation": false,
     "source": "auto-detected",
-    "lastUpdated": "2026-05-13",
+    "lastUpdated": "2026-05-28",
     "props": [],
     "examples": [],
     "storybookUrls": [],
@@ -322,7 +322,7 @@
     "category": "Other",
     "hasDocumentation": false,
     "source": "auto-detected",
-    "lastUpdated": "2026-05-13",
+    "lastUpdated": "2026-05-28",
     "props": [],
     "examples": [],
     "storybookUrls": [],
@@ -430,7 +430,7 @@
     "category": "Other",
     "hasDocumentation": false,
     "source": "auto-detected",
-    "lastUpdated": "2026-05-13",
+    "lastUpdated": "2026-05-28",
     "props": [],
     "examples": [],
     "storybookUrls": [],
@@ -445,7 +445,7 @@
     "category": "Other",
     "hasDocumentation": false,
     "source": "auto-detected",
-    "lastUpdated": "2026-05-13",
+    "lastUpdated": "2026-05-28",
     "props": [],
     "examples": [],
     "storybookUrls": [],
@@ -1241,54 +1241,6 @@
     "lastUpdated": "2025-09-03",
     "props": [
       {
-        "name": "placeholder",
-        "type": "string",
-        "required": false,
-        "description": "The placeholder text to display in the input."
-      },
-      {
-        "name": "label",
-        "type": "string",
-        "required": false,
-        "description": ""
-      },
-      {
-        "name": "required",
-        "type": "boolean",
-        "required": false,
-        "description": ""
-      },
-      {
-        "name": "invalid",
-        "type": "boolean",
-        "required": false,
-        "description": ""
-      },
-      {
-        "name": "invalidMessage",
-        "type": "string",
-        "required": false,
-        "description": ""
-      },
-      {
-        "name": "startPlaceholder",
-        "type": "string",
-        "required": false,
-        "description": ""
-      },
-      {
-        "name": "endPlaceholder",
-        "type": "string",
-        "required": false,
-        "description": ""
-      },
-      {
-        "name": "isCalendarOnly",
-        "type": "boolean",
-        "required": false,
-        "description": ""
-      },
-      {
         "name": "id",
         "type": "string",
         "required": false,
@@ -1462,6 +1414,12 @@
         "description": "Function to parse the date from the input back to a DateValue."
       },
       {
+        "name": "placeholder",
+        "type": "string",
+        "required": false,
+        "description": "The placeholder text to display in the input."
+      },
+      {
         "name": "defaultView",
         "type": "enum",
         "required": false,
@@ -1550,6 +1508,67 @@
         "type": "boolean",
         "required": false,
         "description": "Use the provided child element as the default rendered element, combining their props and behavior."
+      },
+      {
+        "name": "fullWidth",
+        "type": "boolean",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "requiredLabel",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "invalidMessage",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "startPlaceholder",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "endPlaceholder",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "isCalendarOnly",
+        "type": "boolean",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "portalled",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "true",
+        "description": "Portalを使用するかどうか\n- `true` (デフォルト): body直下にポータルする。ModalDialog/Drawer内にある場合は自動的にそのコンテンツ内にポータルされる\n- `false`: ポータルを使用せず、その場にレンダリングする"
       }
     ],
     "examples": [],
@@ -1585,7 +1604,7 @@
     "category": "Other",
     "hasDocumentation": false,
     "source": "auto-detected",
-    "lastUpdated": "2026-05-13",
+    "lastUpdated": "2026-05-28",
     "props": [],
     "examples": [],
     "storybookUrls": [],
@@ -1897,6 +1916,13 @@
         "description": ""
       },
       {
+        "name": "portalled",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "true",
+        "description": "Portalを使用するかどうか\n- `true` (デフォルト): body直下にポータルする。ModalDialog/Drawer内にある場合は自動的にそのコンテンツ内にポータルされる\n- `false`: ポータルを使用せず、その場にレンダリングする"
+      },
+      {
         "name": "id",
         "type": "string",
         "required": false,
@@ -2183,7 +2209,7 @@
     "category": "Layout",
     "hasDocumentation": false,
     "source": "auto-detected",
-    "lastUpdated": "2026-05-13",
+    "lastUpdated": "2026-05-28",
     "props": [],
     "examples": [],
     "storybookUrls": [],
@@ -2234,6 +2260,12 @@
         "name": "onButtonClick",
         "type": "() => void",
         "required": true,
+        "description": ""
+      },
+      {
+        "name": "submitButtonProps",
+        "type": "ButtonProps",
+        "required": false,
         "description": ""
       },
       {
@@ -2552,7 +2584,7 @@
     "category": "Inputs",
     "hasDocumentation": false,
     "source": "auto-detected",
-    "lastUpdated": "2026-05-13",
+    "lastUpdated": "2026-05-28",
     "props": [
       {
         "name": "label",
@@ -2581,6 +2613,18 @@
       {
         "name": "leftContent",
         "type": "ReactNode",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "requiredLabel",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "fullWidth",
+        "type": "boolean",
         "required": false,
         "description": ""
       },
@@ -2663,7 +2707,7 @@
     "category": "Display",
     "hasDocumentation": false,
     "source": "auto-detected",
-    "lastUpdated": "2026-05-13",
+    "lastUpdated": "2026-05-28",
     "props": [],
     "examples": [],
     "storybookUrls": [],
@@ -2741,7 +2785,7 @@
     "category": "Inputs",
     "hasDocumentation": false,
     "source": "auto-detected",
-    "lastUpdated": "2026-05-13",
+    "lastUpdated": "2026-05-28",
     "props": [],
     "examples": [],
     "storybookUrls": [],
@@ -2912,7 +2956,8 @@
         "name": "allowCustomValue",
         "type": "boolean",
         "required": false,
-        "description": "Whether to allow typing custom values in the input"
+        "defaultValue": "true",
+        "description": "Whether to allow typing custom values in the input\n候補リストにない値（フリーテキスト）での検索を許可するかどうか"
       },
       {
         "name": "loopFocus",
@@ -3076,6 +3121,19 @@
         "type": "string[]",
         "required": false,
         "description": ""
+      },
+      {
+        "name": "portalled",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "true",
+        "description": "Portalを使用するかどうか\n- `true` (デフォルト): body直下にポータルする。ModalDialog/Drawer内にある場合は自動的にそのコンテンツ内にポータルされる\n- `false`: ポータルを使用せず、その場にレンダリングする"
+      },
+      {
+        "name": "onSearch",
+        "type": "(value: string) => void",
+        "required": false,
+        "description": "検索実行時のコールバック（Enterキー押下時・候補選択時）"
       }
     ],
     "examples": [
@@ -3136,6 +3194,12 @@
         "description": "Whether the select is required"
       },
       {
+        "name": "requiredLabel",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
         "name": "invalidMessage",
         "type": "string",
         "required": false,
@@ -3152,6 +3216,13 @@
         "type": "ListCollection<selectItem>",
         "required": false,
         "description": ""
+      },
+      {
+        "name": "portalled",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "true",
+        "description": "Portalを使用するかどうか\n- `true` (デフォルト): body直下にポータルする。ModalDialog/Drawer内にある場合は自動的にそのコンテンツ内にポータルされる\n- `false`: ポータルを使用せず、その場にレンダリングする"
       },
       {
         "name": "form",
@@ -3398,6 +3469,201 @@
         "variant": "docs"
       }
     ],
+    "relatedComponents": []
+  },
+  {
+    "name": "Slider",
+    "displayName": "Slider",
+    "description": "",
+    "category": "Other",
+    "hasDocumentation": false,
+    "source": "auto-detected",
+    "lastUpdated": "2026-05-28",
+    "props": [
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "The unique identifier of the machine."
+      },
+      {
+        "name": "step",
+        "type": "number",
+        "required": false,
+        "defaultValue": "1",
+        "description": "The step value of the slider\nStep value for the slider. Defaults to 1."
+      },
+      {
+        "name": "form",
+        "type": "string",
+        "required": false,
+        "description": "The associate form of the underlying input element."
+      },
+      {
+        "name": "defaultValue",
+        "type": "number[]",
+        "required": false,
+        "description": "The initial value of the slider when rendered.\nUse when you don't need to control the value of the slider."
+      },
+      {
+        "name": "aria-label",
+        "type": "string[]",
+        "required": false,
+        "description": "The aria-label of each slider thumb. Useful for providing an accessible name to the slider"
+      },
+      {
+        "name": "aria-labelledby",
+        "type": "string[]",
+        "required": false,
+        "description": "The `id` of the elements that labels each slider thumb. Useful for providing an accessible name to the slider"
+      },
+      {
+        "name": "ids",
+        "type": "Partial<{ root: string; thumb: (index: number) => string; hiddenInput: (index: number) => string; control: string; track: string; range: string; label: string; valueText: string; marker: (index: number) => string; }>",
+        "required": false,
+        "description": "The ids of the elements in the slider. Useful for composition."
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "The name associated with each slider thumb (when used in a form)"
+      },
+      {
+        "name": "value",
+        "type": "number[]",
+        "required": false,
+        "description": "The controlled value of the slider"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the slider is disabled"
+      },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the slider is read-only"
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the slider is invalid"
+      },
+      {
+        "name": "onValueChange",
+        "type": "(details: ValueChangeDetails) => void",
+        "required": false,
+        "description": "Function invoked when the value of the slider changes"
+      },
+      {
+        "name": "onValueChangeEnd",
+        "type": "(details: ValueChangeDetails) => void",
+        "required": false,
+        "description": "Function invoked when the slider value change is done"
+      },
+      {
+        "name": "onFocusChange",
+        "type": "(details: FocusChangeDetails) => void",
+        "required": false,
+        "description": "Function invoked when the slider's focused index changes"
+      },
+      {
+        "name": "getAriaValueText",
+        "type": "(details: ValueTextDetails) => string",
+        "required": false,
+        "description": "Function that returns a human readable value for the slider thumb"
+      },
+      {
+        "name": "min",
+        "type": "number",
+        "required": false,
+        "defaultValue": "0",
+        "description": "The minimum value of the slider"
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false,
+        "defaultValue": "100",
+        "description": "The maximum value of the slider"
+      },
+      {
+        "name": "minStepsBetweenThumbs",
+        "type": "number",
+        "required": false,
+        "defaultValue": "0",
+        "description": "The minimum permitted steps between multiple thumbs.\n\n`minStepsBetweenThumbs` * `step` should reflect the gap between the thumbs.\n\n- `step: 1` and `minStepsBetweenThumbs: 10` => gap is `10`\n- `step: 10` and `minStepsBetweenThumbs: 2` => gap is `20`"
+      },
+      {
+        "name": "orientation",
+        "type": "enum",
+        "required": false,
+        "defaultValue": "\"horizontal\"",
+        "description": "The orientation of the slider"
+      },
+      {
+        "name": "origin",
+        "type": "enum",
+        "required": false,
+        "defaultValue": "\"start\"",
+        "description": "The origin of the slider range. The track is filled from the origin\nto the thumb for single values.\n- \"start\": Useful when the value represents an absolute value\n- \"center\": Useful when the value represents an offset (relative)\n- \"end\": Useful when the value represents an offset from the end"
+      },
+      {
+        "name": "thumbAlignment",
+        "type": "enum",
+        "required": false,
+        "defaultValue": "\"contain\"",
+        "description": "The alignment of the slider thumb relative to the track\n- `center`: the thumb will extend beyond the bounds of the slider track.\n- `contain`: the thumb will be contained within the bounds of the track."
+      },
+      {
+        "name": "thumbSize",
+        "type": "{ width: number; height: number; }",
+        "required": false,
+        "description": "The slider thumbs dimensions"
+      },
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "required": false,
+        "description": "Use the provided child element as the default rendered element, combining their props and behavior."
+      },
+      {
+        "name": "size",
+        "type": "enum",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "startLabel",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "endLabel",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "markerValues",
+        "type": "number[]",
+        "required": false,
+        "description": "Custom marker positions for display only (does not affect snapping). Defaults to 10% increments."
+      },
+      {
+        "name": "showMarkers",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether to show markers on the track. Defaults to true."
+      }
+    ],
+    "examples": [],
+    "storybookUrls": [],
     "relatedComponents": []
   },
   {
@@ -3675,7 +3941,7 @@
     "category": "Layout",
     "hasDocumentation": false,
     "source": "auto-detected",
-    "lastUpdated": "2026-05-13",
+    "lastUpdated": "2026-05-28",
     "props": [],
     "examples": [],
     "storybookUrls": [],
@@ -3718,6 +3984,18 @@
       },
       {
         "name": "autoAdjustHeight",
+        "type": "boolean",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "requiredLabel",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "fullWidth",
         "type": "boolean",
         "required": false,
         "description": ""
@@ -3779,6 +4057,18 @@
       {
         "name": "rightContent",
         "type": "ReactNode",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "requiredLabel",
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "fullWidth",
+        "type": "boolean",
         "required": false,
         "description": ""
       }
