@@ -3,7 +3,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useApiKey } from '../../hooks/useApiKey'
 import { useMCPTools } from '../../hooks/useMCPTools'
-import { useDocsSearchTools } from '../../hooks/useDocsSearchTools'
 import { useLinterTool } from '../../hooks/useLinterTool'
 import { useSelectionImages } from '../../hooks/useSelectionImages'
 import { useChat } from '../../hooks/useChat'
@@ -33,7 +32,6 @@ export default function ChatView({
   const { apiKey } = useApiKey()
   const { selections } = useSelection()
   const mcpTools = useMCPTools()
-  const docsSearchTools = useDocsSearchTools()
   const { getSelectionImages } = useSelectionImages()
   const [isSending, setIsSending] = useState(false)
   const [historyOpen, setHistoryOpen] = useState(false)
@@ -41,10 +39,9 @@ export default function ChatView({
   const viewRef = useRef<ChatMessageListRef>(null)
 
   const tools = useMemo(() => {
-    const baseTools = { ...docsSearchTools, ...linterTool }
-    if (!mcpTools) return baseTools
-    return { ...mcpTools, ...baseTools }
-  }, [mcpTools, docsSearchTools, linterTool])
+    if (!mcpTools) return linterTool
+    return { ...mcpTools, ...linterTool }
+  }, [mcpTools, linterTool])
 
   const {
     sessions,
